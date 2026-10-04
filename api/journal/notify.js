@@ -272,6 +272,14 @@ export default async function handler(req, res) {
         subject: emailSubject,
         html: emailHtml,
         recipients: recipientsToSend,
+        // Devotionals record each wave as it lands, so a run that dies partway
+        // through the list resumes rather than re-emailing people who already
+        // received it. Journal posts have no per-recipient ledger to write to.
+        onWaveSent:
+          isDevotional && dedupeDay
+            ? (addresses) =>
+                recordDevotionalRecipientsSent(supabaseAdmin, slug, dedupeDay, addresses, "journal_notify")
+            : null,
       });
 
     sentCount = sent;

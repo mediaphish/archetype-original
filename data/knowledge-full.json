@@ -1,7 +1,69 @@
 {
-  "generated_at": "2026-10-02T21:29:11.931Z",
-  "count": 620,
+  "generated_at": "2026-10-04T14:35:44.411Z",
+  "count": 622,
   "docs": [
+    {
+      "title": "Strangers and Sojourners",
+      "slug": "strangers-and-sojourners",
+      "type": "devotional",
+      "tags": [],
+      "categories": [
+        "servant-leadership",
+        "devotional"
+      ],
+      "status": "published",
+      "created_at": "2026-10-04T14:35:44.344Z",
+      "updated_at": "2026-10-04T14:35:44.344Z",
+      "publish_date": "2026-10-04",
+      "date": "2026-10-04",
+      "summary": "Every leadership role is temporary, and stewardship includes protecting the future of what a leader holds, not only its present condition.",
+      "email_summary": "Every leadership role is temporary, and stewardship includes protecting the future of what a leader holds, not only its present condition.",
+      "image": null,
+      "scripture_reference": "Leviticus 25:23 (ESV)",
+      "source": {
+        "kind": "devotional",
+        "original_source": null,
+        "original_url": null
+      },
+      "takeaways": [],
+      "applications": [],
+      "related": [],
+      "series": null,
+      "series_name": null,
+      "series_part": null,
+      "body": "## Scripture\n\n**Leviticus 25:23 (ESV)**\n\n## Reflection\n\nEvery leader is temporary. The role existed before them, and someone else will fill it after them. Most leaders know that in the abstract. Far fewer make decisions as if it were true.\n\nThe land could be lived on and worked, but it could not be sold in perpetuity. Nothing permanent could be traded away, because the land belonged to the LORD, and the people living on it were strangers and sojourners with him. They had real use of it. They did not have the final say over its future.\n\nA sojourner leads differently than someone who assumes they will stay forever. They hold their position loosely enough to remember it will pass to someone else. They are cautious with decisions that can never be undone. They notice when a short-term gain would permanently cost the people who come next.\n\nLeaders sell in perpetuity more often than they realize. A reputation burned for one quarter's results. A key relationship spent to win one argument. A team's trust traded for a deadline. Each one feels like an ordinary tradeoff in the moment. Many of them are permanent, and the leader who made them will not be the one living with the consequences.\n\nStewardship includes the future of what a leader holds, not only its present condition. The land is mine is a reminder that every tenure is borrowed time on someone else's ground. A leader who understands that tends to leave the place in better shape for whoever arrives next.\n\n## Practical Application\n\n- Name one decision in front of you that could never be undone, and slow it down.\n- Identify something you're tempted to spend now that the next leader will need.\n- Make one decision today as if your successor will inherit the result, because they will.\n\n## Takeaways\n\n- Every leadership role is temporary, and stewardship includes what happens after it passes on.\n- A short-term gain that can never be undone is a way of selling what was never yours.\n\n## Closing Thought\n\nA sojourner remembers that someone else will live here next."
+    },
+    {
+      "title": "Given to the Children of Man",
+      "slug": "given-to-the-children-of-man",
+      "type": "devotional",
+      "tags": [],
+      "categories": [
+        "servant-leadership",
+        "devotional"
+      ],
+      "status": "published",
+      "created_at": "2026-10-04T14:35:44.344Z",
+      "updated_at": "2026-10-04T14:35:44.344Z",
+      "publish_date": "2026-10-03",
+      "date": "2026-10-03",
+      "summary": "Real stewardship involves real authority, and what has genuinely been given becomes the responsibility of the one who received it.",
+      "email_summary": "Real stewardship involves real authority, and what has genuinely been given becomes the responsibility of the one who received it.",
+      "image": null,
+      "scripture_reference": "Psalm 115:16 (ESV)",
+      "source": {
+        "kind": "devotional",
+        "original_source": null,
+        "original_url": null
+      },
+      "takeaways": [],
+      "applications": [],
+      "related": [],
+      "series": null,
+      "series_name": null,
+      "series_part": null,
+      "body": "## Scripture\n\n**Psalm 115:16 (ESV)**\n\n## Reflection\n\nSome leaders hand out responsibility and keep the authority. The work is delegated. The decisions are not. Everyone on the team learns quickly that nothing is really theirs to carry, and before long they stop trying to carry it.\n\nThe psalm draws a line with real consequences. The heavens remain the LORD's heavens. The earth he has given to the children of man. Ownership is not surrendered, but the handoff is not a pretense either. Something was actually placed in human hands, with enough room to be tended well or handled badly.\n\nThat is the shape of stewardship at its healthiest. The one who gives keeps the final claim, and still gives enough that the one receiving carries real responsibility. A leader who understands that about their own position tends to extend the same pattern downward. They hand people something real, and they let it stay real.\n\nIt also removes an easy excuse. When something has genuinely been given, what happens to it next belongs to the one who received it. A leader cannot hold a real trust and then point back at the giver to explain the condition it ends up in. The giving is exactly what makes the receiving leader responsible.\n\nThe healthiest leaders hold both truths without strain. What they have was really given, so they act on it with confidence. It still belongs to someone else, so they act on it with care. Stewardship is that combination of confidence and care, sustained long enough to show up in the results.\n\n## Practical Application\n\n- Find one responsibility you've delegated without delegating the authority to carry it.\n- Hand that authority over clearly, and say so out loud to the person carrying it.\n- Look at one area entrusted to you and ask whether its current condition reflects your care.\n\n## Takeaways\n\n- Real stewardship involves real authority, because a trust that can't be acted on isn't a trust.\n- What has genuinely been given becomes the responsibility of the one who received it.\n\n## Closing Thought\n\nWhat was truly given can be truly tended, or truly neglected."
+    },
     {
       "title": "The Earth Is the Lord's",
       "slug": "the-earth-is-the-lords",
@@ -12392,8 +12454,8 @@
         "leadership-patterns"
       ],
       "status": "draft",
-      "created_at": "2026-10-02T21:29:11.792Z",
-      "updated_at": "2026-10-02T21:29:11.792Z",
+      "created_at": "2026-10-04T14:35:44.266Z",
+      "updated_at": "2026-10-04T14:35:44.266Z",
       "summary": "How independent cultural distortion patterns—The Anti-Projects—interact with ALI, Archy, and the entire Culture Science corpus without ever becoming diagnostic labels.",
       "source": {
         "kind": "internal"
@@ -12417,8 +12479,8 @@
         "diagnostics"
       ],
       "status": "draft",
-      "created_at": "2026-10-02T21:29:11.789Z",
-      "updated_at": "2026-10-02T21:29:11.789Z",
+      "created_at": "2026-10-04T14:35:44.264Z",
+      "updated_at": "2026-10-04T14:35:44.264Z",
       "summary": "How ALI’s 10-question quarterly rhythm creates the clearest, most stable picture of leadership reality in small and mid-sized businesses.",
       "source": {
         "kind": "internal"

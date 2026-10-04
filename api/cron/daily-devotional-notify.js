@@ -224,6 +224,11 @@ export default async function handler(req, res) {
         subject: `New Devotional: ${escapeHtml(title)}`,
         html: emailHtml,
         recipients: recipientsToSend,
+        // Record each wave as it lands. If this run dies partway through the
+        // list, the next one picks up from here instead of emailing the people
+        // who already received it a second time.
+        onWaveSent: (addresses) =>
+          recordDevotionalRecipientsSent(supabaseAdmin, slug, pubDay, addresses, 'daily_cron'),
       });
 
       totalSent += sent;
