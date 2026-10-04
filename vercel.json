@@ -330,6 +330,19 @@
       }
     },
     {
+      "src": "api/cron/daily-devotional-notify.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 512,
+        "maxDuration": 300,
+        "includeFiles": [
+          "lib/**",
+          "ao-knowledge-hq-kit/journal/devotionals/**",
+          "public/knowledge.json"
+        ]
+      }
+    },
+    {
       "src": "api/ao/auto/reshare-review.js",
       "use": "@vercel/node",
       "config": {

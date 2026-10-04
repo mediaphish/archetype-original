@@ -15,6 +15,7 @@ import {
   publishDateCalendarOnly,
 } from "../../lib/publish-eligibility.mjs";
 import { claimDevotionalBroadcast } from "../../lib/journal-devotional-notify-dedupe.js";
+import { devotionalsPublishedOn } from "../../lib/devotionalsForDate.js";
 import {
   filterDevotionalRecipientsNotYetSent,
   recordDevotionalRecipientsSent,
@@ -78,28 +79,46 @@ export default async function handler(req, res) {
 
     console.log(`🔍 Checking for devotionals with publish_date === ${todayStr} (publication TZ: ${tz})...`);
 
-    // Fetch all published devotionals from knowledge corpus
-    const siteUrl = process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com';
-    const knowledgeResponse = await fetch(`${siteUrl}/api/knowledge?type=devotional`);
-    
-    if (!knowledgeResponse.ok) {
-      throw new Error(`Failed to fetch devotionals: ${knowledgeResponse.statusText}`);
+    // The devotional files are the source of truth, and they carry their own
+    // publish date.
+    //
+    // This used to ask the site for a list that a scheduled job rebuilds each
+    // morning. The rebuild is set for 6:00am and this runs at 6:20, and GitHub
+    // routinely runs scheduled jobs hours late: on October 3 the rebuild landed
+    // at 11:28 and on October 4 at 12:09. Both times this looked, saw nothing,
+    // and reported success. Reading the files removes the race rather than
+    // widening it.
+    let todayDevotionals = devotionalsPublishedOn(todayStr);
+    let source = 'files';
+
+    if (todayDevotionals === null) {
+      // The folder was not readable, which is different from it holding nothing
+      // for today. Only then is the rebuilt list worth asking for.
+      source = 'knowledge_list';
+      console.warn('⚠️  Could not read the devotional files; falling back to the content list.');
+      const siteUrl = process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com';
+      const knowledgeResponse = await fetch(`${siteUrl}/api/knowledge?type=devotional`);
+
+      if (!knowledgeResponse.ok) {
+        throw new Error(`Failed to fetch devotionals: ${knowledgeResponse.statusText}`);
+      }
+
+      const knowledgeData = await knowledgeResponse.json();
+      const allDevotionals = knowledgeData.docs || [];
+
+      todayDevotionals = allDevotionals.filter((devotional) => {
+        if (devotional.status !== 'published') return false;
+        const publishDateStr =
+          publishDateCalendarOnly(devotional.publish_date ?? devotional.date) ||
+          String(devotional.publish_date ?? '')
+            .split('T')[0]
+            .split(' ')[0];
+        if (!publishDateStr) return false;
+        return publishDateStr === todayStr;
+      });
     }
 
-    const knowledgeData = await knowledgeResponse.json();
-    const allDevotionals = knowledgeData.docs || [];
-
-    // Find devotionals published today (using string comparison to avoid timezone issues)
-    const todayDevotionals = allDevotionals.filter((devotional) => {
-      if (devotional.status !== 'published') return false;
-      const publishDateStr =
-        publishDateCalendarOnly(devotional.publish_date ?? devotional.date) ||
-        String(devotional.publish_date ?? '')
-          .split('T')[0]
-          .split(' ')[0];
-      if (!publishDateStr) return false;
-      return publishDateStr === todayStr;
-    });
+    console.log(`📖 Read ${todayDevotionals.length} devotional(s) for ${todayStr} from ${source}.`);
 
     if (todayDevotionals.length === 0) {
       console.log(`✅ No devotionals published today (${todayStr}).`);
