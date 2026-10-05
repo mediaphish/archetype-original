@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { contactFormRecipient } from "../lib/contact-form-inbox.js";
 import { evaluateSpamGuards } from "../lib/contact-spam-guard.js";
+import { supabaseAdmin } from "../lib/supabase-admin.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -38,6 +39,9 @@ export default async function handler(req, res) {
     const {
       form_loaded_at: _fl,
       _trap: _tp,
+      name,
+      email,
+      phone,
       q1,
       q2,
       q2Other,
@@ -57,18 +61,64 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing required fields." });
     }
 
+    // Someone has to be reachable at the end of this.
+    //
+    // 2026-10-04. An inquiry arrived describing a conversation Bart had had in
+    // the spring, and there was no way to answer it: this form had never asked
+    // who was filling it in, and the handler stored nothing, so the notification
+    // email was the only copy that had ever existed.
+    const senderName = String(name || "").trim();
+    const senderEmail = String(email || "").trim();
+    const senderPhone = String(phone || "").trim();
+    if (!senderName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(senderEmail)) {
+      return res.status(400).json({
+        error: "Please add your name and an email address so Bart can reply to you.",
+      });
+    }
+
+    // Stored before it is sent. A notification that fails to deliver is then an
+    // inconvenience rather than a person nobody can find again.
+    let inquiryId = null;
+    try {
+      const { data, error } = await supabaseAdmin
+        .from("engagement_inquiries")
+        .insert({
+          name: senderName,
+          email: senderEmail,
+          phone: senderPhone || null,
+          role: role || null,
+          role_other: roleOther || null,
+          org_size: orgSize || null,
+          answers: { q1, q2, q2Other, q3, q4, q5, q6, q7, q8 },
+        })
+        .select("id")
+        .single();
+      if (error) throw error;
+      inquiryId = data?.id || null;
+    } catch (dbErr) {
+      // Keep going. Losing the record is bad; refusing the inquiry is worse.
+      console.error("[engagement-inquiry] could not store the inquiry:", dbErr?.message || dbErr);
+    }
+
     const from = process.env.CONTACT_FROM;
     const to = contactFormRecipient();
     if (!process.env.RESEND_API_KEY || !from) {
       return res.status(500).json({ error: "Email is not configured." });
     }
 
-    const subject = `Engagement Inquiry: ${role || 'Not specified'} from ${orgSize ? `${orgSize} person org` : 'Organization size not specified'}`;
+    const subject = `Engagement Inquiry: ${escapeHtml(senderName)}${orgSize ? ` (${orgSize} person org)` : ''}`;
     
     let html = `
       <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#0f172a;">
         <h2 style="margin:0 0 12px 0;">New Engagement Inquiry</h2>
     `;
+
+    // Who it is, at the top, where a reply starts.
+    html += `<p style="margin:0 0 16px 0;padding:12px;background:#f8fafc;border:1px solid #e5e7eb;">`;
+    html += `<strong>${escapeHtml(senderName)}</strong><br/>`;
+    html += `<a href="mailto:${escapeHtml(senderEmail)}">${escapeHtml(senderEmail)}</a>`;
+    if (senderPhone) html += `<br/>${escapeHtml(senderPhone)}`;
+    html += `</p>`;
 
     html += `<p><strong>What prompted you to reach out at this point?</strong><br/>${nl2br(q1)}</p>`;
     
@@ -117,13 +167,32 @@ export default async function handler(req, res) {
       from,
       to,
       subject,
-      html
+      html,
+      ...(senderEmail ? { reply_to: senderEmail } : {}),
     });
 
+    if (inquiryId) {
+      // Best effort: the record already exists either way.
+      try {
+        await supabaseAdmin
+          .from("engagement_inquiries")
+          .update({
+            email_delivered: !result?.error,
+            email_error: result?.error ? String(result.error.message || result.error).slice(0, 500) : null,
+          })
+          .eq("id", inquiryId);
+      } catch (_) {}
+    }
+
     if (result?.error) {
+      // The inquiry is saved, so this is not a lost person. Say so plainly
+      // rather than telling someone their message failed.
+      if (inquiryId) {
+        return res.status(200).json({ ok: true, notification_delayed: true });
+      }
       return res.status(500).json({ error: "Failed to send message." });
     }
-    
+
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error('Engagement inquiry error:', err);

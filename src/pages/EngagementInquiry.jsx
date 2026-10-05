@@ -22,6 +22,14 @@ export default function EngagementInquiry() {
   }, []);
 
   const [formData, setFormData] = useState({
+    // 2026-10-04. A real inquiry arrived with no way to answer it. This form,
+    // the highest-intent one on the site, had never asked who was filling it
+    // in: no name, no email, no phone, and nothing stored anywhere. Every
+    // engagement inquiry before this one was anonymous unless the person
+    // happened to name themselves inside an answer.
+    name: '',
+    email: '',
+    phone: '',
     q1: '',
     q2: [],
     q2Other: '',
@@ -69,6 +77,16 @@ export default function EngagementInquiry() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormStatus({ loading: true, success: false, error: null });
+
+    const emailLooksReal = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(formData.email || '').trim());
+    if (!String(formData.name || '').trim() || !emailLooksReal) {
+      setFormStatus({
+        loading: false,
+        success: false,
+        error: 'Please add your name and an email address so Bart can reply to you.',
+      });
+      return;
+    }
 
     if (
       !formData.q1 ||
@@ -217,6 +235,9 @@ Generate the full response following the structure above.`;
 
   const textareaClass =
     'w-full resize-y border border-[#1A1A1A]/15 bg-[#FAFAF9] px-4 py-3.5 font-sans text-[14px] text-[#1A1A1A] transition-colors placeholder:text-[#A8A9AD] focus:border-[#1A1A1A] focus:bg-white focus:outline-none';
+
+  const inputClass =
+    'w-full border border-[#1A1A1A]/15 bg-[#FAFAF9] px-4 py-3.5 font-sans text-[14px] text-[#1A1A1A] transition-colors placeholder:text-[#A8A9AD] focus:border-[#1A1A1A] focus:bg-white focus:outline-none';
 
   if (formStatus.success) {
     return (
@@ -523,6 +544,63 @@ Generate the full response following the structure above.`;
                 />
                 <p className="mt-2 font-sans text-[13px] text-[#6B6B6B]">
                   Anything you think adds context, nuance, or helps us better understand you.
+                </p>
+              </div>
+
+              {/* The answer address. Without it the rest of this form is a message
+                  in a bottle, which is exactly what happened on October 4. */}
+              <div className="border border-[#1A1A1A]/08 bg-white p-8">
+                <span className="mb-2.5 block font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DB0812]">
+                  09
+                </span>
+                <span className="mb-5 block font-sans text-[16px] font-medium leading-[1.5] text-[#1A1A1A]">
+                  How should Bart reach you?
+                </span>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="ei-name" className="mb-2 block font-sans text-[13px] text-[#6B6B6B]">
+                      Your name
+                    </label>
+                    <input
+                      id="ei-name"
+                      type="text"
+                      required
+                      autoComplete="name"
+                      value={formData.name}
+                      onChange={(e) => handleTextChange('name', e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="ei-email" className="mb-2 block font-sans text-[13px] text-[#6B6B6B]">
+                      Email
+                    </label>
+                    <input
+                      id="ei-email"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      value={formData.email}
+                      onChange={(e) => handleTextChange('email', e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label htmlFor="ei-phone" className="mb-2 block font-sans text-[13px] text-[#6B6B6B]">
+                      Phone (optional)
+                    </label>
+                    <input
+                      id="ei-phone"
+                      type="tel"
+                      autoComplete="tel"
+                      value={formData.phone}
+                      onChange={(e) => handleTextChange('phone', e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
+                <p className="mt-3 font-sans text-[13px] text-[#6B6B6B]">
+                  Bart answers these himself. Your details are used for that reply and nothing else.
                 </p>
               </div>
 
