@@ -300,6 +300,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-10-19 | Leave the Edges | Leviticus 19:9–10 (ESV) | `leave-the-edges` | `2026-10-19-leave-the-edges.md` |
 | 2026-10-20 | Wealth Sprouts Wings | Proverbs 23:4–5 (ESV) | `wealth-sprouts-wings` | `2026-10-20-wealth-sprouts-wings.md` |
 | 2026-10-21 | Rich in Good Works | 1 Timothy 6:17–19 (ESV) | `rich-in-good-works` | `2026-10-21-rich-in-good-works.md` |
+| 2026-10-22 | I Bore the Loss Myself | Genesis 31:36–40 (ESV) | `i-bore-the-loss-myself` | `2026-10-22-i-bore-the-loss-myself.md` |
+| 2026-10-23 | Before the Sun Sets | Deuteronomy 24:14–15 (ESV) | `before-the-sun-sets` | `2026-10-23-before-the-sun-sets.md` |
+| 2026-10-24 | When It Is in Your Power | Proverbs 3:27 (ESV) | `when-it-is-in-your-power` | `2026-10-24-when-it-is-in-your-power.md` |
+| 2026-10-25 | They Shall Share Alike | 1 Samuel 30:22–24 (ESV) | `they-shall-share-alike` | `2026-10-25-they-shall-share-alike.md` |
+| 2026-10-26 | Keeps a Thing Covered | Proverbs 11:13 (ESV) | `keeps-a-thing-covered` | `2026-10-26-keeps-a-thing-covered.md` |
+| 2026-10-27 | Genuinely Concerned for Your Welfare | Philippians 2:19–21 (ESV) | `genuinely-concerned-for-your-welfare` | `2026-10-27-genuinely-concerned-for-your-welfare.md` |
+| 2026-10-28 | Not What Is Yours, but You | 2 Corinthians 12:14–15 (ESV) | `not-what-is-yours-but-you` | `2026-10-28-not-what-is-yours-but-you.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
