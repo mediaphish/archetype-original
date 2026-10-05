@@ -55,6 +55,8 @@ function buildCaptionForCardPost(item, platform) {
  */
 const BUNDLE_PLATFORMS = [
   { platform: 'instagram', account_id: 'meta' },
+  // Bart, 2026-10-04: "All 5 channels that let us post via API."
+  { platform: 'instagram', account_id: 'ig_mediaphish' },
   { platform: 'facebook', account_id: 'meta' },
   { platform: 'linkedin', account_id: 'personal' },
   { platform: 'twitter', account_id: 'personal' },

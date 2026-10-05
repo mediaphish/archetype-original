@@ -34,6 +34,10 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const RESHARE_CHANNELS = [
   { key: 'linkedin_personal', platform: 'linkedin', account_id: 'personal' },
   { key: 'instagram_business', platform: 'instagram', account_id: 'meta' },
+  // Bart, 2026-10-04: "All 5 channels that let us post via API." His personal
+  // Instagram was left out while its connection was dead; it was reconnected on
+  // October 4 and renews itself weekly now, so it is part of the set again.
+  { key: 'instagram_personal', platform: 'instagram', account_id: 'ig_mediaphish' },
   { key: 'facebook_business', platform: 'facebook', account_id: 'meta' },
   { key: 'twitter', platform: 'twitter', account_id: 'personal' },
 ];
