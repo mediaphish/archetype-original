@@ -15,7 +15,7 @@ import {
   publishDateCalendarOnly,
 } from "../../lib/publish-eligibility.mjs";
 import { claimDevotionalBroadcast } from "../../lib/journal-devotional-notify-dedupe.js";
-import { devotionalsPublishedOn } from "../../lib/devotionalsForDate.js";
+import { devotionalsPublishedOn, devotionalsFromSchedule } from "../../lib/devotionalsForDate.js";
 import {
   filterDevotionalRecipientsNotYetSent,
   recordDevotionalRecipientsSent,
@@ -32,6 +32,24 @@ function escapeHtml(str = "") {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+/**
+ * Record what this run did.
+ *
+ * 2026-10-06. Every failure in this story was silent. The sender answered
+ * 200 OK with "no devotionals published today" on a day one was published, for
+ * two mornings, and the only way anyone found out was Bart's inbox being empty.
+ * A row per run means the question "did it go out" has an answer that does not
+ * depend on reading server logs, and makes a missed day something a check can
+ * see rather than something nobody notices.
+ */
+async function recordRun(fields) {
+  try {
+    await supabaseAdmin.from('ao_devotional_send_log').insert(fields);
+  } catch (err) {
+    console.error('[daily-devotional-notify] could not record the run:', err?.message || err);
+  }
 }
 
 export default async function handler(req, res) {
@@ -88,8 +106,19 @@ export default async function handler(req, res) {
     // at 11:28 and on October 4 at 12:09. Both times this looked, saw nothing,
     // and reported success. Reading the files removes the race rather than
     // widening it.
-    let todayDevotionals = devotionalsPublishedOn(todayStr);
-    let source = 'files';
+    // The generated schedule first. It is written by the build next to
+    // knowledge.json, which is proven to reach the functions, and it carries
+    // future dates on purpose, so today's devotional is always in yesterday's
+    // build. The markdown files are second: right in principle, but they were
+    // never bundled into this function, which is why the October 4 rewrite
+    // changed nothing for two mornings running.
+    let todayDevotionals = devotionalsFromSchedule(todayStr);
+    let source = 'schedule';
+
+    if (todayDevotionals === null) {
+      todayDevotionals = devotionalsPublishedOn(todayStr);
+      source = 'files';
+    }
 
     if (todayDevotionals === null) {
       // The folder was not readable, which is different from it holding nothing
@@ -122,6 +151,7 @@ export default async function handler(req, res) {
 
     if (todayDevotionals.length === 0) {
       console.log(`✅ No devotionals published today (${todayStr}).`);
+      await recordRun({ calendar_date: todayStr, source, found: 0, sent: 0, note: 'nothing scheduled' });
       return res.status(200).json({ 
         ok: true, 
         message: `No devotionals published today (${todayStr}).`,
@@ -272,6 +302,16 @@ export default async function handler(req, res) {
     }
 
     console.log(`✅ Daily notification complete: ${totalSent} sent, ${totalFailed} failed, skipped_duplicates=${skippedAlreadySent}`);
+
+    await recordRun({
+      calendar_date: todayStr,
+      source,
+      found: todayDevotionals.length,
+      sent: totalSent,
+      failed: totalFailed,
+      skipped_duplicates: skippedAlreadySent,
+      note: todayDevotionals.map((d) => d.slug).join(', ').slice(0, 300),
+    });
 
     return res.status(200).json({ 
       ok: true, 

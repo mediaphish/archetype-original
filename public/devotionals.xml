@@ -5,8 +5,15 @@
     <link>https://www.archetypeoriginal.com/journal</link>
     <description>A daily devotional on servant leadership by Bart Paden.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 05 Oct 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 06 Oct 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="https://www.archetypeoriginal.com/devotionals.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>He Must Increase</title>
+      <link>https://www.archetypeoriginal.com/journal/he-must-increase</link>
+      <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/he-must-increase</guid>
+      <pubDate>Tue, 06 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Influence cannot be seized, only received, which is what makes it possible to rejoice when someone else increases.</description>
+    </item>
     <item>
       <title>The Might of My Hand</title>
       <link>https://www.archetypeoriginal.com/journal/the-might-of-my-hand</link>
@@ -349,13 +356,6 @@
       <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/do-not-say-we-did-not-know</guid>
       <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
       <description>Claimed ignorance does not hold up against a heart that was actually paying attention.</description>
-    </item>
-    <item>
-      <title>Managing Your Own Household First</title>
-      <link>https://www.archetypeoriginal.com/journal/managing-your-own-household-first</link>
-      <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/managing-your-own-household-first</guid>
-      <pubDate>Mon, 17 Aug 2026 00:00:00 GMT</pubDate>
-      <description>Accountability to those you lead in public is only as real as the accountability you already practice at home.</description>
     </item>
   </channel>
 </rss>

@@ -1,0 +1,3016 @@
+{
+  "generated_at": "2026-10-06T10:24:19.780Z",
+  "count": 301,
+  "devotionals": [
+    {
+      "slug": "made-new",
+      "title": "Made New",
+      "publish_date": "2026-01-01",
+      "date": "2026-01-01",
+      "status": "published",
+      "summary": "Renewal begins with perspective, not behavior.",
+      "email_summary": "Renewal begins with perspective, not behavior.",
+      "scripture_reference": "2 Corinthians 5:16–17"
+    },
+    {
+      "slug": "a-renewed-mind",
+      "title": "A Renewed Mind",
+      "publish_date": "2026-01-02",
+      "date": "2026-01-02",
+      "status": "published",
+      "summary": "Renewal begins upstream, not at the surface.",
+      "email_summary": "Renewal begins upstream, not at the surface.",
+      "scripture_reference": "Romans 12:1–2"
+    },
+    {
+      "slug": "god-is-doing-a-new-thing",
+      "title": "God Is Doing a New Thing",
+      "publish_date": "2026-01-03",
+      "date": "2026-01-03",
+      "status": "published",
+      "summary": "New beginnings require perception and trust.",
+      "email_summary": "New beginnings require perception and trust.",
+      "scripture_reference": "Isaiah 43:18–19"
+    },
+    {
+      "slug": "created-for-good-work",
+      "title": "Created for Good Work",
+      "publish_date": "2026-01-04",
+      "date": "2026-01-04",
+      "status": "published",
+      "summary": "Leadership flows from identity, not performance.",
+      "email_summary": "Leadership flows from identity, not performance.",
+      "scripture_reference": "Ephesians 2:10"
+    },
+    {
+      "slug": "trust-before-clarity",
+      "title": "Trust Before Clarity",
+      "publish_date": "2026-01-05",
+      "date": "2026-01-05",
+      "status": "published",
+      "summary": "Trust often precedes clarity.",
+      "email_summary": "Trust often precedes clarity.",
+      "scripture_reference": "Proverbs 3:5–6"
+    },
+    {
+      "slug": "strength-under-control",
+      "title": "Strength Under Control",
+      "publish_date": "2026-01-06",
+      "date": "2026-01-06",
+      "status": "published",
+      "summary": "Humility redirects strength toward service.",
+      "email_summary": "Humility redirects strength toward service.",
+      "scripture_reference": "James 4:6"
+    },
+    {
+      "slug": "rest-as-an-act-of-trust",
+      "title": "Rest as an Act of Trust",
+      "publish_date": "2026-01-07",
+      "date": "2026-01-07",
+      "status": "published",
+      "summary": "Rest is a leadership discipline rooted in trust.",
+      "email_summary": "Rest is a leadership discipline rooted in trust.",
+      "scripture_reference": "Mark 2:27"
+    },
+    {
+      "slug": "redefining-authority",
+      "title": "Redefining Authority",
+      "publish_date": "2026-01-08",
+      "date": "2026-01-08",
+      "status": "published",
+      "summary": "Authority exists for service, not status.",
+      "email_summary": "Authority exists for service, not status.",
+      "scripture_reference": "Mark 10:42–45"
+    },
+    {
+      "slug": "faithfulness-before-visibility",
+      "title": "Faithfulness Before Visibility",
+      "publish_date": "2026-01-09",
+      "date": "2026-01-09",
+      "status": "published",
+      "summary": "Faithfulness in small things forms leadership character.",
+      "email_summary": "Faithfulness in small things forms leadership character.",
+      "scripture_reference": "Luke 16:10"
+    },
+    {
+      "slug": "wisdom-before-speed",
+      "title": "Wisdom Before Speed",
+      "publish_date": "2026-01-10",
+      "date": "2026-01-10",
+      "status": "published",
+      "summary": "Wise leadership values discernment over urgency.",
+      "email_summary": "Wise leadership values discernment over urgency.",
+      "scripture_reference": "Proverbs 19:2"
+    },
+    {
+      "slug": "leading-with-integrity",
+      "title": "Leading with Integrity",
+      "publish_date": "2026-01-11",
+      "date": "2026-01-11",
+      "status": "published",
+      "summary": "Integrity anchors leadership influence in trust.",
+      "email_summary": "Integrity anchors leadership influence in trust.",
+      "scripture_reference": "Psalm 78:72"
+    },
+    {
+      "slug": "courage-to-move-forward",
+      "title": "Courage to Move Forward",
+      "publish_date": "2026-01-12",
+      "date": "2026-01-12",
+      "status": "published",
+      "summary": "Courage enables leaders to move forward before certainty.",
+      "email_summary": "Courage enables leaders to move forward before certainty.",
+      "scripture_reference": "Joshua 1:9"
+    },
+    {
+      "slug": "faithfulness-in-the-ordinary",
+      "title": "Faithfulness in the Ordinary",
+      "publish_date": "2026-01-13",
+      "date": "2026-01-13",
+      "status": "published",
+      "summary": "Faithfulness in ordinary work shapes culture more than visible moments.",
+      "email_summary": "Faithfulness in ordinary work shapes culture more than visible moments.",
+      "scripture_reference": "Colossians 3:23–24"
+    },
+    {
+      "slug": "humility-before-recognition",
+      "title": "Humility Before Recognition",
+      "publish_date": "2026-01-14",
+      "date": "2026-01-14",
+      "status": "published",
+      "summary": "Humility protects trust and keeps leadership centered on others.",
+      "email_summary": "Humility protects trust and keeps leadership centered on others.",
+      "scripture_reference": "Proverbs 27:2"
+    },
+    {
+      "slug": "patience-in-growth",
+      "title": "Patience in Growth",
+      "publish_date": "2026-01-15",
+      "date": "2026-01-15",
+      "status": "published",
+      "summary": "Lasting growth requires patience and trust in the process.",
+      "email_summary": "Lasting growth requires patience and trust in the process.",
+      "scripture_reference": "James 5:7–8"
+    },
+    {
+      "slug": "strength-that-serves",
+      "title": "Strength That Serves",
+      "publish_date": "2026-01-16",
+      "date": "2026-01-16",
+      "status": "published",
+      "summary": "True strength in leadership is exercised with humility and restraint.",
+      "email_summary": "True strength in leadership is exercised with humility and restraint.",
+      "scripture_reference": "James 4:6"
+    },
+    {
+      "slug": "bearing-responsibility-together",
+      "title": "Bearing Responsibility Together",
+      "publish_date": "2026-01-17",
+      "date": "2026-01-17",
+      "status": "published",
+      "summary": "Leadership responsibility is meant to be shared, not carried alone.",
+      "email_summary": "Leadership responsibility is meant to be shared, not carried alone.",
+      "scripture_reference": "Galatians 6:2"
+    },
+    {
+      "slug": "stewardship-over-ownership",
+      "title": "Stewardship Over Ownership",
+      "publish_date": "2026-01-18",
+      "date": "2026-01-18",
+      "status": "published",
+      "summary": "Stewardship leads with responsibility and dependence, not control and entitlement.",
+      "email_summary": "Stewardship leads with responsibility and dependence, not control and entitlement.",
+      "scripture_reference": "1 Peter 4:10–11"
+    },
+    {
+      "slug": "renewed-attention-before-renewed-action",
+      "title": "Renewed Attention Before Renewed Action",
+      "publish_date": "2026-01-19",
+      "date": "2026-01-19",
+      "status": "published",
+      "summary": "Leadership renewal begins with disciplined listening and restraint before action.",
+      "email_summary": "Leadership renewal begins with disciplined listening and restraint before action.",
+      "scripture_reference": "James 1:19–20"
+    },
+    {
+      "slug": "renewed-patience-for-sustainable-growth",
+      "title": "Renewed Patience for Sustainable Growth",
+      "publish_date": "2026-01-20",
+      "date": "2026-01-20",
+      "status": "published",
+      "summary": "Renewal reshapes how leaders relate to time, growth, and process.",
+      "email_summary": "Renewal reshapes how leaders relate to time, growth, and process.",
+      "scripture_reference": "Ecclesiastes 7:8–9"
+    },
+    {
+      "slug": "renewed-identity-without-performance",
+      "title": "Renewed Identity Without Performance",
+      "publish_date": "2026-01-21",
+      "date": "2026-01-21",
+      "status": "published",
+      "summary": "Renewal restores identity so leadership flows from service rather than performance.",
+      "email_summary": "Renewal restores identity so leadership flows from service rather than performance.",
+      "scripture_reference": "Matthew 23:11–12 (ESV)"
+    },
+    {
+      "slug": "examining-motives",
+      "title": "Examining Motives",
+      "publish_date": "2026-01-22",
+      "date": "2026-01-22",
+      "status": "published",
+      "summary": "Sustainable leadership begins with examining the motives behind our actions.",
+      "email_summary": "Sustainable leadership begins with examining the motives behind our actions.",
+      "scripture_reference": "Colossians 3:23–24 (ESV)"
+    },
+    {
+      "slug": "receiving-correction-well",
+      "title": "Receiving Correction Well",
+      "publish_date": "2026-01-23",
+      "date": "2026-01-23",
+      "status": "published",
+      "summary": "Leaders grow by receiving correction with humility rather than defensiveness.",
+      "email_summary": "Leaders grow by receiving correction with humility rather than defensiveness.",
+      "scripture_reference": "Proverbs 12:1 (ESV)"
+    },
+    {
+      "slug": "faithfulness-in-small-things",
+      "title": "Faithfulness in the Ordinary",
+      "publish_date": "2026-01-24",
+      "date": "2026-01-24",
+      "status": "published",
+      "summary": "Faithfulness in ordinary responsibilities prepares leaders for greater trust.",
+      "email_summary": "Faithfulness in ordinary responsibilities prepares leaders for greater trust.",
+      "scripture_reference": "Luke 16:10–11"
+    },
+    {
+      "slug": "clarity-through-stillness",
+      "title": "Clarity Through Stillness",
+      "publish_date": "2026-01-25",
+      "date": "2026-01-25",
+      "status": "published",
+      "summary": "Stillness restores clarity by quieting distraction and re-centering leadership focus.",
+      "email_summary": "Stillness restores clarity by quieting distraction and re-centering leadership focus.",
+      "scripture_reference": "Psalm 46:10 (ESV)"
+    },
+    {
+      "slug": "integrity-when-no-one-is-watching",
+      "title": "Integrity When No One Is Watching",
+      "publish_date": "2026-01-26",
+      "date": "2026-01-26",
+      "status": "published",
+      "summary": "Integrity is formed and revealed in unseen moments of leadership.",
+      "email_summary": "Integrity is formed and revealed in unseen moments of leadership.",
+      "scripture_reference": "Proverbs 10:9 (ESV)"
+    },
+    {
+      "slug": "trusting-the-work-you-cannot-see",
+      "title": "Trusting the Work You Cannot See",
+      "publish_date": "2026-01-27",
+      "date": "2026-01-27",
+      "status": "published",
+      "summary": "Faithful leadership perseveres in doing good, trusting unseen work to bear fruit in time.",
+      "email_summary": "Faithful leadership perseveres in doing good, trusting unseen work to bear fruit in time.",
+      "scripture_reference": "Galatians 6:9–10"
+    },
+    {
+      "slug": "letting-go-of-control",
+      "title": "Letting Go of Control",
+      "publish_date": "2026-01-28",
+      "date": "2026-01-28",
+      "status": "published",
+      "summary": "Trust grows when leaders plan wisely while releasing control.",
+      "email_summary": "Trust grows when leaders plan wisely while releasing control.",
+      "scripture_reference": "Proverbs 16:9 (ESV)"
+    },
+    {
+      "slug": "consistency-over-intensity",
+      "title": "Consistency Over Intensity",
+      "publish_date": "2026-01-29",
+      "date": "2026-01-29",
+      "status": "published",
+      "summary": "Renewal is sustained through steady faithfulness, not bursts of intensity.",
+      "email_summary": "Renewal is sustained through steady faithfulness, not bursts of intensity.",
+      "scripture_reference": "Lamentations 3:22–23"
+    },
+    {
+      "slug": "leading-with-a-steadfast-mind",
+      "title": "Leading with a Steadfast Mind",
+      "publish_date": "2026-01-30",
+      "date": "2026-01-30",
+      "status": "published",
+      "summary": "Peace is kept by God when leaders fix their minds on Him rather than on circumstance.",
+      "email_summary": "Peace is kept by God when leaders fix their minds on Him rather than on circumstance.",
+      "scripture_reference": "Isaiah 26:3"
+    },
+    {
+      "slug": "carrying-forward-what-matters",
+      "title": "Carrying Forward What Matters",
+      "publish_date": "2026-01-31",
+      "date": "2026-01-31",
+      "status": "published",
+      "summary": "Faithful growth continues as leaders carry insight into the next season.",
+      "email_summary": "Faithful growth continues as leaders carry insight into the next season.",
+      "scripture_reference": "Philippians 1:6 (ESV)"
+    },
+    {
+      "slug": "leading-from-love-not-urgency",
+      "title": "Leading From Love, Not Urgency",
+      "publish_date": "2026-02-01",
+      "date": "2026-02-01",
+      "status": "published",
+      "summary": "Renewed leaders express love through disciplined posture, not urgency or performance.",
+      "email_summary": "Renewed leaders express love through disciplined posture, not urgency or performance.",
+      "scripture_reference": "Colossians 3:12–14 (ESV)"
+    },
+    {
+      "slug": "love-that-listens-before-it-leads",
+      "title": "Love That Listens Before It Leads",
+      "publish_date": "2026-02-02",
+      "date": "2026-02-02",
+      "status": "published",
+      "summary": "Leaders shaped by love listen with patience and lead with restraint instead of urgency or anger.",
+      "email_summary": "Leaders shaped by love listen with patience and lead with restraint instead of urgency or anger.",
+      "scripture_reference": "James 1:19–20 (ESV)"
+    },
+    {
+      "slug": "love-that-bears-with-others",
+      "title": "Love That Bears With Others",
+      "publish_date": "2026-02-03",
+      "date": "2026-02-03",
+      "status": "published",
+      "summary": "Mature leadership love protects unity through humility, patience, and faithful presence.",
+      "email_summary": "Mature leadership love protects unity through humility, patience, and faithful presence.",
+      "scripture_reference": "Ephesians 4:1–3 (ESV)"
+    },
+    {
+      "slug": "love-that-serves-without-being-seen",
+      "title": "Love That Serves Without Being Seen",
+      "publish_date": "2026-02-04",
+      "date": "2026-02-04",
+      "status": "published",
+      "summary": "Faithful leadership love serves consistently without requiring recognition or visibility.",
+      "email_summary": "Faithful leadership love serves consistently without requiring recognition or visibility.",
+      "scripture_reference": "Mark 9:35 (ESV)"
+    },
+    {
+      "slug": "love-that-corrects-with-care",
+      "title": "Love That Corrects With Care",
+      "publish_date": "2026-02-05",
+      "date": "2026-02-05",
+      "status": "published",
+      "summary": "Leadership love speaks necessary truth with care, courage, and commitment to restoration.",
+      "email_summary": "Leadership love speaks necessary truth with care, courage, and commitment to restoration.",
+      "scripture_reference": "Proverbs 27:5–6 (ESV)"
+    },
+    {
+      "slug": "love-that-remains-steady-under-pressure",
+      "title": "Love That Remains Steady Under Pressure",
+      "publish_date": "2026-02-06",
+      "date": "2026-02-06",
+      "status": "published",
+      "summary": "Steady leadership love provides stability and trust when pressure and uncertainty rise.",
+      "email_summary": "Steady leadership love provides stability and trust when pressure and uncertainty rise.",
+      "scripture_reference": "1 Corinthians 13:4–7 (ESV)"
+    },
+    {
+      "slug": "love-that-protects-others-from-harm",
+      "title": "Love That Protects Others From Harm",
+      "publish_date": "2026-02-07",
+      "date": "2026-02-07",
+      "status": "published",
+      "summary": "Faithful leadership love protects people even when it requires personal cost.",
+      "email_summary": "Faithful leadership love protects people even when it requires personal cost.",
+      "scripture_reference": "John 10:11–13 (ESV)"
+    },
+    {
+      "slug": "love-that-makes-room-for-growth",
+      "title": "Love That Makes Room for Growth",
+      "publish_date": "2026-02-08",
+      "date": "2026-02-08",
+      "status": "published",
+      "summary": "Leadership love creates space for others to mature without rushing or restricting their growth.",
+      "email_summary": "Leadership love creates space for others to mature without rushing or restricting their growth.",
+      "scripture_reference": "Colossians 1:9–10 (ESV)"
+    },
+    {
+      "slug": "love-that-remains-when-it-would-be-easier-to-leave",
+      "title": "Love That Remains When It Would Be Easier to Leave",
+      "publish_date": "2026-02-09",
+      "date": "2026-02-09",
+      "status": "published",
+      "summary": "Enduring leadership love chooses faithfulness over convenience when commitment becomes costly.",
+      "email_summary": "Enduring leadership love chooses faithfulness over convenience when commitment becomes costly.",
+      "scripture_reference": "Ruth 1:16–17 (ESV)"
+    },
+    {
+      "slug": "love-that-honors-dignity",
+      "title": "Love That Honors Dignity",
+      "publish_date": "2026-02-10",
+      "date": "2026-02-10",
+      "status": "published",
+      "summary": "Leadership love honors the dignity of others regardless of role, output, or agreement.",
+      "email_summary": "Leadership love honors the dignity of others regardless of role, output, or agreement.",
+      "scripture_reference": "Romans 12:10 (ESV)"
+    },
+    {
+      "slug": "love-that-shares-the-load",
+      "title": "Love That Shares the Load",
+      "publish_date": "2026-02-11",
+      "date": "2026-02-11",
+      "status": "published",
+      "summary": "Leadership love shares responsibility to strengthen community and trust.",
+      "email_summary": "Leadership love shares responsibility to strengthen community and trust.",
+      "scripture_reference": "Galatians 6:2 (ESV)"
+    },
+    {
+      "slug": "love-that-forgives-without-keeping-score",
+      "title": "Love That Forgives Without Keeping Score",
+      "publish_date": "2026-02-12",
+      "date": "2026-02-12",
+      "status": "published",
+      "summary": "Leadership love forgives faithfully without allowing resentment to shape relationships.",
+      "email_summary": "Leadership love forgives faithfully without allowing resentment to shape relationships.",
+      "scripture_reference": "Matthew 18:21–22 (ESV)"
+    },
+    {
+      "slug": "love-that-stays-after-the-decision-is-made",
+      "title": "Love That Stays After the Decision Is Made",
+      "publish_date": "2026-02-13",
+      "date": "2026-02-13",
+      "status": "published",
+      "summary": "Leadership love remains present after decisions are made, carrying responsibility through follow-through.",
+      "email_summary": "Leadership love remains present after decisions are made, carrying responsibility through follow-through.",
+      "scripture_reference": "Proverbs 16:3 (ESV)"
+    },
+    {
+      "slug": "love-that-carries-the-leader",
+      "title": "Love That Carries the Leader",
+      "publish_date": "2026-02-14",
+      "date": "2026-02-14",
+      "status": "published",
+      "summary": "Leadership endurance is sustained by faithful relationships that carry leaders beyond the public role.",
+      "email_summary": "Leadership endurance is sustained by faithful relationships that carry leaders beyond the public role.",
+      "scripture_reference": "Ecclesiastes 4:9–12 (ESV)"
+    },
+    {
+      "slug": "love-that-returns-leaders-to-themselves",
+      "title": "Love That Returns Leaders to Themselves",
+      "publish_date": "2026-02-15",
+      "date": "2026-02-15",
+      "status": "published",
+      "summary": "Love restores leaders to wholeness so they can lead with clarity rather than exhaustion.",
+      "email_summary": "Love restores leaders to wholeness so they can lead with clarity rather than exhaustion.",
+      "scripture_reference": "Matthew 11:28–30 (ESV)"
+    },
+    {
+      "slug": "love-that-tells-the-truth-without-cruelty",
+      "title": "Love That Tells the Truth Without Cruelty",
+      "publish_date": "2026-02-16",
+      "date": "2026-02-16",
+      "status": "published",
+      "summary": "Faithful leadership speaks truth in love without cruelty or control.",
+      "email_summary": "Faithful leadership speaks truth in love without cruelty or control.",
+      "scripture_reference": "Ephesians 4:15 (ESV)"
+    },
+    {
+      "slug": "love-that-protects-without-possessing",
+      "title": "Love That Protects Without Possessing",
+      "publish_date": "2026-02-17",
+      "date": "2026-02-17",
+      "status": "published",
+      "summary": "Leadership love protects people while honoring their agency.",
+      "email_summary": "Leadership love protects people while honoring their agency.",
+      "scripture_reference": "1 Corinthians 13:4–5 (ESV)"
+    },
+    {
+      "slug": "love-that-endures-ordinary-faithfulness",
+      "title": "Love That Endures Ordinary Faithfulness",
+      "publish_date": "2026-02-18",
+      "date": "2026-02-18",
+      "status": "published",
+      "summary": "Ordinary faithfulness practiced in love sustains leadership over time.",
+      "email_summary": "Ordinary faithfulness practiced in love sustains leadership over time.",
+      "scripture_reference": "1 Corinthians 16:14 (ESV)"
+    },
+    {
+      "slug": "love-that-creates-safety-not-fear",
+      "title": "Love That Creates Safety, Not Fear",
+      "publish_date": "2026-02-19",
+      "date": "2026-02-19",
+      "status": "published",
+      "summary": "Leadership love creates safety and trust rather than fear-driven compliance.",
+      "email_summary": "Leadership love creates safety and trust rather than fear-driven compliance.",
+      "scripture_reference": "1 John 4:18 (ESV)"
+    },
+    {
+      "slug": "love-that-refuses-to-exploit-power",
+      "title": "Love That Refuses to Exploit Power",
+      "publish_date": "2026-02-20",
+      "date": "2026-02-20",
+      "status": "published",
+      "summary": "Faithful leadership refuses to exploit authority and chooses service instead.",
+      "email_summary": "Faithful leadership refuses to exploit authority and chooses service instead.",
+      "scripture_reference": "Mark 10:42–45 (ESV)"
+    },
+    {
+      "slug": "love-that-holds-the-line-without-hardening-the-heart",
+      "title": "Love That Holds the Line Without Hardening the Heart",
+      "publish_date": "2026-02-21",
+      "date": "2026-02-21",
+      "status": "published",
+      "summary": "Leadership love holds firm boundaries while remaining compassionate and human.",
+      "email_summary": "Leadership love holds firm boundaries while remaining compassionate and human.",
+      "scripture_reference": "Colossians 3:12–13 (ESV)"
+    },
+    {
+      "slug": "love-that-refuses-to-keep-score",
+      "title": "Love That Refuses to Keep Score",
+      "publish_date": "2026-02-22",
+      "date": "2026-02-22",
+      "status": "published",
+      "summary": "Leadership love refuses relational scorekeeping and chooses grace instead.",
+      "email_summary": "Leadership love refuses relational scorekeeping and chooses grace instead.",
+      "scripture_reference": "1 Corinthians 13:4-7 (ESV)"
+    },
+    {
+      "slug": "love-that-moves-toward-conflict-not-away",
+      "title": "Love That Moves Toward Conflict, Not Away",
+      "publish_date": "2026-02-23",
+      "date": "2026-02-23",
+      "status": "published",
+      "summary": "Faithful leadership moves toward reconciliation rather than avoiding tension.",
+      "email_summary": "Faithful leadership moves toward reconciliation rather than avoiding tension.",
+      "scripture_reference": "Matthew 5:23–24 (ESV)"
+    },
+    {
+      "slug": "love-that-rejoices-in-faithful-labor",
+      "title": "Love That Rejoices in Faithful Labor",
+      "publish_date": "2026-02-24",
+      "date": "2026-02-24",
+      "status": "published",
+      "summary": "Leadership love rejoices in faithful labor, knowing that work done in love is never wasted.",
+      "email_summary": "Leadership love rejoices in faithful labor, knowing that work done in love is never wasted.",
+      "scripture_reference": "Hebrews 6:10 (ESV)"
+    },
+    {
+      "slug": "love-that-does-not-grow-cynical",
+      "title": "Love That Does Not Grow Cynical",
+      "publish_date": "2026-02-25",
+      "date": "2026-02-25",
+      "status": "published",
+      "summary": "Faithful leadership resists cynicism and perseveres in doing good.",
+      "email_summary": "Faithful leadership resists cynicism and perseveres in doing good.",
+      "scripture_reference": "Galatians 6:9 (ESV)"
+    },
+    {
+      "slug": "love-that-seeks-understanding-before-judgment",
+      "title": "Love That Seeks Understanding Before Judgment",
+      "publish_date": "2026-02-26",
+      "date": "2026-02-26",
+      "status": "published",
+      "summary": "Leadership love listens carefully before forming conclusions.",
+      "email_summary": "Leadership love listens carefully before forming conclusions.",
+      "scripture_reference": "James 1:19 (ESV)"
+    },
+    {
+      "slug": "love-that-chooses-faithfulness-over-applause",
+      "title": "Love That Chooses Faithfulness Over Applause",
+      "publish_date": "2026-02-27",
+      "date": "2026-02-27",
+      "status": "published",
+      "summary": "Leadership love values faithfulness more than recognition.",
+      "email_summary": "Leadership love values faithfulness more than recognition.",
+      "scripture_reference": "Hebrews 13:16 (ESV)"
+    },
+    {
+      "slug": "love-that-finishes-what-it-starts",
+      "title": "Love That Finishes What It Starts",
+      "publish_date": "2026-02-28",
+      "date": "2026-02-28",
+      "status": "published",
+      "summary": "Faithful leadership finishes with steadiness and conviction.",
+      "email_summary": "Faithful leadership finishes with steadiness and conviction.",
+      "scripture_reference": "2 Timothy 4:7 (ESV)"
+    },
+    {
+      "slug": "steadfast-leadership",
+      "title": "Steadfast Leadership",
+      "publish_date": "2026-03-01",
+      "date": "2026-03-01",
+      "status": "published",
+      "summary": "Steadfast leadership is rooted in the nearness of God and expressed through guarded peace.",
+      "email_summary": "Steadfast leadership is rooted in the nearness of God and expressed through guarded peace.",
+      "scripture_reference": "Philippians 4:5b–7 (ESV)"
+    },
+    {
+      "slug": "self-control-is-quiet-power",
+      "title": "Self-Control Is Quiet Power",
+      "publish_date": "2026-03-02",
+      "date": "2026-03-02",
+      "status": "published",
+      "summary": "Steadfast leadership is strengthened through disciplined self-control.",
+      "email_summary": "Steadfast leadership is strengthened through disciplined self-control.",
+      "scripture_reference": "Proverbs 25:28 (ESV)"
+    },
+    {
+      "slug": "slow-anger-strong-leadership",
+      "title": "Slow Anger, Strong Leadership",
+      "publish_date": "2026-03-03",
+      "date": "2026-03-03",
+      "status": "published",
+      "summary": "Measured response reflects strong and steady leadership.",
+      "email_summary": "Measured response reflects strong and steady leadership.",
+      "scripture_reference": "Proverbs 14:29 (ESV)"
+    },
+    {
+      "slug": "anchored-in-hope",
+      "title": "Anchored in Hope",
+      "publish_date": "2026-03-04",
+      "date": "2026-03-04",
+      "status": "published",
+      "summary": "Hope in Christ anchors leadership under pressure.",
+      "email_summary": "Hope in Christ anchors leadership under pressure.",
+      "scripture_reference": "Hebrews 6:19–20 (ESV)"
+    },
+    {
+      "slug": "governed-strength",
+      "title": "Governed Strength",
+      "publish_date": "2026-03-05",
+      "date": "2026-03-05",
+      "status": "published",
+      "summary": "Godly strength is governed by love and self-control.",
+      "email_summary": "Godly strength is governed by love and self-control.",
+      "scripture_reference": "2 Timothy 1:7 (ESV)"
+    },
+    {
+      "slug": "strengthened-for-patient-endurance",
+      "title": "Strengthened for Patient Endurance",
+      "publish_date": "2026-03-06",
+      "date": "2026-03-06",
+      "status": "published",
+      "summary": "Endurance is sustained by strength drawn from the Lord.",
+      "email_summary": "Endurance is sustained by strength drawn from the Lord.",
+      "scripture_reference": "Ephesians 6:10–11 (ESV)"
+    },
+    {
+      "slug": "strength-that-waits-without-collapsing",
+      "title": "Strength That Waits Without Collapsing",
+      "publish_date": "2026-03-07",
+      "date": "2026-03-07",
+      "status": "published",
+      "summary": "Steadfast leadership is sustained by renewed strength, not forced momentum.",
+      "email_summary": "Steadfast leadership is sustained by renewed strength, not forced momentum.",
+      "scripture_reference": "Isaiah 40:29–31 (ESV)"
+    },
+    {
+      "slug": "steps-that-are-established",
+      "title": "Steps That Are Established",
+      "publish_date": "2026-03-08",
+      "date": "2026-03-08",
+      "status": "published",
+      "summary": "Established steps provide stability even when leaders stumble.",
+      "email_summary": "Established steps provide stability even when leaders stumble.",
+      "scripture_reference": "Psalm 37:23–24 (ESV)"
+    },
+    {
+      "slug": "speech-that-preserves-stability",
+      "title": "Speech That Preserves Stability",
+      "publish_date": "2026-03-09",
+      "date": "2026-03-09",
+      "status": "published",
+      "summary": "Disciplined speech protects culture and preserves stability.",
+      "email_summary": "Disciplined speech protects culture and preserves stability.",
+      "scripture_reference": "Proverbs 21:23 (ESV)"
+    },
+    {
+      "slug": "courage-that-does-not-create-chaos",
+      "title": "Courage That Does Not Create Chaos",
+      "publish_date": "2026-03-10",
+      "date": "2026-03-10",
+      "status": "published",
+      "summary": "Calm courage rooted in God's presence stabilizes leadership.",
+      "email_summary": "Calm courage rooted in God's presence stabilizes leadership.",
+      "scripture_reference": "Deuteronomy 31:6 (ESV)"
+    },
+    {
+      "slug": "patience-that-builds-over-time",
+      "title": "Patience That Builds Over Time",
+      "publish_date": "2026-03-11",
+      "date": "2026-03-11",
+      "status": "published",
+      "summary": "Patience strengthens long-term leadership influence.",
+      "email_summary": "Patience strengthens long-term leadership influence.",
+      "scripture_reference": "Romans 15:4 (ESV)"
+    },
+    {
+      "slug": "holding-fast-without-wavering",
+      "title": "Holding Fast Without Wavering",
+      "publish_date": "2026-03-12",
+      "date": "2026-03-12",
+      "status": "published",
+      "summary": "Holding fast strengthens credibility through consistency.",
+      "email_summary": "Holding fast strengthens credibility through consistency.",
+      "scripture_reference": "Hebrews 10:23 (ESV)"
+    },
+    {
+      "slug": "completion-through-testing",
+      "title": "Completion Through Testing",
+      "publish_date": "2026-03-13",
+      "date": "2026-03-13",
+      "status": "published",
+      "summary": "Testing produces endurance, and endurance matures leadership into wholeness.",
+      "email_summary": "Testing produces endurance, and endurance matures leadership into wholeness.",
+      "scripture_reference": "James 1:2–4 (ESV)"
+    },
+    {
+      "slug": "character-formed-in-the-middle",
+      "title": "Character Formed in the Middle",
+      "publish_date": "2026-03-14",
+      "date": "2026-03-14",
+      "status": "published",
+      "summary": "Endurance under pressure forms character, and character produces resilient hope.",
+      "email_summary": "Endurance under pressure forms character, and character produces resilient hope.",
+      "scripture_reference": "Romans 5:3–5 (ESV)"
+    },
+    {
+      "slug": "the-source-beneath-the-surface",
+      "title": "The Source Beneath the Surface",
+      "publish_date": "2026-03-15",
+      "date": "2026-03-15",
+      "status": "published",
+      "summary": "Leadership stability flows from a guarded and cultivated heart.",
+      "email_summary": "Leadership stability flows from a guarded and cultivated heart.",
+      "scripture_reference": "Proverbs 4:20–23 (ESV)"
+    },
+    {
+      "slug": "culture-is-carried-in-tone",
+      "title": "Culture Is Carried in Tone",
+      "publish_date": "2026-03-16",
+      "date": "2026-03-16",
+      "status": "published",
+      "summary": "A leader's tone builds the invisible structure of culture over time.",
+      "email_summary": "A leader's tone builds the invisible structure of culture over time.",
+      "scripture_reference": "Colossians 4:5–6 (ESV)"
+    },
+    {
+      "slug": "removing-the-weights-that-cause-drift",
+      "title": "Removing the Weights That Cause Drift",
+      "publish_date": "2026-03-17",
+      "date": "2026-03-17",
+      "status": "published",
+      "summary": "Endurance strengthens when unnecessary weights and distractions are removed.",
+      "email_summary": "Endurance strengthens when unnecessary weights and distractions are removed.",
+      "scripture_reference": "Hebrews 12:1–2 (ESV)"
+    },
+    {
+      "slug": "discernment-in-how-we-care",
+      "title": "Discernment in How We Care",
+      "publish_date": "2026-03-18",
+      "date": "2026-03-18",
+      "status": "published",
+      "summary": "Steady leadership responds with discernment, not uniform reaction.",
+      "email_summary": "Steady leadership responds with discernment, not uniform reaction.",
+      "scripture_reference": "1 Thessalonians 5:12–15 (ESV)"
+    },
+    {
+      "slug": "evidence-of-a-formed-leader",
+      "title": "Evidence of a Formed Leader",
+      "publish_date": "2026-03-19",
+      "date": "2026-03-19",
+      "status": "published",
+      "summary": "The fruit of the Spirit reveals whether leadership stability is truly formed.",
+      "email_summary": "The fruit of the Spirit reveals whether leadership stability is truly formed.",
+      "scripture_reference": "Galatians 5:22–25 (ESV)"
+    },
+    {
+      "slug": "peace-that-governs-decisions",
+      "title": "March 20: Peace That Governs Decisions",
+      "publish_date": "2026-03-20",
+      "date": "2026-03-20",
+      "status": "published",
+      "summary": "Christ's peace should function as the governing authority behind leadership decisions.",
+      "email_summary": "Christ's peace should function as the governing authority behind leadership decisions.",
+      "scripture_reference": "Colossians 3:15–17 (ESV)"
+    },
+    {
+      "slug": "strength-that-comes-from-within",
+      "title": "March 21: Strength That Comes From Within",
+      "publish_date": "2026-03-21",
+      "date": "2026-03-21",
+      "status": "published",
+      "summary": "Leadership durability grows when strength comes from the Spirit working within us.",
+      "email_summary": "Leadership durability grows when strength comes from the Spirit working within us.",
+      "scripture_reference": "Ephesians 3:16–19 (ESV)"
+    },
+    {
+      "slug": "disciplined-self-control-under-pressure",
+      "title": "March 22: Disciplined Self-Control Under Pressure",
+      "publish_date": "2026-03-22",
+      "date": "2026-03-22",
+      "status": "published",
+      "summary": "Grace trains leaders to practice disciplined self-control under pressure.",
+      "email_summary": "Grace trains leaders to practice disciplined self-control under pressure.",
+      "scripture_reference": "Titus 2:11–12 (ESV)"
+    },
+    {
+      "slug": "standing-firm-without-aggression",
+      "title": "March 23: Standing Firm Without Aggression",
+      "publish_date": "2026-03-23",
+      "date": "2026-03-23",
+      "status": "published",
+      "summary": "Strong leadership stands firm in conviction while remaining governed by love.",
+      "email_summary": "Strong leadership stands firm in conviction while remaining governed by love.",
+      "scripture_reference": "1 Corinthians 16:13–14 (ESV)"
+    },
+    {
+      "slug": "guarding-against-quiet-drift",
+      "title": "March 24: Guarding Against Quiet Drift",
+      "publish_date": "2026-03-24",
+      "date": "2026-03-24",
+      "status": "published",
+      "summary": "Leadership drift begins subtly and requires deliberate attention to prevent.",
+      "email_summary": "Leadership drift begins subtly and requires deliberate attention to prevent.",
+      "scripture_reference": "Hebrews 2:1 (ESV)"
+    },
+    {
+      "slug": "endurance-that-refuses-bitterness",
+      "title": "March 25: Endurance That Refuses Bitterness",
+      "publish_date": "2026-03-25",
+      "date": "2026-03-25",
+      "status": "published",
+      "summary": "Sustained leadership requires endurance that refuses bitterness.",
+      "email_summary": "Sustained leadership requires endurance that refuses bitterness.",
+      "scripture_reference": "Hebrews 12:14–15 (ESV)"
+    },
+    {
+      "slug": "faithfulness-in-the-long-middle",
+      "title": "March 26: Faithfulness in the Long Middle",
+      "publish_date": "2026-03-26",
+      "date": "2026-03-26",
+      "status": "published",
+      "summary": "Leadership credibility is built through steady faithfulness across long seasons.",
+      "email_summary": "Leadership credibility is built through steady faithfulness across long seasons.",
+      "scripture_reference": "2 Thessalonians 3:13 (ESV)"
+    },
+    {
+      "slug": "wisdom-that-stays-teachable",
+      "title": "March 27: Wisdom That Stays Teachable",
+      "publish_date": "2026-03-27",
+      "date": "2026-03-27",
+      "status": "published",
+      "summary": "Wisdom from above keeps leaders teachable, steady, and peace-making.",
+      "email_summary": "Wisdom from above keeps leaders teachable, steady, and peace-making.",
+      "scripture_reference": "James 3:17–18 (ESV)"
+    },
+    {
+      "slug": "discernment-about-the-voices-you-follow",
+      "title": "March 28: Discernment About the Voices You Follow",
+      "publish_date": "2026-03-28",
+      "date": "2026-03-28",
+      "status": "published",
+      "summary": "Discernment tests the voices shaping decisions so leadership stays clear and steady.",
+      "email_summary": "Discernment tests the voices shaping decisions so leadership stays clear and steady.",
+      "scripture_reference": "1 John 4:1 (ESV)"
+    },
+    {
+      "slug": "integrity-that-remains-consistent",
+      "title": "March 29: Integrity That Remains Consistent",
+      "publish_date": "2026-03-29",
+      "date": "2026-03-29",
+      "status": "published",
+      "summary": "Integrity stays consistent across decisions, building trust and steady leadership.",
+      "email_summary": "Integrity stays consistent across decisions, building trust and steady leadership.",
+      "scripture_reference": "Psalm 15:1–2 (ESV)"
+    },
+    {
+      "slug": "deliberate-leadership-in-a-rushed-world",
+      "title": "March 30: Deliberate Leadership in a Rushed World",
+      "publish_date": "2026-03-30",
+      "date": "2026-03-30",
+      "status": "published",
+      "summary": "Deliberate leadership resists haste and builds long-term stability through wise planning.",
+      "email_summary": "Deliberate leadership resists haste and builds long-term stability through wise planning.",
+      "scripture_reference": "Proverbs 21:5 (ESV)"
+    },
+    {
+      "slug": "a-life-that-finishes-well",
+      "title": "March 31: A Life That Finishes Well",
+      "publish_date": "2026-03-31",
+      "date": "2026-03-31",
+      "status": "published",
+      "summary": "Finishing well means enduring in character and faithfulness long after the beginning.",
+      "email_summary": "Finishing well means enduring in character and faithfulness long after the beginning.",
+      "scripture_reference": "2 Timothy 4:7–8 (ESV)"
+    },
+    {
+      "slug": "steady-direction",
+      "title": "April 1: Steady Direction",
+      "publish_date": "2026-04-01",
+      "date": "2026-04-01",
+      "status": "published",
+      "summary": "Servant leaders move with clarity and steadiness even when resistance appears early.",
+      "email_summary": "Servant leaders move with clarity and steadiness even when resistance appears early.",
+      "scripture_reference": "Luke 9:51–53 (ESV)"
+    },
+    {
+      "slug": "faithful-preparation",
+      "title": "April 2: Faithful Preparation",
+      "publish_date": "2026-04-02",
+      "date": "2026-04-02",
+      "status": "published",
+      "summary": "Servant leaders prepare carefully for important moments instead of relying on impulse or appearance.",
+      "email_summary": "Servant leaders prepare carefully for important moments instead of relying on impulse or appearance.",
+      "scripture_reference": "Luke 19:28–31 (ESV)"
+    },
+    {
+      "slug": "grounded-recognition",
+      "title": "April 3: Grounded Recognition",
+      "publish_date": "2026-04-03",
+      "date": "2026-04-03",
+      "status": "published",
+      "summary": "Servant leaders stay humble and grounded when recognition grows around them.",
+      "email_summary": "Servant leaders stay humble and grounded when recognition grows around them.",
+      "scripture_reference": "John 12:12–15 (ESV)"
+    },
+    {
+      "slug": "compassionate-clarity",
+      "title": "April 4: Compassionate Clarity",
+      "publish_date": "2026-04-04",
+      "date": "2026-04-04",
+      "status": "published",
+      "summary": "Servant leaders pair clear insight with compassion when others cannot yet see what is coming.",
+      "email_summary": "Servant leaders pair clear insight with compassion when others cannot yet see what is coming.",
+      "scripture_reference": "Luke 19:41–44 (ESV)"
+    },
+    {
+      "slug": "protecting-the-mission",
+      "title": "April 5: Protecting the Mission",
+      "publish_date": "2026-04-05",
+      "date": "2026-04-05",
+      "status": "published",
+      "summary": "Servant leaders protect the purpose of what has been entrusted to them, even when correction creates tension.",
+      "email_summary": "Servant leaders protect the purpose of what has been entrusted to them, even when correction creates tension.",
+      "scripture_reference": "Mark 11:15–18 (ESV)"
+    },
+    {
+      "slug": "discerning-the-trap",
+      "title": "April 6: Discerning the Trap",
+      "publish_date": "2026-04-06",
+      "date": "2026-04-06",
+      "status": "published",
+      "summary": "Servant leaders need discernment to recognize when a question is meant to entangle rather than understand.",
+      "email_summary": "Servant leaders need discernment to recognize when a question is meant to entangle rather than understand.",
+      "scripture_reference": "Matthew 22:15–18 (ESV)"
+    },
+    {
+      "slug": "fruitful-surrender",
+      "title": "April 7: Fruitful Surrender",
+      "publish_date": "2026-04-07",
+      "date": "2026-04-07",
+      "status": "published",
+      "summary": "Servant leadership embraces costly obedience because fruit often grows from what is first laid down.",
+      "email_summary": "Servant leadership embraces costly obedience because fruit often grows from what is first laid down.",
+      "scripture_reference": "John 12:24–26 (ESV)"
+    },
+    {
+      "slug": "quiet-authority",
+      "title": "Quiet Authority",
+      "publish_date": "2026-04-08",
+      "date": "2026-04-08",
+      "status": "published",
+      "summary": "Authority does not need to defend itself to remain steady.",
+      "email_summary": "Authority does not need to defend itself to remain steady.",
+      "scripture_reference": "Matthew 21:23–27 (ESV)"
+    },
+    {
+      "slug": "responsibility-without-avoidance",
+      "title": "Responsibility Without Avoidance",
+      "publish_date": "2026-04-09",
+      "date": "2026-04-09",
+      "status": "published",
+      "summary": "Leadership credibility is built through follow-through.",
+      "email_summary": "Leadership credibility is built through follow-through.",
+      "scripture_reference": "Matthew 21:28–32 (ESV)"
+    },
+    {
+      "slug": "stewardship-of-influence",
+      "title": "Stewardship of Influence",
+      "publish_date": "2026-04-10",
+      "date": "2026-04-10",
+      "status": "published",
+      "summary": "Leadership is stewardship, not ownership.",
+      "email_summary": "Leadership is stewardship, not ownership.",
+      "scripture_reference": "Matthew 21:33–38 (ESV)"
+    },
+    {
+      "slug": "ordered-priorities",
+      "title": "Ordered Priorities",
+      "publish_date": "2026-04-11",
+      "date": "2026-04-11",
+      "status": "published",
+      "summary": "Clarity in priorities creates stability in leadership.",
+      "email_summary": "Clarity in priorities creates stability in leadership.",
+      "scripture_reference": "Matthew 22:36–40 (ESV)"
+    },
+    {
+      "slug": "integrity-over-image",
+      "title": "Integrity Over Image",
+      "publish_date": "2026-04-12",
+      "date": "2026-04-12",
+      "status": "published",
+      "summary": "Integrity is formed in private and revealed in public.",
+      "email_summary": "Integrity is formed in private and revealed in public.",
+      "scripture_reference": "Matthew 23:5–7 (ESV)"
+    },
+    {
+      "slug": "weightier-matters",
+      "title": "Weightier Matters",
+      "publish_date": "2026-04-13",
+      "date": "2026-04-13",
+      "status": "published",
+      "summary": "Strong leadership keeps priorities in proper order.",
+      "email_summary": "Strong leadership keeps priorities in proper order.",
+      "scripture_reference": "Matthew 23:23–24 (ESV)"
+    },
+    {
+      "slug": "prepared-readiness",
+      "title": "Prepared Readiness",
+      "publish_date": "2026-04-14",
+      "date": "2026-04-14",
+      "status": "published",
+      "summary": "Readiness is built through consistent preparation.",
+      "email_summary": "Readiness is built through consistent preparation.",
+      "scripture_reference": "Matthew 24:42–44 (ESV)"
+    },
+    {
+      "slug": "faithful-stewardship",
+      "title": "Faithful Stewardship",
+      "publish_date": "2026-04-15",
+      "date": "2026-04-15",
+      "status": "published",
+      "summary": "Faithfulness is measured by how we steward what we are given.",
+      "email_summary": "Faithfulness is measured by how we steward what we are given.",
+      "scripture_reference": "Matthew 25:14–19 (ESV)"
+    },
+    {
+      "slug": "readiness-that-endures",
+      "title": "Readiness That Endures",
+      "publish_date": "2026-04-16",
+      "date": "2026-04-16",
+      "status": "published",
+      "summary": "Prepared leadership sustains readiness over time.",
+      "email_summary": "Prepared leadership sustains readiness over time.",
+      "scripture_reference": "Matthew 25:1–4, 10 (ESV)"
+    },
+    {
+      "slug": "accountability-that-reveals",
+      "title": "Accountability That Reveals",
+      "publish_date": "2026-04-17",
+      "date": "2026-04-17",
+      "status": "published",
+      "summary": "Leadership is ultimately revealed and evaluated.",
+      "email_summary": "Leadership is ultimately revealed and evaluated.",
+      "scripture_reference": "Matthew 25:31–33 (ESV)"
+    },
+    {
+      "slug": "willing-surrender",
+      "title": "Willing Surrender",
+      "publish_date": "2026-04-18",
+      "date": "2026-04-18",
+      "status": "published",
+      "summary": "Surrender aligns leadership with purpose.",
+      "email_summary": "Surrender aligns leadership with purpose.",
+      "scripture_reference": "Matthew 26:36–39 (ESV)"
+    },
+    {
+      "slug": "refusal-to-control",
+      "title": "Refusal to Control",
+      "publish_date": "2026-04-19",
+      "date": "2026-04-19",
+      "status": "published",
+      "summary": "Servant leadership is not driven by control.",
+      "email_summary": "Servant leadership is not driven by control.",
+      "scripture_reference": "Matthew 26:50–52 (ESV)"
+    },
+    {
+      "slug": "steadiness-under-accusation",
+      "title": "Steadiness Under Accusation",
+      "publish_date": "2026-04-20",
+      "date": "2026-04-20",
+      "status": "published",
+      "summary": "Steady leadership is not driven by every accusation.",
+      "email_summary": "Steady leadership is not driven by every accusation.",
+      "scripture_reference": "Matthew 26:62–63 (ESV)"
+    },
+    {
+      "slug": "faithful-witness",
+      "title": "Faithful Witness",
+      "publish_date": "2026-04-21",
+      "date": "2026-04-21",
+      "status": "published",
+      "summary": "Clarity in identity produces clarity in leadership.",
+      "email_summary": "Clarity in identity produces clarity in leadership.",
+      "scripture_reference": "Matthew 27:11 (ESV)"
+    },
+    {
+      "slug": "integrity-under-pressure",
+      "title": "Integrity Under Pressure",
+      "publish_date": "2026-04-22",
+      "date": "2026-04-22",
+      "status": "published",
+      "summary": "Integrity must hold when pressure rises.",
+      "email_summary": "Integrity must hold when pressure rises.",
+      "scripture_reference": "Matthew 27:22–23 (ESV)"
+    },
+    {
+      "slug": "endurance-without-retaliation",
+      "title": "Endurance Without Retaliation",
+      "publish_date": "2026-04-23",
+      "date": "2026-04-23",
+      "status": "published",
+      "summary": "Endurance keeps leadership from becoming reactive.",
+      "email_summary": "Endurance keeps leadership from becoming reactive.",
+      "scripture_reference": "Matthew 27:27–29 (ESV)"
+    },
+    {
+      "slug": "focus-in-suffering",
+      "title": "Focus in the Middle of Suffering",
+      "publish_date": "2026-04-24",
+      "date": "2026-04-24",
+      "status": "published",
+      "summary": "Leadership stays attentive even under pressure.",
+      "email_summary": "Leadership stays attentive even under pressure.",
+      "scripture_reference": "John 19:25–27 (ESV)"
+    },
+    {
+      "slug": "obedience-through-doubt",
+      "title": "Obedience Through Doubt",
+      "publish_date": "2026-04-25",
+      "date": "2026-04-25",
+      "status": "published",
+      "summary": "Obedience continues even when tension is real.",
+      "email_summary": "Obedience continues even when tension is real.",
+      "scripture_reference": "Matthew 27:45–46 (ESV)"
+    },
+    {
+      "slug": "the-final-act-of-service",
+      "title": "The Final Act of Service",
+      "publish_date": "2026-04-26",
+      "date": "2026-04-26",
+      "status": "published",
+      "summary": "This act stands alone.",
+      "email_summary": "This act stands alone.",
+      "scripture_reference": "John 19:28–30 (ESV)"
+    },
+    {
+      "slug": "faithfulness-in-the-silence",
+      "title": "Faithfulness in the Silence",
+      "publish_date": "2026-04-27",
+      "date": "2026-04-27",
+      "status": "published",
+      "summary": "Faithfulness continues when nothing seems to happen.",
+      "email_summary": "Faithfulness continues when nothing seems to happen.",
+      "scripture_reference": "Matthew 27:59–60 (ESV)"
+    },
+    {
+      "slug": "he-has-risen",
+      "title": "He Has Risen",
+      "publish_date": "2026-04-28",
+      "date": "2026-04-28",
+      "status": "published",
+      "summary": "The resurrection changes everything.",
+      "email_summary": "The resurrection changes everything.",
+      "scripture_reference": "Matthew 28:5–6 (ESV)"
+    },
+    {
+      "slug": "restoring-the-leader",
+      "title": "Restoring the Leader",
+      "publish_date": "2026-04-29",
+      "date": "2026-04-29",
+      "status": "published",
+      "summary": "Restoration reconnects leaders to purpose after failure.",
+      "email_summary": "Restoration reconnects leaders to purpose after failure.",
+      "scripture_reference": "John 21:15–17 (ESV)"
+    },
+    {
+      "slug": "leadership-that-continues",
+      "title": "April 30: Leadership That Continues",
+      "publish_date": "2026-04-30",
+      "date": "2026-04-30",
+      "status": "published",
+      "summary": "Leadership that lasts prepares others to carry what continues.",
+      "email_summary": "Leadership that lasts prepares others to carry what continues.",
+      "scripture_reference": "Acts 1:6–8 (ESV)"
+    },
+    {
+      "slug": "when-the-mind-feels-overwhelmed",
+      "title": "When the Mind Feels Overwhelmed",
+      "publish_date": "2026-05-01",
+      "date": "2026-05-01",
+      "status": "published",
+      "summary": "Overwhelm often begins with repeated internal questions.",
+      "email_summary": "Overwhelm often begins with repeated internal questions.",
+      "scripture_reference": "Psalm 13:1–2 (ESV)"
+    },
+    {
+      "slug": "internal-dialogue-matters",
+      "title": "Internal Dialogue Matters",
+      "publish_date": "2026-05-02",
+      "date": "2026-05-02",
+      "status": "published",
+      "summary": "What you repeat internally will influence how you lead externally.",
+      "email_summary": "What you repeat internally will influence how you lead externally.",
+      "scripture_reference": "Psalm 42:5–6 (ESV)"
+    },
+    {
+      "slug": "anxiety-is-acknowledged",
+      "title": "Anxiety Is Acknowledged",
+      "publish_date": "2026-05-03",
+      "date": "2026-05-03",
+      "status": "published",
+      "summary": "Anxiety often comes from trying to control what is not yet present.",
+      "email_summary": "Anxiety often comes from trying to control what is not yet present.",
+      "scripture_reference": "Matthew 6:25–27 (ESV)"
+    },
+    {
+      "slug": "the-pressure-leaders-carry",
+      "title": "The Pressure Leaders Carry",
+      "publish_date": "2026-05-04",
+      "date": "2026-05-04",
+      "status": "published",
+      "summary": "Leadership includes carrying concern for others.",
+      "email_summary": "Leadership includes carrying concern for others.",
+      "scripture_reference": "2 Corinthians 11:28–29 (ESV)"
+    },
+    {
+      "slug": "exhaustion-is-not-failure",
+      "title": "Exhaustion Is Not Failure",
+      "publish_date": "2026-05-05",
+      "date": "2026-05-05",
+      "status": "published",
+      "summary": "Exhaustion can follow even strong leadership seasons.",
+      "email_summary": "Exhaustion can follow even strong leadership seasons.",
+      "scripture_reference": "1 Kings 19:3–5 (ESV)"
+    },
+    {
+      "slug": "fear-has-physical-weight",
+      "title": "Fear Has Physical Weight",
+      "publish_date": "2026-05-06",
+      "date": "2026-05-06",
+      "status": "published",
+      "summary": "Fear can affect both mind and body.",
+      "email_summary": "Fear can affect both mind and body.",
+      "scripture_reference": "Psalm 55:4–5 (ESV)"
+    },
+    {
+      "slug": "when-you-feel-alone",
+      "title": "When You Feel Alone",
+      "publish_date": "2026-05-07",
+      "date": "2026-05-07",
+      "status": "published",
+      "summary": "Isolation affects clarity and decision-making.",
+      "email_summary": "Isolation affects clarity and decision-making.",
+      "scripture_reference": "2 Timothy 4:16–17 (ESV)"
+    },
+    {
+      "slug": "a-divided-mind",
+      "title": "A Divided Mind",
+      "publish_date": "2026-05-08",
+      "date": "2026-05-08",
+      "status": "published",
+      "summary": "A divided mind produces unstable leadership.",
+      "email_summary": "A divided mind produces unstable leadership.",
+      "scripture_reference": "James 1:5–8 (ESV)"
+    },
+    {
+      "slug": "carrying-too-much-alone",
+      "title": "Carrying Too Much Alone",
+      "publish_date": "2026-05-09",
+      "date": "2026-05-09",
+      "status": "published",
+      "summary": "Carrying more than one person can hold damages the leader and the mission.",
+      "email_summary": "Carrying more than one person can hold damages the leader and the mission.",
+      "scripture_reference": "Exodus 18:17–18 (ESV)"
+    },
+    {
+      "slug": "discouragement-spreads",
+      "title": "Discouragement Spreads",
+      "publish_date": "2026-05-10",
+      "date": "2026-05-10",
+      "status": "published",
+      "summary": "Discouragement inside a team does not stay contained.",
+      "email_summary": "Discouragement inside a team does not stay contained.",
+      "scripture_reference": "Nehemiah 4:10 (ESV)"
+    },
+    {
+      "slug": "losing-heart-quietly",
+      "title": "Losing Heart Quietly",
+      "publish_date": "2026-05-11",
+      "date": "2026-05-11",
+      "status": "published",
+      "summary": "Losing heart often happens gradually, not suddenly.",
+      "email_summary": "Losing heart often happens gradually, not suddenly.",
+      "scripture_reference": "Hebrews 12:3 (ESV)"
+    },
+    {
+      "slug": "suppressed-strain-surfaces",
+      "title": "Suppressed Strain Surfaces",
+      "publish_date": "2026-05-12",
+      "date": "2026-05-12",
+      "status": "published",
+      "summary": "What is not acknowledged internally will find another way out.",
+      "email_summary": "What is not acknowledged internally will find another way out.",
+      "scripture_reference": "Psalm 32:3–4 (ESV)"
+    },
+    {
+      "slug": "when-responsibility-feels-too-heavy",
+      "title": "When Responsibility Feels Too Heavy",
+      "publish_date": "2026-05-13",
+      "date": "2026-05-13",
+      "status": "published",
+      "summary": "Honest acknowledgment of limits is not weakness.",
+      "email_summary": "Honest acknowledgment of limits is not weakness.",
+      "scripture_reference": "Numbers 11:14–15 (ESV)"
+    },
+    {
+      "slug": "worn-down-internally",
+      "title": "Worn Down Internally",
+      "publish_date": "2026-05-14",
+      "date": "2026-05-14",
+      "status": "published",
+      "summary": "Internal weariness affects the whole person.",
+      "email_summary": "Internal weariness affects the whole person.",
+      "scripture_reference": "Psalm 38:6–8 (ESV)"
+    },
+    {
+      "slug": "taking-thoughts-seriously",
+      "title": "Taking Thoughts Seriously",
+      "publish_date": "2026-05-15",
+      "date": "2026-05-15",
+      "status": "published",
+      "summary": "Mental health requires active engagement with internal patterns, not just awareness of them.",
+      "email_summary": "Mental health requires active engagement with internal patterns, not just awareness of them.",
+      "scripture_reference": "2 Corinthians 10:5 (ESV)"
+    },
+    {
+      "slug": "putting-off-and-renewing",
+      "title": "Putting Off and Renewing",
+      "publish_date": "2026-05-16",
+      "date": "2026-05-16",
+      "status": "published",
+      "summary": "Renewal of the mind requires releasing old patterns, not just adding new ones.",
+      "email_summary": "Renewal of the mind requires releasing old patterns, not just adding new ones.",
+      "scripture_reference": "Ephesians 4:22–24 (ESV)"
+    },
+    {
+      "slug": "speaking-back-to-yourself",
+      "title": "Speaking Back to Yourself",
+      "publish_date": "2026-05-17",
+      "date": "2026-05-17",
+      "status": "published",
+      "summary": "Internal dialogue can be redirected even when circumstances have not changed.",
+      "email_summary": "Internal dialogue can be redirected even when circumstances have not changed.",
+      "scripture_reference": "Lamentations 3:24–26 (ESV)"
+    },
+    {
+      "slug": "releasing-what-you-carry",
+      "title": "Releasing What You Carry",
+      "publish_date": "2026-05-18",
+      "date": "2026-05-18",
+      "status": "published",
+      "summary": "Releasing anxiety is an active and repeatable discipline, not a single event.",
+      "email_summary": "Releasing anxiety is an active and repeatable discipline, not a single event.",
+      "scripture_reference": "1 Peter 5:7 (ESV)"
+    },
+    {
+      "slug": "directing-your-focus",
+      "title": "Directing Your Focus",
+      "publish_date": "2026-05-19",
+      "date": "2026-05-19",
+      "status": "published",
+      "summary": "Mental health is shaped by what the mind is consistently directed toward.",
+      "email_summary": "Mental health is shaped by what the mind is consistently directed toward.",
+      "scripture_reference": "Philippians 4:8 (ESV)"
+    },
+    {
+      "slug": "rest-is-not-optional",
+      "title": "Rest Is Not Optional",
+      "publish_date": "2026-05-20",
+      "date": "2026-05-20",
+      "status": "published",
+      "summary": "A mind that never stops becomes less reliable, not more productive.",
+      "email_summary": "A mind that never stops becomes less reliable, not more productive.",
+      "scripture_reference": "Exodus 34:21 (ESV)"
+    },
+    {
+      "slug": "truth-stabilizes-the-mind",
+      "title": "Truth Stabilizes the Mind",
+      "publish_date": "2026-05-21",
+      "date": "2026-05-21",
+      "status": "published",
+      "summary": "Mental stability in leadership comes from what holds, not from the absence of difficulty.",
+      "email_summary": "Mental stability in leadership comes from what holds, not from the absence of difficulty.",
+      "scripture_reference": "John 8:31–32 (ESV)"
+    },
+    {
+      "slug": "fear-spreads-through-leadership",
+      "title": "Fear Spreads Through Leadership",
+      "publish_date": "2026-05-22",
+      "date": "2026-05-22",
+      "status": "published",
+      "summary": "Fear in leadership does not stay personal. It spreads.",
+      "email_summary": "Fear in leadership does not stay personal. It spreads.",
+      "scripture_reference": "Proverbs 29:25–26 (ESV)"
+    },
+    {
+      "slug": "anxiety-transfers",
+      "title": "Anxiety Transfers",
+      "publish_date": "2026-05-23",
+      "date": "2026-05-23",
+      "status": "published",
+      "summary": "Anxiety in a leader transfers to the environment whether the leader intends it or not.",
+      "email_summary": "Anxiety in a leader transfers to the environment whether the leader intends it or not.",
+      "scripture_reference": "Proverbs 12:25 (ESV)"
+    },
+    {
+      "slug": "safety-changes-people",
+      "title": "Safety Changes People",
+      "publish_date": "2026-05-24",
+      "date": "2026-05-24",
+      "status": "published",
+      "summary": "Safety in a team environment begins with what the leader is anchored to.",
+      "email_summary": "Safety in a team environment begins with what the leader is anchored to.",
+      "scripture_reference": "Psalm 4:6–8 (ESV)"
+    },
+    {
+      "slug": "tone-shapes-environments",
+      "title": "Tone Shapes Environments",
+      "publish_date": "2026-05-25",
+      "date": "2026-05-25",
+      "status": "published",
+      "summary": "Tone is one of the primary tools a leader uses to shape culture.",
+      "email_summary": "Tone is one of the primary tools a leader uses to shape culture.",
+      "scripture_reference": "Proverbs 15:1 (ESV)"
+    },
+    {
+      "slug": "overload-has-consequences",
+      "title": "Overload Has Consequences",
+      "publish_date": "2026-05-26",
+      "date": "2026-05-26",
+      "status": "published",
+      "summary": "Overload driven by comparison rather than mission produces exhaustion without meaning.",
+      "email_summary": "Overload driven by comparison rather than mission produces exhaustion without meaning.",
+      "scripture_reference": "Ecclesiastes 4:4–6 (ESV)"
+    },
+    {
+      "slug": "leading-without-adding-burden",
+      "title": "Leading Without Adding Burden",
+      "publish_date": "2026-05-27",
+      "date": "2026-05-27",
+      "status": "published",
+      "summary": "Leadership that restores requires a leader who is not running on empty.",
+      "email_summary": "Leadership that restores requires a leader who is not running on empty.",
+      "scripture_reference": "Psalm 23:1–3 (ESV)"
+    },
+    {
+      "slug": "stability-builds-trust",
+      "title": "Stability Builds Trust",
+      "publish_date": "2026-05-28",
+      "date": "2026-05-28",
+      "status": "published",
+      "summary": "Trust is built through consistent groundedness, not through the absence of difficulty.",
+      "email_summary": "Trust is built through consistent groundedness, not through the absence of difficulty.",
+      "scripture_reference": "Isaiah 33:5–6 (ESV)"
+    },
+    {
+      "slug": "when-you-need-higher-ground",
+      "title": "When You Need Higher Ground",
+      "publish_date": "2026-05-29",
+      "date": "2026-05-29",
+      "status": "published",
+      "summary": "Reaching depletion is not a leadership failure. Pretending you have not is.",
+      "email_summary": "Reaching depletion is not a leadership failure. Pretending you have not is.",
+      "scripture_reference": "Psalm 61:1–2 (ESV)"
+    },
+    {
+      "slug": "delivered-from-fear",
+      "title": "Delivered From Fear",
+      "publish_date": "2026-05-30",
+      "date": "2026-05-30",
+      "status": "published",
+      "summary": "Fear managed indefinitely is not fear resolved. It is fear stored.",
+      "email_summary": "Fear managed indefinitely is not fear resolved. It is fear stored.",
+      "scripture_reference": "Psalm 34:4 (ESV)"
+    },
+    {
+      "slug": "letting-peace-govern",
+      "title": "Letting Peace Govern",
+      "publish_date": "2026-05-31",
+      "date": "2026-05-31",
+      "status": "published",
+      "summary": "Peace is the condition produced when what leads internally is ordered and grounded.",
+      "email_summary": "Peace is the condition produced when what leads internally is ordered and grounded.",
+      "scripture_reference": "1 Corinthians 14:33 (ESV)"
+    },
+    {
+      "slug": "clarity-begins-with-asking",
+      "title": "Clarity Begins With Asking",
+      "publish_date": "2026-06-01",
+      "date": "2026-06-01",
+      "status": "published",
+      "summary": "Clarity in leadership often begins with asking, not with more analysis.",
+      "email_summary": "Clarity in leadership often begins with asking, not with more analysis.",
+      "scripture_reference": "Jeremiah 33:3 (ESV)"
+    },
+    {
+      "slug": "taught-by-god",
+      "title": "Taught by God",
+      "publish_date": "2026-06-02",
+      "date": "2026-06-02",
+      "status": "published",
+      "summary": "The clarity God offers is not just about what to do. It is about what is genuinely worth doing.",
+      "email_summary": "The clarity God offers is not just about what to do. It is about what is genuinely worth doing.",
+      "scripture_reference": "Isaiah 48:17–18 (ESV)"
+    },
+    {
+      "slug": "the-spirit-guides",
+      "title": "The Spirit Guides",
+      "publish_date": "2026-06-03",
+      "date": "2026-06-03",
+      "status": "published",
+      "summary": "Clarity is often given in motion, not in advance of it.",
+      "email_summary": "Clarity is often given in motion, not in advance of it.",
+      "scripture_reference": "John 16:12–13 (ESV)"
+    },
+    {
+      "slug": "led-by-the-spirit",
+      "title": "Led by the Spirit",
+      "publish_date": "2026-06-04",
+      "date": "2026-06-04",
+      "status": "published",
+      "summary": "Fear produces a narrow kind of clarity. The leader led by the Spirit operates from freedom.",
+      "email_summary": "Fear produces a narrow kind of clarity. The leader led by the Spirit operates from freedom.",
+      "scripture_reference": "Romans 8:14–15 (ESV)"
+    },
+    {
+      "slug": "understanding-what-has-been-given",
+      "title": "Understanding What Has Been Given",
+      "publish_date": "2026-06-05",
+      "date": "2026-06-05",
+      "status": "published",
+      "summary": "Knowing what you have is not the same as understanding what it is for.",
+      "email_summary": "Knowing what you have is not the same as understanding what it is for.",
+      "scripture_reference": "1 Corinthians 2:12–13 (ESV)"
+    },
+    {
+      "slug": "a-spirit-of-wisdom-and-revelation",
+      "title": "A Spirit of Wisdom and Revelation",
+      "publish_date": "2026-06-06",
+      "date": "2026-06-06",
+      "status": "published",
+      "summary": "A leader who knows what they are called to is harder to move off course.",
+      "email_summary": "A leader who knows what they are called to is harder to move off course.",
+      "scripture_reference": "Ephesians 1:17–18 (ESV)"
+    },
+    {
+      "slug": "the-word-that-gives-light",
+      "title": "The Word That Gives Light",
+      "publish_date": "2026-06-07",
+      "date": "2026-06-07",
+      "status": "published",
+      "summary": "Clarity through Scripture comes through engagement over time, not through a quick scan.",
+      "email_summary": "Clarity through Scripture comes through engagement over time, not through a quick scan.",
+      "scripture_reference": "Psalm 119:130 (ESV)"
+    },
+    {
+      "slug": "eyes-straight-ahead",
+      "title": "Eyes Straight Ahead",
+      "publish_date": "2026-06-08",
+      "date": "2026-06-08",
+      "status": "published",
+      "summary": "Clarity of direction requires settling where you are going before you focus on how fast to move.",
+      "email_summary": "Clarity of direction requires settling where you are going before you focus on how fast to move.",
+      "scripture_reference": "Proverbs 4:25–27 (ESV)"
+    },
+    {
+      "slug": "wisdom-as-the-foundation",
+      "title": "Wisdom as the Foundation",
+      "publish_date": "2026-06-09",
+      "date": "2026-06-09",
+      "status": "published",
+      "summary": "Pride and arrogance separate a leader from the source of the clarity they are seeking.",
+      "email_summary": "Pride and arrogance separate a leader from the source of the clarity they are seeking.",
+      "scripture_reference": "Proverbs 8:12–14 (ESV)"
+    },
+    {
+      "slug": "clarity-through-counsel",
+      "title": "Clarity Through Counsel",
+      "publish_date": "2026-06-10",
+      "date": "2026-06-10",
+      "status": "published",
+      "summary": "Clarity is rarely the product of a single voice, including the leader's own.",
+      "email_summary": "Clarity is rarely the product of a single voice, including the leader's own.",
+      "scripture_reference": "Proverbs 11:14 (ESV)"
+    },
+    {
+      "slug": "human-plans-divine-direction",
+      "title": "Human Plans, Divine Direction",
+      "publish_date": "2026-06-11",
+      "date": "2026-06-11",
+      "status": "published",
+      "summary": "Committed work finds a stability that controlled work cannot generate on its own.",
+      "email_summary": "Committed work finds a stability that controlled work cannot generate on its own.",
+      "scripture_reference": "Proverbs 16:1–3 (ESV)"
+    },
+    {
+      "slug": "drawing-out-purpose",
+      "title": "Drawing Out Purpose",
+      "publish_date": "2026-06-12",
+      "date": "2026-06-12",
+      "status": "published",
+      "summary": "Purpose does not surface on its own. It has to be drawn out with intention.",
+      "email_summary": "Purpose does not surface on its own. It has to be drawn out with intention.",
+      "scripture_reference": "Proverbs 20:5 (ESV)"
+    },
+    {
+      "slug": "built-on-understanding",
+      "title": "Built on Understanding",
+      "publish_date": "2026-06-13",
+      "date": "2026-06-13",
+      "status": "published",
+      "summary": "Building and establishing are not the same thing. Understanding is what bridges them.",
+      "email_summary": "Building and establishing are not the same thing. Understanding is what bridges them.",
+      "scripture_reference": "Proverbs 24:3–4 (ESV)"
+    },
+    {
+      "slug": "understanding-produces-stability",
+      "title": "Understanding Produces Stability",
+      "publish_date": "2026-06-14",
+      "date": "2026-06-14",
+      "status": "published",
+      "summary": "Long continuity is the result of clarity operating consistently over time.",
+      "email_summary": "Long continuity is the result of clarity operating consistently over time.",
+      "scripture_reference": "Proverbs 28:2 (ESV)"
+    },
+    {
+      "slug": "asking-to-be-taught",
+      "title": "Asking to Be Taught",
+      "publish_date": "2026-06-15",
+      "date": "2026-06-15",
+      "status": "published",
+      "summary": "Asking to be taught is a different and deeper posture than seeking answers.",
+      "email_summary": "Asking to be taught is a different and deeper posture than seeking answers.",
+      "scripture_reference": "Psalm 25:4–5 (ESV)"
+    },
+    {
+      "slug": "led-on-a-level-path",
+      "title": "Led on a Level Path",
+      "publish_date": "2026-06-16",
+      "date": "2026-06-16",
+      "status": "published",
+      "summary": "Clarity is most needed when conditions are hostile, not when they are favorable.",
+      "email_summary": "Clarity is most needed when conditions are hostile, not when they are favorable.",
+      "scripture_reference": "Psalm 27:11 (ESV)"
+    },
+    {
+      "slug": "god-instructs-the-way",
+      "title": "God Instructs the Way",
+      "publish_date": "2026-06-17",
+      "date": "2026-06-17",
+      "status": "published",
+      "summary": "Remaining in relationship with the source produces instruction that fits the moment.",
+      "email_summary": "Remaining in relationship with the source produces instruction that fits the moment.",
+      "scripture_reference": "Psalm 32:8 (ESV)"
+    },
+    {
+      "slug": "a-lamp-and-a-light",
+      "title": "A Lamp and a Light",
+      "publish_date": "2026-06-18",
+      "date": "2026-06-18",
+      "status": "published",
+      "summary": "The Word provides enough light for the next step, not the full picture in advance.",
+      "email_summary": "The Word provides enough light for the next step, not the full picture in advance.",
+      "scripture_reference": "Psalm 119:105 (ESV)"
+    },
+    {
+      "slug": "make-me-know-the-way",
+      "title": "Make Me Know the Way",
+      "publish_date": "2026-06-19",
+      "date": "2026-06-19",
+      "status": "published",
+      "summary": "Knowing the way, being protected on it, and being aligned with what is right are three distinct requests worth making.",
+      "email_summary": "Knowing the way, being protected on it, and being aligned with what is right are three distinct requests worth making.",
+      "scripture_reference": "Psalm 143:8–10 (ESV)"
+    },
+    {
+      "slug": "this-is-the-way",
+      "title": "This Is the Way",
+      "publish_date": "2026-06-20",
+      "date": "2026-06-20",
+      "status": "published",
+      "summary": "Clarity often comes in the moment of deviation, not before it.",
+      "email_summary": "Clarity often comes in the moment of deviation, not before it.",
+      "scripture_reference": "Isaiah 30:21 (ESV)"
+    },
+    {
+      "slug": "write-the-vision",
+      "title": "Write the Vision",
+      "publish_date": "2026-06-21",
+      "date": "2026-06-21",
+      "status": "published",
+      "summary": "A vision that cannot be written plainly is not yet clear enough to lead from.",
+      "email_summary": "A vision that cannot be written plainly is not yet clear enough to lead from.",
+      "scripture_reference": "Habakkuk 2:2–3 (ESV)"
+    },
+    {
+      "slug": "seek-first",
+      "title": "Seek First",
+      "publish_date": "2026-06-22",
+      "date": "2026-06-22",
+      "status": "published",
+      "summary": "What you seek first will shape how everything else feels, whether secure or never quite enough.",
+      "email_summary": "What you seek first will shape how everything else feels, whether secure or never quite enough.",
+      "scripture_reference": "Matthew 6:31–33 (ESV)"
+    },
+    {
+      "slug": "build-on-what-is-solid",
+      "title": "Build on What Is Solid",
+      "publish_date": "2026-06-23",
+      "date": "2026-06-23",
+      "status": "published",
+      "summary": "Both builders heard the same words. The difference was what each did with them.",
+      "email_summary": "Both builders heard the same words. The difference was what each did with them.",
+      "scripture_reference": "Matthew 7:24–27 (ESV)"
+    },
+    {
+      "slug": "count-the-cost",
+      "title": "Count the Cost",
+      "publish_date": "2026-06-24",
+      "date": "2026-06-24",
+      "status": "published",
+      "summary": "An honestly assessed gap can be addressed. An unaddressed gap becomes visible at the worst possible time.",
+      "email_summary": "An honestly assessed gap can be addressed. An unaddressed gap becomes visible at the worst possible time.",
+      "scripture_reference": "Luke 14:28–30 (ESV)"
+    },
+    {
+      "slug": "think-over-what-i-say",
+      "title": "Think Over What I Say",
+      "publish_date": "2026-06-25",
+      "date": "2026-06-25",
+      "status": "published",
+      "summary": "Some of the clarity you are looking for may already be in your hands, waiting for you to think it over.",
+      "email_summary": "Some of the clarity you are looking for may already be in your hands, waiting for you to think it over.",
+      "scripture_reference": "2 Timothy 2:6–7 (ESV)"
+    },
+    {
+      "slug": "test-everything",
+      "title": "Test Everything",
+      "publish_date": "2026-06-26",
+      "date": "2026-06-26",
+      "status": "published",
+      "summary": "Leadership clarity requires both openness to what is unfamiliar and discernment about what is good.",
+      "email_summary": "Leadership clarity requires both openness to what is unfamiliar and discernment about what is good.",
+      "scripture_reference": "1 Thessalonians 5:19–22 (ESV)"
+    },
+    {
+      "slug": "walk-carefully",
+      "title": "Walk Carefully",
+      "publish_date": "2026-06-27",
+      "date": "2026-06-27",
+      "status": "published",
+      "summary": "Making the best use of time requires understanding what is actually being asked, not just filling the time with activity.",
+      "email_summary": "Making the best use of time requires understanding what is actually being asked, not just filling the time with activity.",
+      "scripture_reference": "Ephesians 5:15–17 (ESV)"
+    },
+    {
+      "slug": "the-word-that-discerns",
+      "title": "The Word That Discerns",
+      "publish_date": "2026-06-28",
+      "date": "2026-06-28",
+      "status": "published",
+      "summary": "A leader can be clear about what they are doing and still be unclear about why. The Word reaches the why.",
+      "email_summary": "A leader can be clear about what they are doing and still be unclear about why. The Word reaches the why.",
+      "scripture_reference": "Hebrews 4:12–13 (ESV)"
+    },
+    {
+      "slug": "plans-for-a-future",
+      "title": "Plans for a Future",
+      "publish_date": "2026-06-29",
+      "date": "2026-06-29",
+      "status": "published",
+      "summary": "Clarity about where things are going does not require favorable circumstances. It requires trust in the one who holds the plan.",
+      "email_summary": "Clarity about where things are going does not require favorable circumstances. It requires trust in the one who holds the plan.",
+      "scripture_reference": "Jeremiah 29:10–11 (ESV)"
+    },
+    {
+      "slug": "understanding-in-everything",
+      "title": "Understanding in Everything",
+      "publish_date": "2026-06-30",
+      "date": "2026-06-30",
+      "status": "published",
+      "summary": "The leader who stays with the source long enough will find they are more complete than when they started.",
+      "email_summary": "The leader who stays with the source long enough will find they are more complete than when they started.",
+      "scripture_reference": "2 Timothy 3:16–17 (ESV)"
+    },
+    {
+      "slug": "words-carry-life-and-death",
+      "title": "Words Carry Life and Death",
+      "publish_date": "2026-07-01",
+      "date": "2026-07-01",
+      "status": "published",
+      "summary": "What a leader produces with their words, they also consume. You inhabit the environment your speech builds.",
+      "email_summary": "What a leader produces with their words, they also consume. You inhabit the environment your speech builds.",
+      "scripture_reference": "Proverbs 18:20–21 (ESV)"
+    },
+    {
+      "slug": "the-tongue-has-power-to-heal",
+      "title": "The Tongue Has Power to Heal",
+      "publish_date": "2026-07-02",
+      "date": "2026-07-02",
+      "status": "published",
+      "summary": "The same difficult truth can wound or heal depending on whether it was considered before it was spoken.",
+      "email_summary": "The same difficult truth can wound or heal depending on whether it was considered before it was spoken.",
+      "scripture_reference": "Proverbs 12:18 (ESV)"
+    },
+    {
+      "slug": "a-gentle-tongue-breaks-bone",
+      "title": "A Gentle Tongue Breaks Bone",
+      "publish_date": "2026-07-03",
+      "date": "2026-07-03",
+      "status": "published",
+      "summary": "Gentleness is not weakness. It is a different category of strength that operates over time.",
+      "email_summary": "Gentleness is not weakness. It is a different category of strength that operates over time.",
+      "scripture_reference": "Proverbs 25:15 (ESV)"
+    },
+    {
+      "slug": "freedom-and-the-tongue",
+      "title": "Freedom and the Tongue",
+      "publish_date": "2026-07-04",
+      "date": "2026-07-04",
+      "status": "published",
+      "summary": "Freedom in communication is not the absence of restraint. It is restraint directed by love toward others.",
+      "email_summary": "Freedom in communication is not the absence of restraint. It is restraint directed by love toward others.",
+      "scripture_reference": "Galatians 5:13–14 (ESV)"
+    },
+    {
+      "slug": "let-no-corrupting-talk-come-out",
+      "title": "Let No Corrupting Talk Come Out",
+      "publish_date": "2026-07-05",
+      "date": "2026-07-05",
+      "status": "published",
+      "summary": "The standard for leadership speech is not accuracy alone. It is whether words build up, fit the occasion, and give grace.",
+      "email_summary": "The standard for leadership speech is not accuracy alone. It is whether words build up, fit the occasion, and give grace.",
+      "scripture_reference": "Ephesians 4:29–30 (ESV)"
+    },
+    {
+      "slug": "the-tongue-is-a-fire",
+      "title": "The Tongue Is a Fire",
+      "publish_date": "2026-07-06",
+      "date": "2026-07-06",
+      "status": "published",
+      "summary": "Small careless words can produce disproportionately large consequences.",
+      "email_summary": "Small careless words can produce disproportionately large consequences.",
+      "scripture_reference": "James 3:5–6 (ESV)"
+    },
+    {
+      "slug": "no-one-can-tame-the-tongue",
+      "title": "No One Can Tame the Tongue",
+      "publish_date": "2026-07-07",
+      "date": "2026-07-07",
+      "status": "published",
+      "summary": "The tongue resists taming by human effort alone. Self-discipline is necessary but not sufficient.",
+      "email_summary": "The tongue resists taming by human effort alone. Self-discipline is necessary but not sufficient.",
+      "scripture_reference": "James 3:7–8 (ESV)"
+    },
+    {
+      "slug": "guard-your-mouth",
+      "title": "Guard Your Mouth",
+      "publish_date": "2026-07-08",
+      "date": "2026-07-08",
+      "status": "published",
+      "summary": "Unguarded speech accumulates damage quietly over time before the ruin becomes visible.",
+      "email_summary": "Unguarded speech accumulates damage quietly over time before the ruin becomes visible.",
+      "scripture_reference": "Proverbs 13:3 (ESV)"
+    },
+    {
+      "slug": "even-a-fool-is-counted-wise",
+      "title": "Even a Fool Is Counted Wise",
+      "publish_date": "2026-07-09",
+      "date": "2026-07-09",
+      "status": "published",
+      "summary": "The leader who knows when not to speak carries authority that reactive speech undermines.",
+      "email_summary": "The leader who knows when not to speak carries authority that reactive speech undermines.",
+      "scripture_reference": "Proverbs 17:27–28 (ESV)"
+    },
+    {
+      "slug": "a-word-fitly-spoken",
+      "title": "A Word Fitly Spoken",
+      "publish_date": "2026-07-10",
+      "date": "2026-07-10",
+      "status": "published",
+      "summary": "The right content at the wrong moment does not land as intended. Timing is part of what makes a word fit.",
+      "email_summary": "The right content at the wrong moment does not land as intended. Timing is part of what makes a word fit.",
+      "scripture_reference": "Proverbs 25:11 (ESV)"
+    },
+    {
+      "slug": "a-time-to-keep-silence",
+      "title": "A Time to Keep Silence",
+      "publish_date": "2026-07-11",
+      "date": "2026-07-11",
+      "status": "published",
+      "summary": "Silence and speech are both necessary. The wisdom is knowing which the moment requires.",
+      "email_summary": "Silence and speech are both necessary. The wisdom is knowing which the moment requires.",
+      "scripture_reference": "Ecclesiastes 3:7 (ESV)"
+    },
+    {
+      "slug": "whoever-restrains-his-words",
+      "title": "Whoever Restrains His Words",
+      "publish_date": "2026-07-12",
+      "date": "2026-07-12",
+      "status": "published",
+      "summary": "More words predictably produce more error. Volume is a communication risk factor.",
+      "email_summary": "More words predictably produce more error. Volume is a communication risk factor.",
+      "scripture_reference": "Proverbs 10:19 (ESV)"
+    },
+    {
+      "slug": "the-heart-of-the-wise-weighs",
+      "title": "The Heart of the Wise Weighs",
+      "publish_date": "2026-07-13",
+      "date": "2026-07-13",
+      "status": "published",
+      "summary": "Knowing what to say and knowing how to say it are separate questions. The wise leader addresses both.",
+      "email_summary": "Knowing what to say and knowing how to say it are separate questions. The wise leader addresses both.",
+      "scripture_reference": "Proverbs 15:28 (ESV)"
+    },
+    {
+      "slug": "the-discerning-heart-speaks-well",
+      "title": "The Discerning Heart Speaks Well",
+      "publish_date": "2026-07-14",
+      "date": "2026-07-14",
+      "status": "published",
+      "summary": "Persuasiveness that lasts flows from a wise heart, not from technique applied on top of an unformed character.",
+      "email_summary": "Persuasiveness that lasts flows from a wise heart, not from technique applied on top of an unformed character.",
+      "scripture_reference": "Proverbs 16:21 (ESV)"
+    },
+    {
+      "slug": "speaking-the-truth-in-love",
+      "title": "Speaking the Truth in Love",
+      "publish_date": "2026-07-15",
+      "date": "2026-07-15",
+      "status": "published",
+      "summary": "The standard is not truth or peace. It is truth that makes for peace.",
+      "email_summary": "The standard is not truth or peace. It is truth that makes for peace.",
+      "scripture_reference": "Zechariah 8:16 (ESV)"
+    },
+    {
+      "slug": "let-your-yes-be-yes",
+      "title": "Let Your Yes Be Yes",
+      "publish_date": "2026-07-16",
+      "date": "2026-07-16",
+      "status": "published",
+      "summary": "Simplicity in communication is a form of integrity. It requires only committing to what you intend to do.",
+      "email_summary": "Simplicity in communication is a form of integrity. It requires only committing to what you intend to do.",
+      "scripture_reference": "Matthew 5:36–37 (ESV)"
+    },
+    {
+      "slug": "put-away-falsehood",
+      "title": "Put Away Falsehood",
+      "publish_date": "2026-07-17",
+      "date": "2026-07-17",
+      "status": "published",
+      "summary": "A leader who cannot be trusted to speak plainly corrupts the integrity of the entire team.",
+      "email_summary": "A leader who cannot be trusted to speak plainly corrupts the integrity of the entire team.",
+      "scripture_reference": "Ephesians 4:25 (ESV)"
+    },
+    {
+      "slug": "faithful-rebuke",
+      "title": "Faithful Rebuke",
+      "publish_date": "2026-07-18",
+      "date": "2026-07-18",
+      "status": "published",
+      "summary": "Flattery manages people. Honest rebuke builds them. The difference shows up over time.",
+      "email_summary": "Flattery manages people. Honest rebuke builds them. The difference shows up over time.",
+      "scripture_reference": "Proverbs 28:23 (ESV)"
+    },
+    {
+      "slug": "iron-sharpens-iron",
+      "title": "Iron Sharpens Iron",
+      "publish_date": "2026-07-19",
+      "date": "2026-07-19",
+      "status": "published",
+      "summary": "Sharpening requires friction. A culture that avoids all friction produces dull edges, not sharp ones.",
+      "email_summary": "Sharpening requires friction. A culture that avoids all friction produces dull edges, not sharp ones.",
+      "scripture_reference": "Proverbs 27:17 (ESV)"
+    },
+    {
+      "slug": "correcting-with-gentleness",
+      "title": "Correcting With Gentleness",
+      "publish_date": "2026-07-20",
+      "date": "2026-07-20",
+      "status": "published",
+      "summary": "Gentleness in correction keeps the door open for the outcome correction is actually meant to produce.",
+      "email_summary": "Gentleness in correction keeps the door open for the outcome correction is actually meant to produce.",
+      "scripture_reference": "2 Timothy 2:24–25 (ESV)"
+    },
+    {
+      "slug": "he-who-answers-before-listening",
+      "title": "He Who Answers Before Listening",
+      "publish_date": "2026-07-21",
+      "date": "2026-07-21",
+      "status": "published",
+      "summary": "Answering before hearing produces responses shaped by incomplete understanding.",
+      "email_summary": "Answering before hearing produces responses shaped by incomplete understanding.",
+      "scripture_reference": "Proverbs 18:13 (ESV)"
+    },
+    {
+      "slug": "a-gentle-tongue-is-a-tree-of-life",
+      "title": "A Gentle Tongue Is a Tree of Life",
+      "publish_date": "2026-07-22",
+      "date": "2026-07-22",
+      "status": "published",
+      "summary": "A gentle tongue produces life in the people around it over time. The fruit accumulates slowly.",
+      "email_summary": "A gentle tongue produces life in the people around it over time. The fruit accumulates slowly.",
+      "scripture_reference": "Proverbs 15:4 (ESV)"
+    },
+    {
+      "slug": "pleasant-words-are-like-honey",
+      "title": "Pleasant Words Are Like Honey",
+      "publish_date": "2026-07-23",
+      "date": "2026-07-23",
+      "status": "published",
+      "summary": "What a leader says consistently affects the health of the people they lead in ways that extend beyond the immediate conversation.",
+      "email_summary": "What a leader says consistently affects the health of the people they lead in ways that extend beyond the immediate conversation.",
+      "scripture_reference": "Proverbs 16:24 (ESV)"
+    },
+    {
+      "slug": "gracious-words-pour-from-the-wise",
+      "title": "Gracious Words Pour From the Wise",
+      "publish_date": "2026-07-24",
+      "date": "2026-07-24",
+      "status": "published",
+      "summary": "Judicious speech flows from a wise heart. It cannot be reliably produced by technique applied on top of an unformed interior.",
+      "email_summary": "Judicious speech flows from a wise heart. It cannot be reliably produced by technique applied on top of an unformed interior.",
+      "scripture_reference": "Proverbs 16:23–24 (ESV)"
+    },
+    {
+      "slug": "like-a-dog-seizing-ears",
+      "title": "Like a Dog Seizing Ears",
+      "publish_date": "2026-07-25",
+      "date": "2026-07-25",
+      "status": "published",
+      "summary": "A leader whose involvement is selective carries more weight when they do choose to enter a dispute.",
+      "email_summary": "A leader whose involvement is selective carries more weight when they do choose to enter a dispute.",
+      "scripture_reference": "Proverbs 26:17 (ESV)"
+    },
+    {
+      "slug": "a-fool-gives-full-vent",
+      "title": "A Fool Gives Full Vent",
+      "publish_date": "2026-07-26",
+      "date": "2026-07-26",
+      "status": "published",
+      "summary": "The team that does not have to manage their leader's emotions is free to do the work they were actually hired to do.",
+      "email_summary": "The team that does not have to manage their leader's emotions is free to do the work they were actually hired to do.",
+      "scripture_reference": "Proverbs 29:11 (ESV)"
+    },
+    {
+      "slug": "do-not-speak-rashly",
+      "title": "Do Not Speak Rashly",
+      "publish_date": "2026-07-27",
+      "date": "2026-07-27",
+      "status": "published",
+      "summary": "A pause between stimulus and response is where wisdom enters the conversation.",
+      "email_summary": "A pause between stimulus and response is where wisdom enters the conversation.",
+      "scripture_reference": "Proverbs 29:20 (ESV)"
+    },
+    {
+      "slug": "bless-and-do-not-curse",
+      "title": "Bless and Do Not Curse",
+      "publish_date": "2026-07-28",
+      "date": "2026-07-28",
+      "status": "published",
+      "summary": "Genuine presence with another person's joy or grief cannot be replicated by performing the appropriate response.",
+      "email_summary": "Genuine presence with another person's joy or grief cannot be replicated by performing the appropriate response.",
+      "scripture_reference": "Romans 12:14–15 (ESV)"
+    },
+    {
+      "slug": "do-not-repay-evil-for-evil",
+      "title": "Do Not Repay Evil for Evil",
+      "publish_date": "2026-07-29",
+      "date": "2026-07-29",
+      "status": "published",
+      "summary": "The quality of a leader's speech is directly connected to the quality of the life they are building.",
+      "email_summary": "The quality of a leader's speech is directly connected to the quality of the life they are building.",
+      "scripture_reference": "1 Peter 3:9–10 (ESV)"
+    },
+    {
+      "slug": "how-forceful-are-honest-words",
+      "title": "How Forceful Are Honest Words",
+      "publish_date": "2026-07-30",
+      "date": "2026-07-30",
+      "status": "published",
+      "summary": "Words that carry force carry it because they carry truth.",
+      "email_summary": "Words that carry force carry it because they carry truth.",
+      "scripture_reference": "Job 6:24–25 (ESV)"
+    },
+    {
+      "slug": "whoever-loves-life-keep-your-tongue",
+      "title": "Whoever Loves Life, Keep Your Tongue",
+      "publish_date": "2026-07-31",
+      "date": "2026-07-31",
+      "status": "published",
+      "summary": "Guard the tongue not out of fear of what careless words cost, but out of desire for what careful words build.",
+      "email_summary": "Guard the tongue not out of fear of what careless words cost, but out of desire for what careful words build.",
+      "scripture_reference": "Psalm 34:12–13 (ESV)"
+    },
+    {
+      "slug": "where-are-you",
+      "title": "Where Are You",
+      "publish_date": "2026-08-01",
+      "date": "2026-08-01",
+      "status": "published",
+      "summary": "Accountability begins with whether the leader answers honestly the first time it is asked.",
+      "email_summary": "Accountability begins with whether the leader answers honestly the first time it is asked.",
+      "scripture_reference": "Genesis 3:9 (ESV)"
+    },
+    {
+      "slug": "am-i-my-brothers-keeper",
+      "title": "Am I My Brother's Keeper",
+      "publish_date": "2026-08-02",
+      "date": "2026-08-02",
+      "status": "published",
+      "summary": "The people entrusted to a leader remain the leader's accountability, in success and in failure.",
+      "email_summary": "The people entrusted to a leader remain the leader's accountability, in success and in failure.",
+      "scripture_reference": "Genesis 4:9–10 (ESV)"
+    },
+    {
+      "slug": "be-sure-your-sin-will-find-you-out",
+      "title": "Be Sure Your Sin Will Find You Out",
+      "publish_date": "2026-08-03",
+      "date": "2026-08-03",
+      "status": "published",
+      "summary": "Accountability does not stay quiet. It surfaces in the record of what a leader actually did.",
+      "email_summary": "Accountability does not stay quiet. It surfaces in the record of what a leader actually did.",
+      "scripture_reference": "Numbers 32:20–23 (ESV)"
+    },
+    {
+      "slug": "achans-confession",
+      "title": "Achan's Confession",
+      "publish_date": "2026-08-04",
+      "date": "2026-08-04",
+      "status": "published",
+      "summary": "Accountability offered before it is demanded is what makes an account trustworthy.",
+      "email_summary": "Accountability offered before it is demanded is what makes an account trustworthy.",
+      "scripture_reference": "Joshua 7:19–21 (ESV)"
+    },
+    {
+      "slug": "our-secret-sins-in-the-light",
+      "title": "Our Secret Sins in the Light",
+      "publish_date": "2026-08-05",
+      "date": "2026-08-05",
+      "status": "published",
+      "summary": "Accountability for a leader's private decisions does not wait for a public moment.",
+      "email_summary": "Accountability for a leader's private decisions does not wait for a public moment.",
+      "scripture_reference": "Psalm 90:8 (ESV)"
+    },
+    {
+      "slug": "nothing-stays-hidden",
+      "title": "Nothing Stays Hidden",
+      "publish_date": "2026-08-06",
+      "date": "2026-08-06",
+      "status": "published",
+      "summary": "Accountability that exists only in public is not accountability at all.",
+      "email_summary": "Accountability that exists only in public is not accountability at all.",
+      "scripture_reference": "Luke 12:2–3 (ESV)"
+    },
+    {
+      "slug": "each-will-give-account",
+      "title": "Each Will Give Account",
+      "publish_date": "2026-08-07",
+      "date": "2026-08-07",
+      "status": "published",
+      "summary": "Accountability owed for one's self is a debt no amount of leadership can transfer.",
+      "email_summary": "Accountability owed for one's self is a debt no amount of leadership can transfer.",
+      "scripture_reference": "Romans 14:10–12 (ESV)"
+    },
+    {
+      "slug": "much-required",
+      "title": "Much Required",
+      "publish_date": "2026-08-08",
+      "date": "2026-08-08",
+      "status": "published",
+      "summary": "What was given in trust is what will be required in full.",
+      "email_summary": "What was given in trust is what will be required in full.",
+      "scripture_reference": "Luke 12:47–48 (ESV)"
+    },
+    {
+      "slug": "settling-the-account",
+      "title": "Settling the Account",
+      "publish_date": "2026-08-09",
+      "date": "2026-08-09",
+      "status": "published",
+      "summary": "Accountability for what you were given includes what you built with it, not only what you protected.",
+      "email_summary": "Accountability for what you were given includes what you built with it, not only what you protected.",
+      "scripture_reference": "Luke 19:15–19 (ESV)"
+    },
+    {
+      "slug": "the-governor-who-refused-the-allowance",
+      "title": "The Governor Who Refused the Allowance",
+      "publish_date": "2026-08-10",
+      "date": "2026-08-10",
+      "status": "published",
+      "summary": "The accountability that matters most is the kind no one is checking but you.",
+      "email_summary": "The accountability that matters most is the kind no one is checking but you.",
+      "scripture_reference": "Nehemiah 5:14–15 (ESV)"
+    },
+    {
+      "slug": "stewards-not-owners",
+      "title": "Stewards, Not Owners",
+      "publish_date": "2026-08-11",
+      "date": "2026-08-11",
+      "status": "published",
+      "summary": "What was placed in your care was never yours to begin with, and the accountability follows accordingly.",
+      "email_summary": "What was placed in your care was never yours to begin with, and the accountability follows accordingly.",
+      "scripture_reference": "1 Corinthians 4:1–2 (ESV)"
+    },
+    {
+      "slug": "use-what-was-given",
+      "title": "Use What Was Given",
+      "publish_date": "2026-08-12",
+      "date": "2026-08-12",
+      "status": "published",
+      "summary": "A gift left unused is still a form of unfaithfulness, even when it looks like humility.",
+      "email_summary": "A gift left unused is still a form of unfaithfulness, even when it looks like humility.",
+      "scripture_reference": "Romans 12:6–8 (ESV)"
+    },
+    {
+      "slug": "guard-the-deposit",
+      "title": "Guard the Deposit",
+      "publish_date": "2026-08-13",
+      "date": "2026-08-13",
+      "status": "published",
+      "summary": "What was entrusted to you in trust must be carried forward in trust, not simply left untouched.",
+      "email_summary": "What was entrusted to you in trust must be carried forward in trust, not simply left untouched.",
+      "scripture_reference": "2 Timothy 1:13–14 (ESV)"
+    },
+    {
+      "slug": "so-that-no-one-can-blame-us",
+      "title": "So That No One Can Blame Us",
+      "publish_date": "2026-08-14",
+      "date": "2026-08-14",
+      "status": "published",
+      "summary": "The most credible leaders are not the ones who insist they can be trusted. They are the ones who make their trustworthiness checkable.",
+      "email_summary": "The most credible leaders are not the ones who insist they can be trusted. They are the ones who make their trustworthiness checkable.",
+      "scripture_reference": "2 Corinthians 8:18–21 (ESV)"
+    },
+    {
+      "slug": "shepherds-who-fed-themselves",
+      "title": "Shepherds Who Fed Themselves",
+      "publish_date": "2026-08-15",
+      "date": "2026-08-15",
+      "status": "published",
+      "summary": "A shepherd who is well fed while the sheep go unattended has failed at the one thing the role was for.",
+      "email_summary": "A shepherd who is well fed while the sheep go unattended has failed at the one thing the role was for.",
+      "scripture_reference": "Ezekiel 34:2–4 (ESV)"
+    },
+    {
+      "slug": "i-will-not-cease-to-pray-for-you",
+      "title": "I Will Not Cease to Pray for You",
+      "publish_date": "2026-08-16",
+      "date": "2026-08-16",
+      "status": "published",
+      "summary": "Real accountability to those you lead does not expire the moment your authority does.",
+      "email_summary": "Real accountability to those you lead does not expire the moment your authority does.",
+      "scripture_reference": "1 Samuel 12:23 (ESV)"
+    },
+    {
+      "slug": "managing-your-own-household-first",
+      "title": "Managing Your Own Household First",
+      "publish_date": "2026-08-17",
+      "date": "2026-08-17",
+      "status": "published",
+      "summary": "Accountability to those you lead in public is only as real as the accountability you already practice at home.",
+      "email_summary": "Accountability to those you lead in public is only as real as the accountability you already practice at home.",
+      "scripture_reference": "1 Timothy 3:4–5 (ESV)"
+    },
+    {
+      "slug": "do-not-say-we-did-not-know",
+      "title": "Do Not Say We Did Not Know",
+      "publish_date": "2026-08-18",
+      "date": "2026-08-18",
+      "status": "published",
+      "summary": "Claimed ignorance does not hold up against a heart that was actually paying attention.",
+      "email_summary": "Claimed ignorance does not hold up against a heart that was actually paying attention.",
+      "scripture_reference": "Proverbs 24:11–12 (ESV)"
+    },
+    {
+      "slug": "examples-not-domineering",
+      "title": "Examples, Not Domineering",
+      "publish_date": "2026-08-19",
+      "date": "2026-08-19",
+      "status": "published",
+      "summary": "Accountability to those you lead includes accountability for whether you have become what you are asking them to become.",
+      "email_summary": "Accountability to those you lead includes accountability for whether you have become what you are asking them to become.",
+      "scripture_reference": "1 Peter 5:1–3 (ESV)"
+    },
+    {
+      "slug": "search-me",
+      "title": "Search Me",
+      "publish_date": "2026-08-20",
+      "date": "2026-08-20",
+      "status": "published",
+      "summary": "Accountability to those you lead is completed by accountability to what is actually in you, invited rather than avoided.",
+      "email_summary": "Accountability to those you lead is completed by accountability to what is actually in you, invited rather than avoided.",
+      "scripture_reference": "Psalm 139:23–24 (ESV)"
+    },
+    {
+      "slug": "i-am-innocent-of-the-blood-of-all",
+      "title": "I Am Innocent of the Blood of All",
+      "publish_date": "2026-08-21",
+      "date": "2026-08-21",
+      "status": "published",
+      "summary": "The accountability you owe to those you lead is only real if you act on it while you still have the chance.",
+      "email_summary": "The accountability you owe to those you lead is only real if you act on it while you still have the chance.",
+      "scripture_reference": "Acts 20:24–27 (ESV)"
+    },
+    {
+      "slug": "so-i-threw-it-into-the-fire",
+      "title": "So I Threw It Into the Fire, and Out Came This Calf",
+      "publish_date": "2026-08-22",
+      "date": "2026-08-22",
+      "status": "published",
+      "summary": "Aaron's excuse to Moses is the oldest leadership dodge there is: describe the failure as something that happened to you.",
+      "email_summary": "Aaron's excuse to Moses is the oldest leadership dodge there is: describe the failure as something that happened to you.",
+      "scripture_reference": "Exodus 32:21–24 (ESV)"
+    },
+    {
+      "slug": "you-will-not-call-to-account",
+      "title": "You Will Not Call to Account",
+      "publish_date": "2026-08-23",
+      "date": "2026-08-23",
+      "status": "published",
+      "summary": "Avoiding accountability rarely starts as an argument. It starts as a quiet decision that no one will ever call this to account.",
+      "email_summary": "Avoiding accountability rarely starts as an argument. It starts as a quiet decision that no one will ever call this to account.",
+      "scripture_reference": "Psalm 10:13 (ESV)"
+    },
+    {
+      "slug": "jonah-rose-to-flee",
+      "title": "Jonah Rose to Flee",
+      "publish_date": "2026-08-24",
+      "date": "2026-08-24",
+      "status": "published",
+      "summary": "Jonah does not argue with his assignment. He just leaves in the opposite direction.",
+      "email_summary": "Jonah does not argue with his assignment. He just leaves in the opposite direction.",
+      "scripture_reference": "Jonah 1:1–3 (ESV)"
+    },
+    {
+      "slug": "if-we-say-we-have-no-sin",
+      "title": "If We Say We Have No Sin",
+      "publish_date": "2026-08-25",
+      "date": "2026-08-25",
+      "status": "published",
+      "summary": "The claim to be without fault is not innocence. John calls it self-deception.",
+      "email_summary": "The claim to be without fault is not innocence. John calls it self-deception.",
+      "scripture_reference": "1 John 1:8 (ESV)"
+    },
+    {
+      "slug": "the-heart-is-deceitful-above-all-things",
+      "title": "The Heart Is Deceitful Above All Things",
+      "publish_date": "2026-08-26",
+      "date": "2026-08-26",
+      "status": "published",
+      "summary": "Jeremiah names the one witness every avoider trusts completely and warns that it cannot be trusted at all.",
+      "email_summary": "Jeremiah names the one witness every avoider trusts completely and warns that it cannot be trusted at all.",
+      "scripture_reference": "Jeremiah 17:9–10 (ESV)"
+    },
+    {
+      "slug": "his-eyes-are-on-the-ways-of-a-man",
+      "title": "His Eyes Are on the Ways of a Man",
+      "publish_date": "2026-08-27",
+      "date": "2026-08-27",
+      "status": "published",
+      "summary": "Elihu insists there is no hiding place dark enough to escape being seen, and no delay built into the judgment either.",
+      "email_summary": "Elihu insists there is no hiding place dark enough to escape being seen, and no delay built into the judgment either.",
+      "scripture_reference": "Job 34:21–23 (ESV)"
+    },
+    {
+      "slug": "the-lord-looks-on-the-heart",
+      "title": "The Lord Looks on the Heart",
+      "publish_date": "2026-08-28",
+      "date": "2026-08-28",
+      "status": "published",
+      "summary": "Samuel looks at Eliab and sees a king. God looks at the same man and sees someone he has already rejected.",
+      "email_summary": "Samuel looks at Eliab and sees a king. God looks at the same man and sees someone he has already rejected.",
+      "scripture_reference": "1 Samuel 16:6–7 (ESV)"
+    },
+    {
+      "slug": "whoever-conceals-his-transgressions",
+      "title": "Whoever Conceals His Transgressions",
+      "publish_date": "2026-08-29",
+      "date": "2026-08-29",
+      "status": "published",
+      "summary": "The proverb offers a real choice with a real difference in outcome: concealment or confession, and only one of them leads anywhere good.",
+      "email_summary": "The proverb offers a real choice with a real difference in outcome: concealment or confession, and only one of them leads anywhere good.",
+      "scripture_reference": "Proverbs 28:13 (ESV)"
+    },
+    {
+      "slug": "i-have-sinned-against-the-lord",
+      "title": "I Have Sinned Against the Lord",
+      "publish_date": "2026-08-30",
+      "date": "2026-08-30",
+      "status": "published",
+      "summary": "David does not explain, minimize, or defend. He says one true sentence and lets it stand.",
+      "email_summary": "David does not explain, minimize, or defend. He says one true sentence and lets it stand.",
+      "scripture_reference": "2 Samuel 12:13 (ESV)"
+    },
+    {
+      "slug": "the-integrity-of-the-upright-guides-them",
+      "title": "The Integrity of the Upright Guides Them",
+      "publish_date": "2026-08-31",
+      "date": "2026-08-31",
+      "status": "published",
+      "summary": "Integrity does not just accuse a leader after failure. It guides them before it, and that is where accountability was always meant to begin.",
+      "email_summary": "Integrity does not just accuse a leader after failure. It guides them before it, and that is where accountability was always meant to begin.",
+      "scripture_reference": "Proverbs 11:3 (ESV)"
+    },
+    {
+      "slug": "what-the-lord-requires",
+      "title": "What the Lord Requires",
+      "publish_date": "2026-09-01",
+      "date": "2026-09-01",
+      "status": "published",
+      "summary": "Mercy is stated as a requirement, not a reward for meeting a harder standard first.",
+      "email_summary": "Mercy is stated as a requirement, not a reward for meeting a harder standard first.",
+      "scripture_reference": "Micah 6:6–8 (ESV)"
+    },
+    {
+      "slug": "merciful-and-just-at-once",
+      "title": "Merciful and Just at Once",
+      "publish_date": "2026-09-02",
+      "date": "2026-09-02",
+      "status": "published",
+      "summary": "God names mercy and justice in the same breath, refusing to trade one for the other.",
+      "email_summary": "God names mercy and justice in the same breath, refusing to trade one for the other.",
+      "scripture_reference": "Exodus 34:6–7 (ESV)"
+    },
+    {
+      "slug": "mercy-as-imitation",
+      "title": "Mercy as Imitation",
+      "publish_date": "2026-09-03",
+      "date": "2026-09-03",
+      "status": "published",
+      "summary": "Mercy modeled after the Father is aimed at people unlikely to ever return it.",
+      "email_summary": "Mercy modeled after the Father is aimed at people unlikely to ever return it.",
+      "scripture_reference": "Luke 6:35–36 (ESV)"
+    },
+    {
+      "slug": "as-you-were-forgiven",
+      "title": "As You Were Forgiven",
+      "publish_date": "2026-09-04",
+      "date": "2026-09-04",
+      "status": "published",
+      "summary": "Forgiveness is measured against what was received, not against how the current offense feels.",
+      "email_summary": "Forgiveness is measured against what was received, not against how the current offense feels.",
+      "scripture_reference": "Ephesians 4:32 (ESV)"
+    },
+    {
+      "slug": "choosing-mercy-over-the-payback-youre-owed",
+      "title": "Choosing Mercy Over the Payback You're Owed",
+      "publish_date": "2026-09-05",
+      "date": "2026-09-05",
+      "status": "published",
+      "summary": "Joseph holds total leverage over his brothers and chooses not to use it.",
+      "email_summary": "Joseph holds total leverage over his brothers and chooses not to use it.",
+      "scripture_reference": "Genesis 45:3–5 (ESV)"
+    },
+    {
+      "slug": "angry-that-mercy-was-shown",
+      "title": "Angry That Mercy Was Shown",
+      "publish_date": "2026-09-06",
+      "date": "2026-09-06",
+      "status": "published",
+      "summary": "Jonah believes the doctrine of mercy completely and still resents it applied to people he resents.",
+      "email_summary": "Jonah believes the doctrine of mercy completely and still resents it applied to people he resents.",
+      "scripture_reference": "Jonah 4:1–4 (ESV)"
+    },
+    {
+      "slug": "restoring-gently",
+      "title": "Restoring Gently",
+      "publish_date": "2026-09-07",
+      "date": "2026-09-07",
+      "status": "published",
+      "summary": "Restoring someone gently and watching your own exposure to the same failure are one instruction.",
+      "email_summary": "Restoring someone gently and watching your own exposure to the same failure are one instruction.",
+      "scripture_reference": "Galatians 6:1 (ESV)"
+    },
+    {
+      "slug": "a-tender-heart-put-into-practice",
+      "title": "A Tender Heart, Put Into Practice",
+      "publish_date": "2026-09-08",
+      "date": "2026-09-08",
+      "status": "published",
+      "summary": "A tender heart is named as the condition mercy depends on, not something leadership experience should harden away.",
+      "email_summary": "A tender heart is named as the condition mercy depends on, not something leadership experience should harden away.",
+      "scripture_reference": "1 Peter 3:8 (ESV)"
+    },
+    {
+      "slug": "kindness-presumed-upon",
+      "title": "Kindness Presumed Upon",
+      "publish_date": "2026-09-09",
+      "date": "2026-09-09",
+      "status": "published",
+      "summary": "Judging someone for a shared failure and presuming on patience are named as the same posture, not two separate problems.",
+      "email_summary": "Judging someone for a shared failure and presuming on patience are named as the same posture, not two separate problems.",
+      "scripture_reference": "Romans 2:1–4 (ESV)"
+    },
+    {
+      "slug": "kindness-for-someone-elses-sake",
+      "title": "Kindness for Someone Else's Sake",
+      "publish_date": "2026-09-10",
+      "date": "2026-09-10",
+      "status": "published",
+      "summary": "David's kindness to Mephibosheth is decided before Mephibosheth ever proves himself.",
+      "email_summary": "David's kindness to Mephibosheth is decided before Mephibosheth ever proves himself.",
+      "scripture_reference": "2 Samuel 9:6–7 (ESV)"
+    },
+    {
+      "slug": "while-he-was-still-a-long-way-off",
+      "title": "While He Was Still a Long Way Off",
+      "publish_date": "2026-09-11",
+      "date": "2026-09-11",
+      "status": "published",
+      "summary": "Mercy runs out to meet the failure before the apology is finished.",
+      "email_summary": "Mercy runs out to meet the failure before the apology is finished.",
+      "scripture_reference": "Luke 15:11–12, 20–21 (ESV)"
+    },
+    {
+      "slug": "the-glory-of-overlooking-an-offense",
+      "title": "The Glory of Overlooking an Offense",
+      "publish_date": "2026-09-12",
+      "date": "2026-09-12",
+      "status": "published",
+      "summary": "Overlooking an offense is named as glory in this proverb, not weakness.",
+      "email_summary": "Overlooking an offense is named as glory in this proverb, not weakness.",
+      "scripture_reference": "Proverbs 19:11 (ESV)"
+    },
+    {
+      "slug": "charge-it-to-my-account",
+      "title": "Charge It to My Account",
+      "publish_date": "2026-09-13",
+      "date": "2026-09-13",
+      "status": "published",
+      "summary": "Paul asks Philemon to charge a real debt to his own account rather than simply asking for forgiveness.",
+      "email_summary": "Paul asks Philemon to charge a real debt to his own account rather than simply asking for forgiveness.",
+      "scripture_reference": "Philemon 1:10, 15–18 (ESV)"
+    },
+    {
+      "slug": "he-went-to-him",
+      "title": "He Went to Him",
+      "publish_date": "2026-09-14",
+      "date": "2026-09-14",
+      "status": "published",
+      "summary": "The Samaritan's compassion becomes oil, wine, transportation, and an open account, not just a feeling.",
+      "email_summary": "The Samaritan's compassion becomes oil, wine, transportation, and an open account, not just a feeling.",
+      "scripture_reference": "Luke 10:31, 33–35 (ESV)"
+    },
+    {
+      "slug": "the-lord-disciplines-the-one-he-loves",
+      "title": "The Lord Disciplines the One He Loves",
+      "publish_date": "2026-09-15",
+      "date": "2026-09-15",
+      "status": "published",
+      "summary": "Discipline is named as evidence of love in this passage, not a departure from it.",
+      "email_summary": "Discipline is named as evidence of love in this passage, not a departure from it.",
+      "scripture_reference": "Hebrews 12:5–6 (ESV)"
+    },
+    {
+      "slug": "do-not-despise-the-lords-discipline",
+      "title": "Do Not Despise the Lord's Discipline",
+      "publish_date": "2026-09-16",
+      "date": "2026-09-16",
+      "status": "published",
+      "summary": "Correction from someone who delights in you looks different than correction from someone who merely tolerates you.",
+      "email_summary": "Correction from someone who delights in you looks different than correction from someone who merely tolerates you.",
+      "scripture_reference": "Proverbs 3:11–12 (ESV)"
+    },
+    {
+      "slug": "those-whom-i-love-i-reprove",
+      "title": "Those Whom I Love, I Reprove",
+      "publish_date": "2026-09-17",
+      "date": "2026-09-17",
+      "status": "published",
+      "summary": "Reproof aimed at someone already loved is evidence of an active relationship, not a threat to it.",
+      "email_summary": "Reproof aimed at someone already loved is evidence of an active relationship, not a threat to it.",
+      "scripture_reference": "Revelation 3:19 (ESV)"
+    },
+    {
+      "slug": "with-complete-patience-and-teaching",
+      "title": "With Complete Patience and Teaching",
+      "publish_date": "2026-09-18",
+      "date": "2026-09-18",
+      "status": "published",
+      "summary": "Patience is asked to cover the full range from gentle correction to direct rebuke, not just the easier end.",
+      "email_summary": "Patience is asked to cover the full range from gentle correction to direct rebuke, not just the easier end.",
+      "scripture_reference": "2 Timothy 4:2 (ESV)"
+    },
+    {
+      "slug": "bringing-back-the-one-who-wanders",
+      "title": "Bringing Back the One Who Wanders",
+      "publish_date": "2026-09-19",
+      "date": "2026-09-19",
+      "status": "published",
+      "summary": "Bringing someone back from wandering is an active pursuit, not a passive observation.",
+      "email_summary": "Bringing someone back from wandering is an active pursuit, not a passive observation.",
+      "scripture_reference": "James 5:19–20 (ESV)"
+    },
+    {
+      "slug": "he-gently-leads-those-with-young",
+      "title": "He Gently Leads Those With Young",
+      "publish_date": "2026-09-20",
+      "date": "2026-09-20",
+      "status": "published",
+      "summary": "Strength and gentleness are shown as the same character, not competing instincts.",
+      "email_summary": "Strength and gentleness are shown as the same character, not competing instincts.",
+      "scripture_reference": "Isaiah 40:10–11 (ESV)"
+    },
+    {
+      "slug": "he-does-not-deal-with-us-according-to-our-sins",
+      "title": "He Does Not Deal With Us According to Our Sins",
+      "publish_date": "2026-09-21",
+      "date": "2026-09-21",
+      "status": "published",
+      "summary": "Mercy here is restraint from a fully warranted response, not the absence of grounds for one.",
+      "email_summary": "Mercy here is restraint from a fully warranted response, not the absence of grounds for one.",
+      "scripture_reference": "Psalm 103:8–10 (ESV)"
+    },
+    {
+      "slug": "love-your-enemies-pray-for-those-who-persecute-you",
+      "title": "Love Your Enemies, Pray for Those Who Persecute You",
+      "publish_date": "2026-09-22",
+      "date": "2026-09-22",
+      "status": "published",
+      "summary": "Mercy toward someone with no baseline goodwill is where a leader's actual capacity for it gets revealed.",
+      "email_summary": "Mercy toward someone with no baseline goodwill is where a leader's actual capacity for it gets revealed.",
+      "scripture_reference": "Matthew 5:43–44 (ESV)"
+    },
+    {
+      "slug": "esau-ran-to-meet-him",
+      "title": "Esau Ran to Meet Him",
+      "publish_date": "2026-09-23",
+      "date": "2026-09-23",
+      "status": "published",
+      "summary": "Esau extends reconciliation without requiring an apology or confession first.",
+      "email_summary": "Esau extends reconciliation without requiring an apology or confession first.",
+      "scripture_reference": "Genesis 33:1, 4 (ESV)"
+    },
+    {
+      "slug": "father-forgive-them",
+      "title": "Father, Forgive Them",
+      "publish_date": "2026-09-24",
+      "date": "2026-09-24",
+      "status": "published",
+      "summary": "Forgiveness given with no expectation of it being noticed or received may be the hardest form mercy takes.",
+      "email_summary": "Forgiveness given with no expectation of it being noticed or received may be the hardest form mercy takes.",
+      "scripture_reference": "Luke 23:34 (ESV)"
+    },
+    {
+      "slug": "lord-do-not-hold-this-sin-against-them",
+      "title": "Lord, Do Not Hold This Sin Against Them",
+      "publish_date": "2026-09-25",
+      "date": "2026-09-25",
+      "status": "published",
+      "summary": "Genuine mercy shows up under real pressure. Mercy that only appears when it's comfortable hasn't actually been tested yet.",
+      "email_summary": "Genuine mercy shows up under real pressure. Mercy that only appears when it's comfortable hasn't actually been tested yet.",
+      "scripture_reference": "Acts 7:59–60 (ESV)"
+    },
+    {
+      "slug": "if-your-enemy-is-hungry-feed-him",
+      "title": "If Your Enemy Is Hungry, Feed Him",
+      "publish_date": "2026-09-26",
+      "date": "2026-09-26",
+      "status": "published",
+      "summary": "Never avenging yourself is the easier half of this instruction. Actively providing for an enemy is the harder, more specific one.",
+      "email_summary": "Never avenging yourself is the easier half of this instruction. Actively providing for an enemy is the harder, more specific one.",
+      "scripture_reference": "Romans 12:19–20 (ESV)"
+    },
+    {
+      "slug": "love-covers-a-multitude-of-sins",
+      "title": "Love Covers a Multitude of Sins",
+      "publish_date": "2026-09-27",
+      "date": "2026-09-27",
+      "status": "published",
+      "summary": "Covering a multitude of sins is an ongoing posture toward accumulated small failures, not one dramatic act of forgiveness.",
+      "email_summary": "Covering a multitude of sins is an ongoing posture toward accumulated small failures, not one dramatic act of forgiveness.",
+      "scripture_reference": "1 Peter 4:8 (ESV)"
+    },
+    {
+      "slug": "blessed-are-the-merciful",
+      "title": "Blessed Are the Merciful",
+      "publish_date": "2026-09-28",
+      "date": "2026-09-28",
+      "status": "published",
+      "summary": "Mercy shown and mercy received are described as one connected pattern, not two separate transactions.",
+      "email_summary": "Mercy shown and mercy received are described as one connected pattern, not two separate transactions.",
+      "scripture_reference": "Matthew 5:7 (ESV)"
+    },
+    {
+      "slug": "he-delights-in-steadfast-love",
+      "title": "He Delights in Steadfast Love",
+      "publish_date": "2026-09-29",
+      "date": "2026-09-29",
+      "status": "published",
+      "summary": "Mercy that keeps the offense easily reachable for later isn't the complete mercy this verse describes.",
+      "email_summary": "Mercy that keeps the offense easily reachable for later isn't the complete mercy this verse describes.",
+      "scripture_reference": "Micah 7:18–19 (ESV)"
+    },
+    {
+      "slug": "mercy-triumphs-over-judgment",
+      "title": "Mercy Triumphs Over Judgment",
+      "publish_date": "2026-09-30",
+      "date": "2026-09-30",
+      "status": "published",
+      "summary": "The judgment a leader can expect is tied directly to the mercy they were willing to extend, not abstractly related to it.",
+      "email_summary": "The judgment a leader can expect is tied directly to the mercy they were willing to extend, not abstractly related to it.",
+      "scripture_reference": "James 2:13 (ESV)"
+    },
+    {
+      "slug": "work-it-and-keep-it",
+      "title": "Work It and Keep It",
+      "publish_date": "2026-10-01",
+      "date": "2026-10-01",
+      "status": "published",
+      "summary": "Stewardship holds two responsibilities at once, developing what was entrusted and protecting it, and most leaders quietly neglect one of them.",
+      "email_summary": "Stewardship holds two responsibilities at once, developing what was entrusted and protecting it, and most leaders quietly neglect one of them.",
+      "scripture_reference": "Genesis 2:15 (ESV)"
+    },
+    {
+      "slug": "the-earth-is-the-lords",
+      "title": "The Earth Is the Lord's",
+      "publish_date": "2026-10-02",
+      "date": "2026-10-02",
+      "status": "published",
+      "summary": "Every person a leader oversees belonged to God first, which is true even for the founder who built the organization from nothing.",
+      "email_summary": "Every person a leader oversees belonged to God first, which is true even for the founder who built the organization from nothing.",
+      "scripture_reference": "Psalm 24:1–2 (ESV)"
+    },
+    {
+      "slug": "given-to-the-children-of-man",
+      "title": "Given to the Children of Man",
+      "publish_date": "2026-10-03",
+      "date": "2026-10-03",
+      "status": "published",
+      "summary": "Real stewardship involves real authority, and what has genuinely been given becomes the responsibility of the one who received it.",
+      "email_summary": "Real stewardship involves real authority, and what has genuinely been given becomes the responsibility of the one who received it.",
+      "scripture_reference": "Psalm 115:16 (ESV)"
+    },
+    {
+      "slug": "strangers-and-sojourners",
+      "title": "Strangers and Sojourners",
+      "publish_date": "2026-10-04",
+      "date": "2026-10-04",
+      "status": "published",
+      "summary": "Every leadership role is temporary, and stewardship includes protecting the future of what a leader holds, not only its present condition.",
+      "email_summary": "Every leadership role is temporary, and stewardship includes protecting the future of what a leader holds, not only its present condition.",
+      "scripture_reference": "Leviticus 25:23 (ESV)"
+    },
+    {
+      "slug": "the-might-of-my-hand",
+      "title": "The Might of My Hand",
+      "publish_date": "2026-10-05",
+      "date": "2026-10-05",
+      "status": "published",
+      "summary": "The story a leader tells about their own success decides what they will do with what they have.",
+      "email_summary": "The story a leader tells about their own success decides what they will do with what they have.",
+      "scripture_reference": "Deuteronomy 8:17–18 (ESV)"
+    },
+    {
+      "slug": "he-must-increase",
+      "title": "He Must Increase",
+      "publish_date": "2026-10-06",
+      "date": "2026-10-06",
+      "status": "published",
+      "summary": "Influence cannot be seized, only received, which is what makes it possible to rejoice when someone else increases.",
+      "email_summary": "Influence cannot be seized, only received, which is what makes it possible to rejoice when someone else increases.",
+      "scripture_reference": "John 3:27–30 (ESV)"
+    },
+    {
+      "slug": "the-lord-gave",
+      "title": "The Lord Gave",
+      "publish_date": "2026-10-07",
+      "date": "2026-10-07",
+      "status": "published",
+      "summary": "Stewardship does not remove grief over loss, but it removes the claim that something was stolen.",
+      "email_summary": "Stewardship does not remove grief over loss, but it removes the claim that something was stolen.",
+      "scripture_reference": "Job 1:20–21 (ESV)"
+    },
+    {
+      "slug": "the-measure-of-my-days",
+      "title": "The Measure of My Days",
+      "publish_date": "2026-10-08",
+      "date": "2026-10-08",
+      "status": "published",
+      "summary": "Time is the one entrusted resource a leader cannot earn back, which makes asking to feel its limit a practical act rather than a morbid one.",
+      "email_summary": "Time is the one entrusted resource a leader cannot earn back, which makes asking to feel its limit a practical act rather than a morbid one.",
+      "scripture_reference": "Psalm 39:4–5 (ESV)"
+    },
+    {
+      "slug": "a-mist-that-appears-for-a-little-time",
+      "title": "A Mist That Appears for a Little Time",
+      "publish_date": "2026-10-09",
+      "date": "2026-10-09",
+      "status": "published",
+      "summary": "The problem is not the plan but the certainty attached to a future that has not been given yet.",
+      "email_summary": "The problem is not the plan but the certainty attached to a future that has not been given yet.",
+      "scripture_reference": "James 4:13–15 (ESV)"
+    },
+    {
+      "slug": "plow-in-the-autumn",
+      "title": "Plow in the Autumn",
+      "publish_date": "2026-10-10",
+      "date": "2026-10-10",
+      "status": "published",
+      "summary": "Work with a season attached cannot be recovered by effort later, and most of a leader's most consequential work shows no result on the day it is done.",
+      "email_summary": "Work with a season attached cannot be recovered by effort later, and most of a leader's most consequential work shows no result on the day it is done.",
+      "scripture_reference": "Proverbs 20:4 (ESV)"
+    },
+    {
+      "slug": "go-to-the-ant",
+      "title": "Go to the Ant",
+      "publish_date": "2026-10-11",
+      "date": "2026-10-11",
+      "status": "published",
+      "summary": "Diligence without supervision is the test this proverb sets, for a leader and for the people they lead.",
+      "email_summary": "Diligence without supervision is the test this proverb sets, for a leader and for the people they lead.",
+      "scripture_reference": "Proverbs 6:6–8 (ESV)"
+    },
+    {
+      "slug": "whatever-your-hand-finds-to-do",
+      "title": "Whatever Your Hand Finds to Do",
+      "publish_date": "2026-10-12",
+      "date": "2026-10-12",
+      "status": "published",
+      "summary": "The reason given for wholehearted work is the closing window, not the worthiness of the assignment.",
+      "email_summary": "The reason given for wholehearted work is the closing window, not the worthiness of the assignment.",
+      "scripture_reference": "Ecclesiastes 9:10 (ESV)"
+    },
+    {
+      "slug": "one-thing-is-necessary",
+      "title": "One Thing Is Necessary",
+      "publish_date": "2026-10-13",
+      "date": "2026-10-13",
+      "status": "published",
+      "summary": "Good work can crowd out the necessary work, and it almost never feels like a mistake while it is happening.",
+      "email_summary": "Good work can crowd out the necessary work, and it almost never feels like a mistake while it is happening.",
+      "scripture_reference": "Luke 10:38–42 (ESV)"
+    },
+    {
+      "slug": "come-away-and-rest-a-while",
+      "title": "Come Away and Rest a While",
+      "publish_date": "2026-10-14",
+      "date": "2026-10-14",
+      "status": "published",
+      "summary": "Rest offered in the middle of good work is a different decision than rest granted after someone collapses.",
+      "email_summary": "Rest offered in the middle of good work is a different decision than rest granted after someone collapses.",
+      "scripture_reference": "Mark 6:30–31 (ESV)"
+    },
+    {
+      "slug": "know-well-the-condition-of-your-flocks",
+      "title": "Know Well the Condition of Your Flocks",
+      "publish_date": "2026-10-15",
+      "date": "2026-10-15",
+      "status": "published",
+      "summary": "Reported condition and actual condition are different numbers, and the distance between them is where failures grow unnoticed.",
+      "email_summary": "Reported condition and actual condition are different numbers, and the distance between them is where failures grow unnoticed.",
+      "scripture_reference": "Proverbs 27:23–24 (ESV)"
+    },
+    {
+      "slug": "consider-your-ways",
+      "title": "Consider Your Ways",
+      "publish_date": "2026-10-16",
+      "date": "2026-10-16",
+      "status": "published",
+      "summary": "When output keeps falling short of input, the problem is allocation rather than effort, and leaders usually respond by pushing harder on the same arrangement.",
+      "email_summary": "When output keeps falling short of input, the problem is allocation rather than effort, and leaders usually respond by pushing harder on the same arrangement.",
+      "scripture_reference": "Haggai 1:2–6 (ESV)"
+    },
+    {
+      "slug": "where-there-are-no-oxen",
+      "title": "Where There Are No Oxen",
+      "publish_date": "2026-10-17",
+      "date": "2026-10-17",
+      "status": "published",
+      "summary": "The cost and the capacity are usually the same animal, and a clean manger can mean discipline or avoidance.",
+      "email_summary": "The cost and the capacity are usually the same animal, and a clean manger can mean discipline or avoidance.",
+      "scripture_reference": "Proverbs 14:4 (ESV)"
+    },
+    {
+      "slug": "that-nothing-may-be-lost",
+      "title": "That Nothing May Be Lost",
+      "publish_date": "2026-10-18",
+      "date": "2026-10-18",
+      "status": "published",
+      "summary": "Abundance reveals whether a leader's care for resources was a value or only a reaction to fear.",
+      "email_summary": "Abundance reveals whether a leader's care for resources was a value or only a reaction to fear.",
+      "scripture_reference": "John 6:11–12 (ESV)"
+    },
+    {
+      "slug": "leave-the-edges",
+      "title": "Leave the Edges",
+      "publish_date": "2026-10-19",
+      "date": "2026-10-19",
+      "status": "published",
+      "summary": "Generosity designed into the harvest does not depend on how a leader feels at the end of a hard year.",
+      "email_summary": "Generosity designed into the harvest does not depend on how a leader feels at the end of a hard year.",
+      "scripture_reference": "Leviticus 19:9–10 (ESV)"
+    },
+    {
+      "slug": "wealth-sprouts-wings",
+      "title": "Wealth Sprouts Wings",
+      "publish_date": "2026-10-20",
+      "date": "2026-10-20",
+      "status": "published",
+      "summary": "Knowing when to stop acquiring is a skill rather than a loss of nerve, and what is held tightly can still disappear.",
+      "email_summary": "Knowing when to stop acquiring is a skill rather than a loss of nerve, and what is held tightly can still disappear.",
+      "scripture_reference": "Proverbs 23:4–5 (ESV)"
+    },
+    {
+      "slug": "rich-in-good-works",
+      "title": "Rich in Good Works",
+      "publish_date": "2026-10-21",
+      "date": "2026-10-21",
+      "status": "published",
+      "summary": "Readiness is the test of generosity, because generosity that needs an internal negotiation every time is not ready.",
+      "email_summary": "Readiness is the test of generosity, because generosity that needs an internal negotiation every time is not ready.",
+      "scripture_reference": "1 Timothy 6:17–19 (ESV)"
+    },
+    {
+      "slug": "i-bore-the-loss-myself",
+      "title": "I Bore the Loss Myself",
+      "publish_date": "2026-10-22",
+      "date": "2026-10-22",
+      "status": "published",
+      "summary": "A steward who absorbs the losses is doing something different from one who only reports them.",
+      "email_summary": "A steward who absorbs the losses is doing something different from one who only reports them.",
+      "scripture_reference": "Genesis 31:36–40 (ESV)"
+    },
+    {
+      "slug": "before-the-sun-sets",
+      "title": "Before the Sun Sets",
+      "publish_date": "2026-10-23",
+      "date": "2026-10-23",
+      "status": "published",
+      "summary": "Holding what is owed is treated as oppression even when nothing is stolen, because the delay costs the one waiting far more than the one holding.",
+      "email_summary": "Holding what is owed is treated as oppression even when nothing is stolen, because the delay costs the one waiting far more than the one holding.",
+      "scripture_reference": "Deuteronomy 24:14–15 (ESV)"
+    },
+    {
+      "slug": "when-it-is-in-your-power",
+      "title": "When It Is in Your Power",
+      "publish_date": "2026-10-24",
+      "date": "2026-10-24",
+      "status": "published",
+      "summary": "Having the power to give is what creates the obligation, which removes a leader's usual excuse for waiting.",
+      "email_summary": "Having the power to give is what creates the obligation, which removes a leader's usual excuse for waiting.",
+      "scripture_reference": "Proverbs 3:27 (ESV)"
+    },
+    {
+      "slug": "they-shall-share-alike",
+      "title": "They Shall Share Alike",
+      "publish_date": "2026-10-25",
+      "date": "2026-10-25",
+      "status": "published",
+      "summary": "Visibility and contribution are not the same measure, and only one of them is easy to see.",
+      "email_summary": "Visibility and contribution are not the same measure, and only one of them is easy to see.",
+      "scripture_reference": "1 Samuel 30:22–24 (ESV)"
+    },
+    {
+      "slug": "keeps-a-thing-covered",
+      "title": "Keeps a Thing Covered",
+      "publish_date": "2026-10-26",
+      "date": "2026-10-26",
+      "status": "published",
+      "summary": "People calibrate what they tell a leader based on what they have watched that leader repeat.",
+      "email_summary": "People calibrate what they tell a leader based on what they have watched that leader repeat.",
+      "scripture_reference": "Proverbs 11:13 (ESV)"
+    },
+    {
+      "slug": "genuinely-concerned-for-your-welfare",
+      "title": "Genuinely Concerned for Your Welfare",
+      "publish_date": "2026-10-27",
+      "date": "2026-10-27",
+      "status": "published",
+      "summary": "Competence is common and genuine concern for other people is not, which is why who a leader sends says more than who they keep.",
+      "email_summary": "Competence is common and genuine concern for other people is not, which is why who a leader sends says more than who they keep.",
+      "scripture_reference": "Philippians 2:19–21 (ESV)"
+    },
+    {
+      "slug": "not-what-is-yours-but-you",
+      "title": "Not What Is Yours, but You",
+      "publish_date": "2026-10-28",
+      "date": "2026-10-28",
+      "status": "published",
+      "summary": "A leader entrusted with people is expected to be spent on them rather than the other way around.",
+      "email_summary": "A leader entrusted with people is expected to be spent on them rather than the other way around.",
+      "scripture_reference": "2 Corinthians 12:14–15 (ESV)"
+    }
+  ]
+}

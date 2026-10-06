@@ -21,6 +21,7 @@ const files = [
   'sitemap.xml',
   'robots.txt',
   'knowledge.json',
+  'devotional-schedule.json',
   'llms.txt',
   'llms-full.txt',
   'rss.xml',

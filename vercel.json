@@ -86,6 +86,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
+          "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
@@ -115,6 +116,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
+          "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
@@ -133,6 +135,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
+          "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
@@ -151,6 +154,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
+          "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
@@ -169,6 +173,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
+          "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
@@ -253,6 +258,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
+          "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
@@ -271,6 +277,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
+          "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
@@ -289,6 +296,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
+          "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
@@ -306,6 +314,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
+          "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
@@ -337,6 +346,7 @@
         "maxDuration": 300,
         "includeFiles": [
           "lib/**",
+          "public/devotional-schedule.json",
           "ao-knowledge-hq-kit/journal/devotionals/**",
           "public/knowledge.json"
         ]
@@ -373,6 +383,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
+          "public/devotional-schedule.json",
           "data/knowledge-full.json"
         ]
       }
@@ -386,6 +397,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
+          "public/devotional-schedule.json",
           "data/knowledge-full.json"
         ]
       }
@@ -420,6 +432,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
+          "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
@@ -1677,7 +1690,7 @@
   "crons": [
     {
       "path": "/api/cron/daily-devotional-notify",
-      "schedule": "20 6 * * *"
+      "schedule": "20 6,9,13,17 * * *"
     },
     {
       "path": "/api/cron/retry-failed-emails",
