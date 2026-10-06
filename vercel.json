@@ -353,6 +353,19 @@
       }
     },
     {
+      "src": "api/cron/devotional-health.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 256,
+        "maxDuration": 60,
+        "includeFiles": [
+          "lib/**",
+          "public/devotional-schedule.json",
+          "ao-knowledge-hq-kit/journal/devotionals/**"
+        ]
+      }
+    },
+    {
       "src": "api/ao/auto/reshare-review.js",
       "use": "@vercel/node",
       "config": {
@@ -754,6 +767,10 @@
     {
       "src": "/api/cron/daily-devotional-notify",
       "dest": "/api/cron/daily-devotional-notify.js"
+    },
+    {
+      "src": "/api/cron/devotional-health",
+      "dest": "/api/cron/devotional-health.js"
     },
     {
       "src": "/api/cron/retry-failed-emails",
@@ -1691,6 +1708,10 @@
     {
       "path": "/api/cron/daily-devotional-notify",
       "schedule": "20 6,9,13,17 * * *"
+    },
+    {
+      "path": "/api/cron/devotional-health",
+      "schedule": "20 18 * * *"
     },
     {
       "path": "/api/cron/retry-failed-emails",
