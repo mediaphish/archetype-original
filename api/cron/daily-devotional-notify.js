@@ -94,6 +94,10 @@ export default async function handler(req, res) {
     // Using UTC-only here caused misses when the publication calendar and UTC date disagreed near boundaries.
     const todayStr = calendarTodayPublicationTz(new Date(), publicationTimeZone());
     const tz = publicationTimeZone();
+    // Declared here, not inside the fallback branch. It is used again further
+    // down to build the links in the email, and when it lived inside that
+    // branch every successful run threw ReferenceError after claiming the day.
+    const siteUrl = process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com';
 
     console.log(`🔍 Checking for devotionals with publish_date === ${todayStr} (publication TZ: ${tz})...`);
 
@@ -125,7 +129,6 @@ export default async function handler(req, res) {
       // for today. Only then is the rebuilt list worth asking for.
       source = 'knowledge_list';
       console.warn('⚠️  Could not read the devotional files; falling back to the content list.');
-      const siteUrl = process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com';
       const knowledgeResponse = await fetch(`${siteUrl}/api/knowledge?type=devotional`);
 
       if (!knowledgeResponse.ok) {
@@ -329,6 +332,14 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error("❌ Daily devotional notification error:", err);
+    await recordRun({
+      calendar_date: calendarTodayPublicationTz(new Date(), publicationTimeZone()),
+      source: 'error',
+      found: 0,
+      sent: 0,
+      failed: 1,
+      note: String(err?.message || err).slice(0, 300),
+    });
     return res.status(500).json({ 
       error: "Server error processing daily notifications.",
       details: err.message 
