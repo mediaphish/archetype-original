@@ -1125,6 +1125,10 @@
       "dest": "/api/ao/linkedin-check.js"
     },
     {
+      "src": "/api/ao/linkedin-data",
+      "dest": "/api/ao/linkedin-data.js"
+    },
+    {
       "src": "/api/ao/editorial/rebuild",
       "dest": "/api/ao/editorial/rebuild.js"
     },
