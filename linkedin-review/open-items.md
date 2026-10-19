@@ -1,50 +1,40 @@
 # What still needs you
 
-Everything else in this folder is done.
+**Sent 2026-10-19, 4:19 PM Central**, as a reply inside Rishi's thread (case
+CAS-11511451-M2N9Y5). Nothing is waiting on Bart now. LinkedIn has the next move.
 
-**1. Decide how to handle item 5.** LinkedIn asked to see a post published from
-the application appearing on your company page. That has never worked, because
-it needs the organization permissions this application is requesting. Thirteen
-attempts, all returning the same error.
+## What went
 
-My recommendation, written into the script and the email: show the pipeline
-working to your personal profile, show the organization attempts and the error,
-and say plainly that this is what the application is for. It is the honest
-version and it demonstrates everything except the one thing they control.
+- A real screen recording (6:22) of the live app with Bart's own voiceover,
+  timed section by section to the narration. Shared from Google Drive, anyone
+  with the link can view and download; checked signed out.
+  https://drive.google.com/file/d/1MZ6fEP-ab2ZbyicOP240g0ml2fWC-96T/view
+  The file has two versions on Drive. The current one is the real recording.
+  Version 1 was a screenshot slideshow and is superseded; viewers only get the
+  current version.
+- The reply in `reply-email.md`, covering all six items and the four questions,
+  including what approval unlocks (org scopes on the consent screen, company
+  page publishing, page analytics) and an offer to record a follow-up once
+  access is granted.
 
-If you would rather do something else, say so and I will rewrite segment 3 and
-the paragraph at the end of the email.
+## If LinkedIn writes back
 
-**Also read the corrected item 6 (added 2026-10-19).** The earlier script said
-the app stores reaction and comment counts. It never has: LinkedIn refuses that
-read until this same approval comes through. The script, teleprompter, email and
-answers now say that, and the Settings page shows LinkedIn's refusal on screen.
-Same honest pattern as item 5.
+Most likely asks, in order: a post on the company page with reactions (item 5),
+or the organization scopes on the consent screen (item 3). Both need the access
+being applied for. The honest answer is already in the email, so a follow-up is
+a short reply, not another video.
 
-**2. Record the video.** Script in `narration-script.md`, reading copy in
-`teleprompter.txt`, order and setup in `recording-checklist.md`.
+If approved: record the promised follow-up (company page post with reactions
+and comments), add the organization scopes to `api/auth/linkedin/start.js`, and
+move `linkedin / page_1` from manual to automatic.
 
-**3. Upload it and confirm the download works.** Google Drive, anyone with the
-link, Viewer. Then open it in an incognito window and check the Download option
-is there. A stream-only link is the most likely way to get bounced again.
+## Leave alone until LinkedIn responds
 
-**4. Paste the link into the email** where it says `[VIDEO LINK]`, and send it
-as a reply inside Rishi's original thread.
-
-**5. Read the email before it goes.** Particularly the final paragraph about
-item 5, since that is the one judgement call in the whole submission.
-
----
+Three "Testing LinkedIn API connection from AO Automation." posts on Bart's
+personal profile, published on camera. A reviewer may look for them. Delete
+them after the review closes.
 
 ## Files on the old Mac that are not in git
 
 **The July 2026 submission video.** `~/Downloads/ao-posting-platform-linkedin-review.mov`,
-71 MB, 3 minutes 16, with Bart's own voiceover. This is the recording LinkedIn
-lost. It is worth keeping as a reference for the re-record, and it is not in the
-repository because 71 MB does not belong in git.
-
-**Copy it to the new Mac by hand before the old one is wiped.** Nothing else in
-this folder depends on it, but once it is gone it is gone.
-
-The seven October card images are safe: they are in `public/images/` and already
-on the remote.
+71 MB. It is on the new Mac's Downloads too, as of 2026-10-19.
