@@ -12,7 +12,7 @@ I built this tool for myself and that is the only way it is used.
 [2. Signing in and the consent screen]
 
 This is where LinkedIn connects to the application.
-I will reconnect now so you can see the consent screen exactly as it appears.
+I will connect now so you can see the consent screen exactly as it appears.
 This is LinkedIn's consent screen, asking my permission on my own behalf.
 The application requests four scopes and no others.
 OpenID, profile and email, which identify me as the member signing in.
