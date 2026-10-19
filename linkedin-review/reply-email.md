@@ -13,7 +13,7 @@ Hi Rishi,
 Thank you for reviewing our Community Management request and for setting out
 exactly what you needed.
 
-The walkthrough video is here: [VIDEO LINK]
+The walkthrough video is here: https://drive.google.com/file/d/1MZ6fEP-ab2ZbyicOP240g0ml2fWC-96T/view?usp=sharing
 
 The link is set so the file can be downloaded and saved on your side. It covers
 your six items in order:
@@ -52,7 +52,7 @@ Yes. The application has a built-in capability that erases everything obtained
 through your APIs: the OAuth tokens and URNs, the record of every attempt to
 read reaction, comment and share totals from socialActions (which today holds
 only the refusals, since that access has not been granted), and the post
-identifiers stored against published posts. It is shown working in the video.
+identifiers stored against published posts. It is shown in the video.
 
 **Is personal data obtained via your community management APIs used for the
 advertising or sales use case?**
@@ -73,7 +73,7 @@ Publishing as the organization is the access this application is requesting, and
 every attempt returns "Organization Or Events permissions must be used when
 using organization as author." The video therefore shows the full publishing
 pipeline working to my personal profile, which is what w_member_social permits
-today, and shows the organization attempts and the error they return. The
+today, and explains the error every organization attempt returns. The
 application is built and waiting on this approval.
 
 Please let me know if you need anything further.
