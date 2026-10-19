@@ -307,6 +307,9 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-10-26 | Keeps a Thing Covered | Proverbs 11:13 (ESV) | `keeps-a-thing-covered` | `2026-10-26-keeps-a-thing-covered.md` |
 | 2026-10-27 | Genuinely Concerned for Your Welfare | Philippians 2:19–21 (ESV) | `genuinely-concerned-for-your-welfare` | `2026-10-27-genuinely-concerned-for-your-welfare.md` |
 | 2026-10-28 | Not What Is Yours, but You | 2 Corinthians 12:14–15 (ESV) | `not-what-is-yours-but-you` | `2026-10-28-not-what-is-yours-but-you.md` |
+| 2026-10-29 | A Tomb for Yourself | Isaiah 22:15–16 (ESV) | `a-tomb-for-yourself` | `2026-10-29-a-tomb-for-yourself.md` |
+| 2026-10-30 | No Ground for Complaint | Daniel 6:3–4 (ESV) | `no-ground-for-complaint` | `2026-10-30-no-ground-for-complaint.md` |
+| 2026-10-31 | For Such a Time as This | Esther 4:13–14 (ESV) | `for-such-a-time-as-this` | `2026-10-31-for-such-a-time-as-this.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
