@@ -27,3 +27,18 @@ as a reply inside Rishi's original thread.
 
 **5. Read the email before it goes.** Particularly the final paragraph about
 item 5, since that is the one judgement call in the whole submission.
+
+---
+
+## Files on the old Mac that are not in git
+
+**The July 2026 submission video.** `~/Downloads/ao-posting-platform-linkedin-review.mov`,
+71 MB, 3 minutes 16, with Bart's own voiceover. This is the recording LinkedIn
+lost. It is worth keeping as a reference for the re-record, and it is not in the
+repository because 71 MB does not belong in git.
+
+**Copy it to the new Mac by hand before the old one is wiped.** Nothing else in
+this folder depends on it, but once it is gone it is gone.
+
+The seven October card images are safe: they are in `public/images/` and already
+on the remote.
