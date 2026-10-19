@@ -29,7 +29,9 @@ your six items in order:
    identities behind them, so no member name, headline, profile link or photo is
    requested, stored or shown anywhere in the application.
 5. Publishing from the application, and the published post shown on LinkedIn.
-6. Page Analytics, showing how post performance is tracked. Today those
+6. Page Analytics, showing how post performance is tracked. The reaction,
+   comment and share totals feed the application's writing assistant, so it
+   learns which topics, formats and posting times perform best. Today those
    counts read "not available": LinkedIn refuses the socialActions read until
    Community Management access is granted, and the application shows that
    refusal rather than a made-up zero.

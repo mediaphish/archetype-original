@@ -53,12 +53,17 @@ In my application, I cannot, because the application never requests it.
 
 [5. Tracking post performance]
 
-This is how I track performance, and I want to be straightforward about what it shows today.
+This is how I track performance, and why it matters.
+I write with an assistant built into this application, and it reads these totals to learn which posts actually land: which topics, which formats, which days and times.
+That is how the next week's content gets better.
+The totals are the whole input.
+It never needs to know who reacted, only how many.
+I want to be straightforward about what it shows today.
 Every count on this list reads not available.
 The application asks LinkedIn for the reaction, comment and share totals on a schedule, and LinkedIn refuses, because reading socialActions requires the Community Management access I am applying for.
 This is LinkedIn's own response, shown on screen rather than hidden.
 The application records the refusal and shows nothing, rather than inventing a zero.
-Once access is granted, these columns fill with those three totals per post, and nothing else.
+Once access is granted, these columns fill with those three totals per post, and nothing else, and my LinkedIn content finally gets the same feedback my other channels already give it.
 
 [6. Deleting everything]
 

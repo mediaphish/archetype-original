@@ -118,8 +118,14 @@ See `open-items.md`, item 1.**
 
 `[ON SCREEN: back to Settings, the "LinkedIn post performance" table. Point at the yellow note with LinkedIn's refusal, then at a "not available" cell.]`
 
-> This is how I track performance, and I want to be straightforward about what
-> it shows today. Every count on this list reads not available.
+> This is how I track performance, and why it matters. I write with an
+> assistant built into this application, and it reads these totals to learn
+> which posts actually land: which topics, which formats, which days and times.
+> That is how the next week's content gets better. The totals are the whole
+> input. It never needs to know who reacted, only how many.
+>
+> I want to be straightforward about what it shows today. Every count on this
+> list reads not available.
 >
 > The application asks LinkedIn for the reaction, comment and share totals on a
 > schedule, and LinkedIn refuses, because reading socialActions requires the
@@ -128,7 +134,8 @@ See `open-items.md`, item 1.**
 >
 > The application records the refusal and shows nothing, rather than inventing
 > a zero. Once access is granted, these columns fill with those three totals per
-> post, and nothing else.
+> post, and nothing else, and my LinkedIn content finally gets the same feedback
+> my other channels already give it.
 
 ---
 
