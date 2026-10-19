@@ -24,8 +24,7 @@ And now it is connected.
 [3. Writing and publishing a post]
 
 Here is the application itself.
-This is a post I wrote, scheduled to publish to LinkedIn.
-I will publish it now from inside the application.
+I will publish a post to LinkedIn from inside the application now.
 And there it is on LinkedIn, published by the application through the API.
 I want to be straightforward about one thing here.
 This post published to my personal profile, because that is what the w underscore member underscore social scope allows today.

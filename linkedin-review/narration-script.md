@@ -54,14 +54,13 @@ in here is one LinkedIn can check against the code.
 
 ## 3. Writing and publishing a post (about 90 seconds)
 
-`[ON SCREEN: the application's compose or queue screen with the prepared post]`
+`[ON SCREEN: Settings, LinkedIn card]`
 
-> Here is the application itself. This is a post I wrote, scheduled to publish
-> to LinkedIn.
+> Here is the application itself. I will publish a post to LinkedIn from inside
+> the application now.
 
-`[ON SCREEN: click publish]`
+`[ON SCREEN: click Post LinkedIn Test]`
 
-> I will publish it now from inside the application.
 
 `[ON SCREEN: switch to LinkedIn in a browser, show the post live]`
 
