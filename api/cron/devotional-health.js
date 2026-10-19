@@ -18,7 +18,12 @@
 import { Resend } from 'resend';
 import { supabaseAdmin } from '../../lib/supabase-admin.js';
 import { contactFormRecipient } from '../../lib/contact-form-inbox.js';
-import { devotionalsFromSchedule, devotionalsPublishedOn } from '../../lib/devotionalsForDate.js';
+import {
+  daysBetween,
+  devotionalsFromSchedule,
+  devotionalsPublishedOn,
+  lastScheduledDevotionalDate,
+} from '../../lib/devotionalsForDate.js';
 import {
   calendarTodayPublicationTz,
   publicationTimeZone,
@@ -28,6 +33,31 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 /** A send is healthy when it reached roughly everyone, not merely when it ran. */
 const MIN_HEALTHY_RECIPIENTS = 50;
+
+/**
+ * Warn when the schedule has this many days or fewer left after today. Three
+ * days is enough for the writing session to finish and publish a batch.
+ */
+const RUNWAY_WARNING_DAYS = 3;
+
+/**
+ * A line for the alert when the schedule is about to run out, or null.
+ *
+ * 2026-10-19. Devotionals were scheduled through October 28 and nothing after.
+ * The check below treated an empty day as healthy, so the first warning would
+ * have been an empty inbox on the 29th. Running low is now said out loud.
+ */
+function runwayWarning(today) {
+  const last = lastScheduledDevotionalDate();
+  if (!last) return null;
+  const left = daysBetween(today, last);
+  if (left < 0) return `No devotionals are scheduled at all after ${last}. Nothing will go out until more are published.`;
+  if (left === 0) return `Today is the last scheduled devotional. Nothing is scheduled for tomorrow.`;
+  if (left <= RUNWAY_WARNING_DAYS) {
+    return `Devotionals are scheduled only through ${last}, ${left} day${left === 1 ? '' : 's'} from now. More need to be published before then.`;
+  }
+  return null;
+}
 
 function authorizeCron(req, res) {
   const cronSecret = process.env.CRON_SECRET;
@@ -77,7 +107,16 @@ export default async function handler(req, res) {
   }
 
   if (expected.length === 0) {
-    return res.status(200).json({ ok: true, today, source, scheduled: 0, healthy: true, note: 'nothing scheduled' });
+    // An empty day used to count as healthy and stay silent. Devotionals go out
+    // every day, so an empty day is the problem, not the absence of one.
+    const runway = runwayWarning(today);
+    return sendAlert(res, today, source, {
+      subject: `No devotional was scheduled for today: ${today}`,
+      lines: [
+        'Nothing was scheduled for today, so no devotional email went out.',
+        ...(runway ? [runway] : []),
+      ],
+    });
   }
 
   const problems = [];
@@ -105,9 +144,22 @@ export default async function handler(req, res) {
     }
   }
 
-  if (problems.length === 0) {
+  const runway = runwayWarning(today);
+
+  if (problems.length === 0 && !runway) {
     return res.status(200).json({ ok: true, today, source, healthy: true, checked });
   }
+
+  if (problems.length === 0) {
+    // Today went out. The only news is that the schedule is about to run dry.
+    return sendAlert(res, today, source, {
+      subject: `Devotionals run out soon: ${today}`,
+      lines: [`Today's devotional went out normally.`, runway],
+      checked,
+    });
+  }
+
+  if (runway) problems.push(runway);
 
   return sendAlert(res, today, source, {
     subject: `Devotional did not go out: ${today}`,
@@ -138,7 +190,7 @@ async function sendAlert(res, today, source, { subject, lines, checked = [] }) {
 
   const html = `
     <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#1a1a1a;">
-      <h2 style="margin:0 0 12px 0;">Today's devotional did not go out</h2>
+      <h2 style="margin:0 0 12px 0;">${escapeHtml(subject)}</h2>
       <p style="margin:0 0 16px 0;">Checked for ${escapeHtml(today)} after all four send windows had passed.</p>
       <ul>${lines.map((l) => `<li>${escapeHtml(l)}</li>`).join('')}</ul>
       <p style="margin:16px 0 0 0;font-size:13px;color:#555;">
