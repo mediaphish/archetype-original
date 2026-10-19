@@ -30,7 +30,7 @@ move `linkedin / page_1` from manual to automatic.
 
 ## Leave alone until LinkedIn responds
 
-Two "Testing LinkedIn API connection from AO Automation." posts on Bart's
+Three "Testing LinkedIn API connection from AO Automation." posts on Bart's
 personal profile, published on camera. A reviewer may look for them. Delete
 them after the review closes.
 

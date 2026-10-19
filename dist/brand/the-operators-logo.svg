@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 719.9 126.64">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: 0em;
+      }
+
+      .cls-2 {
+        font-size: 87.38px;
+      }
+
+      .cls-2, .cls-3 {
+        font-family: AzoSans-Black, 'Azo Sans';
+        font-weight: 800;
+      }
+
+      .cls-2, .cls-3, .cls-4 {
+        fill: #231f20;
+      }
+
+      .cls-3 {
+        font-size: 49.48px;
+      }
+
+      .cls-5 {
+        letter-spacing: -.09em;
+      }
+
+      .cls-6 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-7 {
+        letter-spacing: .04em;
+      }
+    </style>
+  </defs>
+  <path class="cls-4" d="M144.81,126.64l35.98-53.46,35.98,53.46h28.05l-16.73-24.86c9.36-11.08,14.58-25.15,14.58-39.9,0-34.12-27.76-61.88-61.88-61.88s-61.88,27.76-61.88,61.88c0,14.75,5.22,28.82,14.58,39.9l-16.73,24.86h28.05ZM180.79,23.27c21.29,0,38.61,17.32,38.61,38.61,0,6.87-1.82,13.51-5.17,19.31l-33.44-49.68-33.44,49.68c-3.35-5.8-5.17-12.44-5.17-19.31,0-21.29,17.32-38.61,38.61-38.61Z"/>
+  <text class="cls-2" transform="translate(247.45 87.79)"><tspan x="0" y="0">PE</tspan><tspan class="cls-7" x="107.91" y="0">R</tspan><tspan class="cls-5" x="169.51" y="0">A</tspan><tspan class="cls-6" x="230.76" y="0">T</tspan><tspan class="cls-1" x="288.26" y="0">ORS</tspan></text>
+  <text class="cls-3" transform="translate(0 76.42)"><tspan x="0" y="0">THE</tspan></text>
+</svg>
