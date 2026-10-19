@@ -2,6 +2,26 @@ import React, { useState, useEffect, useCallback } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import LinkedInDataPanel from '../../components/ao/LinkedInDataPanel';
 
+/**
+ * Settings was one long scroll of fifteen sections mixing logins, how Auto
+ * behaves, content tools and system checks. Split into four tabs on
+ * 2026-10-19, the grouping Bart saw and liked. The tab lives in the address
+ * (#connections and so on) so a link can open the right one.
+ */
+const SETTINGS_TABS = [
+  { key: 'connections', label: 'Connections' },
+  { key: 'auto', label: 'How Auto writes' },
+  { key: 'content', label: 'Your content' },
+  { key: 'system', label: 'System' },
+];
+
+function initialSettingsTab() {
+  if (typeof window === 'undefined') return 'connections';
+  const fromHash = window.location.hash.replace('#', '');
+  if (SETTINGS_TABS.some((t) => t.key === fromHash)) return fromHash;
+  return 'connections';
+}
+
 function StatusPill({ state }) {
   const s = state || 'not_connected';
   const map = {
@@ -19,6 +39,14 @@ function StatusPill({ state }) {
 
 export default function Settings() {
   const [email, setEmail] = useState('');
+  const [tab, setTab] = useState(initialSettingsTab);
+
+  function chooseTab(key) {
+    setTab(key);
+    try {
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${key}`);
+    } catch (_) {}
+  }
   const [authChecked, setAuthChecked] = useState(false);
   const [linkedinStatus, setLinkedinStatus] = useState(null);
   const [linkedinMessage, setLinkedinMessage] = useState('');
@@ -705,8 +733,28 @@ export default function Settings() {
       <AOHeader active="settings" email={email} onNavigate={handleNavigate} />
       <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Settings</h1>
-        <p className="text-gray-600 mb-8">Owner console and configuration.</p>
+        <p className="text-gray-600 mb-6">Owner console and configuration.</p>
 
+        <nav aria-label="Settings sections" className="mb-8 -mx-4 px-4 overflow-x-auto">
+          <div role="tablist" className="inline-flex gap-1 rounded-lg bg-gray-100 p-1 min-w-max">
+            {SETTINGS_TABS.map((t) => (
+              <button
+                key={t.key}
+                type="button"
+                role="tab"
+                aria-selected={tab === t.key}
+                onClick={() => chooseTab(t.key)}
+                className={`px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap ${
+                  tab === t.key ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </nav>
+
+        {tab === 'system' && (
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-2">System setup check</h2>
           <p className="text-sm text-gray-600 mb-4">
@@ -752,7 +800,9 @@ export default function Settings() {
             </div>
           ) : null}
         </section>
+        )}
 
+        {tab === 'auto' && (
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-2">Editorial memory loop</h2>
           <p className="text-sm text-gray-600 mb-4">
@@ -825,8 +875,10 @@ export default function Settings() {
             </div>
           </div>
         </section>
+        )}
 
         {/* ─── Corpus library ─────────────────────────────────────────── */}
+        {tab === 'content' && (
         <section className="rounded-2xl border border-gray-200 bg-white p-6 mb-6">
           <div className="flex items-start justify-between gap-4 mb-4">
             <div>
@@ -882,8 +934,10 @@ export default function Settings() {
             </p>
           </div>
         </section>
+        )}
 
         {/* ─── Reshare engine ─────────────────────────────────────────── */}
+        {tab === 'auto' && (
         <section className="rounded-2xl border border-gray-200 bg-white p-6 mb-6">
           <div className="flex items-start justify-between gap-4 mb-4">
             <div>
@@ -991,7 +1045,9 @@ export default function Settings() {
             <p className="mt-5 text-sm text-gray-400">No reshares pending review.</p>
           )}
         </section>
+        )}
 
+        {tab === 'auto' && (
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-2">Opportunities</h2>
           <p className="text-sm text-gray-600 mb-4">
@@ -1037,7 +1093,9 @@ export default function Settings() {
             <p className="text-sm text-gray-400">No new opportunities yet.</p>
           )}
         </section>
+        )}
 
+        {tab === 'content' && (
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-2">Brand assets</h2>
           <p className="text-sm text-gray-600 mb-4">
@@ -1227,26 +1285,28 @@ export default function Settings() {
             )}
           </div>
         </section>
+        )}
 
-        {linkedinStatus === 'connected' && (
+        {tab === 'connections' && linkedinStatus === 'connected' && (
           <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">LinkedIn connected. You can use LinkedIn for publishing.</div>
         )}
-        {linkedinStatus === 'error' && (
+        {tab === 'connections' && linkedinStatus === 'error' && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">LinkedIn connection failed.{linkedinMessage ? ` ${linkedinMessage}` : ''}</div>
         )}
-        {metaConnectStatus === 'connected' && (
+        {tab === 'connections' && metaConnectStatus === 'connected' && (
           <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">Meta connected. You can publish to Facebook and Instagram.</div>
         )}
-        {metaConnectStatus === 'error' && (
+        {tab === 'connections' && metaConnectStatus === 'error' && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">Meta connection failed.{metaConnectMessage ? ` ${metaConnectMessage}` : ''}</div>
         )}
-        {xConnectStatus === 'connected' && (
+        {tab === 'connections' && xConnectStatus === 'connected' && (
           <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">X connected. You can publish to @archetypeog.</div>
         )}
-        {xConnectStatus === 'error' && (
+        {tab === 'connections' && xConnectStatus === 'error' && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">X connection failed.{xConnectMessage ? ` ${xConnectMessage}` : ''}</div>
         )}
 
+        {tab === 'connections' && (
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">LinkedIn</h2>
           <p className="text-gray-600 text-sm mb-4">Connect your personal LinkedIn account for AO publishing. Single-owner; tokens are stored server-side only.</p>
@@ -1298,7 +1358,9 @@ export default function Settings() {
             />
           )}
         </section>
+        )}
 
+        {tab === 'connections' && (
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Meta (Facebook + Instagram)</h2>
           <p className="text-gray-600 text-sm mb-4">
@@ -1389,7 +1451,9 @@ export default function Settings() {
             </div>
           )}
         </section>
+        )}
 
+        {tab === 'connections' && (
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Instagram Personal</h2>
           <p className="text-gray-600 text-sm mb-4">
@@ -1469,7 +1533,9 @@ export default function Settings() {
             </div>
           )}
         </section>
+        )}
 
+        {tab === 'connections' && (
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">X</h2>
           <p className="text-gray-600 text-sm mb-4">Connect your X account for publishing.</p>
@@ -1517,13 +1583,17 @@ export default function Settings() {
             </div>
           )}
         </section>
+        )}
 
+        {tab === 'system' && (
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Owner</h2>
           <p className="text-gray-600">Allowed email: <span className="font-mono">{maskedEmail}</span></p>
           <p className="text-sm text-gray-500 mt-2">Single-owner console. Only the configured owner can sign in via magic link.</p>
         </section>
+        )}
 
+        {tab === 'auto' && (
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-2">Scout sources</h2>
           <p className="text-gray-600 text-sm">
@@ -1539,16 +1609,21 @@ export default function Settings() {
             </button>
           </div>
         </section>
+        )}
 
+        {tab === 'content' && (
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Publisher defaults</h2>
           <p className="text-gray-500 text-sm">Default platforms and schedule time can be set here. See <a href="https://github.com/mediaphish/archetype-original/blob/main/notes/SOCIAL_VERCEL_ENV.md" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">notes/SOCIAL_VERCEL_ENV.md</a> for environment variables.</p>
         </section>
+        )}
 
+        {tab === 'system' && (
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Security</h2>
           <p className="text-gray-500 text-sm">Magic links expire after 15 minutes. There is no public signup; only the owner email can request a link.</p>
         </section>
+        )}
       </main>
     </div>
   );
