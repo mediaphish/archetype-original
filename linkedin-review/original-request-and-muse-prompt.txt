@@ -1,0 +1,42 @@
+You are working in the repo that contains Archetype Original, LLC's LinkedIn Community Management API integration. LinkedIn's API Management Team (case CAS-11511451-M2N9Y5) has paused our Standard tier review and requested additional materials. Generate everything below. Do not send any email, do not submit anything to LinkedIn, and do not publish a real post to the company page. Where a fact depends on our actual business practices and cannot be verified from the codebase, use a clearly marked [CONFIRM: ...] placeholder instead of inventing an answer.
+
+STEP 1 — AUDIT THE INTEGRATION FIRST
+Explore the codebase and document, from the code itself:
+- The exact OAuth scopes the app requests (these are what appear on the consent screen in the video).
+- Every Community Management API endpoint the app calls.
+- Exactly which member fields the app displays to a Page admin when a member reacts to or comments on a post (use the real field names as stored and returned).
+- What personal data obtained via the API the app stores, where it is stored, and for how long.
+- Whether a capability exists to securely delete all data obtained via the API, and if not, what would be required to add one.
+- Which post performance metrics the analytics features use, and where each metric comes from.
+Write this up as linkedin-review/codebase-audit.md. Every later deliverable must match the audit. If the audit contradicts any assumption in this prompt, follow the audit and flag the discrepancy at the top of the affected file.
+
+STEP 2 — VIDEO NARRATION SCRIPT
+Write linkedin-review/narration-script.md: a word-for-word script I will read aloud while screen-recording. US English, natural spoken style, 6 to 10 minutes total. LinkedIn requires the video to cover exactly these six items, in this order:
+1. The video must be downloadable (Google Drive link or email attachment) because LinkedIn saves it in their system for audit purposes.
+2. Audio commentary in US English walking through the app.
+3. The OAuth consent screen that asks permission on behalf of the member to access LinkedIn through the various permission scopes.
+4. Page Management use case: when a user reacts to or comments on a post, what member details are shown to the Page admin in the app.
+5. Publishing a post from the application, then showing how it appears on the LinkedIn company page, with comments or reactions.
+6. Page Analytics: demonstrate how post performance is tracked.
+Each segment gets the exact narration lines, paired with [ON SCREEN: ...] cues telling me precisely what to click and show at that moment, using the real screens, scopes, and member field names from the audit. Open with a line stating my name (Bart Paden), the company (Archetype Original, LLC), and what the app does. End with a short closing line.
+Also produce linkedin-review/teleprompter.txt: narration lines only, one short line per row, no cues, suitable for reading off a teleprompter app while recording.
+
+STEP 3 — RUN OF SHOW
+Write linkedin-review/recording-checklist.md: a one-page checklist for recording in a single pass. Account and test data to have ready before hitting record, the segment order, what must be visible in each segment, and the export steps: save as MP4, upload to Google Drive, set sharing so the file can be downloaded (not stream-only), and verify the download works from an incognito window.
+
+STEP 4 — COMPLIANCE ANSWERS
+Write linkedin-review/compliance-answers.md answering LinkedIn's four mandatory questions, quoted here exactly:
+1. "Does your organization have a person/team responsible for compliance privacy regulations and industry- standard privacy practices?"
+2. "Does your organization have the capability to securely delete all data obtained via our community management APIs if required by LinkedIn?"
+3. "Is personal data obtained via our community management APIs used for the advertising or sales use case?"
+4. "Is personal data obtained via our community management APIs for the purpose of the managing a specific customer page shared with other customers?"
+Base every answer on the audit. Expected answers, only where the audit supports them: Q1 Yes, with a [CONFIRM: name of person or team] placeholder. Q2 Yes if the deletion capability exists; if it does not exist in the code, implement it (deletion function covering every store the audit identified, plus tests) and describe how it works, so the answer is truthfully Yes. Q3 No. Q4 No. If the audit shows Q3 or Q4 cannot honestly be answered No, stop, flag it prominently at the top of the file, and do not draft around it.
+
+STEP 5 — DEMO CONTENT
+Write linkedin-review/demo-post.md: the copy for the post published during segment 5 of the video (a professional company update appropriate for the real Archetype Original LinkedIn page, since the published post must be shown live on the company page), plus one sample comment to add to it on camera, and a note on what reaction/comment activity to show if the live post has none yet.
+
+STEP 6 — REPLY EMAIL
+Write linkedin-review/reply-email.md: the complete reply to Rishi at LinkedIn, ready for me to paste as a reply inside the original Gmail thread (LinkedIn does not monitor mail sent outside the thread, so this text must work as an in-thread reply). Professional and concise. No em dashes anywhere in the email. Structure: thank him for the review, state that the walkthrough video is here: [VIDEO LINK: paste Google Drive link], briefly map how the video covers the six requested items, then give the four compliance answers in order, matching compliance-answers.md. Sign it Bart Paden, Archetype Original, LLC.
+
+STEP 7 — OPEN ITEMS
+Write linkedin-review/open-items.md: everything that still requires me personally, and nothing else. Expected entries: record the video using the script, upload it and paste the Drive link into the reply, confirm the compliance contact name and resolve every [CONFIRM] placeholder, and approve the final email text before it is sent.
