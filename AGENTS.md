@@ -10,6 +10,8 @@
 4. **Check the project handoff notes** (so you inherit the latest context and expectations):
    - `notes/AGENT_USAGE_SUMMARY.md`
    - `notes/AGENT_HANDOFF_current_2026-08-20.md`
+   - `docs/HANDOFF-2026-10.md` (newest overall state, October 2026: devotional email, LinkedIn review, social channels, traps, next steps)
+   - `notes/HANDOFF-DEVOTIONALS-2026-10.md` (devotional writing state, October 2026)
    - `notes/AGENT_HANDOFF_preparing-for-major-system-updates_2026-03-10.md` is **historical only** (March 2026). Do not treat it as current unless Bart points at that work.
 
 Follow this every time. The user does not need to remind you.
