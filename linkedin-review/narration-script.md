@@ -29,7 +29,7 @@ in here is one LinkedIn can check against the code.
 
 ## 2. Signing in and the consent screen (about 60 seconds)
 
-`[ON SCREEN: the application's Settings page, LinkedIn card, showing Reconnect]`
+`[ON SCREEN: the application's Settings page, LinkedIn card, showing Connect LinkedIn]`
 
 > This is where LinkedIn connects to the application. I will reconnect now so
 > you can see the consent screen exactly as it appears.
@@ -87,18 +87,18 @@ See `open-items.md`, item 1.**
 
 ## 4. What a Page admin sees when someone engages (about 90 seconds)
 
-`[ON SCREEN: the post performance view in the application, showing counts]`
+`[ON SCREEN: Settings, LinkedIn card, scroll to "LinkedIn post performance". Hover the line that says no member names are requested.]`
 
 > This is the Page Management part of your question, and my answer is short.
 >
-> When somebody reacts to or comments on a post, this is everything the
-> application shows me as the Page admin. The number of reactions and the number
-> of comments. That is all of it.
+> When somebody reacts to or comments on a post, the most this application will
+> ever show me as the Page admin is two numbers. The number of reactions and the
+> number of comments. That is all of it.
 >
-> The application calls the socialActions endpoint and keeps exactly two values
-> from the response: total likes and total first level comments. It does not
-> call the comments or the likes sub resources. It never asks for who reacted or
-> who commented.
+> The application is built to call the socialActions endpoint and keep exactly
+> two values from the response: total likes and total first level comments. It
+> does not call the comments or the likes sub resources. It never asks for who
+> reacted or who commented.
 >
 > So no member name, no headline, no profile link, no photograph, nothing
 > identifying any member, is ever requested, stored or displayed anywhere in
@@ -116,37 +116,39 @@ See `open-items.md`, item 1.**
 
 ## 5. Tracking post performance (about 60 seconds)
 
-`[ON SCREEN: the post performance list across posts]`
+`[ON SCREEN: back to Settings, the "LinkedIn post performance" table. Point at the yellow note with LinkedIn's refusal, then at a "not available" cell.]`
 
-> This is how I track performance. For each post the application stores the
-> reaction count, the comment count, and the share count, all read from
-> socialActions on a schedule, plus a simple engagement score the application
-> calculates itself from those numbers.
+> This is how I track performance, and I want to be straightforward about what
+> it shows today. Every count on this list reads not available.
 >
-> Impressions and clicks show zero, and I want to explain why rather than have
-> you wonder. Those come from organization analytics, which is part of the access
-> I am applying for. Today the application has no way to read them, so it stores
-> zero rather than inventing a number.
+> The application asks LinkedIn for the reaction, comment and share totals on a
+> schedule, and LinkedIn refuses, because reading socialActions requires the
+> Community Management access I am applying for. This is LinkedIn's own
+> response, shown on screen rather than hidden.
+>
+> The application records the refusal and shows nothing, rather than inventing
+> a zero. Once access is granted, these columns fill with those three totals per
+> post, and nothing else.
 
 ---
 
 ## 6. Deleting everything (about 75 seconds)
 
-`[ON SCREEN: the application's LinkedIn data screen at /ao/settings, data section]`
+`[ON SCREEN: Settings, LinkedIn card, scroll to "LinkedIn data this app holds"]`
 
 > You asked whether I can securely delete all data obtained through your APIs if
 > you require it. Rather than tell you yes, I will show you.
 >
 > This screen lists everything the application currently holds that came from
 > LinkedIn. The access and refresh tokens and the two URNs identifying my member
-> account and my page. The reaction, comment and share counts read from
-> socialActions. And the LinkedIn post identifier stored against each published
-> post.
+> account and my page. The record of each attempt to read reaction, comment and
+> share totals, which today holds only LinkedIn's refusals. And the LinkedIn post
+> identifier stored against each published post.
 >
 > Member identities held: zero. There is nothing to delete there, because the
 > application never obtained any.
 
-`[ON SCREEN: the delete control, with the confirmation field]`
+`[ON SCREEN: the red "Erase all LinkedIn data" box with the DELETE field. Do not press it.]`
 
 > This control erases all of it. It takes a typed confirmation because it
 > disconnects LinkedIn entirely until I reconnect.

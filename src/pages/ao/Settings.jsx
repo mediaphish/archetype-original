@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
+import LinkedInDataPanel from '../../components/ao/LinkedInDataPanel';
 
 function StatusPill({ state }) {
   const s = state || 'not_connected';
@@ -1285,6 +1286,16 @@ export default function Settings() {
                 <div className="p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">LinkedIn test post failed.{linkedinTestError ? ` ${linkedinTestError}` : ''}</div>
               )}
             </div>
+          )}
+          {!linkedinLoading && (
+            <LinkedInDataPanel
+              connected={linkedinConnected}
+              onDisconnected={() => {
+                setLinkedinConnected(false);
+                setLinkedinState('not_connected');
+                setLinkedinReason('');
+              }}
+            />
           )}
         </section>
 

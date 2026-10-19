@@ -1,5 +1,14 @@
 # LinkedIn Community Management API: what the code actually does
 
+> **Correction, 2026-10-19.** This audit describes the app storing reaction,
+> comment and share counts read from `socialActions`. It has never received any.
+> All 106 attempts to date were refused by LinkedIn with "Not enough permissions
+> to access: partnerApiSocialActions", because that read is part of the
+> Community Management access under review. The code is as described below; the
+> data is not. The script, teleprompter, email and compliance answers were
+> corrected to say so, and the Settings page now shows the refusal on screen.
+
+
 Case CAS-11511451-M2N9Y5 · Archetype Original, LLC · audited 2026-10-16
 
 Everything here was read out of the repository, not recalled or assumed. Every

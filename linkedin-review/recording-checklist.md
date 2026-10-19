@@ -9,7 +9,8 @@ is the same job with more to cover.
 
 **Disconnect LinkedIn in the application first.** Segment 2 shows the consent
 screen, and you cannot show it while already connected. Settings, LinkedIn card,
-Disconnect. Then leave it disconnected until you are rolling.
+the grey **Disconnect LinkedIn** button. It removes the connection only; your
+posts and history stay. Then leave it disconnected until you are rolling.
 
 **Have a post written and ready to publish**, not yet published. Copy is in
 `demo-post.md`.
@@ -19,8 +20,11 @@ Disconnect. Then leave it disconnected until you are rolling.
 1. archetypeoriginal.com
 2. The application, Settings page
 3. LinkedIn, your company page
-4. The application, post performance
-5. The application, LinkedIn data screen
+4. Your LinkedIn post on LinkedIn itself (for the reactions list in segment 4)
+
+Segments 4, 5 and 6 all happen on the Settings page, in the LinkedIn card, by
+scrolling down: "LinkedIn post performance", then "LinkedIn data this app
+holds", then the red "Erase all LinkedIn data" box.
 
 **Clear the screen.** Close mail, chat, anything with notifications. LinkedIn
 stores this file for audit, so whatever is on screen goes into their system.

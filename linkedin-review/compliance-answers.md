@@ -51,7 +51,10 @@ It removes:
 - the OAuth access and refresh tokens, their expiry, and the member and page
   URNs, from `ao_linkedin_tokens`
 - every reaction, comment and share count read from `socialActions`, and the raw
-  API responses they came from, from `ao_scheduled_post_metrics`
+  API responses they came from, from `ao_scheduled_post_metrics` (as of
+  2026-10-19 these rows hold only LinkedIn's refusals: the read requires the
+  Community Management access under review, so no counts have ever been
+  obtained)
 - the LinkedIn post identifier stored against each published post
 
 There is no fourth store, because the application obtains nothing else from the
@@ -76,7 +79,7 @@ No advertising or sales use of any kind.
 
 The application obtains no third-party personal data at all. The only
 member-identifying call it makes is `userinfo`, which returns the signed-in
-member, who is Bart himself. Engagement data is read as totals only: how many
+member, who is Bart himself. Engagement data is requested as totals only: how many
 reactions, how many comments. The application never requests the identities
 behind those numbers, so there is no member data available to advertise or sell
 to, even in principle.
@@ -104,7 +107,7 @@ is the only way it is used or intended to be used.
 
 | Claim | How to check it |
 |---|---|
-| Member identities are never obtained | The application calls `socialActions/{urn}` and keeps two integers from the response. It never calls the comments or likes sub-resources. |
+| Member identities are never obtained | The application calls `socialActions/{urn}` and keeps only the totals from the response. It never calls the comments or likes sub-resources. Today that call is refused pending this review, and the refusal is shown in the application. |
 | Deletion works | A screen in the application lists everything held and erases it on confirmation. Shown in the walkthrough video. |
 | One member only | A single magic-link address. No sign-up exists anywhere in the product. |
 | Minimum scopes | `openid`, `profile`, `email`, `w_member_social`. One write scope. |

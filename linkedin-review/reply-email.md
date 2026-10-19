@@ -23,13 +23,16 @@ your six items in order:
 3. The OAuth consent screen, showing the permission scopes the application
    requests. There are four: openid, profile, email, and w_member_social.
 4. Page Management. The video shows exactly what member information is displayed
-   to the Page admin when someone reacts or comments, which is the reaction count
-   and the comment count only. The application reads totals from the
-   socialActions endpoint and never requests the identities behind them, so no
-   member name, headline, profile link or photo is requested, stored or shown
-   anywhere in the application.
+   to the Page admin when someone reacts or comments, which is at most the
+   reaction count and the comment count. The application is built to read only
+   those totals from the socialActions endpoint and never requests the
+   identities behind them, so no member name, headline, profile link or photo is
+   requested, stored or shown anywhere in the application.
 5. Publishing from the application, and the published post shown on LinkedIn.
-6. Page Analytics, showing how post performance is tracked.
+6. Page Analytics, showing how post performance is tracked. Today those
+   counts read "not available": LinkedIn refuses the socialActions read until
+   Community Management access is granted, and the application shows that
+   refusal rather than a made-up zero.
 
 On your four mandatory questions:
 
@@ -44,8 +47,9 @@ requests, stores and deletes.
 obtained via your community management APIs if required by LinkedIn?**
 
 Yes. The application has a built-in capability that erases everything obtained
-through your APIs: the OAuth tokens and URNs, the reaction, comment and share
-counts read from socialActions along with the raw responses, and the post
+through your APIs: the OAuth tokens and URNs, the record of every attempt to
+read reaction, comment and share totals from socialActions (which today holds
+only the refusals, since that access has not been granted), and the post
 identifiers stored against published posts. It is shown working in the video.
 
 **Is personal data obtained via your community management APIs used for the

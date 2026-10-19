@@ -15,6 +15,12 @@ version and it demonstrates everything except the one thing they control.
 If you would rather do something else, say so and I will rewrite segment 3 and
 the paragraph at the end of the email.
 
+**Also read the corrected item 6 (added 2026-10-19).** The earlier script said
+the app stores reaction and comment counts. It never has: LinkedIn refuses that
+read until this same approval comes through. The script, teleprompter, email and
+answers now say that, and the Settings page shows LinkedIn's refusal on screen.
+Same honest pattern as item 5.
+
 **2. Record the video.** Script in `narration-script.md`, reading copy in
 `teleprompter.txt`, order and setup in `recording-checklist.md`.
 
