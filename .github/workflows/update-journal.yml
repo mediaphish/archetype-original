@@ -63,11 +63,9 @@ jobs:
         branch: main
         force: false
 
-    - name: Trigger Vercel deployment
-      if: always()
-      run: |
-        curl -s -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
-        echo "Vercel deploy hook triggered"
+    # The Vercel deploy hook this used to call was deleted from the project long ago and
+    # returned not_found on every run while the step printed success. Pushing to main
+    # already triggers the production build, so the step was removed (2026-10-19).
 
     # Backup for the 1am ET cron: if today’s devotional landed in knowledge.json after the cron
     # already ran, or deploy lagged, this sends using the built corpus (full post body).

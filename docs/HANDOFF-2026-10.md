@@ -254,7 +254,7 @@ no broken image icon. Ship images as files alongside the page.
 sends the reply in Rishi's thread. Everything else is written. This is the only
 item with an outside party waiting.
 
-**2. Decide the leftover Vercel project.** `archetype-original` builds on every
+**2. Done 2026-10-19: the leftover `archetype-original` project was deleted by Bart; `archetype-original-v0` is the only one.** Original note: `archetype-original` builds on every
 push and holds separate settings. Check what points at it, then delete it or
 disconnect it from the repo. The split settings are a real hazard: a key set on
 one is not set on the other.
