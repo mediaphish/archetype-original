@@ -101,8 +101,8 @@ export default function WorkWithBart() {
               </h1>
               <div className="mt-8 space-y-6 text-lg leading-relaxed text-stone-300">
                 <p>
-                  I have built companies, led them, and sold two of them. Thirty-four years across more industries than most
-                  people work in over a career.
+                  I have built companies, led them, and sold two of them, across more industries than most people work in
+                  over a whole career.
                 </p>
                 <p>
                   That is what I bring. Not a framework. Not a program. Someone who has been where you are and can help you see
