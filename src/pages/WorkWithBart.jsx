@@ -88,10 +88,35 @@ export default function WorkWithBart() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <main className="min-h-screen bg-stone-50 text-stone-900 [text-rendering:geometricPrecision]">
-        {/* Hero */}
+        {/* Hero: full-bleed photo, no side bars (Bart, 2026-10-20) */}
         <section className="relative overflow-hidden border-b border-stone-200 bg-stone-950">
-          <div className="mx-auto grid max-w-7xl lg:grid-cols-2 lg:items-stretch lg:gap-0">
-            <div className="relative z-10 flex flex-col justify-center px-4 py-14 sm:px-6 sm:py-20 md:px-10 lg:py-24 lg:pr-8">
+          {/* Phone and tablet: photo strip above the copy */}
+          <div className="relative h-[min(46vh,360px)] min-h-[240px] w-full lg:hidden">
+            <img
+              src="/images/bart-office-standing-2026.jpg"
+              alt="Bart Paden, founder of Archetype Original"
+              className="h-full w-full object-cover object-[66%_20%]"
+              loading="eager"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-stone-950" />
+          </div>
+          {/* Desktop: the photo fills the whole section, with a fade behind the copy */}
+          <img
+            src="/images/bart-office-standing-2026.jpg"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 hidden h-full w-full object-cover object-[70%_22%] lg:block"
+            loading="eager"
+          />
+          <div
+            className="pointer-events-none absolute inset-0 hidden lg:block"
+            style={{
+              background:
+                'linear-gradient(to right, rgba(12, 10, 9, 0.97) 0%, rgba(12, 10, 9, 0.92) 36%, rgba(12, 10, 9, 0.45) 58%, rgba(12, 10, 9, 0.05) 100%)',
+            }}
+          />
+          <div className="relative z-10 mx-auto max-w-7xl">
+            <div className="max-w-[640px] px-4 py-14 sm:px-6 sm:py-20 md:px-10 lg:py-28">
               <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-[#C8B8A8]">Work with Bart</p>
               <h1 className="font-serif text-4xl leading-[1.08] text-white sm:text-5xl md:text-6xl">
                 Thirty-four years of building things. On your side of the table.
@@ -116,15 +141,6 @@ export default function WorkWithBart() {
                   Read my books
                 </a>
               </div>
-            </div>
-            <div className="relative min-h-[380px] lg:min-h-[560px]">
-              <img
-                src="/images/bart-office-standing-2026.jpg"
-                alt="Bart Paden, founder of Archetype Original"
-                className="absolute inset-0 h-full w-full object-cover object-[64%_18%]"
-                loading="eager"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-black/10 lg:bg-transparent lg:bg-gradient-to-r lg:from-stone-950 lg:to-transparent" />
             </div>
           </div>
         </section>
