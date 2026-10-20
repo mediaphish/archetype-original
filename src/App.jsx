@@ -108,6 +108,7 @@ import EngagementInquiryPage from "./pages/EngagementInquiry";
 import AccidentalCEOPage from "./pages/AccidentalCEO";
 import RemainingHumanPage from "./pages/RemainingHuman";
 import AdvisoryPage from "./pages/Advisory";
+import WorkWithBartPage from "./pages/WorkWithBart";
 import TheRoomPage from "./pages/TheRoom";
 import BooksPage from "./pages/Books";
 import { trackMetaPixelPageView } from "./lib/metaPixel";
@@ -183,6 +184,7 @@ export default function App() {
     if (path === '/the-room') return 'the-room';
     if (path === '/books') return 'books';
     if (path === '/advisory') return 'advisory';
+    if (path === '/work-with-bart') return 'work-with-bart';
     if (path === '/remaining-human') return 'remaining-human';
     // Operators Platform routes
     if (path === '/operators') return 'operators-landing';
@@ -643,6 +645,8 @@ export default function App() {
         setCurrentPage('books');
       } else if (path === '/advisory') {
         setCurrentPage('advisory');
+      } else if (path === '/work-with-bart') {
+        setCurrentPage('work-with-bart');
       } else if (path === '/remaining-human') {
         setCurrentPage('remaining-human');
       } else {
@@ -805,6 +809,16 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <BooksPage />
+        <Footer />
+      </main>
+    );
+  }
+
+  if (currentPage === 'work-with-bart') {
+    return (
+      <main className="bg-stone-50 text-stone-900">
+        <Header />
+        <WorkWithBartPage />
         <Footer />
       </main>
     );

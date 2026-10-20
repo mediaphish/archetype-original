@@ -13,6 +13,25 @@ function go(e, path) {
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
+/**
+ * The Work with Bart page (2026-10-19, draft) sends visitors here with
+ * ?option=conversation, season, ongoing or rising. Preselecting it means the
+ * request arrives saying which one they chose, until paid checkout replaces
+ * this step.
+ */
+const WORK_WITH_BART_OPTIONS = [
+  { key: 'conversation', label: 'One conversation ($500)' },
+  { key: 'season', label: 'A season ($1,500 a month, three months)' },
+  { key: 'ongoing', label: 'Ongoing ($3,000 a month)' },
+  { key: 'rising', label: 'Rising leader conversation ($150)' },
+];
+
+function optionFromUrl() {
+  if (typeof window === 'undefined') return '';
+  const key = new URLSearchParams(window.location.search).get('option');
+  return WORK_WITH_BART_OPTIONS.find((o) => o.key === key)?.label || '';
+}
+
 export default function EngagementInquiry() {
   const formLoadedAtRef = useRef(null);
   const [trapField, setTrapField] = useState('');
@@ -37,7 +56,7 @@ export default function EngagementInquiry() {
     q4: [],
     q5: '',
     q6: '',
-    q7: '',
+    q7: optionFromUrl(),
     q8: '',
     role: '',
     roleOther: '',
@@ -227,6 +246,9 @@ Generate the full response following the structure above.`;
     'Still discerning',
   ];
   const partnershipOptions = [
+    // Only the option they arrived with, so the draft prices stay off the
+    // form for everyone else until Bart approves the page.
+    ...(optionFromUrl() ? [optionFromUrl()] : []),
     'Periodic perspective and counsel',
     'Ongoing advisory relationship',
     'Project-based engagement',
