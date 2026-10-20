@@ -29,26 +29,27 @@ const OPTIONS = [
   { name: 'Rising leaders', price: '$150', unit: 'one conversation', line: 'Three a month, for those early in it.' },
 ];
 
+// In the order Bart wrote them (set 2026-10-20). Photos are his desk shots of each book.
 const BOOKS = [
-  {
-    title: 'The Room',
-    line: 'Why the conversation you most need often cannot happen inside your own room.',
-    cover: '/images/advisory/the-room-cover.png',
-    href: '/the-room',
-  },
   {
     title: 'Accidental CEO',
     line: 'Building something real, and leading when the weight shows up before the clarity does.',
-    cover: '/images/accidental-ceo/accidental-ceo-cover.png',
+    cover: '/images/books/accidental-ceo-desk.jpg',
     href: '/accidental-ceo',
   },
   {
     title: 'Remaining Human',
     line: 'Servant leadership and staying human while intelligent systems reshape how decisions are made.',
-    cover: '/images/remaining-human/cover-front.png',
+    cover: '/images/books/remaining-human-desk.jpg',
     href: '/remaining-human',
   },
-];
+  {
+    title: 'The Room',
+    line: 'Why the conversation you most need often cannot happen inside your own room.',
+    cover: '/images/books/the-room-desk.jpg',
+    href: '/the-room',
+  },
+]
 
 /**
  * Why Bart, rewritten 2026-10-19 after reading his journal for voice (Bart:
@@ -295,8 +296,13 @@ export default function HomePagePreview() {
           <div className="grid gap-10 sm:grid-cols-3">
             {BOOKS.map((b) => (
               <a key={b.href} href={b.href} onClick={nav(b.href)} className="group block">
-                <div className="mb-5 flex aspect-[3/4] items-center justify-center overflow-hidden bg-white p-6 shadow-sm">
-                  <img src={b.cover} alt={`${b.title} cover`} className="max-h-full max-w-full object-contain" loading="lazy" />
+                <div className="mb-5 aspect-square overflow-hidden shadow-sm">
+                  <img
+                    src={b.cover}
+                    alt={`${b.title} by Bart Paden, standing on a desk`}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                    loading="lazy"
+                  />
                 </div>
                 <h3 className="mb-2 font-serif text-xl font-normal text-[#1a1a1a] group-hover:text-ao-red">{b.title}</h3>
                 <p className="font-sans text-[14px] leading-[1.6] text-[#555]">{b.line}</p>

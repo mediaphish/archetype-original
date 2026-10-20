@@ -78,17 +78,17 @@ export function buildBooksItemListSchema() {
       {
         '@type': 'ListItem',
         position: 1,
-        url: `${SITE_BASE}/the-room`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
         url: `${SITE_BASE}/accidental-ceo`,
       },
       {
         '@type': 'ListItem',
-        position: 3,
+        position: 2,
         url: `${SITE_BASE}/remaining-human`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        url: `${SITE_BASE}/the-room`,
       },
     ],
   };

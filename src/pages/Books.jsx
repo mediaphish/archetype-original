@@ -1,5 +1,5 @@
 /**
- * Books hub — The Room, Accidental CEO, Remaining Human (Prompt 4 §1).
+ * Books hub: Accidental CEO, Remaining Human, The Room, in the order Bart wrote them.
  */
 import React from 'react';
 import SEO from '../components/SEO';
@@ -13,6 +13,37 @@ function goToPath(event, path) {
   window.dispatchEvent(new PopStateEvent('popstate'));
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
+
+// In the order Bart wrote them (set 2026-10-20). Photos are his desk shots of each book.
+const BOOKS = [
+  {
+    title: 'Accidental CEO',
+    image: '/images/books/accidental-ceo-desk.jpg',
+    alt: 'Accidental CEO by Bart Paden, standing on a desk',
+    blurb:
+      'A leadership story about building something real, carrying more than expected, and choosing to lead when the weight shows up before the clarity does.',
+    href: '/accidental-ceo',
+    cta: 'Learn more & order',
+    eager: true,
+  },
+  {
+    title: 'Remaining Human',
+    image: '/images/books/remaining-human-desk.jpg',
+    alt: 'Remaining Human by Bart Paden, standing on a desk',
+    blurb: 'Servant leadership, clarity, and staying human while intelligent systems reshape how decisions are made.',
+    href: '/remaining-human',
+    cta: 'Read more & buy',
+  },
+  {
+    title: 'The Room',
+    image: '/images/books/the-room-desk.jpg',
+    alt: 'The Room by Bart Paden, standing on a desk',
+    blurb:
+      'The structural limits of honest feedback inside authority, and why the conversation you need often cannot happen inside your own room.',
+    href: '/the-room',
+    cta: 'Learn more & buy',
+  },
+];
 
 export default function Books() {
   return (
@@ -33,93 +64,28 @@ export default function Books() {
 
         <section className="py-14 sm:py-18 md:py-24">
           <div className="container mx-auto max-w-6xl px-4 sm:px-6 md:px-12">
-            <div className="grid gap-12 lg:gap-16">
-              {/* Featured — The Room */}
-              <article className="grid gap-10 border border-[#1A1A1A]/10 bg-white p-8 md:grid-cols-[minmax(0,280px)_1fr] md:gap-12 md:p-12 lg:gap-16">
-                <div className="flex justify-center md:justify-start">
-                  <div className="max-w-[260px] overflow-hidden rounded-sm shadow-sm">
+            <div className="grid gap-10 md:grid-cols-3 md:gap-8">
+              {BOOKS.map((book) => (
+                <article key={book.href} className="flex flex-col border border-[#1A1A1A]/10 bg-white p-6 md:p-7">
+                  <div className="mb-6 aspect-square overflow-hidden rounded-sm">
                     <OptimizedImage
-                      src="/images/advisory/the-room-cover.png"
-                      alt="The Room book cover"
-                      className="h-auto w-full object-contain"
-                      loading="eager"
+                      src={book.image}
+                      alt={book.alt}
+                      className="h-full w-full object-cover"
+                      loading={book.eager ? 'eager' : 'lazy'}
                     />
                   </div>
-                </div>
-                <div className="flex flex-col justify-center">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-[#DB0812]">Featured</p>
-                  <h2 className="mt-2 font-serif text-3xl font-bold text-[#1A1A1A] sm:text-4xl md:text-5xl">
-                    The Room
-                  </h2>
-                  <p className="mt-4 text-lg leading-relaxed text-[#6B6B6B]">
-                    The structural limits of honest feedback inside authority — and why the conversation you need often cannot happen inside your own room.
-                  </p>
-                  <div className="mt-8 flex flex-wrap gap-3">
-                    <a
-                      href="/the-room"
-                      onClick={(e) => goToPath(e, '/the-room')}
-                      className="inline-flex min-h-[44px] items-center justify-center bg-[#1A1A1A] px-8 py-4 text-sm font-medium text-white transition-colors hover:bg-[#1A1A1A]/90"
-                    >
-                      Book landing
-                    </a>
-                    <a
-                      href="/advisory"
-                      onClick={(e) => goToPath(e, '/advisory')}
-                      className="inline-flex min-h-[44px] items-center justify-center border border-[#1A1A1A] px-8 py-4 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white"
-                    >
-                      Leadership advisory
-                    </a>
-                  </div>
-                </div>
-              </article>
-
-              <div className="grid gap-12 md:grid-cols-2 md:gap-10">
-                <article className="flex flex-col border border-[#1A1A1A]/10 bg-white p-8 md:p-10">
-                  <div className="mb-6 overflow-hidden rounded-sm">
-                    <OptimizedImage
-                      src="/images/accidental-ceo/accidental-ceo-front-back-01.png"
-                      alt="Accidental CEO covers"
-                      className="h-auto w-full object-contain object-top"
-                      loading="lazy"
-                    />
-                  </div>
-                  <h2 className="font-serif text-2xl font-bold text-[#1A1A1A] sm:text-3xl">Accidental CEO</h2>
-                  <p className="mt-3 flex-1 text-base leading-relaxed text-[#6B6B6B]">
-                    A leadership story about building something real, carrying more than expected, and choosing to lead when the weight shows up before the clarity does.
-                  </p>
+                  <h2 className="font-serif text-2xl font-bold text-[#1A1A1A] sm:text-3xl">{book.title}</h2>
+                  <p className="mt-3 flex-1 text-base leading-relaxed text-[#6B6B6B]">{book.blurb}</p>
                   <a
-                    href="/accidental-ceo"
-                    onClick={(e) => goToPath(e, '/accidental-ceo')}
+                    href={book.href}
+                    onClick={(e) => goToPath(e, book.href)}
                     className="mt-8 inline-flex min-h-[44px] items-center justify-center border border-[#1A1A1A] px-6 py-3 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white"
                   >
-                    Learn more &amp; order
+                    {book.cta}
                   </a>
                 </article>
-
-                <article className="flex flex-col border border-[#1A1A1A]/10 bg-white p-8 md:p-10">
-                  <div className="relative mb-6 aspect-[16/10] overflow-hidden rounded-sm bg-[#061312]">
-                    <OptimizedImage
-                      src="/images/remaining-human/hero-echo.png"
-                      alt=""
-                      aria-hidden="true"
-                      className="h-full w-full object-cover opacity-90"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#061312] via-transparent to-transparent" />
-                  </div>
-                  <h2 className="font-serif text-2xl font-bold text-[#1A1A1A] sm:text-3xl">Remaining Human</h2>
-                  <p className="mt-3 flex-1 text-base leading-relaxed text-[#6B6B6B]">
-                    Servant leadership, clarity, and staying human while intelligent systems reshape how decisions are made.
-                  </p>
-                  <a
-                    href="/remaining-human"
-                    onClick={(e) => goToPath(e, '/remaining-human')}
-                    className="mt-8 inline-flex min-h-[44px] items-center justify-center border border-[#1A1A1A] px-6 py-3 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white"
-                  >
-                    Read more &amp; buy
-                  </a>
-                </article>
-              </div>
+              ))}
             </div>
           </div>
         </section>
@@ -128,7 +94,7 @@ export default function Books() {
           <div className="container mx-auto max-w-3xl px-4 text-center sm:px-6 md:px-12">
             <h2 className="font-serif text-3xl font-bold text-[#1A1A1A] sm:text-4xl">Not sure where to start?</h2>
             <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-[#6B6B6B]">
-              Read <em>The Room</em> first if you want the argument in seventy pages — or begin with advisory if you already know you need an outside-the-building conversation.
+              Read <em>The Room</em> first if you want the argument in thirty-nine pages, or start a conversation if you already know you want to talk with Bart.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <a
@@ -136,7 +102,7 @@ export default function Books() {
                 onClick={(e) => goToPath(e, '/the-room')}
                 className="inline-flex min-h-[44px] w-full max-w-xs items-center justify-center bg-[#1A1A1A] px-8 py-4 text-sm font-medium text-white transition-colors hover:bg-[#1A1A1A]/90 sm:w-auto"
               >
-                The Room — overview
+                About The Room
               </a>
               <a
                 href="/engagement-inquiry"
