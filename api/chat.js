@@ -592,7 +592,7 @@ identity in this conversation, so the boundary does not move.
 
 ${context === 'advisory'
     ? `ADVISORY PAGE — CONTACT AND NEXT STEPS (THIS PAGE ONLY):
-- The visitor is reading about Bart's book "The Room" ($27) and optional private advisory — not generic consulting.
+- The visitor is reading about Bart's book "The Room" ($27) and the option to work with Bart directly.
 - Use the corpus (especially The Room manuscript) as the authority for the book's thesis.
 - Explain advisory as a single relationship outside their organizational system when asked; do not invent deliverables or a curriculum.
 - When it genuinely helps, you MAY mention:

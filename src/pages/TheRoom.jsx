@@ -1,6 +1,7 @@
 /**
- * The Room — book + advisory pathways (/the-room).
- * Snapshot of legacy /advisory hybrid for book-focused traffic; same layout as shipped before advisory split.
+ * The Room: the book and the next step of working with Bart (/the-room).
+ * Wording matches the Revised Edition of the book (October 2026). Booking buttons go to the
+ * inquiry form until the Work with Bart page leaves draft.
  */
 import React, { useEffect, useState } from 'react';
 import SEO from '../components/SEO';
@@ -127,7 +128,7 @@ export default function TheRoom() {
     <>
       <p className="font-serif text-3xl sm:text-4xl text-stone-900">The Room</p>
       <p className="mt-4 text-lg text-stone-600">
-        A short, direct book about the structural limitation every leader operates inside — and what exists outside of it.
+        A short, direct book about the structural limitation every leader operates inside, and what exists outside of it.
       </p>
       <div className="mt-8 space-y-6 text-base leading-relaxed text-stone-700">
         <p>
@@ -137,15 +138,17 @@ export default function TheRoom() {
         <p className="font-semibold text-stone-900">It makes a case.</p>
         <p>
           The case that it is impossible to have a fully honest room when consequence is present. That the internal
-          responses leaders instinctively reach for — surveys, open doors, town halls, deeper conversations — are all
+          responses leaders instinctively reach for, surveys, open doors, town halls, deeper conversations, are all
           internal solutions to a structural problem. That the fix is not inside the room.
         </p>
         <p className="font-medium text-stone-900">It is outside of it.</p>
         <p>
-          The book is built on organizational behavior research, lived experience across thirty-three years of building
+          The book is built on organizational behavior research, lived experience across thirty-four years of building
           and leading companies, and a single argument that becomes impossible to unsee once you have read it.
         </p>
-        <p className="text-stone-900 font-medium">Seventy pages. No filler. Every chapter earns the next one.</p>
+        <p className="text-stone-900 font-medium">
+          Thirty-nine pages, now in a revised edition. No filler. Every chapter earns the next one.
+        </p>
       </div>
       <blockquote className="mt-10 border-l-4 border-ao-red pl-6 text-lg italic leading-relaxed text-stone-800">
         &ldquo;It is impossible to have a fully honest room. Not because your people are dishonest. Not because your
@@ -154,7 +157,7 @@ export default function TheRoom() {
       </blockquote>
       <div className="mt-10">
         <a href={SAMCART_THE_ROOM_URL} target="_blank" rel="noopener noreferrer" className={btnPrimary}>
-          Get The Room — $27
+          Get The Room, $27
         </a>
       </div>
     </>
@@ -191,7 +194,7 @@ export default function TheRoom() {
           </div>
 
           <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 md:px-10 lg:py-28">
-            <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-[#C8B8A8]">The Room · Advisory</p>
+            <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-[#C8B8A8]">The Room · A book by Bart Paden</p>
             <h1 className="max-w-[22ch] font-serif text-4xl leading-[1.08] text-white sm:text-5xl md:text-6xl">
               The room you think you have is not the room that is actually operating around you.
             </h1>
@@ -202,7 +205,7 @@ export default function TheRoom() {
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <a href={SAMCART_THE_ROOM_URL} target="_blank" rel="noopener noreferrer" className={btnPrimary}>
-                Read The Room — $27
+                Read The Room, $27
               </a>
               <button
                 type="button"
@@ -212,7 +215,7 @@ export default function TheRoom() {
                 }}
                 className="inline-flex min-h-[52px] items-center justify-center rounded-lg border border-white/40 bg-white/10 px-6 py-3 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
               >
-                Explore advisory
+                Work with Bart
               </button>
             </div>
           </div>
@@ -278,7 +281,7 @@ export default function TheRoom() {
           </div>
         </section>
 
-        {/* Section 3 — Advisory */}
+        {/* Section 3 — Next step: working with Bart */}
         <section id="advisory-offer" className="border-b border-stone-200 bg-white py-14 sm:py-20 md:py-24">
           <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 md:grid-cols-2 md:items-start md:gap-16 md:px-10">
             <div className="order-2 md:order-1">
@@ -286,42 +289,36 @@ export default function TheRoom() {
                 If the book resonates, there is a next step.
               </h2>
               <p className="mt-5 text-lg text-stone-600">
-                One room. Outside the system. Built for leaders who are ready to think freely without consequence.
+                Someone outside your system, on your side of the table.
               </p>
               <div className="mt-8 space-y-6 text-base leading-relaxed text-stone-700">
                 <p className="font-medium text-stone-900">
-                  The Room describes the problem. The advisory is the structural response to it.
+                  The Room describes the problem. Working with me is one way to answer it.
                 </p>
                 <p>
-                  This is not consulting. It is not coaching. It is not a program with a defined curriculum and a set of
-                  deliverables.
+                  This is not a program with a curriculum and a set of deliverables. It is not a framework you install.
                 </p>
                 <p>
-                  It is one relationship, built around your ability to say out loud the things you cannot say inside your
-                  organization. To think through the decisions that carry real weight with someone who has no stake in
-                  the outcome, no position inside your system, and no consequence to manage.
+                  Everyone around you is shaped by the system you lead, and so is everything they tell you. I am not. I
+                  have a real stake in how this goes for you, but none of the pressure that comes from living inside it.
                 </p>
                 <p>
-                  The person across from you in that room has spent thirty-three years building companies, leading
-                  people, making decisions under pressure, and carrying the cost of the ones that did not land. He has
-                  been inside the leadership rooms of organizations across manufacturing, medical, insurance, legal,
-                  retail, law enforcement, education, government, nonprofit, real estate, and more industries than most
-                  advisors encounter in a lifetime.
-                </p>
-                <p>He has also failed. Built through it. Lost parts of it. Rebuilt.</p>
-                <p>
-                  That full range of experience — the wins, the losses, and everything carried in between — is what he
-                  brings into the room.
-                </p>
-                <p className="font-semibold text-stone-900">Not a framework.</p>
-                <p>
-                  Pattern recognition that only comes from having been inside enough rooms to understand what they cannot
-                  produce on their own.
+                  I have spent thirty-four years building and leading companies, including a software company I grew for
+                  twenty-nine years and sold in July 2022. That work put me inside the leadership rooms of organizations
+                  across thirteen industries, from manufacturing and medical to law enforcement, education, and
+                  nonprofits.
                 </p>
                 <p>
-                  The advisory is available to a limited number of leaders, executives, and founders at any given time.
-                  If you are leading an organization and you sense that something important is not fully reaching you,
-                  this is the conversation worth having.
+                  I have also failed, built through it, lost parts of it, and rebuilt. That full range is what I bring
+                  into the room. It is not a framework. It is pattern recognition that only comes from having been inside
+                  enough rooms to understand what they cannot produce on their own.
+                </p>
+                <p>
+                  I meet people where they are. Sometimes that is one conversation about one real situation. Sometimes it
+                  is a season of working through something together, or a standing relationship that lasts for years.
+                </p>
+                <p>
+                  If you sense that something important is not fully reaching you, this is the conversation worth having.
                 </p>
               </div>
               <div className="mt-10">
@@ -362,17 +359,20 @@ export default function TheRoom() {
                   organizational behavior, and the human cost of the decisions leaders make every day.
                 </p>
                 <p>
-                  He built a software engineering firm from a home office to more than 100 people across multiple
-                  locations before its acquisition in 2022. He has spent thirty-three years inside the leadership rooms
-                  of organizations across nearly every industry, not as an outside observer but as the person responsible
-                  for outcomes that affected real people.
+                  He spent twenty-nine years building a software company from a home office to more than 100 people
+                  across multiple locations, and sold it in July 2022. Across thirty-four years in business he has worked
+                  inside the leadership rooms of organizations in thirteen industries, not as an outside observer but as
+                  the person responsible for outcomes that affected real people.
                 </p>
                 <p>
-                  His work — the books, the research, the writing, and the tools he is building — is designed to give
+                  His work, the books, the research, the writing, and the tools he is building, is designed to give
                   leaders a deeper and more honest understanding of what leading people actually requires. Whether a reader
                   ever engages with him directly or not, the work is built to be useful.
                 </p>
-                <p className="font-medium text-stone-900">For the leaders who want to go further, the room is available.</p>
+                <p className="font-medium text-stone-900">
+                  For leaders who want to go further, he works with people directly, from a single conversation to a
+                  standing relationship.
+                </p>
               </div>
               <div className="mt-10">
                 <p className="text-sm text-stone-600">
@@ -403,10 +403,10 @@ export default function TheRoom() {
             <h2 className="font-serif text-3xl text-white sm:text-4xl">Two ways to start.</h2>
             <div className="mt-12 grid gap-5 text-left sm:grid-cols-2">
               <div className="border border-[#D8D4CE] bg-white p-8">
-                <p className="mb-3 font-sans text-[10px] uppercase tracking-[0.12em] text-[#666]">Option 01 — The book</p>
+                <p className="mb-3 font-sans text-[10px] uppercase tracking-[0.12em] text-[#666]">Option 01 · The book</p>
                 <p className="font-serif text-xl text-[#1a1a1a]">Read the book first.</p>
                 <p className="mt-4 text-sm leading-relaxed text-[#555]">
-                  Seventy pages. $27. The argument that changes how you see every room you will ever sit in.
+                  Thirty-nine pages. $27. The argument that changes how you see every room you will ever sit in.
                 </p>
                 <a
                   href={SAMCART_THE_ROOM_URL}
@@ -418,10 +418,10 @@ export default function TheRoom() {
                 </a>
               </div>
               <div className="border-2 border-[#1a1a1a] bg-white p-8">
-                <p className="mb-3 font-sans text-[10px] uppercase tracking-[0.12em] text-[#666]">Option 02 — The advisory</p>
+                <p className="mb-3 font-sans text-[10px] uppercase tracking-[0.12em] text-[#666]">Option 02 · Work with Bart</p>
                 <p className="font-serif text-xl text-[#1a1a1a]">Start the conversation directly.</p>
                 <p className="mt-4 text-sm leading-relaxed text-[#555]">
-                  If you already know you need this room, skip the book and reach out.
+                  If you already know you want to talk, skip the book and reach out.
                 </p>
                 <button
                   type="button"
