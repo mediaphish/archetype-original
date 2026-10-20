@@ -119,7 +119,7 @@ export default function WorkWithBart() {
             </div>
             <div className="relative min-h-[380px] lg:min-h-[560px]">
               <img
-                src="/images/Bart-32.jpg"
+                src="/images/bart-office-standing-2026.jpg"
                 alt="Bart Paden, founder of Archetype Original"
                 className="absolute inset-0 h-full w-full object-cover object-[center_top]"
                 loading="eager"
@@ -134,7 +134,7 @@ export default function WorkWithBart() {
           <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 md:grid-cols-2 md:items-center md:gap-14 md:px-10">
             <figure className="order-last md:order-first">
               <img
-                src="/images/meet-bart-working.jpg"
+                src="/images/bart-table-conversation-2026.jpg"
                 alt="Bart Paden in conversation across a small table, coffee in hand"
                 className="w-full border border-stone-200 object-cover shadow-sm"
                 loading="lazy"
