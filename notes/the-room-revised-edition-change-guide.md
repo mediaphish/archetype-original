@@ -540,6 +540,6 @@ Not included here: the site-only summary and tags at the top of the source file,
 ## Before you publish the new edition
 
 - Confirm the line "The Room is his third book." is correct. It was not changed.
-- The Bibliography entry for Coutu and Kauffman lists pages 91-97. One library catalog lists 91-93. Check before print.
+- Coutu and Kauffman page range: checked 2026-10-20. Pages 91-97 is correct and needs no change. The article is HBR's research report (pages 91 to 93) plus commentary from five experts that runs through page 97. One library catalog lists only the report section.
 - If your design has a running header or footer that says "Epilogue," change it to "About the Author."
 - If the copyright page or cover mentions "First Edition," update it to "Revised Edition."

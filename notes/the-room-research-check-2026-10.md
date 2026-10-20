@@ -30,8 +30,11 @@ who benefited most were not the ones in crisis."
 consistently the ones who engaged during periods of strength." No source. Cut
 it or tie it to the coaching numbers above.
 
-**Bibliography, line 525. Minor.** One library catalog lists the article as
-pages 91 to 93, not 91 to 97. Confirm against the issue.
+**Bibliography, line 525. OK (resolved 2026-10-20).** Pages 91 to 97 is correct.
+The piece is HBR's research report by Coutu and Kauffman plus commentary from
+five experts (Ram Charan, David B. Peterson, Michael Maccoby, P. Anne Scoular,
+Anthony M. Grant). Academic reference lists cite it as 87(1), 91-97. The
+EconBiz catalog's 91 to 93 covers only the report section.
 
 ## Chapter 3: costs
 
