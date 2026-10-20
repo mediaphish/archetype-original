@@ -146,7 +146,7 @@ Bart Paden is an operator, researcher, and writer working at the intersection of
 **Line 510:**
 For leaders who want to go further, Bart works with people directly, from a single conversation to a standing relationship, and with organizations through consulting and fractional roles.
 
-**Line 512:** "The Room is his third book." Unchanged until Bart confirms.
+**Line 512:** "The Room is his third book." Confirmed by Bart 2026-10-20. No change.
 
 **Line 514:** archetypeoriginal.com/work-with-bart
 
