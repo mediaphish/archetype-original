@@ -121,7 +121,7 @@ export default function WorkWithBart() {
               <img
                 src="/images/bart-office-standing-2026.jpg"
                 alt="Bart Paden, founder of Archetype Original"
-                className="absolute inset-0 h-full w-full object-cover object-[center_top]"
+                className="absolute inset-0 h-full w-full object-cover object-[64%_18%]"
                 loading="eager"
               />
               <div className="pointer-events-none absolute inset-0 bg-black/10 lg:bg-transparent lg:bg-gradient-to-r lg:from-stone-950 lg:to-transparent" />
