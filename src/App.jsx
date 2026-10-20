@@ -11,6 +11,8 @@ import ChatApp from "./app/ChatApp";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import HomePage from "./components/home/HomePage";
+import HomePagePreview from "./components/home/HomePagePreview";
+import { Helmet } from "react-helmet-async";
 import Journal from "./pages/Journal";
 import JournalPost from "./pages/JournalPost";
 import Podcast from "./pages/Podcast";
@@ -185,6 +187,7 @@ export default function App() {
     if (path === '/books') return 'books';
     if (path === '/advisory') return 'advisory';
     if (path === '/work-with-bart') return 'work-with-bart';
+    if (path === '/home-preview') return 'home-preview';
     if (path === '/remaining-human') return 'remaining-human';
     // Operators Platform routes
     if (path === '/operators') return 'operators-landing';
@@ -647,6 +650,8 @@ export default function App() {
         setCurrentPage('advisory');
       } else if (path === '/work-with-bart') {
         setCurrentPage('work-with-bart');
+      } else if (path === '/home-preview') {
+        setCurrentPage('home-preview');
       } else if (path === '/remaining-human') {
         setCurrentPage('remaining-human');
       } else {
@@ -809,6 +814,20 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <BooksPage />
+        <Footer />
+      </main>
+    );
+  }
+
+  if (currentPage === 'home-preview') {
+    return (
+      <main className="bg-white text-[#1a1a1a]">
+        <Helmet>
+          <title>Home preview | Archetype Original</title>
+          <meta name="robots" content="noindex, nofollow" />
+        </Helmet>
+        <Header />
+        <HomePagePreview />
         <Footer />
       </main>
     );

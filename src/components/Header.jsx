@@ -71,6 +71,13 @@ export default function Header() {
     isActive('/advisory') || isActive('/consulting') || isActive('/fractional-roles');
   /** Public marketing page only — not /operators/login or app subroutes */
   const isOperatorsLandingNav = currentPath === '/operators';
+  /**
+   * 2026-10-19 draft menu, shown only on the two preview pages until Bart
+   * approves it: "Work with Bart" replaces the Leadership Advisory dropdown, and
+   * the red button books a single conversation instead of opening the long form.
+   */
+  const newMenu = currentPath === '/home-preview' || currentPath === '/work-with-bart';
+  const ctaPath = newMenu ? '/engagement-inquiry?option=conversation' : '/engagement-inquiry';
 
   return (
     <>
@@ -164,7 +171,19 @@ export default function Header() {
               {/* Desktop Navigation — center column (lg+ only) */}
               <div className="hidden min-w-0 items-center justify-center lg:flex">
                 <div className="flex max-w-full flex-wrap items-center justify-center gap-2 xl:gap-4">
-                  {/* Leadership Advisory */}
+                  {/* Leadership Advisory (Work with Bart in the 2026-10-19 preview menu) */}
+                  {newMenu ? (
+                    <a
+                      href="/work-with-bart"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleNavigation('/work-with-bart');
+                      }}
+                      className={navLinkClass('/work-with-bart')}
+                    >
+                      Work with Bart
+                    </a>
+                  ) : (
                   <div
                     className="relative"
                     onMouseEnter={() => setAdvisoryDropdownOpen(true)}
@@ -224,6 +243,7 @@ export default function Header() {
                       </div>
                     )}
                   </div>
+                  )}
 
                   <a
                     href="/operators"
@@ -363,14 +383,14 @@ export default function Header() {
               <div className="flex shrink-0 items-center justify-end justify-self-end gap-2">
               <div className="hidden shrink-0 lg:block">
                 <a
-                  href="/engagement-inquiry"
+                  href={ctaPath}
                   onClick={(e) => {
                     e.preventDefault();
-                    handleNavigation('/engagement-inquiry');
+                    handleNavigation(ctaPath);
                   }}
                   className="inline-flex items-center rounded-[3px] bg-ao-red px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm transition-all duration-200 hover:opacity-90 xl:px-5 xl:text-[13px]"
                 >
-                  Work Together
+                  {newMenu ? 'Book a conversation' : 'Work Together'}
                 </a>
               </div>
 
@@ -445,7 +465,10 @@ export default function Header() {
             {/* Drawer Content - Scrollable */}
             <div className="flex-1 overflow-y-auto py-4">
               <div className="flex flex-col space-y-1">
-                {/* Leadership Advisory */}
+                {/* Leadership Advisory (Work with Bart in the preview menu) */}
+                {newMenu ? (
+                  <a href="/work-with-bart" onClick={(e) => { e.preventDefault(); handleNavigation('/work-with-bart'); }} className="w-full px-6 py-3 text-base font-medium text-left text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]">Work with Bart</a>
+                ) : (
                 <div>
                   <button
                     type="button"
@@ -470,6 +493,7 @@ export default function Header() {
                     </div>
                   )}
                 </div>
+                )}
 
                 <a
                   href="/operators"
@@ -587,15 +611,15 @@ export default function Header() {
 
                 {/* Work Together CTA Button - Mobile */}
                 <a
-                  href="/engagement-inquiry"
-                  onClick={(e) => { e.preventDefault(); handleNavigation('/engagement-inquiry'); }}
+                  href={ctaPath}
+                  onClick={(e) => { e.preventDefault(); handleNavigation(ctaPath); }}
                   className={`min-h-[44px] flex items-center justify-center px-6 py-3 text-base font-medium transition-all duration-200 ${
                     isActive('/engagement-inquiry') 
                       ? 'text-white bg-ao-red' 
                       : 'bg-ao-red text-white hover:opacity-90'
                   } rounded-[3px] mx-6 my-4 text-center`}
                 >
-                  Work Together
+                  {newMenu ? 'Book a conversation' : 'Work Together'}
                 </a>
               </div>
             </div>
