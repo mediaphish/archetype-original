@@ -134,7 +134,16 @@ export default function WorkWithBart() {
 
         {/* How it works */}
         <section className="border-b border-stone-200 bg-stone-50 py-14 sm:py-20 md:py-24">
-          <div className="mx-auto max-w-3xl px-4 sm:px-6 md:px-10">
+          <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 md:grid-cols-2 md:items-center md:gap-14 md:px-10">
+            <figure className="order-last md:order-first">
+              <img
+                src="/images/meet-bart-working.jpg"
+                alt="Bart Paden in conversation across a small table, coffee in hand"
+                className="w-full border border-stone-200 object-cover shadow-sm"
+                loading="lazy"
+              />
+            </figure>
+            <div>
             <h2 className="font-serif text-3xl leading-tight text-stone-900 sm:text-4xl">
               I meet you where you are.
             </h2>
@@ -151,6 +160,7 @@ export default function WorkWithBart() {
                 Some people need one conversation. Some need a season. A few want someone in their corner for the long haul.
               </p>
               <p className="font-semibold text-stone-900">Pick the size that fits. You can always change it.</p>
+            </div>
             </div>
           </div>
         </section>
