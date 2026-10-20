@@ -6,8 +6,9 @@
  * Room no longer belongs in the opening, wanted the journal on the home page,
  * and was "open to a complete re-imagining of the whole thing."
  *
- * The page now does three things, in order: who Bart is, what he writes, and
- * how to work with him. Everything else is one compact row at the bottom.
+ * Order, settled with Bart the same day: who Bart is, how to work with him,
+ * what he is writing now, the three books, then everything else. The offer
+ * comes straight after the opening because the point of the change is work. Everything else is one compact row at the bottom.
  * The live home page (HomePage.jsx) is untouched until he approves this.
  */
 import React, { useEffect, useState } from 'react';
@@ -28,8 +29,28 @@ const OPTIONS = [
   { name: 'Rising leaders', price: '$150', unit: 'one conversation', line: 'Three a month, for those early in it.' },
 ];
 
+const BOOKS = [
+  {
+    title: 'The Room',
+    line: 'Why the conversation you most need often cannot happen inside your own room.',
+    cover: '/images/advisory/the-room-cover.png',
+    href: '/the-room',
+  },
+  {
+    title: 'Accidental CEO',
+    line: 'Building something real, and leading when the weight shows up before the clarity does.',
+    cover: '/images/accidental-ceo/accidental-ceo-cover.png',
+    href: '/accidental-ceo',
+  },
+  {
+    title: 'Remaining Human',
+    line: 'Servant leadership and staying human while intelligent systems reshape how decisions are made.',
+    cover: '/images/remaining-human/cover-front.png',
+    href: '/remaining-human',
+  },
+];
+
 const MORE = [
-  { label: 'Books', title: 'The Room, Accidental CEO, Remaining Human', href: '/books' },
   { label: 'Daily', title: 'Devotionals', href: '/faith' },
   { label: 'Research', title: 'Culture Science', href: '/culture-science' },
   { label: 'Community', title: 'The Operators', href: '/operators' },
@@ -133,6 +154,47 @@ export default function HomePagePreview() {
         </div>
       </section>
 
+      {/* Work with Bart */}
+      <section className="bg-ao-dark px-6 py-16 md:px-12 md:py-24">
+        <div className="mx-auto max-w-[1200px]">
+          <p className="mb-3.5 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-brown">Work with Bart</p>
+          <h2 className="mb-4 max-w-[640px] font-serif text-[clamp(26px,3vw,40px)] font-normal leading-tight text-[#F0ECE4]">
+            I meet you where you are.
+          </h2>
+          <p className="mb-12 max-w-[560px] font-sans text-base leading-[1.7] text-[#C9C1B6]">
+            No program. No curriculum. Bring the situation you are actually in, at the size you need.
+          </p>
+          <div className="grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+            {OPTIONS.map((o) => (
+              <div key={o.name} className="bg-ao-dark p-6">
+                <h3 className="font-serif text-xl font-normal text-[#F0ECE4]">{o.name}</h3>
+                <p className="mt-4">
+                  <span className="font-serif text-3xl text-[#F0ECE4]">{o.price}</span>
+                  <span className="ml-2 font-sans text-[12px] text-[#A89F94]">{o.unit}</span>
+                </p>
+                <p className="mt-3 font-sans text-[14px] leading-[1.6] text-[#C9C1B6]">{o.line}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10 flex flex-wrap gap-4">
+            <a
+              href="/work-with-bart"
+              onClick={nav('/work-with-bart')}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] bg-ao-red px-7 py-3.5 font-sans text-[13px] font-bold tracking-[0.04em] text-white"
+            >
+              See how it works
+            </a>
+            <a
+              href="/engagement-inquiry?option=conversation"
+              onClick={nav('/engagement-inquiry?option=conversation')}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] border border-white/40 px-7 py-3.5 font-sans text-[13px] font-semibold text-[#F0ECE4] hover:bg-white/10"
+            >
+              Book a conversation
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* From the journal */}
       <section className="bg-white px-6 py-16 md:px-12 md:py-24">
         <div className="mx-auto max-w-[1200px]">
@@ -183,43 +245,23 @@ export default function HomePagePreview() {
         </div>
       </section>
 
-      {/* Work with Bart */}
-      <section className="bg-ao-dark px-6 py-16 md:px-12 md:py-24">
+      {/* Books */}
+      <section className="border-t border-[#E0DBD4] bg-ao-cream px-6 py-16 md:px-12 md:py-24">
         <div className="mx-auto max-w-[1200px]">
-          <p className="mb-3.5 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-brown">Work with Bart</p>
-          <h2 className="mb-4 max-w-[640px] font-serif text-[clamp(26px,3vw,40px)] font-normal leading-tight text-[#F0ECE4]">
-            I meet you where you are.
+          <p className="mb-3.5 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-red">The books</p>
+          <h2 className="mb-12 max-w-[620px] font-serif text-[clamp(26px,3vw,40px)] font-normal leading-tight text-[#1a1a1a]">
+            Three books on what leading people actually costs.
           </h2>
-          <p className="mb-12 max-w-[560px] font-sans text-base leading-[1.7] text-[#C9C1B6]">
-            No program. No curriculum. Bring the situation you are actually in, at the size you need.
-          </p>
-          <div className="grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
-            {OPTIONS.map((o) => (
-              <div key={o.name} className="bg-ao-dark p-6">
-                <h3 className="font-serif text-xl font-normal text-[#F0ECE4]">{o.name}</h3>
-                <p className="mt-4">
-                  <span className="font-serif text-3xl text-[#F0ECE4]">{o.price}</span>
-                  <span className="ml-2 font-sans text-[12px] text-[#A89F94]">{o.unit}</span>
-                </p>
-                <p className="mt-3 font-sans text-[14px] leading-[1.6] text-[#C9C1B6]">{o.line}</p>
-              </div>
+          <div className="grid gap-10 sm:grid-cols-3">
+            {BOOKS.map((b) => (
+              <a key={b.href} href={b.href} onClick={nav(b.href)} className="group block">
+                <div className="mb-5 flex aspect-[3/4] items-center justify-center overflow-hidden bg-white p-6 shadow-sm">
+                  <img src={b.cover} alt={`${b.title} cover`} className="max-h-full max-w-full object-contain" loading="lazy" />
+                </div>
+                <h3 className="mb-2 font-serif text-xl font-normal text-[#1a1a1a] group-hover:text-ao-red">{b.title}</h3>
+                <p className="font-sans text-[14px] leading-[1.6] text-[#555]">{b.line}</p>
+              </a>
             ))}
-          </div>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <a
-              href="/work-with-bart"
-              onClick={nav('/work-with-bart')}
-              className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] bg-ao-red px-7 py-3.5 font-sans text-[13px] font-bold tracking-[0.04em] text-white"
-            >
-              See how it works
-            </a>
-            <a
-              href="/engagement-inquiry?option=conversation"
-              onClick={nav('/engagement-inquiry?option=conversation')}
-              className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] border border-white/40 px-7 py-3.5 font-sans text-[13px] font-semibold text-[#F0ECE4] hover:bg-white/10"
-            >
-              Book a conversation
-            </a>
           </div>
         </div>
       </section>
@@ -228,7 +270,7 @@ export default function HomePagePreview() {
       <section className="border-t border-[#E0DBD4] bg-white px-6 py-16 md:px-12 md:py-[72px]">
         <div className="mx-auto max-w-[1200px]">
           <p className="mb-5 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-red">More from Bart</p>
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {MORE.map((m) => (
               <a key={m.href} href={m.href} onClick={nav(m.href)} className="group border-t border-[#E0DBD4] pt-4">
                 <p className="mb-1.5 font-sans text-[10px] uppercase tracking-[0.12em] text-ao-red">{m.label}</p>

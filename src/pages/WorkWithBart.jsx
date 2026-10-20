@@ -22,9 +22,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-const SAMCART_THE_ROOM_URL =
-  import.meta.env.VITE_THE_ROOM_SAMCART_URL || 'https://aobooks.samcart.com/products/the-room';
-
 function goToPath(event, path) {
   event.preventDefault();
   window.history.pushState({}, '', path);
@@ -115,8 +112,8 @@ export default function WorkWithBart() {
                 <a href="#options" className={btnPrimary}>
                   See how we can work together
                 </a>
-                <a href={SAMCART_THE_ROOM_URL} target="_blank" rel="noopener noreferrer" className={btnGhost}>
-                  Read The Room First, $27
+                <a href="/books" onClick={(e) => goToPath(e, '/books')} className={btnGhost}>
+                  Read my books
                 </a>
               </div>
             </div>
