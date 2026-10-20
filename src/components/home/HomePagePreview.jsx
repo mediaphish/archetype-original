@@ -50,6 +50,31 @@ const BOOKS = [
   },
 ];
 
+/**
+ * Why Bart, in his own facts only: the 29-year software company sold in July
+ * 2022 (journal, "I Called Myself Retired"), two exits and 12+ industries (site
+ * stats), no stake in the outcome (the Advisory page's core idea), developing
+ * young leaders (Bart, 2026-10-19), and three books plus a public journal.
+ */
+const WHY = [
+  {
+    title: 'I have done it, not studied it.',
+    body: 'I spent twenty-nine years building a software company and sold it in 2022. The decisions you are carrying are ones I have carried.',
+  },
+  {
+    title: 'I have seen your situation before.',
+    body: 'Two exits and more than a dozen industries. Most problems have a shape, and I have usually seen yours somewhere else first.',
+  },
+  {
+    title: 'I have no stake in your outcome.',
+    body: 'I do not work for you or report to you. I can say the thing nobody inside your organization can afford to say.',
+  },
+  {
+    title: 'You can know how I think before you pay me.',
+    body: 'Three books and a public journal. Read a few entries. If it does not sound like help, it will not be.',
+  },
+];
+
 const MORE = [
   { label: 'Daily', title: 'Devotionals', href: '/faith' },
   { label: 'Research', title: 'Culture Science', href: '/culture-science' },
@@ -164,6 +189,14 @@ export default function HomePagePreview() {
           <p className="mb-12 max-w-[560px] font-sans text-base leading-[1.7] text-[#C9C1B6]">
             No program. No curriculum. Bring the situation you are actually in, at the size you need.
           </p>
+          <div className="mb-14 grid gap-x-12 gap-y-8 md:grid-cols-2">
+            {WHY.map((w) => (
+              <div key={w.title} className="border-l-2 border-ao-red pl-5">
+                <h3 className="mb-2 font-serif text-xl font-normal leading-snug text-[#F0ECE4]">{w.title}</h3>
+                <p className="font-sans text-[15px] leading-[1.65] text-[#C9C1B6]">{w.body}</p>
+              </div>
+            ))}
+          </div>
           <div className="grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
             {OPTIONS.map((o) => (
               <div key={o.name} className="bg-ao-dark p-6">
