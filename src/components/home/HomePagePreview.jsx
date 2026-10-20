@@ -61,20 +61,20 @@ const BOOKS = [
  */
 const WHY = [
   {
-    title: 'I built one, start to finish.',
-    body: 'Twenty-nine years building a software company, from the beginning to the sale in July 2022. Most of what you are carrying, I carried with my own name on it.',
+    title: 'I have carried what you are carrying.',
+    body: 'I have built several businesses over thirty-four years. The longest was a software company I grew for twenty-nine years and sold in July 2022, and through it I was connected to 13 different industries.',
   },
   {
     title: 'Then I went back and checked my work.',
-    body: 'I spent the four years since studying business, leadership and AI, and holding thirty years of my own decisions up against the research. I care what actually holds up, not what sounds good in a meeting.',
+    body: 'I spent the four years since studying business, leadership and AI, and testing three decades of my own decisions against the research. I care about what works, not what sounds good in a meeting.',
   },
   {
     title: 'I do not live inside your ecosystem.',
-    body: 'Everyone around you is shaped by the same system you are. Your team, your partners, your board. I am not. I have a stake in how this goes for you. I do not have one in who wins the argument in your building.',
+    body: 'Everyone around you is shaped by the system you lead, and so is everything they tell you. I am not. I have a real stake in how this goes for you, but none of the pressure that comes from living inside it. That is what lets me tell you the truth and help you do something with it.',
   },
   {
     title: 'Your people matter more than the plan.',
-    body: 'My favorite part of building a company was never the software. It was developing people into leaders. A plan that hits the number and diminishes the people doing the work is not one I will help you run.',
+    body: 'My favorite part of building businesses was never the product. It was developing people into real leaders. A plan that hits the number and diminishes the people doing the work is not one I will help you run.',
   },
 ];
 
@@ -171,7 +171,7 @@ export default function HomePagePreview() {
           {[
             ['34', 'Years building'],
             ['2', 'Exits'],
-            ['12+', 'Industries'],
+            ['13', 'Industries'],
             ['3', 'Books'],
           ].map(([n, label]) => (
             <div key={label}>
@@ -191,7 +191,7 @@ export default function HomePagePreview() {
           </h2>
           <p className="mb-12 max-w-[560px] font-sans text-base leading-[1.7] text-[#C9C1B6]">
             There is no program here, because your situation was not built from one. You bring what is actually in front
-            of you. We work it until you can see it clearly, then we work the next thing.
+            of you, and we work it until you can see it clearly. Then we work the next thing.
           </p>
           <div className="mb-8 grid gap-x-12 gap-y-8 md:grid-cols-2">
             {WHY.map((w) => (
@@ -202,7 +202,7 @@ export default function HomePagePreview() {
             ))}
           </div>
           <p className="mb-14 max-w-[640px] font-serif text-lg italic leading-[1.6] text-[#E8E0D4]">
-            Everything I think is already public. Three books and the journal. Read a few entries before you ever pay me.
+            You can see how I think before you spend a dollar. Read one of my three books, or a few entries in the journal.
           </p>
           <div className="grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
             {OPTIONS.map((o) => (
