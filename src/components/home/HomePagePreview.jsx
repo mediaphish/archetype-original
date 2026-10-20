@@ -51,7 +51,8 @@ const BOOKS = [
 ];
 
 /**
- * Why Bart, in his own facts only: the 29-year software company sold in July
+ * Why Bart, rewritten 2026-10-19 after reading his journal for voice (Bart:
+ * "I care how it goes for you" read as generic). His own facts only: the 29-year software company sold in July
  * 2022 (journal, "I Called Myself Retired"), two exits and 12+ industries (site
  * stats), outside their ecosystem (Bart's correction of the Advisory idea), developing
  * young leaders and four years studying business, leadership and AI (Bart,
@@ -60,20 +61,20 @@ const BOOKS = [
  */
 const WHY = [
   {
-    title: 'I have built it, and I have studied it.',
-    body: 'Twenty-nine years building a software company, sold in 2022. Then four years studying business, leadership and AI from every angle I could find.',
+    title: 'I built one, start to finish.',
+    body: 'Twenty-nine years building a software company, from the beginning to the sale in July 2022. Most of what you are carrying, I carried with my own name on it.',
   },
   {
-    title: 'I have seen your situation before.',
-    body: 'Two exits and more than a dozen industries. Most problems have a shape, and I have usually seen yours somewhere else first.',
+    title: 'Then I went back and checked my work.',
+    body: 'I spent the four years since studying business, leadership and AI, and holding thirty years of my own decisions up against the research. I care what actually holds up, not what sounds good in a meeting.',
   },
   {
-    title: 'I do not live in your ecosystem.',
-    body: 'I care how it goes for you. I am just not inside the system that shapes what everyone around you says. From outside it, I can see what is hard to see from in it, and say it plainly.',
+    title: 'I do not live inside your ecosystem.',
+    body: 'Everyone around you is shaped by the same system you are. Your team, your partners, your board. I am not. I have a stake in how this goes for you. I do not have one in who wins the argument in your building.',
   },
   {
-    title: 'You can know how I think before you pay me.',
-    body: 'Three books and a public journal. Read a few entries. If it does not sound like help, it will not be.',
+    title: 'Your people matter more than the plan.',
+    body: 'My favorite part of building a company was never the software. It was developing people into leaders. A plan that hits the number and diminishes the people doing the work is not one I will help you run.',
   },
 ];
 
@@ -189,9 +190,10 @@ export default function HomePagePreview() {
             I meet you where you are.
           </h2>
           <p className="mb-12 max-w-[560px] font-sans text-base leading-[1.7] text-[#C9C1B6]">
-            No program. No curriculum. Bring the situation you are actually in, at the size you need.
+            There is no program here, because your situation was not built from one. You bring what is actually in front
+            of you. We work it until you can see it clearly, then we work the next thing.
           </p>
-          <div className="mb-14 grid gap-x-12 gap-y-8 md:grid-cols-2">
+          <div className="mb-8 grid gap-x-12 gap-y-8 md:grid-cols-2">
             {WHY.map((w) => (
               <div key={w.title} className="border-l-2 border-ao-red pl-5">
                 <h3 className="mb-2 font-serif text-xl font-normal leading-snug text-[#F0ECE4]">{w.title}</h3>
@@ -199,6 +201,9 @@ export default function HomePagePreview() {
               </div>
             ))}
           </div>
+          <p className="mb-14 max-w-[640px] font-serif text-lg italic leading-[1.6] text-[#E8E0D4]">
+            Everything I think is already public. Three books and the journal. Read a few entries before you ever pay me.
+          </p>
           <div className="grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
             {OPTIONS.map((o) => (
               <div key={o.name} className="bg-ao-dark p-6">
