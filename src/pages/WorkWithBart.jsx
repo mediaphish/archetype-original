@@ -187,7 +187,7 @@ export default function WorkWithBart() {
           <div className="mx-auto max-w-3xl px-4 sm:px-6 md:px-10">
             <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-[#C8B8A8]">Rising leaders</p>
             <h2 className="font-serif text-3xl leading-tight text-white sm:text-4xl">
-              If you are early in this, I want to hear from you.
+              Some of the best leaders I know started out unsure they were one.
             </h2>
             <div className="mt-8 space-y-6 text-lg leading-relaxed text-stone-300">
               <p>
