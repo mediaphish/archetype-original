@@ -93,7 +93,7 @@ export default function WorkWithBart() {
           {/* Phone and tablet: photo strip above the copy */}
           <div className="relative h-[min(46vh,360px)] min-h-[240px] w-full lg:hidden">
             <img
-              src="/images/bart-office-standing-2026.jpg"
+              src="/images/bart-room-standing-2026.jpg"
               alt="Bart Paden, founder of Archetype Original"
               className="h-full w-full object-cover object-[66%_20%]"
               loading="eager"
@@ -102,7 +102,7 @@ export default function WorkWithBart() {
           </div>
           {/* Desktop: the photo fills the whole section, with a fade behind the copy */}
           <img
-            src="/images/bart-office-standing-2026.jpg"
+            src="/images/bart-room-standing-2026.jpg"
             alt=""
             aria-hidden="true"
             className="absolute inset-0 hidden h-full w-full object-cover object-[70%_22%] lg:block"
@@ -150,7 +150,7 @@ export default function WorkWithBart() {
           <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 md:grid-cols-2 md:items-center md:gap-14 md:px-10">
             <figure className="order-last md:order-first">
               <img
-                src="/images/bart-table-conversation-2026.jpg"
+                src="/images/bart-room-table-2026.jpg"
                 alt="Bart Paden in conversation across a small table, coffee in hand"
                 className="w-full border border-stone-200 object-cover shadow-sm"
                 loading="lazy"

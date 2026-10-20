@@ -126,9 +126,9 @@ export default function HomePagePreview() {
   return (
     <>
       {/* Hero */}
-      <section className="home-hero-bg relative flex min-h-0 flex-col md:min-h-[86vh] md:justify-center md:items-start md:bg-cover md:bg-[url('/images/bart-office-desk-2026.jpg')] md:bg-no-repeat">
+      <section className="home-hero-bg relative flex min-h-0 flex-col md:min-h-[86vh] md:justify-center md:items-start md:bg-cover md:bg-[url('/images/bart-room-laptop-2026.jpg')] md:bg-no-repeat">
         <div className="relative h-[min(42vh,320px)] min-h-[220px] w-full shrink-0 overflow-hidden md:hidden">
-          <img src="/images/bart-office-desk-2026.jpg" alt="" className="h-full w-full object-cover object-[center_22%]" loading="eager" decoding="async" />
+          <img src="/images/bart-room-laptop-2026.jpg" alt="" className="h-full w-full object-cover object-[center_22%]" loading="eager" decoding="async" />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/25 via-black/45 to-stone-950" aria-hidden />
         </div>
         <div
