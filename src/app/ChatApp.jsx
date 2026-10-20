@@ -103,6 +103,9 @@ export default function ChatApp({
     } else if (context === 'advisory') {
       greetingText =
         "Hi, I'm Archy. You're on the Advisory page — Bart's book The Room and the option for private advisory outside your organization. Ask about the book's argument, whether advisory might fit your situation, or what \"outside the room\" means in practice. What would you like to explore?";
+    } else if (context === 'the-room') {
+      greetingText =
+        "Hi, I'm Archy. You're reading about The Room, Bart's book on why no room inside an organization is ever fully honest. Ask about the book's argument, what \"outside the room\" means in practice, or what working with Bart directly looks like. What would you like to explore?";
     } else if (typeof context === 'string' && context.startsWith('ali-')) {
       greetingText =
         "Hi, I'm Archy. I'm here to help you interpret your ALI data and think through practical next steps. What would you like to explore?";

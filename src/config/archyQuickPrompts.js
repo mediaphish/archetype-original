@@ -101,6 +101,11 @@ const ARCHY_QUICK_PROMPTS = {
     { label: 'Private advisory', send: 'How does private advisory outside the organization work?' },
     { label: 'Is it a fit for me?', send: 'How would I know if advisory is a fit?' },
   ],
+  'the-room': [
+    { label: 'The Room (the book)', send: 'What is The Room about in one clear summary?' },
+    { label: 'Working with Bart', send: 'What does working with Bart directly look like?' },
+    { label: 'Is it a fit for me?', send: 'How would I know if working with Bart is a fit for me?' },
+  ],
   'remaining-human': [
     { label: 'Core argument', send: 'What is the core argument of Remaining Human?' },
     { label: 'Pressure & speed', send: 'How should I think about leading when speed and pressure pile up?' },

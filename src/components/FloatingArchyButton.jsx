@@ -125,8 +125,10 @@ export default function FloatingArchyButton() {
         setContext('culture-science');
       } else if (path === '/archy' || path.startsWith('/archy/')) {
         setContext('archy');
-      } else if (path === '/advisory' || path === '/the-room') {
+      } else if (path === '/advisory') {
         setContext('advisory');
+      } else if (path === '/the-room') {
+        setContext('the-room');
       } else if (path === '/meet-bart') {
         setContext('about');
       } else if (path === '/contact') {
