@@ -53,21 +53,23 @@ const BOOKS = [
 /**
  * Why Bart, in his own facts only: the 29-year software company sold in July
  * 2022 (journal, "I Called Myself Retired"), two exits and 12+ industries (site
- * stats), no stake in the outcome (the Advisory page's core idea), developing
- * young leaders (Bart, 2026-10-19), and three books plus a public journal.
+ * stats), outside their ecosystem (Bart's correction of the Advisory idea), developing
+ * young leaders and four years studying business, leadership and AI (Bart,
+ * 2026-10-19), and three books plus a public journal. Bart rejected "no stake in
+ * your outcome": he does have a stake, he just does not live in their ecosystem.
  */
 const WHY = [
   {
-    title: 'I have done it, not studied it.',
-    body: 'I spent twenty-nine years building a software company and sold it in 2022. The decisions you are carrying are ones I have carried.',
+    title: 'I have built it, and I have studied it.',
+    body: 'Twenty-nine years building a software company, sold in 2022. Then four years studying business, leadership and AI from every angle I could find.',
   },
   {
     title: 'I have seen your situation before.',
     body: 'Two exits and more than a dozen industries. Most problems have a shape, and I have usually seen yours somewhere else first.',
   },
   {
-    title: 'I have no stake in your outcome.',
-    body: 'I do not work for you or report to you. I can say the thing nobody inside your organization can afford to say.',
+    title: 'I do not live in your ecosystem.',
+    body: 'I care how it goes for you. I am just not inside the system that shapes what everyone around you says. From outside it, I can see what is hard to see from in it, and say it plainly.',
   },
   {
     title: 'You can know how I think before you pay me.',
