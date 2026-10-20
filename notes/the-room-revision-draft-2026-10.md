@@ -166,4 +166,4 @@ For leaders who want to go further, Bart works with people directly, from a sing
 - De Smet, A., Jost, G. & Weiss, L. (2019). Three Keys to Faster, Better Decisions. *McKinsey Quarterly*.
 - Lovallo, D. & Sibony, O. (2010). The Case for Behavioral Strategy. *McKinsey Quarterly*.
 
-**Check before print:** Author names and year on the two McKinsey articles. (Coutu and Kauffman page range resolved 2026-10-20: 91 to 97 is correct.)
+**Checked 2026-10-20:** McKinsey authors and years confirmed (De Smet, Jost and Weiss, May 1, 2019, with the 530,000 days figure on the page; Lovallo and Sibony, March 2010). (Coutu and Kauffman page range resolved 2026-10-20: 91 to 97 is correct.)
