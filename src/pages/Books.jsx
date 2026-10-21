@@ -105,11 +105,11 @@ export default function Books() {
                 About The Room
               </a>
               <a
-                href="/engagement-inquiry"
-                onClick={(e) => goToPath(e, '/engagement-inquiry')}
+                href="/engagement-inquiry?option=conversation"
+                onClick={(e) => goToPath(e, '/engagement-inquiry?option=conversation')}
                 className="inline-flex min-h-[44px] w-full max-w-xs items-center justify-center border border-[#1A1A1A] px-8 py-4 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white sm:w-auto"
               >
-                Start a conversation
+                Book a conversation
               </a>
             </div>
           </div>

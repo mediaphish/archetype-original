@@ -10,6 +10,7 @@
  */
 import React from 'react';
 import SEO from '../../../components/SEO';
+import PartOfWorkWithBart from '../../../components/PartOfWorkWithBart';
 import SchemaJsonLd from '../../../components/SchemaJsonLd';
 import { buildServiceSchema } from '../../../lib/schemaBuilders.js';
 import AdvisoryPathStrip from '../../../components/AdvisoryPathStrip';
@@ -26,6 +27,7 @@ export default function CCO() {
           path: '/fractional-roles/cco',
         })}
       />
+      <PartOfWorkWithBart />
       
       <div className="min-h-screen bg-[#FAFAF9]">
         {/* Hero Section */}
@@ -137,7 +139,7 @@ export default function CCO() {
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   }}
                 >
-                  Mentorship
+                  Leadership Advisory
                 </a>
                 <span className="text-sm text-[#6B6B6B]">→</span>
                 <a 

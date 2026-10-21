@@ -27,6 +27,7 @@
  */
 import React from 'react';
 import SEO from '../../../components/SEO';
+import PartOfWorkWithBart from '../../../components/PartOfWorkWithBart';
 import SchemaJsonLd from '../../../components/SchemaJsonLd';
 import { buildServiceSchema } from '../../../lib/schemaBuilders.js';
 import AdvisoryPathStrip from '../../../components/AdvisoryPathStrip';
@@ -43,6 +44,7 @@ export default function CTO() {
           path: '/fractional-roles/cto',
         })}
       />
+      <PartOfWorkWithBart />
 
       <div className="min-h-screen bg-[#FAFAF9]">
         {/* Hero */}

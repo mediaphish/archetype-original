@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import SEO from '../components/SEO';
 import { markdownToHtml } from '../lib/faqMarkdownToHtml';
 import { FAQ_CATEGORY_CONFIG, normalizeFaqCategory } from '../lib/faqCategories';
 
@@ -333,6 +334,7 @@ export default function FAQs() {
 
   return (
     <div className="bg-[#FAFAF9] text-[#1A1A1A]">
+      <SEO pageKey="faqs" />
       {faqPageJsonLd && (
         <Helmet>
           <script type="application/ld+json">{JSON.stringify(faqPageJsonLd)}</script>

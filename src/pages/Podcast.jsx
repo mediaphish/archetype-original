@@ -354,7 +354,7 @@ export default function Podcast() {
               lives, in the boardroom and the sanctuary, the corner office and the break room.
             </p>
             <p className="text-sm text-[#6B6B6B] max-w-[560px] mx-auto leading-relaxed">
-              Two kinds of episodes: solo conversations drawn from 33 years of building companies and
+              Two kinds of episodes: solo conversations drawn from 34 years of building companies and
               growing people, and guest conversations with no boxes, no titles required, just people
               who have carried weight and have something true to say about it.
             </p>

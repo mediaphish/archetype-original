@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import JournalSubscription from '../components/JournalSubscription';
+import SEO from '../components/SEO';
 import { OptimizedImage } from '../components/OptimizedImage';
 
 const PAGE_SIZE = 12;
@@ -227,6 +228,7 @@ export default function Journal() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FAFAF9] py-12 sm:py-16 md:py-20">
+        <SEO pageKey="journal" />
         <div className="mx-auto max-w-[1400px] px-4 sm:px-10">
           <div className="max-w-4xl mx-auto">
             <div className="text-center">
@@ -241,13 +243,14 @@ export default function Journal() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF9] text-[#1A1A1A]">
+      <SEO pageKey="journal" />
       <div className="mx-auto max-w-[1400px] px-4 sm:px-10 py-14 sm:py-20">
         <div className="text-center mb-14 sm:mb-16">
           <h1 className="font-serif text-[clamp(3rem,7vw,5rem)] font-normal leading-[0.95] tracking-[-0.02em] mb-5">
             Journal
           </h1>
           <p className="text-lg sm:text-[18px] font-light text-[#6B6B6B] max-w-[540px] mx-auto leading-relaxed">
-            Thoughts, insights, and lessons learned from 33 years of building companies and growing people.
+            Thoughts, insights, and lessons learned from 34 years of building companies and growing people.
           </p>
         </div>
 

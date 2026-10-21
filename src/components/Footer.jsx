@@ -47,12 +47,30 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Methods */}
+            {/* Work with Bart (was Methods until 2026-10-21) */}
             <div>
               <h3 className="mb-2 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-ao-brown">
-                Methods
+                Work with Bart
               </h3>
               <ul className="space-y-0.5">
+                <li>
+                  <a
+                    href="/work-with-bart"
+                    onClick={(e) => handleLinkClick(e, '/work-with-bart')}
+                    className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"
+                  >
+                    Ways to work together
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/advisory"
+                    onClick={(e) => handleLinkClick(e, '/advisory')}
+                    className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"
+                  >
+                    Leadership Advisory
+                  </a>
+                </li>
                 <li>
                   <a
                     href="/consulting"
@@ -69,15 +87,6 @@ export default function Footer() {
                     className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"
                   >
                     Fractional Roles
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/advisory"
-                    onClick={(e) => handleLinkClick(e, '/advisory')}
-                    className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"
-                  >
-                    Leadership Advisory
                   </a>
                 </li>
                 <li>
@@ -181,11 +190,11 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href="/engagement-inquiry"
-                    onClick={(e) => handleLinkClick(e, '/engagement-inquiry')}
+                    href="/engagement-inquiry?option=conversation"
+                    onClick={(e) => handleLinkClick(e, '/engagement-inquiry?option=conversation')}
                     className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"
                   >
-                    Work Together
+                    Book a conversation
                   </a>
                 </li>
                 <li>

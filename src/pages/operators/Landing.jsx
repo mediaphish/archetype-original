@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import SEO from '../../components/SEO';
 
 const IS_LINES = [
   'A live, in-person gathering for active leaders',
@@ -95,6 +96,7 @@ export default function OperatorsLanding() {
 
   return (
     <div className="min-h-screen bg-[var(--color-off-white)] font-inter text-[15px] leading-relaxed text-[#1A1A1A] antialiased">
+      <SEO pageKey="operators" />
       {/* NAV */}
       <nav className="absolute left-0 right-0 top-0 z-50 border-b border-white/10 bg-transparent">
         <div className={sectionInner}>
@@ -572,8 +574,15 @@ export default function OperatorsLanding() {
           </div>
           <div>
             <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-brown)]">
-              Methods
+              Work with Bart
             </h4>
+            <button
+              type="button"
+              onClick={() => handleNavigate('/work-with-bart')}
+              className="mb-2 block w-full text-left text-[13px] text-white/40 transition-colors hover:text-white/80"
+            >
+              Ways to work together
+            </button>
             <button
               type="button"
               onClick={() => handleNavigate('/advisory')}
@@ -663,10 +672,10 @@ export default function OperatorsLanding() {
             </button>
             <button
               type="button"
-              onClick={() => handleNavigate('/engagement-inquiry')}
+              onClick={() => handleNavigate('/engagement-inquiry?option=conversation')}
               className="mb-2 block w-full text-left text-[13px] text-white/40 transition-colors hover:text-white/80"
             >
-              Work Together
+              Book a conversation
             </button>
             <button
               type="button"

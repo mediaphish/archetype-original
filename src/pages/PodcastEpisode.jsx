@@ -407,14 +407,14 @@ export default function PodcastEpisode() {
                           ) && (
                             <li>
                               <a
-                                href="/advisory"
+                                href="/work-with-bart"
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  navigateTo('/advisory');
+                                  navigateTo('/work-with-bart');
                                 }}
                                 className="text-[#DB0812] hover:text-[#b30610] underline text-base sm:text-lg"
                               >
-                                Advisory: How I work with leaders and teams
+                                Work with Bart · How I work with leaders and teams
                               </a>
                             </li>
                           )}

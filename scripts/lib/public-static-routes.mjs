@@ -5,6 +5,7 @@
 
 export const PUBLIC_STATIC_SITEMAP_ROUTES = [
   { path: '/', priority: '1.0', changefreq: 'weekly' },
+  { path: '/work-with-bart', priority: '0.95', changefreq: 'monthly' },
   { path: '/meet-bart', priority: '0.9', changefreq: 'monthly' },
   { path: '/archy', priority: '0.9', changefreq: 'monthly' },
   { path: '/consulting', priority: '0.8', changefreq: 'monthly' },

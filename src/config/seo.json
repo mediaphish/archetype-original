@@ -12,7 +12,7 @@
   "pages": {
     "about": {
       "title": "Meet Bart Paden | Archetype Original",
-      "description": "Thirty-three years inside organizations where leadership either held or broke. Bart Paden on the story, the posture, advisory, consulting, and fractional leadership.",
+      "description": "Thirty-four years inside organizations where leadership either held or broke. Bart Paden on the story, the posture, and the ways to work with him.",
       "keywords": "Bart Paden, Meet Bart, leadership advisory, servant leadership, Archetype Original, The Room",
       "image": "/images/meet-bart-hero.jpg"
     },
@@ -20,13 +20,13 @@
       "title": "Methods | Archetype Original",
       "description": "How Bart Paden mentors and consults: real conversations, actionable clarity, and leadership growth without dependence.",
       "keywords": "leadership methods, servant leadership framework, leadership systems, company culture, Archetype Original",
-      "image": "/og-methods.jpg"
+      "image": "/og-default.jpg"
     },
     "what-i-do": {
       "title": "What I Do | Archetype Original",
       "description": "Mentorship, consulting, speaking, and fractional leadership by Bart Paden—real conversations that build clarity and lasting growth.",
       "keywords": "leadership consulting, executive coaching, workshops, fractional leadership, business mentoring, mentorship, Bart Paden, Archetype Original",
-      "image": "/og-what-i-do.jpg"
+      "image": "/og-default.jpg"
     },
     "accidental-ceo": {
       "title": "Accidental CEO | Archetype Original",
@@ -59,10 +59,10 @@
       "image": "/images/advisory/the-room-cover.png"
     },
     "home": {
-      "title": "Archetype Original | Leadership Advisory — The Honest Conversation Hasn't Happened Yet",
-      "description": "Private leadership advisory outside your system — and The Room by Bart Paden ($27): why no internal room can be fully honest, and where the conversation actually begins.",
+      "title": "Bart Paden | Work with Bart | Archetype Original",
+      "description": "Thirty-four years of building businesses, on your side of the table. Bart Paden writes about leadership and works with leaders where they are: one conversation, a season, or ongoing.",
       "keywords": "leadership advisory, Bart Paden, honest feedback, organizational honesty, The Room book, Archetype Original",
-      "image": "/images/Bart-4.jpg"
+      "image": "/images/bart-room-laptop-2026.jpg"
     },
     "archy": {
       "title": "Meet Archy | Archetype Original",
@@ -95,8 +95,8 @@
       "image": "/og-default.jpg"
     },
     "engagement-inquiry": {
-      "title": "Work Together | Archetype Original",
-      "description": "Start a conversation with Bart Paden about advisory, consulting, or partnership work. The engagement inquiry is where that conversation begins.",
+      "title": "Work with Bart | Archetype Original",
+      "description": "Tell Bart what you are carrying. The start of an ongoing relationship, consulting, or a fractional role.",
       "keywords": "work with Bart Paden, leadership advisory, Archetype Original engagement, start a conversation",
       "image": "/images/Bart-32.jpg"
     },
@@ -206,6 +206,24 @@
       "title": "Mentor Session | Archetype Original",
       "description": "A free recorded mentor session with Bart Paden. Bring something you are working through and we work on it together, out loud, on the podcast.",
       "keywords": "Bart Paden mentor session, leadership mentoring, free leadership advice, Archetype Original Podcast",
+      "image": "/og-default.jpg"
+    },
+    "work-with-bart": {
+      "title": "Work with Bart Paden | Archetype Original",
+      "description": "Thirty-four years of building businesses, on your side of the table. One conversation, a season, or an ongoing relationship, plus consulting and fractional roles.",
+      "keywords": "Bart Paden, work with Bart, leadership advisor, business advisor, fractional CTO, leadership consulting, rising leaders",
+      "image": "/images/bart-room-standing-2026.jpg"
+    },
+    "operators": {
+      "title": "The Operators | Archetype Original",
+      "description": "A live, in-person gathering for people who carry real responsibility and want a place where the conversation is worth the drive.",
+      "keywords": "The Operators, leadership community, operators, business owners, Bart Paden",
+      "image": "/og-default.jpg"
+    },
+    "faqs": {
+      "title": "FAQs | Archetype Original",
+      "description": "Answers to common questions about Bart Paden, Archetype Original, the books, the research, and working with Bart.",
+      "keywords": "Archetype Original FAQ, Bart Paden, working with Bart, Culture Science, ALI",
       "image": "/og-default.jpg"
     }
   }

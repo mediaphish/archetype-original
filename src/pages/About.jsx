@@ -50,7 +50,7 @@ export default function About() {
           <div className="relative z-[2] mx-auto w-full max-w-[1400px] px-6 pb-16 pt-24 sm:px-10 sm:pb-24 md:px-10">
             <p className={labelClass}>Meet Bart · Archetype Original</p>
             <h1 className="mb-7 max-w-[680px] font-serif text-[clamp(36px,5vw,64px)] font-normal leading-[1.1] text-white">
-              Thirty-three years inside organizations where leadership either held or broke.
+              Thirty-four years inside organizations where leadership either held or broke.
             </h1>
             <p className="mb-11 max-w-[480px] text-base leading-[1.65] text-white/[0.72]">
               Not a theorist. Not a coach with a framework. A founder who built companies, developed
@@ -58,18 +58,18 @@ export default function About() {
             </p>
             <div className="flex flex-wrap gap-4">
               <a
-                href="/engagement-inquiry"
-                onClick={(e) => goToPath(e, '/engagement-inquiry')}
+                href="/work-with-bart"
+                onClick={(e) => goToPath(e, '/work-with-bart')}
                 className="inline-block rounded-[2px] bg-ao-red px-8 py-3.5 text-[13px] font-semibold uppercase tracking-[0.06em] text-white transition-opacity hover:opacity-90"
               >
-                Start a Conversation
+                Work with Bart
               </a>
               <a
-                href="/the-room"
-                onClick={(e) => goToPath(e, '/the-room')}
+                href="/books"
+                onClick={(e) => goToPath(e, '/books')}
                 className="inline-block rounded-[2px] border border-white/40 bg-transparent px-8 py-3.5 text-[13px] font-semibold uppercase tracking-[0.06em] text-white transition-colors hover:border-white hover:bg-white/[0.08]"
               >
-                Read The Room ($27)
+                Read my books
               </a>
             </div>
           </div>
@@ -142,7 +142,7 @@ export default function About() {
                     I didn&apos;t get relief. I got room to breathe.
                   </p>
                   <p>
-                    That&apos;s the through line of thirty-three years. Not the wins. Not the exits. The
+                    That&apos;s the through line of thirty-four years. Not the wins. Not the exits. The
                     consistency of showing up the same way whether anyone was watching or not. Word and
                     deed in the same direction. Every time. In every kind of room.
                   </p>
@@ -162,13 +162,13 @@ export default function About() {
                     because the questions leaders need to ask don&apos;t always come at convenient hours.
                   </p>
                   <p>
-                    But the work that matters most happens in one room. Outside your system. With one leader
-                    who finally has somewhere honest to think.
+                    But the work that matters most to me happens across a table. One leader, one real
+                    situation, and somewhere honest to think it through.
                   </p>
                   <p>That&apos;s what I built Archetype Original to be.</p>
                   <p>
-                    Not a consulting firm. Not a coaching practice. A room where the truth finally has
-                    somewhere to go.
+                    Not a program. Not a framework. A place where the truth finally has somewhere to
+                    go.
                   </p>
                   <p>If you&apos;ve read this far, you probably already know whether you need it.</p>
                 </div>
@@ -208,7 +208,7 @@ export default function About() {
                         treat people the way you want to be treated.
                       </strong>{' '}
                       Not a slogan. A mechanism. One of the most reliable drivers of trust and performance
-                      I&apos;ve seen in thirty-three years.
+                      I&apos;ve seen in thirty-four years.
                     </p>
                   </div>
                   <div className="border-l border-white/10 py-5 pl-6 pr-1">
@@ -251,27 +251,34 @@ export default function About() {
             <div className="mb-14 max-w-[480px] sm:mb-16">
               <p className={labelClass}>How This Shows Up</p>
               <h2 className="font-serif text-[clamp(28px,3vw,40px)] font-normal leading-[1.2] text-[#1A1A1A]">
-                Four ways to work together.
+                Ways to work together.
               </h2>
             </div>
-            <div className="grid grid-cols-1 gap-0.5 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-0.5 md:grid-cols-2 lg:grid-cols-4">
               {[
                 {
                   n: '01',
+                  title: 'Ways to work together',
+                  body: 'One conversation, a season, or an ongoing relationship, plus a rate for rising leaders. Start with the size that fits.',
+                  href: '/work-with-bart',
+                  link: 'See the options',
+                },
+                {
+                  n: '02',
                   title: 'Leadership Advisory',
-                  body: 'One room, outside your system. The honest conversation that cannot happen inside your building. No stakes in your outcomes. No deliverables list.',
+                  body: 'One room, outside your ecosystem. The honest conversation that cannot happen inside your building, with someone who cares how it goes and carries none of its pressure. No deliverables list.',
                   href: '/advisory',
                   link: 'How advisory works',
                 },
                 {
-                  n: '02',
+                  n: '03',
                   title: 'Fractional Roles',
                   body: 'C-suite presence for the seasons that require more than guidance. COO, CMO, CEO. Real leadership in the room, not a consultant looking in from outside.',
                   href: '/fractional-roles',
                   link: 'See the roles',
                 },
                 {
-                  n: '03',
+                  n: '04',
                   title: 'Consulting',
                   body: 'Clarity for teams. Alignment for organizations. Cultural repair, operational steadiness, and communication systems that support real growth.',
                   href: '/consulting',
@@ -312,23 +319,23 @@ export default function About() {
             </h2>
             <p className="mb-11 max-w-[520px] text-base leading-[1.75] text-white/[0.7]">
               If you&apos;re carrying leadership weight, or growing into it, the conversation starts here.
-              One room. Outside your system. No stakes in your outcomes. Just the truth, spoken somewhere
-              it has room to go.
+              One room, outside your ecosystem. Someone with a real stake in how it goes for you, and none
+              of the pressure. Just the truth, spoken somewhere it has room to go.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
-                href="/engagement-inquiry"
-                onClick={(e) => goToPath(e, '/engagement-inquiry')}
+                href="/engagement-inquiry?option=conversation"
+                onClick={(e) => goToPath(e, '/engagement-inquiry?option=conversation')}
                 className="inline-block rounded-[2px] bg-ao-red px-8 py-3.5 text-[13px] font-semibold uppercase tracking-[0.06em] text-white transition-opacity hover:opacity-90"
               >
-                Start a Conversation
+                Book a conversation
               </a>
               <a
-                href="/advisory"
-                onClick={(e) => goToPath(e, '/advisory')}
+                href="/work-with-bart"
+                onClick={(e) => goToPath(e, '/work-with-bart')}
                 className="inline-block rounded-[2px] border border-white/30 bg-transparent px-8 py-3.5 text-[13px] font-semibold uppercase tracking-[0.06em] text-white/80 transition-colors hover:border-white/70 hover:text-white"
               >
-                How Advisory Works
+                Ways to work together
               </a>
             </div>
           </div>

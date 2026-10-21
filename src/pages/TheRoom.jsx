@@ -322,7 +322,7 @@ export default function TheRoom() {
                 </p>
               </div>
               <div className="mt-10">
-                <button type="button" onClick={(e) => goToPath(e, '/engagement-inquiry')} className={btnPrimary}>
+                <button type="button" onClick={(e) => goToPath(e, '/engagement-inquiry?option=conversation')} className={btnPrimary}>
                   Start the Conversation
                 </button>
               </div>
@@ -425,7 +425,7 @@ export default function TheRoom() {
                 </p>
                 <button
                   type="button"
-                  onClick={(e) => goToPath(e, '/engagement-inquiry')}
+                  onClick={(e) => goToPath(e, '/engagement-inquiry?option=conversation')}
                   className="mt-8 w-full rounded-[3px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white transition hover:opacity-90"
                 >
                   Contact Bart

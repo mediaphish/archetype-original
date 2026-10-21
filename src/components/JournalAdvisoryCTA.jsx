@@ -1,6 +1,11 @@
 import React from 'react';
 
-/** Post-footer invitation to advisory. Hidden for devotionals when parent passes hide. */
+/**
+ * Post-footer invitation to work with Bart. Hidden for devotionals when parent
+ * passes hide. Rewritten 2026-10-21 for Work with Bart: the journal is the
+ * site's biggest draw (1,732 visits to entries from Sept 10 to Oct 19), and this
+ * box used to send every reader to "private advisory".
+ */
 export default function JournalAdvisoryCTA({ hidden = false }) {
   if (hidden) return null;
 
@@ -23,23 +28,23 @@ export default function JournalAdvisoryCTA({ hidden = false }) {
         The conversation starts here.
       </h2>
       <p className="text-base sm:text-lg leading-relaxed text-white/60 max-w-xl mx-auto mb-8">
-        If something in this piece landed because your own room cannot say it out loud, private advisory
-        exists for exactly that gap.
+        If something in this piece landed close to home, you do not have to work it out alone. One conversation is
+        ninety minutes on the situation you are actually in.
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <a
-          href="/advisory"
-          onClick={(e) => go(e, '/advisory')}
+          href="/work-with-bart"
+          onClick={(e) => go(e, '/work-with-bart')}
           className="inline-flex min-h-[44px] items-center justify-center bg-[#DB0812] px-8 py-3 text-sm font-semibold uppercase tracking-wider text-white transition-opacity hover:opacity-90"
         >
-          How advisory works
+          Ways to work together
         </a>
         <a
-          href="/the-room"
-          onClick={(e) => go(e, '/the-room')}
+          href="/engagement-inquiry?option=conversation"
+          onClick={(e) => go(e, '/engagement-inquiry?option=conversation')}
           className="inline-flex min-h-[44px] items-center justify-center border border-white/30 px-8 py-3 text-sm font-semibold uppercase tracking-wider text-white/80 transition-all hover:border-white/70 hover:text-white"
         >
-          Read The Room first
+          Book a conversation
         </a>
       </div>
     </aside>

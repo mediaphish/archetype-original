@@ -681,8 +681,8 @@ Generate the full response following the structure above.`;
                 </p>
                 <div className="flex flex-col gap-2">
                   {[
-                    ['/the-room', 'Read The Room first'],
-                    ['/advisory', 'How advisory works'],
+                    ['/work-with-bart', 'Ways to work together'],
+                    ['/advisory', 'How the advisory works'],
                     ['/contact', 'General contact form'],
                   ].map(([href, label]) => (
                     <a

@@ -54,7 +54,7 @@ export default function Archy() {
               </h1>
               <p className="mb-10 max-w-[520px] text-base leading-[1.75] text-white/[0.65]">
                 Archy is trained on every word Bart has written, every framework he has built, and
-                thirty-three years of pattern recognition from real organizations. He doesn&apos;t
+                thirty-four years of pattern recognition from real organizations. He doesn&apos;t
                 pull from the internet. He pulls from the corpus.
               </p>
               <div className="flex flex-wrap gap-4">
@@ -95,7 +95,7 @@ export default function Archy() {
             <div>
               <p className={labelClass}>What Archy Is</p>
               <h2 className="mb-10 font-serif text-[clamp(28px,3vw,40px)] font-normal leading-[1.2] text-[#1A1A1A]">
-                The digitized extension of thirty-three years of lived leadership.
+                The digitized extension of thirty-four years of lived leadership.
               </h2>
               <div className="space-y-6 text-[#3A3A3A] [&_p]:leading-[1.85]">
                 <p>
@@ -271,7 +271,7 @@ export default function Archy() {
                 </p>
                 <p className="mb-6 text-sm leading-[1.7] text-[#6B6B6B]">
                   Books, frameworks, journal posts, engagement notes, and leadership materials built
-                  over thirty-three years.
+                  over thirty-four years.
                 </p>
                 <div className="mb-2 h-[3px] w-full rounded-full bg-[#1A1A1A]/10">
                   <div className="h-full w-[40%] rounded-full bg-ao-red" />
@@ -318,7 +318,7 @@ export default function Archy() {
             </h2>
             <p className="mb-11 text-base leading-[1.75] text-white/[0.7]">
               Not a test question. Not a generic prompt. Ask him the leadership question you&apos;ve
-              been carrying. See what thirty-three years of pattern recognition says about it.
+              been carrying. See what thirty-four years of pattern recognition says about it.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <button

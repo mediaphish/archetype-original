@@ -598,7 +598,7 @@ export default function BadLeaderProject() {
             <h2>The conversation starts here.</h2>
             <p>Bad leadership is diagnosable. It is fixable. The first step is a conversation outside your system where the real picture can finally surface.</p>
             <div className="blp-close-actions">
-              <a href="/contact" className="blp-btn blp-btn-primary" onClick={(e) => spaNavigate('/contact', e)}>Start a Conversation</a>
+              <a href="/contact" className="blp-btn blp-btn-primary" onClick={(e) => spaNavigate('/engagement-inquiry?option=conversation', e)}>Book a conversation</a>
               <a href="/advisory" className="blp-btn blp-btn-ghost-dark" onClick={(e) => spaNavigate('/advisory', e)}>How Advisory Works</a>
             </div>
           </div>

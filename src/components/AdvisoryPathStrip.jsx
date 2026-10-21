@@ -25,7 +25,7 @@ export default function AdvisoryPathStrip({ className = '' }) {
           When methods are not the missing piece
         </h2>
         <p className="mt-3 text-base leading-relaxed text-[#6B6B6B] sm:text-lg">
-          Consulting and speaking address what happens <em>inside</em> the system. Advisory is for the conversation that cannot happen there — outside your hierarchy, without consequence to your political reality.
+          Consulting and speaking address what happens <em>inside</em> the system. Advisory is for the conversation that cannot happen there: outside your hierarchy, without consequence to your political reality.
         </p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <a
@@ -36,11 +36,11 @@ export default function AdvisoryPathStrip({ className = '' }) {
             How advisory works
           </a>
           <a
-            href="/engagement-inquiry"
-            onClick={(e) => go(e, '/engagement-inquiry')}
+            href="/work-with-bart"
+            onClick={(e) => go(e, '/work-with-bart')}
             className="inline-flex min-h-[44px] items-center justify-center border border-[#1A1A1A] px-6 py-3 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white"
           >
-            Explore working together
+            Ways to work together
           </a>
         </div>
       </div>

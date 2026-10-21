@@ -91,19 +91,17 @@ export default function ContactPage() {
             </div>
             <div className="pt-2">
               <p className="mb-5 font-sans text-[15px] leading-[1.85] text-[#3A3A3A]">
-                This form goes directly to Bart. Not a support queue, not a routing system. If you are ready
-                to explore advisory or a specific engagement, the Engagement Inquiry is the better starting
-                point.
+                This form goes directly to Bart. Not a support queue, not a routing system. If you are ready to work together, the Work with Bart page shows the options and how to book.
               </p>
               <p className="mb-5 font-sans text-[15px] leading-[1.85] text-[#3A3A3A]">
                 For general questions, this works well.
               </p>
               <a
-                href="/engagement-inquiry"
-                onClick={(e) => go(e, '/engagement-inquiry')}
+                href="/work-with-bart"
+                onClick={(e) => go(e, '/work-with-bart')}
                 className="font-sans text-[13px] font-semibold uppercase tracking-[0.06em] text-[#DB0812]"
               >
-                Go to Engagement Inquiry &rarr;
+                Ways to work together &rarr;
               </a>
             </div>
           </div>
@@ -216,15 +214,14 @@ export default function ContactPage() {
               <div className="border border-[#1A1A1A]/08 bg-white p-8">
                 <h3 className="mb-3 font-serif text-[20px] font-normal text-[#1A1A1A]">What this is for</h3>
                 <p className="mb-5 font-sans text-[14px] leading-[1.75] text-[#6B6B6B]">
-                  General questions about the work, the books, speaking, or anything else. If you are exploring
-                  an advisory or consulting engagement, use the Engagement Inquiry form.
+                  General questions about the work, the books, speaking, or anything else. If you are exploring working together, start on the Work with Bart page.
                 </p>
                 <a
-                  href="/engagement-inquiry"
-                  onClick={(e) => go(e, '/engagement-inquiry')}
+                  href="/work-with-bart"
+                  onClick={(e) => go(e, '/work-with-bart')}
                   className="inline-flex min-h-[44px] items-center justify-center bg-[#DB0812] px-6 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90"
                 >
-                  Start an Inquiry &rarr;
+                  Ways to work together &rarr;
                 </a>
               </div>
               <div className="border border-[#1A1A1A]/08 bg-white p-8">
@@ -235,7 +232,7 @@ export default function ContactPage() {
                   {[
                     ['Who responds', 'Bart directly'],
                     ['Timing', 'Within a few business days'],
-                    ['Advisory', 'Limited availability'],
+                    ['Working together', 'See the options'],
                   ].map(([label, value]) => (
                     <div key={label} className="flex items-start gap-4">
                       <span className="min-w-[80px] pt-[2px] font-sans text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8B7D72]">
@@ -271,23 +268,22 @@ export default function ContactPage() {
             Ready for the real conversation?
           </h2>
           <p className="mx-auto mb-10 max-w-[480px] font-sans text-[15px] leading-[1.75] text-white/60">
-            Advisory is available to a limited number of leaders at any given time. When you are ready, the
-            inquiry starts here.
+            One conversation is ninety minutes on one real situation. When you are ready, start there.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a
-              href="/engagement-inquiry"
-              onClick={(e) => go(e, '/engagement-inquiry')}
+              href="/engagement-inquiry?option=conversation"
+              onClick={(e) => go(e, '/engagement-inquiry?option=conversation')}
               className="inline-flex min-h-[44px] items-center justify-center bg-[#DB0812] px-8 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90"
             >
-              Start an Inquiry
+              Book a conversation
             </a>
             <a
               href="/advisory"
               onClick={(e) => go(e, '/advisory')}
               className="inline-flex min-h-[44px] items-center justify-center border border-white/30 px-8 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-white/80 transition-all hover:border-white/70 hover:text-white"
             >
-              How advisory works
+              How the advisory works
             </a>
           </div>
         </section>

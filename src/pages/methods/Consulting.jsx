@@ -13,6 +13,7 @@
  */
 import React from 'react';
 import SEO from '../../components/SEO';
+import PartOfWorkWithBart from '../../components/PartOfWorkWithBart';
 import SchemaJsonLd from '../../components/SchemaJsonLd';
 import { buildServiceSchema } from '../../lib/schemaBuilders.js';
 
@@ -135,6 +136,7 @@ export default function Consulting() {
           path: '/consulting',
         })}
       />
+      <PartOfWorkWithBart />
 
       <div className="min-h-screen bg-white">
         {/* SECTION 1 — Hero */}
@@ -293,8 +295,8 @@ export default function Consulting() {
                 I don&apos;t arrive with a model. I arrive with experience.
               </h2>
               <p className="mb-4 font-sans text-[15px] leading-[1.78] text-[#C8C0B4]">
-                Most consultants bring frameworks built elsewhere and hope they fit. Thirty-three years of lived
-                leadership — building companies, leading teams through collapse and recovery, navigating pressure, and
+                Most consultants bring frameworks built elsewhere and hope they fit. Thirty-four years of lived
+            leadership: building companies, leading teams through collapse and recovery, navigating pressure, and
                 understanding how culture actually responds to leadership behavior.
               </p>
               <p className="mb-4 font-sans text-[15px] leading-[1.78] text-[#C8C0B4]">The foundation of this work includes:</p>
@@ -374,8 +376,8 @@ export default function Consulting() {
             When methods are not the missing piece.
           </h2>
           <p className="mb-6 max-w-[600px] font-sans text-[15px] leading-[1.72] text-[#555]">
-            Consulting addresses what happens inside the system. Advisory is for the conversation that cannot happen there —
-            outside your organization, where consequence doesn&apos;t follow what you say.
+            Consulting addresses what happens inside the system. Advisory is for the conversation that cannot happen there:
+            outside your organization, where consequence does not follow what you say.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <a
@@ -386,11 +388,11 @@ export default function Consulting() {
               How advisory works
             </a>
             <a
-              href="/engagement-inquiry"
-              onClick={navigateTo('/engagement-inquiry')}
+              href="/work-with-bart"
+              onClick={navigateTo('/work-with-bart')}
               className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] border border-[#ccc] bg-transparent px-6 py-3 text-[13px] font-medium text-ao-dark transition-colors hover:border-ao-dark"
             >
-              Explore working together
+              Ways to work together
             </a>
           </div>
         </SectionShell>

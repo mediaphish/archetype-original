@@ -4,6 +4,7 @@
  */
 import React, { useEffect } from 'react';
 import SEO from '../components/SEO';
+import PartOfWorkWithBart from '../components/PartOfWorkWithBart';
 import SchemaJsonLd from '../components/SchemaJsonLd';
 import { buildServiceSchema } from '../lib/schemaBuilders.js';
 
@@ -42,6 +43,7 @@ export default function Advisory() {
         })}
       />
       <main className="min-h-screen bg-stone-50 text-stone-900 [text-rendering:geometricPrecision]">
+        <PartOfWorkWithBart />
         {/* Section 1 — Hero */}
         <section className="relative overflow-hidden border-b border-stone-200 bg-stone-950">
           <div className="mx-auto grid max-w-7xl lg:grid-cols-2 lg:items-stretch lg:gap-0">
@@ -66,7 +68,7 @@ export default function Advisory() {
                 <p className="font-medium text-stone-100">It closes from outside it.</p>
               </div>
               <div className="mt-10 flex flex-wrap items-center gap-4">
-                <button type="button" onClick={(e) => goToPath(e, '/engagement-inquiry')} className={btnPrimary}>
+                <button type="button" onClick={(e) => goToPath(e, '/engagement-inquiry?option=ongoing')} className={btnPrimary}>
                   Start the Conversation
                 </button>
                 <a href={SAMCART_THE_ROOM_URL} target="_blank" rel="noopener noreferrer" className={btnGhost}>
@@ -101,9 +103,9 @@ export default function Advisory() {
                 It is one relationship built around a single condition that no internal room can replicate.
               </p>
               <p>
-                The person across from you has no stake in the outcome of your decisions. No position inside your organization.
-                No team that will be affected by what you choose. No execution burden that increases or decreases based on what
-                direction you take. Nothing about their professional life shifts based on what you say or where you land.
+                The person across from you does not live inside your organization. No position in it. No team that will be
+                affected by what you choose. No execution burden that rises or falls with the direction you take. Bart has a
+                real stake in how this goes for you, but none of the pressure that comes from living inside it.
               </p>
               <p>
                 Which means what gets said in that room can be completely different from anything that gets said inside your
@@ -129,8 +131,8 @@ export default function Advisory() {
               </h2>
               <div className="mt-8 space-y-6 text-lg leading-relaxed text-stone-300">
                 <p>
-                  Thirty-three years of building and leading companies across manufacturing, medical, insurance, legal, retail,
-                  law enforcement, education, government, nonprofit, real estate, and more. Not as an outside observer. As the
+                  Thirty-four years of building and leading companies, connected to thirteen industries: manufacturing, medical,
+                  insurance, legal, retail, law enforcement, education, government, nonprofit, real estate, and more. Not as an outside observer. As the
                   person responsible for outcomes that affected real people.
                 </p>
                 <p>
@@ -232,7 +234,11 @@ export default function Advisory() {
             <div className="mt-10 space-y-8 border-t border-white/10 pt-10">
               <p className="text-lg leading-relaxed text-stone-300">
                 This is not a retained consulting engagement. Bart is not coming into your organization to diagnose it, build
-                systems, or manage implementation. That is a different offer for a different situation.
+                systems, or manage implementation. That is{' '}
+                <a href="/consulting" onClick={(e) => goToPath(e, '/consulting')} className="font-semibold underline">
+                  Consulting
+                </a>
+                , a different offer for a different situation.
               </p>
               <p className="text-lg leading-relaxed text-stone-300">
                 This is not coaching with a defined curriculum. There are no modules, no homework, no progression framework. The
@@ -245,6 +251,13 @@ export default function Advisory() {
               <p className="text-lg leading-relaxed text-stone-300">
                 This is not a large-group offering. The advisory is available to a limited number of leaders at any given time. That
                 limit is intentional. The depth of the relationship requires it.
+              </p>
+              <p className="text-lg leading-relaxed text-stone-300">
+                The advisory is the Ongoing relationship on{' '}
+                <a href="/work-with-bart" onClick={(e) => goToPath(e, '/work-with-bart')} className="font-semibold underline">
+                  Work with Bart
+                </a>
+                , $3,000 a month.
               </p>
             </div>
           </div>
@@ -307,9 +320,10 @@ export default function Advisory() {
                   the decisions leaders make every day.
                 </p>
                 <p>
-                  Built a software engineering firm from a home office to more than 100 people across multiple locations before its
-                  acquisition in 2022. Has spent thirty-three years inside the leadership rooms of organizations across nearly every
-                  industry — not as an outside observer but as the person responsible for outcomes that affected real people.
+                  Built several businesses over thirty-four years. The longest, a software engineering firm, grew over
+                  twenty-nine years from a home office to more than 100 people across multiple locations before its sale in July
+                  2022. Through it he was inside the leadership rooms of organizations across thirteen industries, not as an
+                  outside observer but as the person responsible for outcomes that affected real people.
                 </p>
                 <p>Has also failed. Significantly. Built through it. Lost parts of it. Rebuilt.</p>
                 <p>
@@ -350,14 +364,14 @@ export default function Advisory() {
                 </a>
               </div>
               <div className="border-2 border-[#1a1a1a] bg-white p-8">
-                <p className="mb-3 font-sans text-[10px] uppercase tracking-[0.12em] text-[#666]">Option 02 — The advisory</p>
+                <p className="mb-3 font-sans text-[10px] uppercase tracking-[0.12em] text-[#666]">Option 02 · The advisory</p>
                 <p className="font-serif text-xl text-[#1a1a1a]">Start the conversation directly.</p>
                 <p className="mt-4 text-sm leading-relaxed text-[#555]">
                   If you already know you need this room, skip the book and reach out.
                 </p>
                 <button
                   type="button"
-                  onClick={(e) => goToPath(e, '/engagement-inquiry')}
+                  onClick={(e) => goToPath(e, '/engagement-inquiry?option=ongoing')}
                   className="mt-8 w-full rounded-[3px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white transition hover:opacity-90"
                 >
                   Contact Bart

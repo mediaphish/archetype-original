@@ -14,6 +14,7 @@
  */
 import React from 'react';
 import SEO from '../../components/SEO';
+import PartOfWorkWithBart from '../../components/PartOfWorkWithBart';
 import SchemaJsonLd from '../../components/SchemaJsonLd';
 import { buildServiceSchema } from '../../lib/schemaBuilders.js';
 
@@ -63,6 +64,7 @@ export default function FractionalRoles() {
           path: '/fractional-roles',
         })}
       />
+      <PartOfWorkWithBart />
 
       <div className="min-h-screen bg-white">
         {/* SECTION 1 — Hero */}
@@ -139,8 +141,8 @@ export default function FractionalRoles() {
                 Fractional leadership works when it&apos;s built on lived experience, not frameworks.
               </h2>
               <p className="mb-4 font-sans text-[15px] leading-[1.78] text-[#C8C0B4]">
-                Thirty-three years building companies, leading teams, rebuilding culture, and serving clients across
-                industries. I know how people respond under pressure, how trust moves inside an organization, and what
+                Thirty-four years building companies, leading teams, rebuilding culture, and serving clients across
+            thirteen industries. I know how people respond under pressure, how trust moves inside an organization, and what
                 it takes to steady a team when the situation is chaotic or unclear.
               </p>
               <p className="mb-4 font-sans text-[15px] leading-[1.78] text-[#C8C0B4]">
@@ -219,8 +221,8 @@ export default function FractionalRoles() {
             </div>
             <div className="font-sans text-[15px] leading-[1.75] text-[#444]">
               <p className="mb-3.5">
-                I was the marketing department for twenty-seven of my thirty-three years in business. Not the person who
-                hired the marketing department. The person who built the strategy, executed it, measured it, rebuilt
+                I was the marketing department, or led it, for twenty-seven of my thirty-four years in business. Not the person who
+            hired the marketing department. The person who built the strategy, executed it, measured it, rebuilt
                 it, and eventually built a team around it that generated enough business to reach an eight-figure exit.
               </p>
               <p className="mb-3.5">
@@ -293,7 +295,7 @@ export default function FractionalRoles() {
                 companies building a product to sell.
               </p>
               <p className="mb-3.5">
-                I have spent thirty-three years in and around software. For the last four I have been learning something
+                I have spent thirty-four years in and around software. For the last four I have been learning something
                 specific: how to lead the building of real applications with AI doing most of the typing. Not
                 experimenting with it. Shipping with it, in settings where being wrong is not measured in support
                 tickets.
@@ -391,8 +393,8 @@ export default function FractionalRoles() {
             When methods are not the missing piece.
           </h2>
           <p className="mb-6 max-w-[600px] font-sans text-[15px] leading-[1.72] text-[#555]">
-            Consulting addresses what happens inside the system. Advisory is for the conversation that cannot happen there
-            — outside your organization, where consequence doesn&apos;t follow what you say.
+            Consulting addresses what happens inside the system. Advisory is for the conversation that cannot happen there:
+            outside your organization, where consequence does not follow what you say.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <a
@@ -403,11 +405,11 @@ export default function FractionalRoles() {
               How advisory works
             </a>
             <a
-              href="/engagement-inquiry"
-              onClick={navigateTo('/engagement-inquiry')}
+              href="/work-with-bart"
+              onClick={navigateTo('/work-with-bart')}
               className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] border border-[#ccc] bg-transparent px-6 py-3 text-[13px] font-medium text-ao-dark transition-colors hover:border-ao-dark"
             >
-              Explore working together
+              Ways to work together
             </a>
           </div>
         </SectionShell>

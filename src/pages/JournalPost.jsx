@@ -387,11 +387,11 @@ export default function JournalPost() {
                         {post.categories.some(cat => ['servant-leadership', 'leadership', 'mentorship', 'consulting'].includes(cat.toLowerCase())) && (
                           <li>
                             <a 
-                              href="/advisory" 
-                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/advisory'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
+                              href="/work-with-bart"
+                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/work-with-bart'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
                               className="text-[#DB0812] hover:text-[#b30610] underline text-base sm:text-lg"
                             >
-                              Advisory — How I work with leaders and teams
+                              Work with Bart · How I work with leaders and teams
                             </a>
                           </li>
                         )}

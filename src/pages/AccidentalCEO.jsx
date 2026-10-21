@@ -418,8 +418,8 @@ export default function AccidentalCEO() {
               When the strain is bigger than one leader&apos;s story
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-[#6B6B6B]">
-              <em>Accidental CEO</em> names the human weight of leadership. If what you are carrying is also structural — the room itself cannot stay honest — read{' '}
-              <em>The Room</em> or explore private advisory as the next step.
+              <em>Accidental CEO</em> names the human weight of leadership. If what you are carrying is also structural, and the room itself cannot stay honest, read{' '}
+              <em>The Room</em> or start with a conversation.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
@@ -430,11 +430,11 @@ export default function AccidentalCEO() {
                 The Room — book
               </a>
               <a
-                href="/advisory"
-                onClick={(e) => goToPath(e, '/advisory')}
+                href="/work-with-bart"
+                onClick={(e) => goToPath(e, '/work-with-bart')}
                 className="inline-flex min-h-[44px] items-center justify-center bg-[#1A1A1A] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#1A1A1A]/90"
               >
-                Leadership advisory
+                Work with Bart
               </a>
             </div>
           </div>

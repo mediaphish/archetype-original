@@ -68,16 +68,15 @@ export default function Header() {
   const inactivePrimaryNavClass =
     "text-sm font-medium tracking-wide transition-all duration-200 whitespace-nowrap text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] px-1.5 py-0.5 rounded-sm";
   const advisoryGroupActive =
-    isActive('/advisory') || isActive('/consulting') || isActive('/fractional-roles');
+    isActive('/work-with-bart') || isActive('/advisory') || isActive('/consulting') || isActive('/fractional-roles');
   /** Public marketing page only — not /operators/login or app subroutes */
   const isOperatorsLandingNav = currentPath === '/operators';
   /**
-   * 2026-10-19 draft menu, shown only on the two preview pages until Bart
-   * approves it: "Work with Bart" replaces the Leadership Advisory dropdown, and
-   * the red button books a single conversation instead of opening the long form.
+   * Work with Bart menu, live 2026-10-21: the dropdown holds Ways to work
+   * together, Leadership Advisory, Consulting and Fractional Roles, and the red
+   * button books a single conversation instead of opening the long form.
    */
-  const newMenu = currentPath === '/home-preview' || currentPath === '/work-with-bart';
-  const ctaPath = newMenu ? '/engagement-inquiry?option=conversation' : '/engagement-inquiry';
+  const ctaPath = '/engagement-inquiry?option=conversation';
 
   return (
     <>
@@ -171,19 +170,7 @@ export default function Header() {
               {/* Desktop Navigation — center column (lg+ only) */}
               <div className="hidden min-w-0 items-center justify-center lg:flex">
                 <div className="flex max-w-full flex-wrap items-center justify-center gap-2 xl:gap-4">
-                  {/* Leadership Advisory (Work with Bart in the 2026-10-19 preview menu) */}
-                  {newMenu ? (
-                    <a
-                      href="/work-with-bart"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleNavigation('/work-with-bart');
-                      }}
-                      className={navLinkClass('/work-with-bart')}
-                    >
-                      Work with Bart
-                    </a>
-                  ) : (
+                  {/* Work with Bart (was Leadership Advisory until 2026-10-21) */}
                   <div
                     className="relative"
                     onMouseEnter={() => setAdvisoryDropdownOpen(true)}
@@ -195,7 +182,7 @@ export default function Header() {
                         advisoryGroupActive ? navLinkClass('/advisory') : inactivePrimaryNavClass
                       } flex items-center gap-0.5`}
                     >
-                      Leadership Advisory
+                      Work with Bart
                       <svg
                         className={`w-4 h-4 transition-transform duration-200 ${advisoryDropdownOpen ? 'rotate-180' : ''}`}
                         fill="none"
@@ -209,6 +196,17 @@ export default function Header() {
                       <div className="absolute left-0 top-full z-50 w-56 pt-1">
                         <div className="rounded-sm border border-[#1A1A1A]/10 bg-white py-2 shadow-lg">
                           <a
+                            href="/work-with-bart"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavigation('/work-with-bart');
+                            }}
+                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
+                          >
+                            Ways to work together
+                          </a>
+                          <div className="my-1 border-t border-[#1A1A1A]/10" />
+                          <a
                             href="/advisory"
                             onClick={(e) => {
                               e.preventDefault();
@@ -217,6 +215,16 @@ export default function Header() {
                             className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
                           >
                             Leadership Advisory
+                          </a>
+                          <a
+                            href="/consulting"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavigation('/consulting');
+                            }}
+                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
+                          >
+                            Consulting
                           </a>
                           <a
                             href="/fractional-roles"
@@ -228,22 +236,10 @@ export default function Header() {
                           >
                             Fractional Roles
                           </a>
-                          <div className="my-1 border-t border-[#1A1A1A]/10" />
-                          <a
-                            href="/consulting"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleNavigation('/consulting');
-                            }}
-                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
-                          >
-                            Consulting
-                          </a>
                         </div>
                       </div>
                     )}
                   </div>
-                  )}
 
                   <a
                     href="/operators"
@@ -390,7 +386,7 @@ export default function Header() {
                   }}
                   className="inline-flex items-center rounded-[3px] bg-ao-red px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm transition-all duration-200 hover:opacity-90 xl:px-5 xl:text-[13px]"
                 >
-                  {newMenu ? 'Book a conversation' : 'Work Together'}
+                  Book a conversation
                 </a>
               </div>
 
@@ -465,10 +461,7 @@ export default function Header() {
             {/* Drawer Content - Scrollable */}
             <div className="flex-1 overflow-y-auto py-4">
               <div className="flex flex-col space-y-1">
-                {/* Leadership Advisory (Work with Bart in the preview menu) */}
-                {newMenu ? (
-                  <a href="/work-with-bart" onClick={(e) => { e.preventDefault(); handleNavigation('/work-with-bart'); }} className="w-full px-6 py-3 text-base font-medium text-left text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]">Work with Bart</a>
-                ) : (
+                {/* Work with Bart */}
                 <div>
                   <button
                     type="button"
@@ -479,21 +472,21 @@ export default function Header() {
                         : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
                     }`}
                   >
-                    Leadership Advisory
+                    Work with Bart
                     <svg className={`w-5 h-5 transition-transform duration-200 ${mobileExpanded === 'advisory' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
                   {mobileExpanded === 'advisory' && (
                     <div className="bg-[#FAFAF9] py-1">
-                      <a href="/advisory" onClick={(e) => { e.preventDefault(); handleNavigation('/advisory'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Leadership Advisory</a>
-                      <a href="/fractional-roles" onClick={(e) => { e.preventDefault(); handleNavigation('/fractional-roles'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Fractional Roles</a>
+                      <a href="/work-with-bart" onClick={(e) => { e.preventDefault(); handleNavigation('/work-with-bart'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Ways to work together</a>
                       <div className="mx-6 my-1 border-t border-[#1A1A1A]/10" />
+                      <a href="/advisory" onClick={(e) => { e.preventDefault(); handleNavigation('/advisory'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Leadership Advisory</a>
                       <a href="/consulting" onClick={(e) => { e.preventDefault(); handleNavigation('/consulting'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Consulting</a>
+                      <a href="/fractional-roles" onClick={(e) => { e.preventDefault(); handleNavigation('/fractional-roles'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Fractional Roles</a>
                     </div>
                   )}
                 </div>
-                )}
 
                 <a
                   href="/operators"
@@ -619,7 +612,7 @@ export default function Header() {
                       : 'bg-ao-red text-white hover:opacity-90'
                   } rounded-[3px] mx-6 my-4 text-center`}
                 >
-                  {newMenu ? 'Book a conversation' : 'Work Together'}
+                  Book a conversation
                 </a>
               </div>
             </div>

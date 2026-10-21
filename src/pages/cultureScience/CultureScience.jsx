@@ -102,7 +102,7 @@ export default function CultureScience() {
               <div className="border-t border-black/[0.08] py-8">
                 <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-ao-red">Reality</p>
                 <p>
-                  Thirty-three years of building and leading companies across more than twelve industries. Not
+                  Thirty-four years of building and leading companies across thirteen industries. Not
                   studying what culture does. Being responsible for it. Watching it hold under pressure and watching
                   it fracture when the conditions that sustain it went unattended. That lived experience is not
                   separate from the research. It is what makes the research useful. Culture Science is the backbone

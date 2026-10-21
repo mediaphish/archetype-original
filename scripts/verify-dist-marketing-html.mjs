@@ -60,6 +60,7 @@ const SCHEMA_ROUTE_CHECKS = [
   { path: '/accidental-ceo', types: ['Book'] },
   { path: '/remaining-human', types: ['Book'] },
   { path: '/books', types: ['ItemList'] },
+  { path: '/work-with-bart', types: ['Service'] },
   { path: '/advisory', types: ['Service'] },
   { path: '/consulting', types: ['Service'] },
   { path: '/fractional-roles', types: ['Service'] },

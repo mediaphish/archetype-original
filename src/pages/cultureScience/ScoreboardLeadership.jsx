@@ -178,11 +178,11 @@ export default function ScoreboardLeadership() {
             </p>
             <div className="mt-12 flex flex-wrap gap-4">
               <a
-                href="/engagement-inquiry"
-                onClick={go('/engagement-inquiry')}
+                href="/engagement-inquiry?option=conversation"
+                onClick={go('/engagement-inquiry?option=conversation')}
                 className="inline-block bg-ao-red px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.06em] text-white transition-opacity hover:opacity-90"
               >
-                Start a Conversation
+                Book a conversation
               </a>
               <a
                 href="https://scoreboardleadership.com"
@@ -364,11 +364,11 @@ export default function ScoreboardLeadership() {
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4">
                   <a
-                    href="/engagement-inquiry"
-                    onClick={go('/engagement-inquiry')}
+                    href="/engagement-inquiry?option=conversation"
+                    onClick={go('/engagement-inquiry?option=conversation')}
                     className="inline-block bg-ao-red px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.06em] text-white transition-opacity hover:opacity-90"
                   >
-                    Start a Conversation
+                    Book a conversation
                   </a>
                   <a
                     href="/advisory"
@@ -408,11 +408,11 @@ export default function ScoreboardLeadership() {
             </p>
             <div className="mt-11 flex flex-wrap justify-center gap-4">
               <a
-                href="/engagement-inquiry"
-                onClick={go('/engagement-inquiry')}
+                href="/engagement-inquiry?option=conversation"
+                onClick={go('/engagement-inquiry?option=conversation')}
                 className="inline-block bg-ao-red px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.06em] text-white transition-opacity hover:opacity-90"
               >
-                Start a Conversation
+                Book a conversation
               </a>
               <a
                 href="/advisory"

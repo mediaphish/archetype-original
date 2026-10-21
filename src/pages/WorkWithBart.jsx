@@ -16,11 +16,13 @@
  * being in business of some kind to help them navigate their own ecosystems."
  * And on up-and-comers: "They have a lot of my heart."
  *
- * Held back from search and from the navigation until Bart approves it. Booking
- * buttons go to the existing inquiry form until paid checkout is set up.
+ * Approved and live 2026-10-21. Booking buttons go to the inquiry form, with
+ * the chosen option preselected, until paid checkout is set up.
  */
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/SEO';
+import SchemaJsonLd from '../components/SchemaJsonLd';
+import { buildServiceSchema } from '../lib/schemaBuilders.js';
 
 function goToPath(event, path) {
   event.preventDefault();
@@ -37,6 +39,41 @@ const btnGhost =
 
 const btnDark =
   'inline-flex min-h-[44px] w-full items-center justify-center rounded-[3px] bg-stone-900 px-6 py-3 text-base font-semibold text-white transition hover:bg-stone-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-900 focus-visible:ring-offset-2';
+
+/** Bart-approved 2026-10-19, same wording as the home page. */
+const WHY = [
+  {
+    title: 'I have carried what you are carrying.',
+    body: 'I have built several businesses over thirty-four years. The longest was a software company I grew for twenty-nine years and sold in July 2022, and through it I was connected to 13 different industries.',
+  },
+  {
+    title: 'Then I went back and checked my work.',
+    body: 'I spent the four years since studying business, leadership and AI, and testing three decades of my own decisions against the research. I care about what works, not what sounds good in a meeting.',
+  },
+  {
+    title: 'I do not live inside your ecosystem.',
+    body: 'Everyone around you is shaped by the system you lead, and so is everything they tell you. I am not. I have a real stake in how this goes for you, but none of the pressure that comes from living inside it. That is what lets me tell you the truth and help you do something with it.',
+  },
+  {
+    title: 'Your people matter more than the plan.',
+    body: 'My favorite part of building businesses was never the product. It was developing people into real leaders. A plan that hits the number and diminishes the people doing the work is not one I will help you run.',
+  },
+];
+
+const ORG_PATHS = [
+  {
+    name: 'Consulting',
+    body: 'Consulting works with the organization: alignment, drift, culture, and the source of the problem instead of the symptoms.',
+    link: 'How consulting works',
+    path: '/consulting',
+  },
+  {
+    name: 'Fractional roles',
+    body: 'Fractional roles put me inside the organization, part-time, in a real seat. CTO, culture, operations.',
+    link: 'See the roles',
+    path: '/fractional-roles',
+  },
+];
 
 const OPTIONS = [
   {
@@ -75,18 +112,24 @@ const OPTIONS = [
       'A standing relationship. When the weight shows up, you are not carrying it alone.',
       'As often as you need it. No agenda except yours.',
     ],
-    cta: 'Start the conversation',
+    cta: 'Start an ongoing relationship',
     path: '/engagement-inquiry?option=ongoing',
+    more: { label: 'How the advisory works', path: '/advisory' },
   },
 ];
 
 export default function WorkWithBart() {
   return (
     <>
-      <Helmet>
-        <title>Work with Bart | Archetype Original</title>
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
+      <SEO pageKey="work-with-bart" />
+      <SchemaJsonLd
+        schema={buildServiceSchema({
+          name: 'Work with Bart',
+          serviceType: 'Leadership and business advisory',
+          pageKey: 'work-with-bart',
+          path: '/work-with-bart',
+        })}
+      />
       <main className="min-h-screen bg-stone-50 text-stone-900 [text-rendering:geometricPrecision]">
         {/* Hero: full-bleed photo, no side bars (Bart, 2026-10-20) */}
         <section className="relative overflow-hidden border-b border-stone-200 bg-stone-950">
@@ -123,8 +166,8 @@ export default function WorkWithBart() {
               </h1>
               <div className="mt-8 space-y-6 text-lg leading-relaxed text-stone-300">
                 <p>
-                  I have built companies, led them, and sold two of them, across more industries than most people work in
-                  over a whole career.
+                  I have built several businesses over thirty-four years. The longest was a software company I grew for
+                  twenty-nine years and sold in July 2022, and through it I was connected to 13 different industries.
                 </p>
                 <p>
                   That is what I bring. Not a framework. Not a program. Someone who has been where you are and can help you see
@@ -162,17 +205,17 @@ export default function WorkWithBart() {
             </h2>
             <div className="mt-8 space-y-6 text-lg leading-relaxed text-stone-700">
               <p>
-                Every organization is its own ecosystem. The people, the history, the pressure, the things that work and the
-                things everyone has quietly learned to work around. No program built for everyone fits yours.
+                There is no program here, because your situation was not built from one. You bring what is actually in front
+                of you, and we work it until you can see it clearly. Then we work the next thing.
               </p>
-              <p>
-                So there is no curriculum here. No deliverables list. No arc you have to finish. We work on what is real for
-                you, at the size you need, for as long as it is useful.
-              </p>
-              <p>
-                Some people need one conversation. Some need a season. A few want someone in their corner for the long haul.
-              </p>
-              <p className="font-semibold text-stone-900">Pick the size that fits. You can always change it.</p>
+            </div>
+            <div className="mt-10 space-y-8">
+              {WHY.map((w) => (
+                <div key={w.title} className="border-l-2 border-ao-red pl-5">
+                  <h3 className="mb-2 font-serif text-xl leading-snug text-stone-900">{w.title}</h3>
+                  <p className="text-base leading-relaxed text-stone-700">{w.body}</p>
+                </div>
+              ))}
             </div>
             </div>
           </div>
@@ -181,7 +224,7 @@ export default function WorkWithBart() {
         {/* Options */}
         <section id="options" className="scroll-mt-24 border-b border-stone-200 bg-white py-14 sm:py-20 md:py-24">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-10">
-            <h2 className="font-serif text-3xl leading-tight text-stone-900 sm:text-4xl">Three ways to work together.</h2>
+            <h2 className="font-serif text-3xl leading-tight text-stone-900 sm:text-4xl">Ways to work together.</h2>
             <div className="mt-10 grid gap-6 md:grid-cols-3">
               {OPTIONS.map((o) => (
                 <div key={o.key} className="flex flex-col border border-stone-200 bg-stone-50 p-6 sm:p-8">
@@ -199,6 +242,15 @@ export default function WorkWithBart() {
                   <button type="button" onClick={(e) => goToPath(e, o.path)} className={`mt-8 ${btnDark}`}>
                     {o.cta}
                   </button>
+                  {o.more ? (
+                    <a
+                      href={o.more.path}
+                      onClick={(e) => goToPath(e, o.more.path)}
+                      className="mt-4 text-center text-sm font-semibold text-ao-red hover:underline"
+                    >
+                      {o.more.label} →
+                    </a>
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -230,6 +282,30 @@ export default function WorkWithBart() {
               <button type="button" onClick={(e) => goToPath(e, '/engagement-inquiry?option=rising')} className={btnPrimary}>
                 Tell me about you, $150
               </button>
+            </div>
+          </div>
+        </section>
+
+        {/* For your organization (Bart, 2026-10-20: keep Consulting and Fractional under Work with Bart) */}
+        <section className="border-b border-stone-200 bg-white py-14 sm:py-20 md:py-24">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-10">
+            <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-ao-red">For your organization</p>
+            <h2 className="max-w-3xl font-serif text-3xl leading-tight text-stone-900 sm:text-4xl">
+              Some of the work is not one leader&apos;s situation. It is the whole system.
+            </h2>
+            <div className="mt-10 grid gap-6 md:grid-cols-2">
+              {ORG_PATHS.map((o) => (
+                <a
+                  key={o.path}
+                  href={o.path}
+                  onClick={(e) => goToPath(e, o.path)}
+                  className="group block border border-stone-200 bg-stone-50 p-6 transition hover:border-stone-400 sm:p-8"
+                >
+                  <h3 className="font-serif text-2xl text-stone-900 group-hover:text-ao-red">{o.name}</h3>
+                  <p className="mt-3 text-base leading-relaxed text-stone-700">{o.body}</p>
+                  <p className="mt-6 text-sm font-semibold text-ao-red">{o.link} →</p>
+                </a>
+              ))}
             </div>
           </div>
         </section>

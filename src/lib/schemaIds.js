@@ -39,13 +39,15 @@ export function getPersonJsonLd() {
     name: 'Bart Paden',
     url: `${SITE_BASE}/meet-bart`,
     description:
-      'Founder of Archetype Original with thirty-three years building companies, including building and selling Midwestern Interactive. Author of three books on leadership.',
+      'Founder of Archetype Original with thirty-four years building businesses, including growing Midwestern Interactive for twenty-nine years and selling it in 2022. Author of three books on leadership.',
     jobTitle: 'Founder',
     worksFor: orgRef,
     knowsAbout: [
       'servant leadership',
       'organizational culture',
       'leadership advisory',
+      'business advisory',
+      'fractional leadership',
       'company building',
     ],
     // Footer social links are company profiles only. Bart can supply personal profile URLs later.
