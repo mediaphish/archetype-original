@@ -1,7 +1,8 @@
 /**
  * Calendly webhook: someone booked or cancelled.
  *
- * Re-applies Bart's conversation hours straight away, so a Wednesday booking
+ * Saves the booking and its answers to engagement_inquiries (the list the
+ * old form filled), then re-applies Bart's conversation hours straight away, so a Wednesday booking
  * closes the other Wednesday window and a full week closes, before the next
  * visitor looks at the booking page. See lib/calendly/conversationHours.js.
  *
@@ -11,6 +12,7 @@
 
 import { createHmac, timingSafeEqual } from 'crypto';
 import { applyConversationHours } from '../../lib/calendly/client.js';
+import { saveBooking, markCancelled } from '../../lib/calendly/bookingRecord.js';
 
 const TOLERANCE_SECONDS = 5 * 60;
 
@@ -53,10 +55,20 @@ export default async function handler(req, res) {
     return res.status(400).json({ ok: false, error: 'Bad JSON' });
   }
 
+  // Keep the booking and its answers first: that is what Bart reads before a call.
+  let record = null;
+  try {
+    if (event?.event === 'invitee.created') record = await saveBooking(event.payload);
+    else if (event?.event === 'invitee.canceled') record = await markCancelled(event.payload);
+    if (record && !record.ok) console.error('[calendly-webhook] record:', record.error);
+  } catch (err) {
+    console.error('[calendly-webhook] record threw:', err?.message || err);
+  }
+
   try {
     const result = await applyConversationHours();
     console.log('[calendly-webhook]', event?.event, JSON.stringify(result));
-    return res.status(200).json({ ok: true, event: event?.event, applied: result.ok });
+    return res.status(200).json({ ok: true, event: event?.event, applied: result.ok, saved: record?.ok ?? null });
   } catch (err) {
     // 200 anyway: the daily job re-applies, and a retry storm helps nobody.
     console.error('[calendly-webhook] apply failed:', err?.message || err);

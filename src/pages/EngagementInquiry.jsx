@@ -5,6 +5,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import SEO from '../components/SEO';
 import ChatApp from '../app/ChatApp';
+import { bookingUrl, shouldForwardToCalendly } from '../lib/booking';
 
 function go(e, path) {
   e.preventDefault();
@@ -33,6 +34,17 @@ function optionFromUrl() {
 }
 
 export default function EngagementInquiry() {
+  // Booking goes straight to Calendly now (see src/lib/booking.js); only the
+  // rising leaders note still uses this form.
+  const [forwardTo] = useState(() => {
+    if (typeof window === 'undefined') return null;
+    if (!shouldForwardToCalendly(window.location.search)) return null;
+    return bookingUrl(new URLSearchParams(window.location.search).get('option'));
+  });
+  useEffect(() => {
+    if (forwardTo) window.location.replace(forwardTo);
+  }, [forwardTo]);
+
   const formLoadedAtRef = useRef(null);
   const [trapField, setTrapField] = useState('');
 
@@ -260,6 +272,22 @@ Generate the full response following the structure above.`;
 
   const inputClass =
     'w-full border border-[#1A1A1A]/15 bg-[#FAFAF9] px-4 py-3.5 font-sans text-[14px] text-[#1A1A1A] transition-colors placeholder:text-[#A8A9AD] focus:border-[#1A1A1A] focus:bg-white focus:outline-none';
+
+  if (forwardTo) {
+    return (
+      <>
+        <SEO pageKey="engagement-inquiry" />
+        <div className="min-h-screen bg-[#FAFAF9] px-6 py-24 font-inter antialiased lg:px-10">
+          <div className="mx-auto max-w-[640px]">
+            <p className="font-serif text-[24px] text-[#1A1A1A]">Opening the booking page…</p>
+            <p className="mt-4 font-sans text-[15px] text-[#6B6B6B]">
+              If it does not open, <a className="text-ao-red underline" href={forwardTo}>pick a time here</a>.
+            </p>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   if (formStatus.success) {
     return (
