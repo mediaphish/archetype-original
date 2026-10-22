@@ -18,6 +18,7 @@ const JOURNAL_DIR = 'ao-knowledge-hq-kit/journal';
 const PODCAST_DIR = path.join(JOURNAL_DIR, 'podcast');
 const GUESTS_DIR = 'ao-knowledge-hq-kit/guests';
 const FAQ_DIR = 'ao-knowledge-hq-kit/faqs';
+const SITE_PAGES_DIR = 'ao-knowledge-hq-kit/site-pages';
 const OUTPUT_FILE = 'public/knowledge.json';
 // Full corpus for server-side use only. Never under public/ — see the write below.
 const FULL_OUTPUT_FILE = 'data/knowledge-full.json';
@@ -719,6 +720,41 @@ async function buildKnowledgeCorpus() {
     console.log(`   ⏭️  Skipped: ${faqSkipped}`);
   }
   
+  // Site pages: every word on every public page (Work with Bart, Meet Bart,
+  // Advisory, the book pages and the rest). Written from the pre-rendered pages
+  // by scripts/extract-site-pages.mjs. Bart, 2026-10-22: "Every word on the
+  // website on all pages should have been consumed by the corpus." Archived
+  // pages stay in, so Archy still knows what an older page said.
+  if (fs.existsSync(SITE_PAGES_DIR)) {
+    console.log(`\n🌐 Processing site pages...`);
+    let sitePagesProcessed = 0;
+    for (const filePath of findMarkdownFiles(SITE_PAGES_DIR)) {
+      try {
+        const { data: frontmatter, content: body } = matter(fs.readFileSync(filePath, 'utf8'));
+        const slug = frontmatter.slug || path.basename(filePath, '.md');
+        docs.push({
+          title: frontmatter.archived ? `${frontmatter.title} (archived page)` : frontmatter.title || slug,
+          slug,
+          type: 'site-page',
+          tags: frontmatter.tags || ['site-page'],
+          categories: frontmatter.archived ? ['site-page', 'archived'] : ['site-page'],
+          status: 'published',
+          created_at: frontmatter.created_at || new Date().toISOString(),
+          updated_at: frontmatter.updated_at || new Date().toISOString(),
+          summary: frontmatter.summary || '',
+          url: frontmatter.url || '',
+          archived: Boolean(frontmatter.archived),
+          source: { kind: 'site-page', original_source: frontmatter.url || 'site-content' },
+          body: body ? body.trim() : '',
+        });
+        sitePagesProcessed++;
+      } catch (error) {
+        console.error(`❌ Error processing site page ${path.basename(filePath)}:`, error.message);
+      }
+    }
+    console.log(`   ✅ Site pages: ${sitePagesProcessed}`);
+  }
+
   // Carry timestamps forward for documents that have not actually changed.
   //
   // The doc builders above each fall back to `new Date()` when a source file carries

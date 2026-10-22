@@ -50,10 +50,18 @@ jobs:
           # So prerender.mjs doesn't think it's on Vercel and skip
           VERCEL: ''
 
+      # Every word on every page goes into the corpus Archy and Auto read
+      # (Bart, 2026-10-22). Reads the pages just pre-rendered, then rebuilds the
+      # corpus so the nightly indexing job sees any page whose words changed.
+      - name: Add page text to the corpus
+        run: |
+          node scripts/extract-site-pages.mjs
+          node scripts/build-knowledge.mjs
+
       - name: Check for pre-rendered changes
         id: changes
         run: |
-          git add dist/ public/knowledge.json public/sitemap.xml
+          git add dist/ public/knowledge.json public/sitemap.xml data/knowledge-full.json ao-knowledge-hq-kit/site-pages/
           if git diff --staged --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
