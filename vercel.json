@@ -1129,6 +1129,18 @@
       "dest": "/api/ao/calendly-check.js"
     },
     {
+      "src": "/api/ao/calendly-setup",
+      "dest": "/api/ao/calendly-setup.js"
+    },
+    {
+      "src": "/api/calendly/webhook",
+      "dest": "/api/calendly/webhook.js"
+    },
+    {
+      "src": "/api/cron/calendly-hours",
+      "dest": "/api/cron/calendly-hours.js"
+    },
+    {
       "src": "/api/ao/linkedin-data",
       "dest": "/api/ao/linkedin-data.js"
     },
@@ -1720,6 +1732,10 @@
     {
       "path": "/api/cron/devotional-health",
       "schedule": "20 18 * * *"
+    },
+    {
+      "path": "/api/cron/calendly-hours",
+      "schedule": "15 11 * * *"
     },
     {
       "path": "/api/cron/retry-failed-emails",
