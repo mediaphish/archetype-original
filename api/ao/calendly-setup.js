@@ -4,6 +4,8 @@
  * GET  /api/ao/calendly-setup           what would be applied (changes nothing)
  * POST /api/ao/calendly-setup {action}  'apply'   write hours + date blocks now
  *                                       'webhook' subscribe the booking listener
+ *                                       'restructure' new model: one booking
+ *                                                 type, A conversation with Bart
  *
  * Owner session only. Never returns the token or the signing key.
  */
@@ -18,6 +20,16 @@ import {
   applyConversationHours,
 } from '../../lib/calendly/client.js';
 import { buildRules, WEEKLY_CAP } from '../../lib/calendly/conversationHours.js';
+
+/** The one public booking type for the Work with Bart model (wording shown to Bart 2026-10-22). */
+const CONVERSATION = {
+  name: 'A conversation with Bart',
+  duration: 90,
+  active: true,
+  description:
+    'Up to ninety minutes, on whatever you are carrying. Bring as many topics as you want. The first conversation is free.',
+  locations: [{ kind: 'zoom_conference' }, { kind: 'outbound_call' }],
+};
 
 const SITE = process.env.SITE_URL || 'https://www.archetypeoriginal.com';
 const WEBHOOK_URL = `${SITE}/api/calendly/webhook`;
@@ -90,6 +102,43 @@ export default async function handler(req, res) {
         },
       });
       return res.status(200).json({ ok: r.ok, status: r.status, state: r.data?.resource?.state, error: r.ok ? undefined : r.data });
+    }
+
+    if (action === 'restructure') {
+      // Bart, 2026-10-22: "None of those schedules are being used at all... start
+      // over with something brand new that fits this new model." Calendly's API
+      // cannot delete a booking type, so old ones are switched off instead.
+      const user = await currentUser();
+      const types = await listEventTypes(user);
+      const steps = [];
+      let conversation = types.find((t) => t.name === CONVERSATION.name);
+      if (!conversation) {
+        const created = await calendly('/event_types', {
+          method: 'POST',
+          body: { owner: user.uri, ...CONVERSATION },
+        });
+        steps.push({ step: 'create', ok: created.ok, status: created.status, error: created.ok ? undefined : created.data });
+        conversation = created.data?.resource || null;
+      } else {
+        const updated = await calendly(`/event_types/${conversation.uri.split('/').pop()}`, {
+          method: 'PATCH',
+          body: CONVERSATION,
+        });
+        steps.push({ step: 'update', ok: updated.ok, status: updated.status, error: updated.ok ? undefined : updated.data });
+      }
+      if (conversation) {
+        for (const t of types.filter((x) => x.active && x.uri !== conversation.uri)) {
+          const off = await calendly(`/event_types/${t.uri.split('/').pop()}`, { method: 'PATCH', body: { active: false } });
+          steps.push({ step: `switch off ${t.name}`, ok: off.ok, status: off.status, error: off.ok ? undefined : off.data });
+        }
+      }
+      const hours = await applyConversationHours();
+      return res.status(200).json({
+        ok: steps.every((x) => x.ok) && hours.ok,
+        steps,
+        conversation: conversation ? { name: conversation.name, scheduling_url: conversation.scheduling_url, duration: conversation.duration } : null,
+        hours,
+      });
     }
 
     return res.status(400).json({ ok: false, error: 'Unknown action' });
