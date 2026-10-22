@@ -110,7 +110,7 @@ export default function ChatApp({
       greetingText =
         "Hi, I'm Archy. I'm here to help you interpret your ALI data and think through practical next steps. What would you like to explore?";
     } else {
-      greetingText = "Hi, I'm Archy.\n\nI'm an AI that represents the work, philosophy, and experience of Bart Paden - a builder who's spent more than 32 years creating companies, growing people, and learning what makes both endure. You can ask me just about any question and I'll do my best to speak on his behalf. Go ahead and give it a try.";
+      greetingText = "Hi, I'm Archy.\n\nI'm an AI that represents the work, philosophy, and experience of Bart Paden - a builder who's spent more than 34 years creating companies, growing people, and learning what makes both endure. You can ask me just about any question and I'll do my best to speak on his behalf. Go ahead and give it a try.";
     }
     
     const greetingMessage = {
@@ -426,7 +426,7 @@ export default function ChatApp({
       }, 1000);
     } else if (value === 'contact_direct') {
       // Contact Bart directly
-      window.open('https://calendly.com/bartpaden', '_blank');
+      window.open('https://calendly.com/bartpaden/a-conversation-with-bart', '_blank');
     } else if (value === 'handoff_email') {
       // Start the handoff triage/contact flow in-app
       setShowEscalation(true);
@@ -442,10 +442,10 @@ export default function ChatApp({
       setMessages(prev => [...prev, response]);
     } else if (value === 'handoff_schedule') {
       // Open Bart's Calendly directly (provided link)
-      window.open('https://calendly.com/bartpaden/1-on-1-mentorships', '_blank');
+      window.open('https://calendly.com/bartpaden/a-conversation-with-bart', '_blank');
     } else if (value.startsWith('calendly_')) {
       // Handle Calendly links
-      const calendlyUrl = process.env.REACT_APP_CALENDLY_URL || 'https://calendly.com/bartpaden';
+      const calendlyUrl = process.env.REACT_APP_CALENDLY_URL || 'https://calendly.com/bartpaden/a-conversation-with-bart';
       window.open(calendlyUrl, '_blank');
       
       const response = {
@@ -460,11 +460,11 @@ export default function ChatApp({
       setMessages(prev => [...prev, userMessage]);
       
       const response = {
-        text: "Perfect! Bart's mentorship focuses on practical leadership development. He helps emerging leaders build clarity, confidence, and sustainable habits through his five fundamentals framework.\n\nHis approach is hands-on and based on 32 years of real experience. He typically works with leaders through 30-60 minute focused sessions.\n\nWhat specific leadership challenge would you like to work on?",
+        text: "Perfect! Bart's mentorship focuses on practical leadership development. He helps emerging leaders build clarity, confidence, and sustainable habits through his five fundamentals framework.\n\nHis approach is hands-on and based on 34 years of real experience. Conversations run up to ninety minutes, and the first one is free.\n\nWhat specific leadership challenge would you like to work on?",
         isUser: false,
         showButtons: true,
         buttonOptions: [
-          { text: "Schedule mentorship call", value: "calendly_schedule" },
+          { text: "Book a conversation", value: "calendly_schedule" },
           { text: "Learn the five fundamentals", value: "fundamentals" }
         ]
       };
@@ -475,11 +475,11 @@ export default function ChatApp({
       setMessages(prev => [...prev, userMessage]);
       
       const response = {
-        text: "Here are Bart's five leadership fundamentals:\n\n1. **Clarity beats chaos** - People can't follow what they can't see. Clear direction, clear expectations, clear outcomes.\n\n2. **Protect the culture** - Values before convenience. When pressure hits, culture is what holds.\n\n3. **Build trust daily** - It's math, not magic. Small consistent actions compound into unshakeable trust.\n\n4. **Empower over control** - Ownership outlasts oversight. Give people the tools and space to succeed.\n\n5. **Serve the standard** - People rise to what you model. Your behavior sets the bar.\n\nThese aren't theory - they're battle-tested principles from 32 years of building teams and companies. Which one resonates most with your current situation?",
+        text: "Here are Bart's five leadership fundamentals:\n\n1. **Clarity beats chaos** - People can't follow what they can't see. Clear direction, clear expectations, clear outcomes.\n\n2. **Protect the culture** - Values before convenience. When pressure hits, culture is what holds.\n\n3. **Build trust daily** - It's math, not magic. Small consistent actions compound into unshakeable trust.\n\n4. **Empower over control** - Ownership outlasts oversight. Give people the tools and space to succeed.\n\n5. **Serve the standard** - People rise to what you model. Your behavior sets the bar.\n\nThese aren't theory - they're battle-tested principles from 34 years of building teams and companies. Which one resonates most with your current situation?",
         isUser: false,
         showButtons: true,
         buttonOptions: [
-          { text: "Schedule a call to discuss", value: "calendly_schedule" },
+          { text: "Book a conversation", value: "calendly_schedule" },
           { text: "Tell me more about my situation", value: "mentorship" }
         ]
       };

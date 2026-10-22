@@ -884,7 +884,7 @@ Respond with ONLY a JSON object:
         // Check for button suggestions in AI response
         let suggestedButtons = [];
         if (response.includes('[SUGGEST_SCHEDULE]')) {
-          suggestedButtons.push({ text: "Schedule a call with Bart", value: "calendly_schedule" });
+          suggestedButtons.push({ text: "Book a conversation", value: "calendly_schedule" });
           response = response.replace('[SUGGEST_SCHEDULE]', '');
         }
         if (response.includes('[SUGGEST_STORY]')) {
