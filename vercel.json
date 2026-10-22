@@ -1125,6 +1125,10 @@
       "dest": "/api/ao/linkedin-check.js"
     },
     {
+      "src": "/api/ao/calendly-check",
+      "dest": "/api/ao/calendly-check.js"
+    },
+    {
       "src": "/api/ao/linkedin-data",
       "dest": "/api/ao/linkedin-data.js"
     },
