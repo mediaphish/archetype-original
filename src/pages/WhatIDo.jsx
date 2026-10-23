@@ -241,7 +241,7 @@ export default function WhatIDo() {
                   Every engagement I take on has one purpose—help people and businesses grow without losing what makes them human.
                 </p>
                 <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  I don't offer canned programs or subscriptions. I bring 32 years of experience in leadership, business development, culture building, marketing, and software to the table, and meet each client where they are.
+                  I don't offer canned programs or subscriptions. I bring 34 years of experience in leadership, business development, culture building, marketing, and software to the table, and meet each client where they are.
                 </p>
                 <p className="p mb-6" style={{ lineHeight: '1.6' }}>
                   I help founders, executives, teams, and students find clarity, confidence, and direction again.

@@ -7,7 +7,7 @@ featured: false
 status: published
 ---
 
-Archetype Original is the work I built after 33 years of leading real organizations and watching the same problems repeat everywhere I looked.
+Archetype Original is the work I built after 34 years of leading real organizations and watching the same problems repeat everywhere I looked.
 
 It's a leadership consultancy and knowledge system built around responsibility, clarity, and long-term cultural health. It exists to help leaders build cultures that are stable, accountable, and human.
 

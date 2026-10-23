@@ -68,7 +68,7 @@ export default function ChatApp({
     let greetingText;
     
     if (context === 'home') {
-      greetingText = "Hi, I'm Archy. I see you're exploring the homepage. I'm here to help you understand servant leadership, culture building, and how Bart's 32+ years of experience can help your business. What would you like to know about leadership, culture, or how we can work together?";
+      greetingText = "Hi, I'm Archy. I see you're exploring the homepage. I'm here to help you understand servant leadership, culture building, and how Bart's 34 years of experience can help your business. What would you like to know about leadership, culture, or how we can work together?";
     } else if (context === 'journal') {
       greetingText = "Hi, I'm Archy. I see you're reading the journal. I can help you dive deeper into any of these leadership topics or answer questions about the ideas Bart shares. What would you like to explore?";
     } else if (context === 'methods-mentorship') {
