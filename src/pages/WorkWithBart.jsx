@@ -138,7 +138,7 @@ export default function WorkWithBart() {
         <section className="relative overflow-hidden border-b border-stone-200 bg-stone-950">
           <div className="relative h-[min(58vh,460px)] min-h-[300px] w-full lg:hidden">
             <img
-              src="/images/bart-room-standing-2026-v2.jpg"
+              src="/images/bart-room-standing-2026-v3.jpg"
               alt="Bart Paden, founder of Archetype Original"
               className="h-full w-full object-cover object-[60%_25%]"
               loading="eager"
@@ -147,7 +147,7 @@ export default function WorkWithBart() {
           </div>
           <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[62%] overflow-hidden lg:block" aria-hidden="true">
             <img
-              src="/images/bart-room-standing-2026-v2.jpg"
+              src="/images/bart-room-standing-2026-v3.jpg"
               alt=""
               className="h-full w-full object-cover object-[58%_25%]"
               loading="eager"
