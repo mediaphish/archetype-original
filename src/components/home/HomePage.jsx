@@ -139,7 +139,9 @@ export default function HomePage() {
               'linear-gradient(to right, rgba(43, 41, 41, 0.97) 0%, rgba(43, 41, 41, 0.94) 38%, rgba(43, 41, 41, 0.55) 62%, rgba(43, 41, 41, 0.12) 100%)',
           }}
         />
-        <div className="relative z-[3] w-full max-w-[600px] bg-stone-950 px-6 py-10 pb-12 text-left md:bg-transparent md:px-16 md:py-20 md:pb-20">
+        {/* Text lines up with the logo: same width and side padding as the header (Bart, 2026-10-22). */}
+        <div className="relative z-[3] mx-auto w-full max-w-[1600px] md:px-6 lg:px-10 xl:px-14">
+        <div className="w-full max-w-[600px] bg-stone-950 px-6 py-10 pb-12 text-left md:bg-transparent md:px-0 md:py-20 md:pb-20">
           <p className="mb-6 font-sans text-[11px] uppercase tracking-[0.2em] text-ao-brown">Bart Paden · Archetype Original</p>
           <h1 className="mb-6 font-serif text-[clamp(28px,7vw,38px)] font-normal italic leading-[1.06] text-[#F0ECE4] md:text-[clamp(32px,3.8vw,52px)]">
             Thirty-four years of building things. On your side of the table.
@@ -164,6 +166,7 @@ export default function HomePage() {
               Read the journal
             </a>
           </div>
+        </div>
         </div>
       </section>
 
