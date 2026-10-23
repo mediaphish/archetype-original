@@ -1141,6 +1141,14 @@
       "dest": "/api/cron/calendly-hours.js"
     },
     {
+      "src": "/api/cron/calendly-followups",
+      "dest": "/api/cron/calendly-followups.js"
+    },
+    {
+      "src": "/api/calendly/followup",
+      "dest": "/api/calendly/followup.js"
+    },
+    {
       "src": "/api/ao/linkedin-data",
       "dest": "/api/ao/linkedin-data.js"
     },
@@ -1736,6 +1744,10 @@
     {
       "path": "/api/cron/calendly-hours",
       "schedule": "15 11 * * *"
+    },
+    {
+      "path": "/api/cron/calendly-followups",
+      "schedule": "5 * * * *"
     },
     {
       "path": "/api/cron/retry-failed-emails",
