@@ -439,6 +439,28 @@
       }
     },
     {
+      "src": "api/ao/calendly-setup.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 1024,
+        "maxDuration": 300,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
+      "src": "api/cron/calendly-followups.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 1024,
+        "maxDuration": 300,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
       "src": "api/**/*.js",
       "use": "@vercel/node",
       "config": {

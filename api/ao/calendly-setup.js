@@ -4,6 +4,7 @@
  * GET  /api/ao/calendly-setup           what would be applied (changes nothing)
  * POST /api/ao/calendly-setup {action}  'apply'   write hours + date blocks now
  *                                       'webhook' subscribe the booking listener
+ *                                       'followups' run the brief / after-call job now
  *                                       'restructure' new model: one booking
  *                                                 type, A conversation with Bart
  *
@@ -102,6 +103,11 @@ export default async function handler(req, res) {
         },
       });
       return res.status(200).json({ ok: r.ok, status: r.status, state: r.data?.resource?.state, error: r.ok ? undefined : r.data });
+    }
+
+    if (action === 'followups') {
+      const { runFollowups } = await import('../../lib/calendly/followups.js');
+      return res.status(200).json(await runFollowups());
     }
 
     if (action === 'restructure') {
