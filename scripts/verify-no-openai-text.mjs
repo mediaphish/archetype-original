@@ -12,7 +12,7 @@
  *   - any call to OpenAI's chat/completions or responses endpoints
  *   - any gpt-* model string outside the image allowlist
  *
- * Allowed: image generation (gpt-image-1) and embeddings
+ * Allowed: image generation (gpt-image-2.5, see lib/ao/imageModel.js) and embeddings
  * (text-embedding-3-small). Bart settled that on 2026-09-23: OpenAI covers what
  * Anthropic does not sell, which is pixels and vectors. Anything that produces
  * words a human reads is Claude. Embeddings produce no prose, and there is no

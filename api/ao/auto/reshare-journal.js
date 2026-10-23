@@ -19,6 +19,7 @@ import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 import { RESHARE_DAYS, nextReshareDay } from '../../../lib/ao/postingCadence.js';
 import { getOpenAiKey } from '../../../lib/openaiKey.js';
+import { OPENAI_IMAGE_MODEL } from '../../../lib/ao/imageModel.js';
 import {
   enforceVoiceGuardrails,
   enforceVoiceGuardrailsDeep,
@@ -235,7 +236,7 @@ async function editPhotoWithDallE({ photoPath, prompt, size }) {
   try {
     const imageBuffer = fs.readFileSync(photoPath);
     const form = new FormData();
-    form.append('model', 'gpt-image-1');
+    form.append('model', OPENAI_IMAGE_MODEL);
     // Pass a real Uint8Array copy so multipart encoding never sees a pooled Buffer view.
     form.append(
       'image',
