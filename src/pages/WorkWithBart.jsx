@@ -131,37 +131,39 @@ export default function WorkWithBart() {
         })}
       />
       <main className="min-h-screen bg-stone-50 text-stone-900 [text-rendering:geometricPrecision]">
-        {/* Hero: full-bleed photo, no side bars (Bart, 2026-10-20) */}
+        {/* Hero. Bart, 2026-10-23: text must never sit on his face. On wide screens
+            the photo fills the right side and fades into a solid panel behind the
+            copy, which lines up with the logo; on phones it is a taller frame on
+            him with the copy below. Same treatment as the home page. */}
         <section className="relative overflow-hidden border-b border-stone-200 bg-stone-950">
-          {/* Phone and tablet: photo strip above the copy */}
-          <div className="relative h-[min(46vh,360px)] min-h-[240px] w-full lg:hidden">
+          <div className="relative h-[min(58vh,460px)] min-h-[300px] w-full lg:hidden">
             <img
-              src="/images/bart-room-standing-2026.jpg"
+              src="/images/bart-room-standing-2026-v2.jpg"
               alt="Bart Paden, founder of Archetype Original"
-              className="h-full w-full object-cover object-[66%_20%]"
+              className="h-full w-full object-cover object-[60%_25%]"
               loading="eager"
             />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-stone-950" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-b from-transparent to-stone-950" />
           </div>
-          {/* Desktop: the photo fills the whole section, with a fade behind the copy */}
-          <img
-            src="/images/bart-room-standing-2026.jpg"
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 hidden h-full w-full object-cover object-[70%_22%] lg:block"
-            loading="eager"
-          />
-          <div
-            className="pointer-events-none absolute inset-0 hidden lg:block"
-            style={{
-              background:
-                'linear-gradient(to right, rgba(12, 10, 9, 0.97) 0%, rgba(12, 10, 9, 0.92) 36%, rgba(12, 10, 9, 0.45) 58%, rgba(12, 10, 9, 0.05) 100%)',
-            }}
-          />
-          <div className="relative z-10 mx-auto max-w-7xl">
-            <div className="max-w-[640px] px-4 py-14 sm:px-6 sm:py-20 md:px-10 lg:py-28">
+          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[62%] overflow-hidden lg:block" aria-hidden="true">
+            <img
+              src="/images/bart-room-standing-2026-v2.jpg"
+              alt=""
+              className="h-full w-full object-cover object-[58%_25%]"
+              loading="eager"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  'linear-gradient(to right, rgba(12, 10, 9, 1) 0%, rgba(12, 10, 9, 1) 4%, rgba(12, 10, 9, 0.75) 22%, rgba(12, 10, 9, 0.3) 38%, rgba(12, 10, 9, 0) 52%)',
+              }}
+            />
+          </div>
+          <div className="relative z-10 mx-auto max-w-[1600px] lg:px-10 xl:px-14">
+            <div className="max-w-[640px] px-4 pb-14 pt-4 sm:px-6 sm:pb-20 lg:max-w-[480px] lg:px-0 lg:py-28 xl:max-w-[560px]">
               <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-[#C8B8A8]">Work with Bart</p>
-              <h1 className="font-serif text-4xl leading-[1.08] text-white sm:text-5xl md:text-6xl">
+              <h1 className="font-serif text-4xl leading-[1.08] text-white sm:text-5xl xl:text-6xl">
                 Thirty-four years of building things. On your side of the table.
               </h1>
               <div className="mt-8 space-y-6 text-lg leading-relaxed text-stone-300">
@@ -193,8 +195,8 @@ export default function WorkWithBart() {
           <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 md:grid-cols-2 md:items-center md:gap-14 md:px-10">
             <figure className="order-last md:order-first">
               <img
-                src="/images/bart-room-table-2026.jpg"
-                alt="Bart Paden in conversation across a small table, coffee in hand"
+                src="/images/bart-room-table-2026-v2.jpg"
+                alt="Bart Paden in conversation across a table"
                 className="w-full border border-stone-200 object-cover shadow-sm"
                 loading="lazy"
               />
