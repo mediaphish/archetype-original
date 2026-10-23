@@ -314,7 +314,7 @@ export default function TheRoom() {
                   enough rooms to understand what they cannot produce on their own.
                 </p>
                 <p>
-                  I meet people where they are. Sometimes that is one conversation about one real situation. Sometimes it
+                  I meet people where they are. Sometimes that is a single conversation. Sometimes it
                   is a season of working through something together, or a standing relationship that lasts for years.
                 </p>
                 <p>

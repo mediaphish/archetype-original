@@ -24,10 +24,10 @@ function spaNavigate(path) {
 }
 
 const OPTIONS = [
-  { name: 'One conversation', price: '$500', unit: 'one time', line: 'Ninety minutes on one real situation.' },
+  // Bart, 2026-10-23: first conversation free; no per-conversation prices.
+  { name: 'First conversation', price: 'Free', unit: '', line: 'Up to ninety minutes, on whatever you are carrying.' },
   { name: 'A season', price: '$1,500', unit: 'a month', line: 'Three months while you work through a stretch.' },
   { name: 'Ongoing', price: '$3,000', unit: 'a month', line: 'Someone in your corner for the long haul.' },
-  { name: 'Rising leaders', price: '$150', unit: 'one conversation', line: 'Three a month, for those early in it.' },
 ];
 
 // In the order Bart wrote them (set 2026-10-20). Photos are his desk shots of each book.
@@ -225,13 +225,13 @@ export default function HomePage() {
           <p className="mb-14 max-w-[640px] font-serif text-lg italic leading-[1.6] text-[#E8E0D4]">
             You can see how I think before you spend a dollar. Read one of my three books, or a few entries in the journal.
           </p>
-          <div className="grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-3">
             {OPTIONS.map((o) => (
               <div key={o.name} className="bg-ao-dark p-6">
                 <h3 className="font-serif text-xl font-normal text-[#F0ECE4]">{o.name}</h3>
                 <p className="mt-4">
                   <span className="font-serif text-3xl text-[#F0ECE4]">{o.price}</span>
-                  <span className="ml-2 font-sans text-[12px] text-[#A89F94]">{o.unit}</span>
+                  {o.unit ? <span className="ml-2 font-sans text-[12px] text-[#A89F94]">{o.unit}</span> : null}
                 </p>
                 <p className="mt-3 font-sans text-[14px] leading-[1.6] text-[#C9C1B6]">{o.line}</p>
               </div>

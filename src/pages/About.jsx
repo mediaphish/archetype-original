@@ -259,7 +259,7 @@ export default function About() {
                 {
                   n: '01',
                   title: 'Ways to work together',
-                  body: 'One conversation, a season, or an ongoing relationship, plus a rate for rising leaders. Start with the size that fits.',
+                  body: 'Start with a free conversation, up to ninety minutes. If there is more to do, a season or an ongoing relationship.',
                   href: '/work-with-bart',
                   link: 'See the options',
                 },

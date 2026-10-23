@@ -21,10 +21,10 @@ function go(e, path) {
  * this step.
  */
 const WORK_WITH_BART_OPTIONS = [
-  { key: 'conversation', label: 'One conversation ($500)' },
+  { key: 'conversation', label: 'A first conversation (free)' },
   { key: 'season', label: 'A season ($1,500 a month, three months)' },
   { key: 'ongoing', label: 'Ongoing ($3,000 a month)' },
-  { key: 'rising', label: 'Rising leader conversation ($150)' },
+  { key: 'rising', label: 'Rising leader conversation' },
 ];
 
 function optionFromUrl() {

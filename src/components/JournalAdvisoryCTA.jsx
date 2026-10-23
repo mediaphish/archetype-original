@@ -28,8 +28,8 @@ export default function JournalAdvisoryCTA({ hidden = false }) {
         The conversation starts here.
       </h2>
       <p className="text-base sm:text-lg leading-relaxed text-white/60 max-w-xl mx-auto mb-8">
-        If something in this piece landed close to home, you do not have to work it out alone. One conversation is
-        ninety minutes on the situation you are actually in.
+        If something here landed close to home, you do not have to work it out alone. Your first conversation with me is
+        free, up to ninety minutes, on whatever you are carrying.
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <a

@@ -2,12 +2,10 @@
  * Work with Bart (/work-with-bart). DRAFT, 2026-10-19.
  *
  * Replaces the three separate offers (Advisory, Consulting, Fractional) with one
- * door and four sizes, agreed with Bart the same day:
- *
- *   One conversation   $500, 90 minutes, one real situation
- *   A season           $1,500 a month, three months, two conversations a month
- *   Ongoing            $3,000 a month, a standing relationship
- *   Rising leaders     $150, three spots a month, apply with a short note
+ * door. Since 2026-10-23 (Bart): the first conversation is free and is the only
+ * way in; after it, a season ($1,500 a month for three months) or ongoing
+ * ($3,000 a month). No per-conversation prices on the page ("reads like we are
+ * nickel and diming everyone"), including for rising leaders.
  *
  * Why: the site sold a high-trust relationship to CEOs while the people who
  * actually showed up were readers, and nothing was sized for them. Zero
@@ -16,8 +14,8 @@
  * being in business of some kind to help them navigate their own ecosystems."
  * And on up-and-comers: "They have a lot of my heart."
  *
- * Approved and live 2026-10-21. Booking buttons go to the inquiry form, with
- * the chosen option preselected, until paid checkout is set up.
+ * Booking buttons go to Calendly via /engagement-inquiry (src/lib/booking.js);
+ * rising leaders keep the short-note form.
  */
 import React from 'react';
 import SEO from '../components/SEO';
@@ -36,9 +34,6 @@ const btnPrimary =
 
 const btnGhost =
   'inline-flex min-h-[44px] items-center justify-center rounded-[3px] border border-white/40 bg-white/10 px-6 py-3 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60';
-
-const btnDark =
-  'inline-flex min-h-[44px] w-full items-center justify-center rounded-[3px] bg-stone-900 px-6 py-3 text-base font-semibold text-white transition hover:bg-stone-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-900 focus-visible:ring-offset-2';
 
 /** Bart-approved 2026-10-19, same wording as the home page. */
 const WHY = [
@@ -75,45 +70,19 @@ const ORG_PATHS = [
   },
 ];
 
+/** After the free first conversation (Bart-approved wording, 2026-10-23). */
 const OPTIONS = [
-  {
-    key: 'conversation',
-    name: 'One conversation',
-    price: '$500',
-    unit: 'one time',
-    who: 'For anyone carrying one real situation.',
-    body: [
-      'Ninety minutes on the thing in front of you. A decision. A person. A plan that is not working the way it looked on paper.',
-      'You bring the situation. We work it until you can see it clearly. No intake process. No program to join.',
-    ],
-    cta: 'Book a conversation',
-    path: '/engagement-inquiry?option=conversation',
-  },
   {
     key: 'season',
     name: 'A season',
-    price: '$1,500',
-    unit: 'a month, for three months',
-    who: 'For the leader in a stretch.',
-    body: [
-      'Growth, a transition, a rebuild. The kind of stretch where the decisions keep coming and the stakes keep rising.',
-      'Two conversations a month, and you can reach me in between when something will not wait.',
-    ],
-    cta: 'Start a season',
-    path: '/engagement-inquiry?option=season',
+    body: 'For a stretch of growth, a transition or a rebuild, when the decisions keep coming. We meet twice a month for three months, and you can reach me in between when something will not wait.',
+    price: '$1,500 a month, for three months',
   },
   {
     key: 'ongoing',
     name: 'Ongoing',
-    price: '$3,000',
-    unit: 'a month',
-    who: 'For owners who want someone in their corner.',
-    body: [
-      'A standing relationship. When the weight shows up, you are not carrying it alone.',
-      'As often as you need it. No agenda except yours.',
-    ],
-    cta: 'Start an ongoing relationship',
-    path: '/engagement-inquiry?option=ongoing',
+    body: 'A standing relationship for owners who want someone in their corner. We talk as often as you need, and the agenda is always yours.',
+    price: '$3,000 a month',
     more: { label: 'How the advisory works', path: '/advisory' },
   },
 ];
@@ -231,38 +200,55 @@ export default function WorkWithBart() {
           </div>
         </section>
 
-        {/* Options */}
+        {/* Start with a conversation, then the two ways to keep going */}
         <section id="options" className="scroll-mt-24 border-b border-stone-200 bg-white py-14 sm:py-20 md:py-24">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-10">
-            <h2 className="font-serif text-3xl leading-tight text-stone-900 sm:text-4xl">Ways to work together.</h2>
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
+            <div className="max-w-3xl">
+              <h2 className="font-serif text-3xl leading-tight text-stone-900 sm:text-4xl">Start with a conversation.</h2>
+              <p className="mt-6 text-lg leading-relaxed text-stone-700">
+                The first conversation is free. It is a full session, up to ninety minutes, and you can bring as many things
+                as you want to talk through. There is no pitch at the end. If there is more to do, we will both know it, and we
+                can decide together what comes next.
+              </p>
+              <div className="mt-8">
+                <button type="button" onClick={(e) => goToPath(e, '/engagement-inquiry?option=conversation')} className={btnPrimary}>
+                  Book a conversation
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-16 max-w-3xl">
+              <h2 className="font-serif text-3xl leading-tight text-stone-900 sm:text-4xl">If we keep going.</h2>
+              <p className="mt-6 text-lg leading-relaxed text-stone-700">
+                Some people want help through a hard stretch. Some want someone in their corner for the long haul. Here is how
+                each of those works.
+              </p>
+            </div>
+            <div className="mt-10 grid gap-6 md:grid-cols-2">
               {OPTIONS.map((o) => (
                 <div key={o.key} className="flex flex-col border border-stone-200 bg-stone-50 p-6 sm:p-8">
                   <h3 className="font-serif text-2xl text-stone-900">{o.name}</h3>
-                  <p className="mt-1 text-sm text-stone-600">{o.who}</p>
-                  <p className="mt-6">
-                    <span className="font-serif text-4xl text-stone-900">{o.price}</span>
-                    <span className="ml-2 text-sm text-stone-600">{o.unit}</span>
-                  </p>
-                  <div className="mt-6 flex-1 space-y-4 text-base leading-relaxed text-stone-700">
-                    {o.body.map((line) => (
-                      <p key={line}>{line}</p>
-                    ))}
-                  </div>
-                  <button type="button" onClick={(e) => goToPath(e, o.path)} className={`mt-8 ${btnDark}`}>
-                    {o.cta}
-                  </button>
+                  <p className="mt-4 flex-1 text-base leading-relaxed text-stone-700">{o.body}</p>
+                  <p className="mt-6 border-t border-stone-200 pt-4 text-sm font-medium text-stone-600">{o.price}</p>
                   {o.more ? (
                     <a
                       href={o.more.path}
                       onClick={(e) => goToPath(e, o.more.path)}
-                      className="mt-4 text-center text-sm font-semibold text-ao-red hover:underline"
+                      className="mt-3 text-sm font-semibold text-ao-red hover:underline"
                     >
                       {o.more.label} →
                     </a>
                   ) : null}
                 </div>
               ))}
+            </div>
+            <p className="mt-10 max-w-3xl text-lg leading-relaxed text-stone-700">
+              You do not need to choose either of these now. Both start with the free conversation.
+            </p>
+            <div className="mt-6">
+              <button type="button" onClick={(e) => goToPath(e, '/engagement-inquiry?option=conversation')} className={btnPrimary}>
+                Book a conversation
+              </button>
             </div>
           </div>
         </section>
@@ -280,8 +266,8 @@ export default function WorkWithBart() {
                 It still is.
               </p>
               <p>
-                If you are early in your career and carrying more than your title says, the one-conversation session is $150
-                for you. I hold three of these a month.
+                If you are early in your career and carrying more than your title says, I want to hear from you. Your first
+                conversation is free. If we keep meeting after that, we will work out something that fits where you are.
               </p>
               <p>
                 Send me a short note. Tell me where you are and what you are carrying. I read every one myself.
@@ -290,7 +276,7 @@ export default function WorkWithBart() {
             </div>
             <div className="mt-10">
               <button type="button" onClick={(e) => goToPath(e, '/engagement-inquiry?option=rising')} className={btnPrimary}>
-                Tell me about you, $150
+                Tell me about you
               </button>
             </div>
           </div>
@@ -325,7 +311,7 @@ export default function WorkWithBart() {
           <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 md:px-10">
             <h2 className="font-serif text-3xl leading-tight text-stone-900 sm:text-4xl">Not sure which one fits?</h2>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-stone-700">
-              Start with one conversation. If there is more to do, we will both know it by the end of the hour and a half.
+              Start with the free conversation. By the end of it, we will both know whether there is more to do.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <button

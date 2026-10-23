@@ -268,7 +268,7 @@ export default function ContactPage() {
             Ready for the real conversation?
           </h2>
           <p className="mx-auto mb-10 max-w-[480px] font-sans text-[15px] leading-[1.75] text-white/60">
-            One conversation is ninety minutes on one real situation. When you are ready, start there.
+            Your first conversation is free. It runs up to ninety minutes, on whatever you are carrying. When you are ready, start there.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a
