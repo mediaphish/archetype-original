@@ -137,13 +137,21 @@ export default function HomePage() {
           <img src="/images/bart-room-laptop-2026-v3.jpg" alt="" className="h-full w-full object-cover object-[66%_30%]" loading="eager" decoding="async" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-b from-transparent to-stone-950" aria-hidden />
         </div>
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] hidden w-[68%] overflow-hidden md:block lg:w-[66%]" aria-hidden>
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] hidden w-[68%] overflow-hidden md:block lg:w-[66%] xl:w-full" aria-hidden>
           <img src="/images/bart-room-laptop-2026-v3.jpg" alt="" className="h-full w-full object-cover object-[60%_30%]" loading="eager" decoding="async" />
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 xl:hidden"
             style={{
               background:
                 'linear-gradient(to right, rgba(43, 41, 41, 1) 0%, rgba(43, 41, 41, 1) 4%, rgba(43, 41, 41, 0.75) 22%, rgba(43, 41, 41, 0.3) 38%, rgba(43, 41, 41, 0) 52%)',
+            }}
+          />
+          {/* Wide screens: the photo runs under the text with a light fade (Bart, 2026-10-23: too dark on the left). */}
+          <div
+            className="absolute inset-0 hidden xl:block"
+            style={{
+              background:
+                'linear-gradient(to right, rgba(43, 41, 41, 0.72) 0%, rgba(43, 41, 41, 0.58) 26%, rgba(43, 41, 41, 0.25) 44%, rgba(43, 41, 41, 0) 60%)',
             }}
           />
         </div>

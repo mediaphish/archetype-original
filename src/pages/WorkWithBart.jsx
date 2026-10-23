@@ -145,7 +145,7 @@ export default function WorkWithBart() {
             />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-b from-transparent to-stone-950" />
           </div>
-          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[62%] overflow-hidden lg:block" aria-hidden="true">
+          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[62%] overflow-hidden lg:block xl:w-full" aria-hidden="true">
             <img
               src="/images/bart-room-standing-2026-v3.jpg"
               alt=""
@@ -153,10 +153,18 @@ export default function WorkWithBart() {
               loading="eager"
             />
             <div
-              className="absolute inset-0"
+              className="absolute inset-0 xl:hidden"
               style={{
                 background:
                   'linear-gradient(to right, rgba(12, 10, 9, 1) 0%, rgba(12, 10, 9, 1) 4%, rgba(12, 10, 9, 0.75) 22%, rgba(12, 10, 9, 0.3) 38%, rgba(12, 10, 9, 0) 52%)',
+              }}
+            />
+            {/* Wide screens: the photo runs under the text with a light fade (Bart, 2026-10-23: too dark on the left). */}
+            <div
+              className="absolute inset-0 hidden xl:block"
+              style={{
+                background:
+                  'linear-gradient(to right, rgba(12, 10, 9, 0.72) 0%, rgba(12, 10, 9, 0.58) 26%, rgba(12, 10, 9, 0.25) 44%, rgba(12, 10, 9, 0) 60%)',
               }}
             />
           </div>
