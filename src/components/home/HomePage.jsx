@@ -127,9 +127,9 @@ export default function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="home-hero-bg relative flex min-h-0 flex-col md:min-h-[86vh] md:justify-center md:items-start md:bg-cover md:bg-[position:center_35%] md:bg-[url('/images/bart-room-laptop-2026-v2.jpg')] md:bg-no-repeat">
+      <section className="home-hero-bg relative flex min-h-0 flex-col md:min-h-[86vh] md:justify-center md:items-start md:bg-cover md:bg-[position:85%_35%] md:bg-[url('/images/bart-room-laptop-2026-v2.jpg')] md:bg-no-repeat">
         <div className="relative h-[min(42vh,320px)] min-h-[220px] w-full shrink-0 overflow-hidden md:hidden">
-          <img src="/images/bart-room-laptop-2026-v2.jpg" alt="" className="h-full w-full object-cover object-[center_22%]" loading="eager" decoding="async" />
+          <img src="/images/bart-room-laptop-2026-v2.jpg" alt="" className="h-full w-full object-cover object-[62%_22%]" loading="eager" decoding="async" />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-stone-950" aria-hidden />
         </div>
         <div
