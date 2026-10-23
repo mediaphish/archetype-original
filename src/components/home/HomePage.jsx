@@ -134,11 +134,11 @@ export default function HomePage() {
           with the text below. */}
       <section className="relative flex min-h-0 flex-col bg-stone-950 md:min-h-[86vh] md:justify-center md:items-start md:bg-ao-dark">
         <div className="relative h-[min(58vh,460px)] min-h-[300px] w-full shrink-0 overflow-hidden md:hidden">
-          <img src="/images/bart-room-laptop-2026-v2.jpg" alt="" className="h-full w-full object-cover object-[66%_30%]" loading="eager" decoding="async" />
+          <img src="/images/bart-room-laptop-2026-v3.jpg" alt="" className="h-full w-full object-cover object-[66%_30%]" loading="eager" decoding="async" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-b from-transparent to-stone-950" aria-hidden />
         </div>
         <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] hidden w-[68%] overflow-hidden md:block lg:w-[66%]" aria-hidden>
-          <img src="/images/bart-room-laptop-2026-v2.jpg" alt="" className="h-full w-full object-cover object-[60%_30%]" loading="eager" decoding="async" />
+          <img src="/images/bart-room-laptop-2026-v3.jpg" alt="" className="h-full w-full object-cover object-[60%_30%]" loading="eager" decoding="async" />
           <div
             className="absolute inset-0"
             style={{
