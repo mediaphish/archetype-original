@@ -126,24 +126,32 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="home-hero-bg relative flex min-h-0 flex-col md:min-h-[86vh] md:justify-center md:items-start md:bg-cover md:bg-[position:85%_35%] md:bg-[url('/images/bart-room-laptop-2026-v2.jpg')] md:bg-no-repeat">
-        <div className="relative h-[min(42vh,320px)] min-h-[220px] w-full shrink-0 overflow-hidden md:hidden">
-          <img src="/images/bart-room-laptop-2026-v2.jpg" alt="" className="h-full w-full object-cover object-[62%_22%]" loading="eager" decoding="async" />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-stone-950" aria-hidden />
+      {/* Hero
+          Bart, 2026-10-23: the text must never sit on his face, and the phone
+          crop was wrong. On wider screens the photo now fills only the right
+          side and fades into a solid panel behind the text, so the two cannot
+          overlap at any width. On phones the photo is a taller frame on him,
+          with the text below. */}
+      <section className="relative flex min-h-0 flex-col bg-stone-950 md:min-h-[86vh] md:justify-center md:items-start md:bg-ao-dark">
+        <div className="relative h-[min(58vh,460px)] min-h-[300px] w-full shrink-0 overflow-hidden md:hidden">
+          <img src="/images/bart-room-laptop-2026-v2.jpg" alt="" className="h-full w-full object-cover object-[66%_30%]" loading="eager" decoding="async" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-b from-transparent to-stone-950" aria-hidden />
         </div>
-        <div
-          className="pointer-events-none absolute inset-0 z-[1] hidden md:block"
-          style={{
-            background:
-              'linear-gradient(to right, rgba(43, 41, 41, 0.85) 0%, rgba(43, 41, 41, 0.7) 30%, rgba(43, 41, 41, 0.25) 52%, rgba(43, 41, 41, 0) 70%)',
-          }}
-        />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] hidden w-[68%] overflow-hidden md:block lg:w-[66%]" aria-hidden>
+          <img src="/images/bart-room-laptop-2026-v2.jpg" alt="" className="h-full w-full object-cover object-[60%_30%]" loading="eager" decoding="async" />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(to right, rgba(43, 41, 41, 1) 0%, rgba(43, 41, 41, 0.6) 18%, rgba(43, 41, 41, 0) 40%)',
+            }}
+          />
+        </div>
         {/* Text lines up with the logo: same width and side padding as the header (Bart, 2026-10-22). */}
         <div className="relative z-[3] mx-auto w-full max-w-[1600px] md:px-6 lg:px-10 xl:px-14">
-        <div className="w-full max-w-[600px] bg-stone-950 px-6 py-10 pb-12 text-left md:bg-transparent md:px-0 md:py-20 md:pb-20">
+        <div className="w-full max-w-[600px] bg-stone-950 px-6 pt-4 pb-12 text-left md:max-w-[400px] md:bg-transparent md:px-0 md:py-20 md:pb-20 lg:max-w-[460px] xl:max-w-[540px]">
           <p className="mb-6 font-sans text-[11px] uppercase tracking-[0.2em] text-ao-brown">Bart Paden · Archetype Original</p>
-          <h1 className="mb-6 font-serif text-[clamp(28px,7vw,38px)] font-normal italic leading-[1.06] text-[#F0ECE4] md:text-[clamp(32px,3.8vw,52px)]">
+          <h1 className="mb-6 font-serif text-[clamp(28px,7vw,38px)] font-normal italic leading-[1.06] text-[#F0ECE4] md:text-[clamp(32px,3.2vw,50px)]">
             Thirty-four years of building things. On your side of the table.
           </h1>
           <p className="mb-10 max-w-[480px] font-sans text-base leading-[1.72] text-ao-midGray">
