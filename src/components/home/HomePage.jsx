@@ -127,16 +127,16 @@ export default function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="home-hero-bg relative flex min-h-0 flex-col md:min-h-[86vh] md:justify-center md:items-start md:bg-cover md:bg-[url('/images/bart-room-laptop-2026.jpg')] md:bg-no-repeat">
+      <section className="home-hero-bg relative flex min-h-0 flex-col md:min-h-[86vh] md:justify-center md:items-start md:bg-cover md:bg-[position:center_35%] md:bg-[url('/images/bart-room-laptop-2026-v2.jpg')] md:bg-no-repeat">
         <div className="relative h-[min(42vh,320px)] min-h-[220px] w-full shrink-0 overflow-hidden md:hidden">
-          <img src="/images/bart-room-laptop-2026.jpg" alt="" className="h-full w-full object-cover object-[center_22%]" loading="eager" decoding="async" />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/25 via-black/45 to-stone-950" aria-hidden />
+          <img src="/images/bart-room-laptop-2026-v2.jpg" alt="" className="h-full w-full object-cover object-[center_22%]" loading="eager" decoding="async" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-stone-950" aria-hidden />
         </div>
         <div
           className="pointer-events-none absolute inset-0 z-[1] hidden md:block"
           style={{
             background:
-              'linear-gradient(to right, rgba(43, 41, 41, 0.97) 0%, rgba(43, 41, 41, 0.94) 38%, rgba(43, 41, 41, 0.55) 62%, rgba(43, 41, 41, 0.12) 100%)',
+              'linear-gradient(to right, rgba(43, 41, 41, 0.85) 0%, rgba(43, 41, 41, 0.7) 30%, rgba(43, 41, 41, 0.25) 52%, rgba(43, 41, 41, 0) 70%)',
           }}
         />
         {/* Text lines up with the logo: same width and side padding as the header (Bart, 2026-10-22). */}
