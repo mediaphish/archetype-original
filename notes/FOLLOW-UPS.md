@@ -5,6 +5,13 @@ When something here gets built, move it to "Done" with the date.
 
 ## Open
 
+### Reshare images from Bart's approved backgrounds (2026-10-24)
+Bart rejected the OpenAI-relit photo on the Oct 28 reshare ("It is exactly what
+I was afraid of"). That reshare is back in review and reshare auto-approve is
+off. Bart is making 10 backgrounds in ChatGPT (1536x1024, open space on one
+side, no text). Reshares then use only those, with the quote and logo set by
+the site and no OpenAI step. Show him a sample before turning auto-approve on.
+
 ### ALI fresh look (Bart, 2026-10-24: "this next week")
 Take a fresh look at ALI and make sure it still accomplishes the goal of
 understanding how leadership works in an organization. The CRM only flags
@@ -63,11 +70,12 @@ Auto suggests next moves from the pipeline (check-ins after a conversation,
 who has gone quiet) and a weekly one-page summary. Auto suggests; Bart decides.
 
 ### Smaller items
-- Email records (half done 2026-10-23: the main record now reads `v=spf1 include:_spf.google.com include:resend.net ~all`; the duplicate GoDaddy one `v=spf1 include:dc-aa8e722993._spfm...` still needs deleting, which I was not allowed to do; Bart can delete it in GoDaddy DNS). Was: archetypeoriginal.com has TWO SPF records (one with spf.google.com + resend.net, one GoDaddy-managed include). Only one is allowed; merge into one: `v=spf1 include:_spf.google.com include:resend.net ~all` at GoDaddy (DNS). Bart approved 2026-10-23; GoDaddy needs his sign-in in Chrome on the Mac (I cannot type his password).
 - Shorten the rising leaders form (page promises "a short note"; form has nine questions).
 - Site visitor stats are off (needs Bart's OK to turn on).
 
 ## Done
+- 2026-10-24 Email records: one SPF record (Google + Resend), duplicate removed by Bart.
+- 2026-10-24 Quote cards build and schedule themselves (no review); journal reshares fixed after failing since July 22.
 - 2026-10-24 Old addresses forward again (/methods, /philosophy, etc.); What I Do archived (forwards to Work with Bart); main menu stays on one line at 1024-1280.
 - 2026-10-23 Client CRM: Before we talk form (auto-emailed after booking), permissions kept word for word, transcript to summary/action items/thank-you, check-in plans that send only after approval, client timeline. Client tables locked to server-only.
 - 2026-10-23 Auto > Clients phase 1: Waiting on you, Upcoming, Everyone by stage.
