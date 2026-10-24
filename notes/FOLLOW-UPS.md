@@ -1,0 +1,42 @@
+# Follow-ups
+
+Running list of work Bart has asked for that is not started yet. Newest first.
+When something here gets built, move it to "Done" with the date.
+
+## Open
+
+### Weekly infographic posts (asked 2026-10-23)
+Bart, while sharing an infographic he saw ("The Two Paths of Leadership: a
+pyramidal comparison", traditional hierarchy vs servant leadership):
+"As we build the marketing pieces of this, I want to use OpenAI to build
+similar, but on brand and better styled and using my content. I want 3 images
+a week with captions."
+
+- Three images a week, each with a caption.
+- Explainer-style graphics (comparisons, frameworks, simple diagrams), like
+  the reference, but in Archetype Original's brand and built from Bart's own
+  content (books, journal, Culture Science, the five fundamentals).
+- Images through OpenAI (Bart's rule: OpenAI only for images). Captions and
+  the ideas come from Claude using the corpus, in his voice.
+- Lessons already learned: image models garble text, so the words on the
+  graphic should be set by the site (like the quote cards and resurface
+  cards), with the model only painting the background or illustration.
+- Belongs with Auto's marketing work and the posting cadence Bart set.
+- Reference image: notes/reference-images/2026-10-23-infographic-two-paths-of-leadership.png
+  (someone else's work, for style and format only; do not copy it).
+
+### Auto > Clients, phase 2
+Auto suggests next moves from the pipeline (check-ins after a conversation,
+who has gone quiet) and a weekly one-page summary. Auto suggests; Bart decides.
+
+### Smaller items
+- Shorten the rising leaders form (page promises "a short note"; form has nine questions).
+- Archive the What I Do page (approved; its words are already in the corpus).
+- Old page addresses that should forward to new ones do not (redirects).
+- Site visitor stats are off (needs Bart's OK to turn on).
+- Menu wraps "Podcast" onto a second line on mid-size screens.
+
+## Done
+- 2026-10-23 Auto > Clients phase 1: Waiting on you, Upcoming, Everyone by stage.
+- 2026-10-23 Research brief on each person who books.
+- 2026-10-23 Work with Bart offer: free first conversation, softer presentation.
