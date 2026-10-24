@@ -719,7 +719,12 @@ Write four reshare captions for this article. Surface a fresh angle. Do not summ
       anthropicClient: client,
       contextLabel: 'reshare-captions',
     });
-    return guarded.value;
+    // His personal Instagram came back as a fifth channel on 2026-10-04 and the
+    // prompt still asks for four captions, so every run since stopped on it. The
+    // two Instagram accounts share one caption, the same as the quote cards.
+    const out = guarded.value || {};
+    if (!String(out.instagram_personal || '').trim()) out.instagram_personal = out.instagram_business;
+    return out;
   } catch (e) {
     console.error('[reshare-journal] Failed to parse caption JSON:', e.message);
     console.error('[reshare-journal] Raw response:', text);
