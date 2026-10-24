@@ -1,5 +1,5 @@
 /**
- * Vercel cron (hourly): briefs before booked conversations, and the after-call
+ * Vercel cron (every 15 minutes): research for new bookings, and the after-call
  * thank-you for Bart to review. See lib/calendly/followups.js.
  * Secured by CRON_SECRET if set.
  */

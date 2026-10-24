@@ -1,0 +1,389 @@
+/**
+ * Auto > Clients (/ao/clients).
+ *
+ * Bart, 2026-10-23: follow-ups move out of email and into Auto. Three parts:
+ *   Waiting on you   calls that are over with nothing sent yet: edit and send
+ *                    the thank-you, or send the re-invite if they did not show
+ *   Upcoming         booked conversations with the researched brief
+ *   Everyone         by stage, moved with one tap
+ * Server: api/ao/clients.js. Nothing reaches a client until Bart presses Send.
+ */
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import AOHeader from '../../components/ao/AOHeader';
+
+function navigateTo(path) {
+  window.history.pushState({}, '', path);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function when(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleString('en-US', {
+    timeZone: 'America/Chicago',
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  });
+}
+
+function firstName(name) {
+  return String(name || '').trim().split(/\s+/)[0] || 'there';
+}
+
+const REINVITE = (name) =>
+  `Hi ${firstName(name)},\n\nIt looks like we missed each other. No problem at all. Things come up.\n\nIf you still want to talk, you can pick a new time here: https://calendly.com/bartpaden/a-conversation-with-bart\n\nBart`;
+
+const btn = 'inline-flex min-h-[44px] items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold';
+const btnRed = `${btn} bg-[#DB0812] text-white hover:opacity-90 disabled:opacity-50`;
+const btnGray = `${btn} border border-gray-300 bg-white text-gray-800 hover:bg-gray-50 disabled:opacity-50`;
+
+function Section({ title, count, children }) {
+  return (
+    <section className="mb-10">
+      <h2 className="mb-4 text-lg font-semibold text-gray-900">
+        {title} {typeof count === 'number' ? <span className="text-gray-400">({count})</span> : null}
+      </h2>
+      {children}
+    </section>
+  );
+}
+
+function WhatTheyWrote({ items }) {
+  if (!items?.length) return <p className="text-sm text-gray-500">They did not add anything beyond the booking.</p>;
+  return (
+    <div className="space-y-3">
+      {items.map((x) => (
+        <div key={x.question}>
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{x.question}</p>
+          <p className="whitespace-pre-wrap text-sm text-gray-900">{x.answer}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Research({ client, onAction, busy }) {
+  if (!client.research_at) {
+    return <p className="text-sm text-gray-500">Research runs within 15 minutes of booking.</p>;
+  }
+  return (
+    <div>
+      {client.research_brief ? (
+        <div className="whitespace-pre-wrap text-sm leading-relaxed text-gray-900">{client.research_brief}</div>
+      ) : (
+        <p className="text-sm text-amber-800">The research did not come through{client.research_error ? `: ${client.research_error}` : ''}.</p>
+      )}
+      <button type="button" disabled={busy} onClick={() => onAction(client, 'research')} className={`mt-3 ${btnGray}`}>
+        {busy ? 'Researching… (a minute or two)' : 'Research again'}
+      </button>
+    </div>
+  );
+}
+
+function Notes({ client, onAction, busy }) {
+  const [text, setText] = useState(client.notes || '');
+  useEffect(() => setText(client.notes || ''), [client.notes]);
+  return (
+    <div>
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="What you talked about, what to remember next time."
+        className="min-h-[96px] w-full rounded-lg border border-gray-300 p-3 text-sm"
+      />
+      <button
+        type="button"
+        disabled={busy || text === (client.notes || '')}
+        onClick={() => onAction(client, 'notes', { notes: text })}
+        className={`mt-2 ${btnGray}`}
+      >
+        Save notes
+      </button>
+    </div>
+  );
+}
+
+function StagePicker({ client, stages, onAction, busy }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {stages.map((s) => (
+        <button
+          key={s.key}
+          type="button"
+          disabled={busy}
+          onClick={() => onAction(client, 'stage', { stage: s.key })}
+          className={`min-h-[36px] rounded-full px-3 text-xs font-semibold ${
+            client.stage === s.key ? 'bg-gray-900 text-white' : 'border border-gray-300 bg-white text-gray-700'
+          }`}
+        >
+          {s.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function FollowUp({ client, onAction, busy }) {
+  const [mode, setMode] = useState('thank_you');
+  const [subject, setSubject] = useState('Thank you');
+  const [text, setText] = useState(client.thank_you_draft || '');
+  useEffect(() => {
+    if (mode === 'thank_you') {
+      setSubject('Thank you');
+      setText(client.thank_you_draft || '');
+    } else {
+      setSubject('Sorry we missed each other');
+      setText(REINVITE(client.name));
+    }
+  }, [mode, client.thank_you_draft, client.name]);
+
+  return (
+    <div className="rounded-xl border border-[#DB0812]/30 bg-white p-4">
+      <div className="mb-3 flex flex-wrap gap-2">
+        <button type="button" onClick={() => setMode('thank_you')} className={mode === 'thank_you' ? btnRed : btnGray}>
+          Thank-you
+        </button>
+        <button type="button" onClick={() => setMode('reinvite')} className={mode === 'reinvite' ? btnRed : btnGray}>
+          They did not show
+        </button>
+      </div>
+      {mode === 'thank_you' && !client.thank_you_draft ? (
+        <div>
+          <p className="mb-2 text-sm text-gray-600">The draft is written about two hours after the call starts.</p>
+          <button type="button" disabled={busy} onClick={() => onAction(client, 'draft')} className={btnGray}>
+            {busy ? 'Drafting…' : 'Draft it now'}
+          </button>
+        </div>
+      ) : (
+        <div>
+          <label className="mb-1 block text-xs text-gray-500">Subject</label>
+          <input value={subject} onChange={(e) => setSubject(e.target.value)} className="mb-3 w-full rounded-lg border border-gray-300 p-2 text-sm" />
+          <label className="mb-1 block text-xs text-gray-500">Message to {client.email}, from you. Replies come to you, and you are copied.</label>
+          <textarea value={text} onChange={(e) => setText(e.target.value)} className="min-h-[200px] w-full rounded-lg border border-gray-300 p-3 text-sm leading-relaxed" />
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              disabled={busy || !text.trim()}
+              onClick={() => {
+                if (window.confirm(`Send this to ${client.name}?`)) onAction(client, 'send', { kind: mode, subject, text });
+              }}
+              className={btnRed}
+            >
+              Send to {firstName(client.name)}
+            </button>
+            {mode === 'thank_you' ? (
+              <button type="button" disabled={busy} onClick={() => onAction(client, 'draft')} className={btnGray}>
+                Redraft
+              </button>
+            ) : null}
+            <button type="button" disabled={busy} onClick={() => onAction(client, 'dismiss')} className={btnGray}>
+              No follow-up needed
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ClientCard({ client, stages, onAction, busyId, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
+  const busy = busyId === client.id;
+  const sent = client.thank_you_sent_at || client.reinvite_sent_at;
+  return (
+    <div className="mb-3 rounded-xl border border-gray-200 bg-white">
+      <button type="button" onClick={() => setOpen((o) => !o)} className="flex w-full items-start justify-between gap-3 p-4 text-left">
+        <div className="min-w-0">
+          <p className="font-semibold text-gray-900">
+            {client.name} {client.test ? <span className="ml-1 rounded bg-gray-100 px-1.5 text-xs font-normal text-gray-500">test</span> : null}
+          </p>
+          <p className="text-sm text-gray-600">
+            {client.kind === 'conversation'
+              ? `${when(client.scheduled_for)}${client.joining ? ` · ${client.joining === 'phone' ? 'Phone' : 'Zoom'}` : ''}`
+              : client.kind === 'rising_note'
+                ? 'Rising leader note'
+                : 'Inquiry form'}
+            {client.role ? ` · ${client.role}` : ''}
+            {client.org_size ? ` · ${client.org_size} people` : ''}
+          </p>
+          {client.cancelled_at ? <p className="text-xs text-gray-500">Cancelled</p> : null}
+          {sent ? <p className="text-xs text-green-700">{client.thank_you_sent_at ? 'Thank-you sent' : 'Re-invite sent'}</p> : null}
+        </div>
+        <span className="shrink-0 text-sm text-gray-400">{open ? 'Close' : 'Open'}</span>
+      </button>
+      {open ? (
+        <div className="space-y-6 border-t border-gray-100 p-4">
+          {client.needs_follow_up ? <FollowUp client={client} onAction={onAction} busy={busy} /> : null}
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Contact</p>
+            <p className="text-sm">
+              <a className="text-blue-700 underline" href={`mailto:${client.email}`}>{client.email}</a>
+              {client.phone ? ` · ${client.phone}` : ''}
+              {client.join_url ? (
+                <>
+                  {' · '}
+                  <a className="text-blue-700 underline" href={client.join_url} target="_blank" rel="noreferrer">Zoom link</a>
+                </>
+              ) : null}
+            </p>
+          </div>
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">What they wrote</p>
+            <WhatTheyWrote items={client.what_they_wrote} />
+          </div>
+          {client.kind === 'conversation' ? (
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Research brief</p>
+              <Research client={client} onAction={onAction} busy={busy} />
+            </div>
+          ) : null}
+          {client.thank_you_text ? (
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Thank-you you sent</p>
+              <p className="whitespace-pre-wrap text-sm text-gray-800">{client.thank_you_text}</p>
+            </div>
+          ) : null}
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Notes</p>
+            <Notes client={client} onAction={onAction} busy={busy} />
+          </div>
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Stage</p>
+            <StagePicker client={client} stages={stages} onAction={onAction} busy={busy} />
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+export default function AOClients() {
+  const [email, setEmail] = useState('');
+  const [authChecked, setAuthChecked] = useState(false);
+  const [clients, setClients] = useState([]);
+  const [stages, setStages] = useState([]);
+  const [error, setError] = useState('');
+  const [busyId, setBusyId] = useState(null);
+  const [stageFilter, setStageFilter] = useState('all');
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/me');
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) return window.location.replace('/ao/login');
+        setEmail(json.email || '');
+        setAuthChecked(true);
+      } catch {
+        window.location.replace('/ao/login');
+      }
+    })();
+  }, []);
+
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch('/api/ao/clients');
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.error || 'Could not load clients');
+      setClients(json.clients || []);
+      setStages(json.stages || []);
+      setError('');
+    } catch (e) {
+      setError(e.message);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (authChecked) load();
+  }, [authChecked, load]);
+
+  const onAction = useCallback(async (client, action, extra = {}) => {
+    setBusyId(client.id);
+    try {
+      const res = await fetch('/api/ao/clients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, id: client.id, ...extra }),
+      });
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.error || 'That did not work');
+      setClients((list) => list.map((c) => (c.id === client.id ? json.client : c)));
+      if (action === 'send') window.alert('Sent.');
+    } catch (e) {
+      window.alert(e.message);
+    } finally {
+      setBusyId(null);
+    }
+  }, []);
+
+  const waiting = useMemo(() => clients.filter((c) => c.needs_follow_up), [clients]);
+  const upcoming = useMemo(
+    () =>
+      clients
+        .filter((c) => c.kind === 'conversation' && !c.cancelled_at && c.scheduled_for && Date.parse(c.scheduled_for) > Date.now())
+        .sort((a, b) => Date.parse(a.scheduled_for) - Date.parse(b.scheduled_for)),
+    [clients]
+  );
+  const everyone = useMemo(
+    () => (stageFilter === 'all' ? clients : clients.filter((c) => c.stage === stageFilter)),
+    [clients, stageFilter]
+  );
+
+  if (!authChecked) return null;
+
+  return (
+    <div className="min-h-screen bg-gray-50 pb-24">
+      <AOHeader active="clients" email={email} onNavigate={navigateTo} />
+      <main className="container mx-auto max-w-3xl px-4 py-6">
+        <h1 className="mb-1 text-2xl font-semibold text-gray-900">Clients</h1>
+        <p className="mb-8 text-sm text-gray-600">
+          Everyone who booked a conversation or sent a note. Nothing goes to anyone until you press Send.
+        </p>
+        {error ? <p className="mb-6 rounded-lg bg-red-50 p-3 text-sm text-red-800">{error}</p> : null}
+
+        <Section title="Waiting on you" count={waiting.length}>
+          {waiting.length ? (
+            waiting.map((c) => <ClientCard key={c.id} client={c} stages={stages} onAction={onAction} busyId={busyId} defaultOpen />)
+          ) : (
+            <p className="text-sm text-gray-500">Nothing waiting. Follow-ups show up here after each call.</p>
+          )}
+        </Section>
+
+        <Section title="Upcoming conversations" count={upcoming.length}>
+          {upcoming.length ? (
+            upcoming.map((c) => <ClientCard key={c.id} client={c} stages={stages} onAction={onAction} busyId={busyId} />)
+          ) : (
+            <p className="text-sm text-gray-500">No conversations booked yet.</p>
+          )}
+        </Section>
+
+        <Section title="Everyone">
+          <div className="mb-4 flex flex-wrap gap-2">
+            {[{ key: 'all', label: 'All' }, ...stages].map((s) => {
+              const n = s.key === 'all' ? clients.length : clients.filter((c) => c.stage === s.key).length;
+              return (
+                <button
+                  key={s.key}
+                  type="button"
+                  onClick={() => setStageFilter(s.key)}
+                  className={`min-h-[36px] rounded-full px-3 text-xs font-semibold ${
+                    stageFilter === s.key ? 'bg-gray-900 text-white' : 'border border-gray-300 bg-white text-gray-700'
+                  }`}
+                >
+                  {s.label} ({n})
+                </button>
+              );
+            })}
+          </div>
+          {everyone.map((c) => (
+            <ClientCard key={c.id} client={c} stages={stages} onAction={onAction} busyId={busyId} />
+          ))}
+        </Section>
+      </main>
+    </div>
+  );
+}

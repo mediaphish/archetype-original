@@ -450,6 +450,17 @@
       }
     },
     {
+      "src": "api/ao/clients.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 1024,
+        "maxDuration": 300,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
       "src": "api/cron/calendly-followups.js",
       "use": "@vercel/node",
       "config": {
@@ -1155,6 +1166,10 @@
       "dest": "/api/ao/calendly-setup.js"
     },
     {
+      "src": "/api/ao/clients",
+      "dest": "/api/ao/clients.js"
+    },
+    {
       "src": "/api/calendly/webhook",
       "dest": "/api/calendly/webhook.js"
     },
@@ -1769,7 +1784,7 @@
     },
     {
       "path": "/api/cron/calendly-followups",
-      "schedule": "5 * * * *"
+      "schedule": "*/15 * * * *"
     },
     {
       "path": "/api/cron/retry-failed-emails",
