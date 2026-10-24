@@ -477,6 +477,42 @@
       }
     },
     {
+      "src": "api/ao/weekly-pull-bundle-now.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 1024,
+        "maxDuration": 300,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/ao-logo.svg",
+          "public/images/ao-logo-offwhite.png",
+          "public/images/ao-logo-black.png"
+        ]
+      }
+    },
+    {
+      "src": "api/cron/ao/weekly-pull-quotes.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 1024,
+        "maxDuration": 300,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/ao-logo.svg",
+          "public/images/ao-logo-offwhite.png",
+          "public/images/ao-logo-black.png"
+        ]
+      }
+    },
+    {
       "src": "api/**/*.js",
       "use": "@vercel/node",
       "config": {
@@ -1925,7 +1961,7 @@
     },
     {
       "path": "/api/cron/ao/weekly-pull-quotes",
-      "schedule": "0 14 * * 1"
+      "schedule": "0 14 * * 1,4"
     },
     {
       "path": "/api/cron/ao/backfill-corpus-embeddings",

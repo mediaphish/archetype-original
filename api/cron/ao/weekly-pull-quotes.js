@@ -1,3 +1,4 @@
+import { keepQuoteCardsRunning } from '../../../lib/ao/autoQuoteCards.js';
 import { seedWeeklyCorpusPullBundle } from '../../../lib/ao/seedWeeklyCorpusPullBundle.js';
 
 function authorizeCron(req, res) {
@@ -38,10 +39,15 @@ export default async function handler(req, res) {
   const queryText = String(process.env.AO_WEEKLY_PULL_QUERY || '').trim() || undefined;
   const force = String(process.env.AO_WEEKLY_PULL_FORCE || '').trim() === '1';
 
-  const result = await seedWeeklyCorpusPullBundle({ email, queryText, limit, force });
+  // Bart, 2026-10-24: "Just let them run." Keep about two weeks of cards
+  // queued and schedule them straight onto every channel (lib/ao/autoQuoteCards.js).
+  void queryText;
+  void limit;
+  void force;
+  const result = await keepQuoteCardsRunning({ email });
+  console.log('[weekly-pull-quotes]', JSON.stringify(result));
   if (!result.ok) {
-    return res.status(500).json({ ok: false, error: result.error || 'Seed failed' });
+    return res.status(500).json({ ok: false, error: result.error || 'Quote cards did not schedule' });
   }
-
   return res.status(200).json(result);
 }
