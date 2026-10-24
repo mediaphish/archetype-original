@@ -5,6 +5,17 @@ When something here gets built, move it to "Done" with the date.
 
 ## Open
 
+### ALI fresh look (Bart, 2026-10-24: "this next week")
+Take a fresh look at ALI and make sure it still accomplishes the goal of
+understanding how leadership works in an organization. The CRM only flags
+clients with a team of 5 or more as candidates for now; deeper ALI
+integration waits for this review.
+
+### Apps (tabled by Bart 2026-10-24, "I'm not agreeing with you")
+Clients' Archy as an app and the Auto dashboard as an app on his devices.
+Bart wants to discuss before any direction is chosen. Private Archy per
+client and phone notifications wait with this.
+
 ### Client CRM, next pieces (planned 2026-10-23)
 - Gmail connection (Google Workspace, bart@archetypeoriginal.com): read-only, only
   messages to/from client addresses, filed on each client's timeline. Needs
