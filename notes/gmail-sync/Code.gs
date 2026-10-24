@@ -1,0 +1,114 @@
+/**
+ * Archetype Original: client email sync.
+ *
+ * Lives in Bart's own Google account (script.google.com). Every 15 minutes it
+ * asks archetypeoriginal.com which addresses belong to clients, reads only
+ * mail to or from those addresses (read-only), and sends it to Auto so it
+ * lands on each client's timeline. Nothing else in the inbox is read.
+ *
+ * It proves it is Bart with a Google-signed identity token. No password or
+ * key is stored here.
+ *
+ * To start it: run setUp once and click Allow.
+ */
+
+var ENDPOINT = 'https://www.archetypeoriginal.com/api/ao/gmail';
+var FIRST_LOOK_DAYS = 30;
+
+function setUp() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('sync').timeBased().everyMinutes(15).create();
+  sync();
+}
+
+function sync() {
+  var auth = { Authorization: 'Bearer ' + ScriptApp.getIdentityToken() };
+  var res = UrlFetchApp.fetch(ENDPOINT, { headers: auth, muteHttpExceptions: true });
+  if (res.getResponseCode() !== 200) {
+    console.error('Could not get the client list: ' + res.getResponseCode() + ' ' + res.getContentText());
+    return;
+  }
+  var addresses = JSON.parse(res.getContentText()).addresses || [];
+  if (!addresses.length) return;
+
+  var props = PropertiesService.getScriptProperties();
+  var startedAt = Date.now();
+  var since = Number(props.getProperty('since')) || startedAt - FIRST_LOOK_DAYS * 864e5;
+  // An hour of overlap: the site ignores anything it has already filed.
+  var after = Math.floor((since - 3600e3) / 1000);
+
+  var ids = {};
+  for (var i = 0; i < addresses.length; i += 15) {
+    var group = addresses.slice(i, i + 15);
+    var q = '{' + group.map(function (a) { return 'from:' + a + ' to:' + a + ' cc:' + a; }).join(' ') + '} after:' + after;
+    var pageToken = null;
+    do {
+      var page = Gmail.Users.Messages.list('me', { q: q, maxResults: 100, pageToken: pageToken });
+      (page.messages || []).forEach(function (m) { ids[m.id] = true; });
+      pageToken = page.nextPageToken;
+    } while (pageToken);
+  }
+
+  var batch = [];
+  Object.keys(ids).forEach(function (id) {
+    var m = Gmail.Users.Messages.get('me', id, { format: 'full' });
+    var h = headers(m.payload.headers || []);
+    if (h['x-ao-client-system']) return; // Already on the timeline: sent by Auto.
+    batch.push({
+      id: m.id,
+      thread_id: m.threadId,
+      from: address(h['from']),
+      to: list(h['to']).concat(list(h['cc'])),
+      date: new Date(Number(m.internalDate)).toISOString(),
+      subject: h['subject'] || '',
+      body: plainText(m.payload).slice(0, 8000),
+    });
+    if (batch.length >= 50) { send(batch, auth); batch = []; }
+  });
+  if (batch.length) send(batch, auth);
+  props.setProperty('since', String(startedAt));
+}
+
+function send(messages, auth) {
+  var res = UrlFetchApp.fetch(ENDPOINT, {
+    method: 'post',
+    contentType: 'application/json',
+    headers: auth,
+    payload: JSON.stringify({ messages: messages }),
+    muteHttpExceptions: true,
+  });
+  if (res.getResponseCode() !== 200) throw new Error('Auto did not accept the messages: ' + res.getContentText());
+}
+
+function headers(list) {
+  var out = {};
+  list.forEach(function (x) { out[String(x.name).toLowerCase()] = x.value; });
+  return out;
+}
+
+function address(s) {
+  var m = String(s || '').match(/<([^>]+)>/);
+  return (m ? m[1] : String(s || '')).trim().toLowerCase();
+}
+
+function list(s) {
+  return String(s || '').split(',').map(address).filter(function (x) { return x.indexOf('@') > 0; });
+}
+
+function plainText(part) {
+  if (!part) return '';
+  if (part.mimeType === 'text/plain' && part.body && part.body.data) return decode(part.body.data);
+  var parts = part.parts || [];
+  for (var i = 0; i < parts.length; i++) {
+    var t = plainText(parts[i]);
+    if (t) return t;
+  }
+  if (part.mimeType === 'text/html' && part.body && part.body.data) {
+    return decode(part.body.data).replace(/<[^>]+>/g, ' ').replace(/\s+\n/g, '\n');
+  }
+  return '';
+}
+
+function decode(data) {
+  return Utilities.newBlob(Utilities.base64DecodeWebSafe(data)).getDataAsString();
+}

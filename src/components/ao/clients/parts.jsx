@@ -346,10 +346,10 @@ export function PlanItem({ client, item, onAction, busy }) {
     setText(item.text);
     setDate(item.send_at ? item.send_at.slice(0, 10) : '');
   }, [item.text, item.send_at]);
-  const editable = item.status === 'draft' || item.status === 'approved';
+  const editable = item.status === 'draft' || item.status === 'approved' || item.status === 'held';
   const changed = text !== item.text || date !== (item.send_at || '').slice(0, 10);
-  const tone = { draft: 'gray', approved: 'amber', sent: 'green', stopped: 'red' }[item.status] || 'gray';
-  const label = { draft: 'Waiting for your OK', approved: 'Approved, sends on its date', sent: 'Sent', stopped: 'Stopped' }[item.status];
+  const tone = { draft: 'gray', approved: 'amber', sent: 'green', stopped: 'red', held: 'red' }[item.status] || 'gray';
+  const label = { draft: 'Waiting for your OK', approved: 'Approved, sends on its date', sent: 'Sent', stopped: 'Stopped', held: 'Held: they wrote to you first' }[item.status];
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4">
       <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -371,9 +371,9 @@ export function PlanItem({ client, item, onAction, busy }) {
               Save changes
             </button>
           ) : null}
-          {item.status === 'draft' && !changed ? (
+          {(item.status === 'draft' || item.status === 'held') && !changed ? (
             <button type="button" disabled={busy || client.consent?.checkins === 'no'} onClick={() => onAction(client, 'plan_approve', { item_id: item.id })} className={btnRed}>
-              Approve
+              {item.status === 'held' ? 'Send it on its date anyway' : 'Approve'}
             </button>
           ) : null}
         </div>
@@ -388,11 +388,11 @@ export function CheckinPlan({ client, onAction, busy }) {
   return (
     <div className="space-y-3">
       {client.consent?.checkins === 'no' ? <p className="text-sm text-red-800">{firstName(client.name)} said no to check-ins. Nothing here will send.</p> : null}
-      <p className="text-sm text-gray-600">Each one sends on its date only after you approve it. Replies come to your email.</p>
+      <p className="text-sm text-gray-600">Each one sends on its date only after you approve it. If they write to you first, the next one is held so it does not cross their note.</p>
       {plan.map((item) => (
         <PlanItem key={item.id} client={client} item={item} onAction={onAction} busy={busy} />
       ))}
-      {!client.checkins_stopped_at && plan.some((x) => x.status === 'draft' || x.status === 'approved') ? (
+      {!client.checkins_stopped_at && plan.some((x) => x.status === 'draft' || x.status === 'approved' || x.status === 'held') ? (
         <button
           type="button"
           disabled={busy}
@@ -418,6 +418,8 @@ export const EVENT_LABELS = {
   checkin_sent: 'Check-in sent',
   checkins_stopped: 'Check-ins stopped',
   stage: 'Stage changed',
+  reply: 'They wrote to you',
+  email_out: 'You wrote to them',
 };
 
 export function Timeline({ email }) {
@@ -442,6 +444,7 @@ export function Timeline({ email }) {
           <p className="text-sm font-medium text-gray-900">
             {EVENT_LABELS[e.kind] || e.kind}
             {e.kind === 'stage' && e.subject ? `: ${e.subject.replace('_', ' ')}` : ''}
+            {(e.kind === 'reply' || e.kind === 'email_out') && e.subject ? `: ${e.subject}` : ''}
           </p>
           {e.body && e.kind !== 'stage' ? (
             <details className="text-sm text-gray-700">

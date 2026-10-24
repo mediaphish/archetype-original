@@ -1315,6 +1315,10 @@
       "dest": "/api/cron/clients-weekly.js"
     },
     {
+      "src": "/api/ao/gmail",
+      "dest": "/api/ao/gmail.js"
+    },
+    {
       "src": "/api/calendly/followup",
       "dest": "/api/calendly/followup.js"
     },

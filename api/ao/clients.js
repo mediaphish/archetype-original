@@ -171,7 +171,8 @@ export default async function handler(req, res) {
           return res.status(403).json({ ok: false, error: `${row.name} said no to check-ins.` });
         }
         const plan = (row.answers?.checkin_plan || []).map((item) =>
-          item.id === body.item_id && item.status === 'draft' ? { ...item, status: 'approved', approved_at: now } : item
+          // A held check-in (they wrote first) goes back to approved the same way.
+          item.id === body.item_id && (item.status === 'draft' || item.status === 'held') ? { ...item, status: 'approved', approved_at: now } : item
         );
         await markRow(row, { checkin_plan: plan });
         break;
