@@ -54,12 +54,10 @@ who has gone quiet) and a weekly one-page summary. Auto suggests; Bart decides.
 ### Smaller items
 - Email records (half done 2026-10-23: the main record now reads `v=spf1 include:_spf.google.com include:resend.net ~all`; the duplicate GoDaddy one `v=spf1 include:dc-aa8e722993._spfm...` still needs deleting, which I was not allowed to do; Bart can delete it in GoDaddy DNS). Was: archetypeoriginal.com has TWO SPF records (one with spf.google.com + resend.net, one GoDaddy-managed include). Only one is allowed; merge into one: `v=spf1 include:_spf.google.com include:resend.net ~all` at GoDaddy (DNS). Bart approved 2026-10-23; GoDaddy needs his sign-in in Chrome on the Mac (I cannot type his password).
 - Shorten the rising leaders form (page promises "a short note"; form has nine questions).
-- Archive the What I Do page (approved; its words are already in the corpus).
-- Old page addresses that should forward to new ones do not (redirects).
 - Site visitor stats are off (needs Bart's OK to turn on).
-- Menu wraps "Podcast" onto a second line on mid-size screens.
 
 ## Done
+- 2026-10-24 Old addresses forward again (/methods, /philosophy, etc.); What I Do archived (forwards to Work with Bart); main menu stays on one line at 1024-1280.
 - 2026-10-23 Client CRM: Before we talk form (auto-emailed after booking), permissions kept word for word, transcript to summary/action items/thank-you, check-in plans that send only after approval, client timeline. Client tables locked to server-only.
 - 2026-10-23 Auto > Clients phase 1: Waiting on you, Upcoming, Everyone by stage.
 - 2026-10-23 Research brief on each person who books.
