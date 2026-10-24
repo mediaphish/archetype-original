@@ -157,7 +157,15 @@ function plainText(part) {
 }
 
 function decode(data) {
-  // Gmail leaves off the padding the decoder wants; one odd message must not stop the rest.
+  // Apps Script usually hands the text over as bytes already.
+  if (data && typeof data !== 'string') {
+    try {
+      return Utilities.newBlob(data).getDataAsString('UTF-8');
+    } catch (e) {
+      return '';
+    }
+  }
+  // Otherwise it is web-safe base64 without the padding the decoder wants; one odd message must not stop the rest.
   var s = String(data || '').replace(/-/g, '+').replace(/_/g, '/');
   while (s.length % 4) s += '=';
   try {
