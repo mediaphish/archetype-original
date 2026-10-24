@@ -24,15 +24,8 @@ Bart wants to discuss before any direction is chosen. Private Archy per
 client and phone notifications wait with this.
 
 ### Client CRM, next pieces (planned 2026-10-23)
-- Gmail connection (Google Workspace, bart@archetypeoriginal.com): read-only, only
-  messages to/from client addresses, filed on each client's timeline. Needs
-  Bart's Google sign-in to approve. Until then, replies stay in his inbox and
-  check-ins do not stop on their own when someone replies (Bart can press
-  "Stop all check-ins").
 - Transcripts arriving on their own: Zoom transcripts or Calendly Notetaker
   could send them to Auto after each call instead of pasting/uploading.
-- Bart's own action items (e.g. "send the piece about the room"): suggest the
-  matching journal entry or chapter from the corpus with a link.
 - Private Archy per client, with the searchable log and weekly accountability
   review. Only for clients who said yes; their conversations never touch the
   public corpus. Tiers decide how fast Bart answers what Archy hands him.
@@ -65,15 +58,13 @@ a week with captions."
   notes/reference-images/2026-10-23-infographic-leadership-trifecta.jpg
   (three overlapping circles with a center point; Venn-style roles).
 
-### Auto > Clients, phase 2
-Auto suggests next moves from the pipeline (check-ins after a conversation,
-who has gone quiet) and a weekly one-page summary. Auto suggests; Bart decides.
-
 ### Smaller items
 - Shorten the rising leaders form (page promises "a short note"; form has nine questions).
 - Site visitor stats are off (needs Bart's OK to turn on).
 
 ## Done
+- 2026-10-24 Client email on the timeline: Apps Script "Archetype Original client email sync" in Bart's Google account (script.google.com, code in notes/gmail-sync/), read-only, every 15 minutes, only client addresses. A reply holds the next check-in due within 7 days and emails Bart.
+- 2026-10-24 Links to Bart's writing beside his own action items; suggested next moves on Clients home and each person; Monday summary email (skipped until there are real clients).
 - 2026-10-24 Email records: one SPF record (Google + Resend), duplicate removed by Bart.
 - 2026-10-24 Quote cards build and schedule themselves (no review); journal reshares fixed after failing since July 22.
 - 2026-10-24 Old addresses forward again (/methods, /philosophy, etc.); What I Do archived (forwards to Work with Bart); main menu stays on one line at 1024-1280.

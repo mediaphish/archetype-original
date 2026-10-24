@@ -110,5 +110,12 @@ function plainText(part) {
 }
 
 function decode(data) {
-  return Utilities.newBlob(Utilities.base64DecodeWebSafe(data)).getDataAsString();
+  // Gmail leaves off the padding the decoder wants; one odd message must not stop the rest.
+  var s = String(data || '').replace(/-/g, '+').replace(/_/g, '/');
+  while (s.length % 4) s += '=';
+  try {
+    return Utilities.newBlob(Utilities.base64Decode(s)).getDataAsString('UTF-8');
+  } catch (e) {
+    return '';
+  }
 }
