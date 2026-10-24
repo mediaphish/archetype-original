@@ -25,9 +25,22 @@ import {
   enforceVoiceGuardrailsDeep,
 } from '../../../lib/ao/voiceGuardrails.js';
 import { insertScheduledPostsSafely } from '../../../lib/db/scheduledPosts.js';
+import { extractJson } from '../../../lib/ao/textModel.js';
 import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+/**
+ * All of Claude's written answer, not just the first block.
+ *
+ * 2026-10-24. Reshares had not produced a new post since July 22: every run
+ * stopped at "Caption generation returned invalid JSON". The answer can arrive
+ * in more than one block (and with a sentence before the JSON), and only the
+ * first block was ever read. extractJson finds the object wherever it sits.
+ */
+function answerText(response) {
+  return (response?.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('');
+}
 
 // LINKEDIN BUSINESS — EXCLUDED FROM AUTOMATED QUEUE
 // Pending second LinkedIn developer app approval. Do not re-enable until
@@ -177,9 +190,8 @@ No preamble, no markdown, no explanation.`;
         }),
       { label: 'extractPullQuote' }
     );
-    const text = response.content?.[0]?.text || '';
-    const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
+    const text = answerText(response);
+    const parsed = extractJson(text);
     if (!parsed?.quote || typeof parsed.quote !== 'string') return null;
     return parsed.quote.trim();
   } catch (err) {
@@ -212,9 +224,8 @@ Respond with ONLY a JSON object: {"mood": "confrontational" | "working" | "refle
         }),
       { label: 'detectArticleMood' }
     );
-    const text = response.content?.[0]?.text || '';
-    const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
+    const text = answerText(response);
+    const parsed = extractJson(text);
     const mood = parsed?.mood;
     if (mood === 'confrontational' || mood === 'working' || mood === 'reflective') return mood;
     return 'reflective';
@@ -575,14 +586,13 @@ Search for current leadership news and trends, then select the best entry from t
       { label: 'selectReshareEntryIntelligently' }
     );
 
-    const textBlock = response.content?.find((b) => b.type === 'text');
-    if (!textBlock?.text) {
+    const answer = answerText(response);
+    if (!answer) {
       console.warn('[reshare-journal] Intelligent selection returned no text block — falling back to rotation');
       return null;
     }
 
-    const clean = textBlock.text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
+    const parsed = extractJson(answer);
 
     if (!parsed?.slug) {
       console.warn('[reshare-journal] Intelligent selection returned invalid JSON — falling back to rotation');
@@ -688,18 +698,19 @@ Write four reshare captions for this article. Surface a fresh angle. Do not summ
     () =>
       client.messages.create({
         model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5',
-        max_tokens: 2000,
+        max_tokens: 8000,
         system: systemPrompt,
         messages: [{ role: 'user', content: userPrompt }],
       }),
     { label: 'generateReshareCaption' }
   );
 
-  const text = response.content?.[0]?.text || '';
-  const clean = text.replace(/```json|```/g, '').trim();
+  const text = answerText(response);
+  if (response.stop_reason === 'max_tokens') console.error('[reshare-journal] captions ran out of room');
 
   try {
-    const captions = JSON.parse(clean);
+    const captions = extractJson(text);
+    if (!captions || typeof captions !== 'object') throw new Error('no JSON object in the answer');
     // Reader-facing captions — enforce voice before they are scheduled/shown.
     // Skipped elsewhere in this file: extractPullQuote (verbatim article text),
     // detectArticleMood (internal classification), selectReshareEntryIntelligently
