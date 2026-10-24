@@ -34,6 +34,7 @@ Auto suggests next moves from the pipeline (check-ins after a conversation,
 who has gone quiet) and a weekly one-page summary. Auto suggests; Bart decides.
 
 ### Smaller items
+- Email records: archetypeoriginal.com has TWO SPF records (one with spf.google.com + resend.net, one GoDaddy-managed include). Only one is allowed; merge into one: `v=spf1 include:_spf.google.com include:resend.net ~all` at GoDaddy (DNS). Bart approved 2026-10-23; GoDaddy needs his sign-in in Chrome on the Mac (I cannot type his password).
 - Shorten the rising leaders form (page promises "a short note"; form has nine questions).
 - Archive the What I Do page (approved; its words are already in the corpus).
 - Old page addresses that should forward to new ones do not (redirects).
