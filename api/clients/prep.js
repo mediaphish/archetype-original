@@ -18,7 +18,8 @@ import {
   CONSENT_TEXT,
   normEmail,
 } from '../../lib/calendly/clientRecords.js';
-import { whenText, sendToBart, escapeHtml } from '../../lib/calendly/followups.js';
+import { whenText, sendToBart } from '../../lib/calendly/followups.js';
+import { noticeHtml } from '../../lib/calendly/emailLayout.js';
 
 const clip = (v, n = 2000) => String(v ?? '').trim().slice(0, n);
 const yesNo = (v) => (v === 'yes' || v === 'no' ? v : null);
@@ -120,7 +121,14 @@ export default async function handler(req, res) {
       const name = clip(body.name, 200) || booking.name;
       await sendToBart({
         subject: `${name} filled out Before we talk${podcast === 'yes' ? ', and is open to the podcast' : ''}.`,
-        html: `<p style="font-family:Georgia,serif;font-size:16px">${escapeHtml(name)} filled out Before we talk. <a href="${process.env.SITE_URL || 'https://www.archetypeoriginal.com'}/ao/clients">Open in Auto</a></p>`,
+        html: noticeHtml({
+          title: `${name} filled out Before we talk`,
+          lines: [
+            `Record: ${consent.record?.answer || 'not answered'} · Private Archy: ${consent.archy?.answer || 'not answered'} · Check-ins: ${consent.checkins?.answer || 'not answered'}`,
+            podcast === 'yes' ? 'Open to being a podcast guest.' : null,
+          ],
+          cta: { label: 'Open in Auto', url: `${process.env.SITE_URL || 'https://www.archetypeoriginal.com'}/ao/clients` },
+        }),
       }).catch(() => {});
     }
   } catch (err) {

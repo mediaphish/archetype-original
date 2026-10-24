@@ -70,9 +70,7 @@ export default function AOHeader({ active, email, onNavigate, hideBottomNav = fa
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
-            {email && (
-              <span className="text-sm text-gray-500 truncate max-w-[160px]" title={email}>{email}</span>
-            )}
+            {/* Bart is the only user, so his address no longer takes header space (2026-10-24). */}
             <button
               type="button"
               onClick={handleLogout}

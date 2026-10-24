@@ -151,11 +151,13 @@ function FollowUp({ client, onAction, busy }) {
           They did not show
         </button>
       </div>
-      {mode === 'thank_you' && !client.thank_you_draft ? (
+      {mode === 'thank_you' && !client.has_transcript ? (
         <div>
-          <p className="mb-2 text-sm text-gray-600">The draft is written about two hours after the call starts.</p>
-          <button type="button" disabled={busy} onClick={() => onAction(client, 'draft')} className={btnGray}>
-            {busy ? 'Drafting…' : 'Draft it now'}
+          <p className="mb-2 text-sm text-gray-700">
+            Add the transcript below. The thank-you is written from the real conversation: what you worked through, and the action items on both sides.
+          </p>
+          <button type="button" disabled={busy} onClick={() => onAction(client, 'dismiss')} className={btnGray}>
+            No follow-up needed
           </button>
         </div>
       ) : (
@@ -175,11 +177,6 @@ function FollowUp({ client, onAction, busy }) {
             >
               Send to {firstName(client.name)}
             </button>
-            {mode === 'thank_you' ? (
-              <button type="button" disabled={busy} onClick={() => onAction(client, 'draft')} className={btnGray}>
-                Redraft
-              </button>
-            ) : null}
             <button type="button" disabled={busy} onClick={() => onAction(client, 'dismiss')} className={btnGray}>
               No follow-up needed
             </button>
