@@ -83,6 +83,21 @@ function Card({ children, className = '' }) {
   return <div className={`rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 ${className}`}>{children}</div>;
 }
 
+/** Suggestions only. Each says why, so Bart can judge it in a glance. */
+function NextMoves({ moves }) {
+  if (!moves?.length) return null;
+  return (
+    <ul className="mt-2 space-y-1.5">
+      {moves.map((mv) => (
+        <li key={mv.kind + mv.label} className="text-sm">
+          <span className="text-gray-900">{mv.label}</span>
+          <span className="block text-xs text-gray-500">{mv.why}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function Heading({ children, right = null }) {
   return (
     <div className="mb-3 flex items-baseline justify-between gap-3">
@@ -194,6 +209,22 @@ function Home() {
           <Card><p className="text-sm text-gray-600">No conversations this week.</p></Card>
         )}
       </section>
+
+      {data.next_moves?.length ? (
+        <section>
+          <Heading>Suggested next moves</Heading>
+          <div className="space-y-2">
+            {data.next_moves.map((p) => (
+              <button key={p.email} type="button" onClick={() => go(personPath(p.email))} className="w-full rounded-2xl border border-gray-200 bg-white p-4 text-left hover:border-gray-400">
+                <p className="font-semibold text-gray-900">
+                  {p.name} {p.test ? <span className="ml-1 rounded bg-gray-100 px-1.5 text-[11px] font-normal text-gray-500">test</span> : null}
+                </p>
+                <NextMoves moves={p.moves} />
+              </button>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {data.coming_up.length ? (
         <section>
@@ -418,7 +449,7 @@ function ConversationsTab({ person, onSession, busy }) {
                   <WhatTheyWrote items={s.what_they_wrote} />
                 </div>
                 {past && !s.cancelled_at ? <TranscriptBox client={s} onAction={onSession} busy={busy} /> : null}
-                <Analysis analysis={s.analysis} />
+                <Analysis analysis={s.analysis} client={s} onAction={onSession} busy={busy} />
                 {s.checkin_plan?.length ? (
                   <div>
                     <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Check-in plan</p>
@@ -670,6 +701,12 @@ function Person({ email }) {
           <div className="rounded-xl bg-gray-50 p-2"><p className="text-gray-500">Next conversation</p><p className="font-semibold text-gray-900">{p.next_conversation_at ? dayLabel(new Date(p.next_conversation_at).toISOString()) : 'None booked'}</p></div>
         </div>
         {p.quiet ? <p className="mt-3 rounded-xl bg-red-50 p-2 text-sm text-red-800">Quiet for {p.quiet.days} days. The line for their tier is {p.quiet.limit}.</p> : null}
+        {p.next_moves?.length ? (
+          <div className="mt-3 rounded-xl bg-gray-50 p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Suggested next moves</p>
+            <NextMoves moves={p.next_moves} />
+          </div>
+        ) : null}
         {showHealth ? <HealthDetail person={p} onPerson={onPerson} busy={busy} /> : null}
         <div className="mt-3 flex flex-wrap gap-2">
           {data.stages.map((s) => (

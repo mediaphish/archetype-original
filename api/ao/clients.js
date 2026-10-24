@@ -14,6 +14,7 @@
  *   plan_update { items }              edit check-in wording or dates
  *   plan_approve { item_id }           approve one check-in to send on its date
  *   plan_stop                          stop all check-ins for this conversation
+ *   writing_links                      match Bart's action items to his published writing
  *
  * GET ?timeline=<email>                that person's timeline
  * GET ?view=home                       the CRM home: needs you, this week, coming up, everyone, numbers
@@ -51,6 +52,7 @@ import {
   draftAndStore,
   sendToClient,
   reinviteEmail,
+  attachWritingLinks,
 } from '../../lib/calendly/followups.js';
 
 async function readJson(req) {
@@ -141,6 +143,11 @@ export default async function handler(req, res) {
           body: result.analysis.summary,
           meta: { action_items: result.analysis.action_items },
         });
+        break;
+      }
+      case 'writing_links': {
+        const r = await attachWritingLinks(row);
+        if (!r.ok) return res.status(502).json({ ok: false, error: 'Could not look through your writing this time.' });
         break;
       }
       case 'plan_update': {

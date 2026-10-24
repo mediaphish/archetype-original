@@ -1311,6 +1311,10 @@
       "dest": "/api/cron/calendly-followups.js"
     },
     {
+      "src": "/api/cron/clients-weekly",
+      "dest": "/api/cron/clients-weekly.js"
+    },
+    {
       "src": "/api/calendly/followup",
       "dest": "/api/calendly/followup.js"
     },
@@ -1914,6 +1918,10 @@
     {
       "path": "/api/cron/calendly-followups",
       "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/clients-weekly",
+      "schedule": "0 13 * * 1"
     },
     {
       "path": "/api/cron/retry-failed-emails",

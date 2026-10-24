@@ -270,7 +270,7 @@ export function TranscriptBox({ client, onAction, busy }) {
   );
 }
 
-export function Analysis({ analysis }) {
+export function Analysis({ analysis, client, onAction, busy }) {
   if (!analysis) return null;
   const list = (items) => (items?.length ? <ul className="list-disc space-y-1 pl-5 text-sm text-gray-900">{items.map((x) => <li key={x}>{x}</li>)}</ul> : <p className="text-sm text-gray-500">None.</p>);
   return (
@@ -290,13 +290,51 @@ export function Analysis({ analysis }) {
         </div>
         <div>
           <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">Yours</p>
-          {list(analysis.action_items?.bart)}
+          <YourItems analysis={analysis} client={client} onAction={onAction} busy={busy} />
         </div>
       </div>
       <div>
         <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">Worth asking next time</p>
         {list(analysis.next_time)}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Bart's action items, each with the piece of his own writing that keeps the
+ * promise, when there is one. Copy puts the link on the clipboard to paste
+ * into the thank-you or a note.
+ */
+function YourItems({ analysis, client, onAction, busy }) {
+  const items = analysis.action_items?.bart || [];
+  if (!items.length) return <p className="text-sm text-gray-500">None.</p>;
+  const byItem = new Map((analysis.bart_links || []).map((x) => [x.item, x.links || []]));
+  const copy = (url) => navigator.clipboard?.writeText(url).then(() => window.alert('Link copied.'));
+  return (
+    <div className="space-y-2">
+      <ul className="list-disc space-y-2 pl-5 text-sm text-gray-900">
+        {items.map((item) => (
+          <li key={item}>
+            {item}
+            {(byItem.get(item) || []).map((l) => (
+              <div key={l.url} className="mt-1 rounded-lg bg-white p-2 text-xs">
+                <a href={l.url} target="_blank" rel="noreferrer" className="font-semibold text-blue-700">{l.title}</a>
+                {l.why ? <p className="text-gray-600">{l.why}</p> : null}
+                <button type="button" onClick={() => copy(l.url)} className="mt-1 font-semibold text-gray-700">Copy link</button>
+              </div>
+            ))}
+          </li>
+        ))}
+      </ul>
+      {analysis.bart_links_at ? null : (
+        <p className="text-xs text-gray-500">
+          Looking through your writing for these.{' '}
+          {client && onAction ? (
+            <button type="button" disabled={busy} onClick={() => onAction(client, 'writing_links')} className="font-semibold text-blue-700">Look now</button>
+          ) : null}
+        </p>
+      )}
     </div>
   );
 }
