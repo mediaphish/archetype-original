@@ -26,6 +26,8 @@ a week with captions."
   notes/reference-images/2026-10-23-infographic-two-paths-of-leadership.png,
   notes/reference-images/2026-10-23-infographic-common-misconception.jpg
   (misconception vs what true leadership embodies, icon-labelled diamond).
+  notes/reference-images/2026-10-23-infographic-leadership-trifecta.jpg
+  (three overlapping circles with a center point; Venn-style roles).
 
 ### Auto > Clients, phase 2
 Auto suggests next moves from the pipeline (check-ins after a conversation,
