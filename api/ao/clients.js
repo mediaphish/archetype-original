@@ -16,6 +16,10 @@
  *   plan_stop                          stop all check-ins for this conversation
  *
  * GET ?timeline=<email>                that person's timeline
+ * GET ?view=home                       the CRM home: needs you, this week, coming up, everyone, numbers
+ * GET ?person=<email>                  one person across all their conversations
+ * POST {action:'person', email, op, …} person-level changes: tier, stage, notes,
+ *      details (add, update, remove, confirm), health override, thread, web watch
  *
  * Owner session only. Nothing reaches a client except through 'send', which
  * only Bart can press. See lib/calendly/clients.js and followups.js.
@@ -37,6 +41,9 @@ import {
   saveTranscript,
   planFrom,
 } from '../../lib/calendly/transcripts.js';
+import { homeView, getPerson, publicPerson } from '../../lib/calendly/people.js';
+import { TIERS } from '../../lib/calendly/intelligence.js';
+import { updateThread, runWebWatch } from '../../lib/calendly/thread.js';
 import {
   getBooking,
   markRow,
@@ -61,6 +68,14 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
+      if (req.query?.view === 'home') {
+        return res.status(200).json({ ok: true, stages: STAGES, tiers: TIERS, ...(await homeView()) });
+      }
+      if (req.query?.person) {
+        const person = await getPerson(String(req.query.person));
+        if (!person) return res.status(404).json({ ok: false, error: 'Not found' });
+        return res.status(200).json({ ok: true, stages: STAGES, tiers: TIERS, person: publicPerson(person) });
+      }
       if (req.query?.timeline) {
         return res.status(200).json({ ok: true, events: await listEvents(String(req.query.timeline)) });
       }
@@ -69,6 +84,7 @@ export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'Method not allowed' });
 
     const body = await readJson(req);
+    if (body.action === 'person') return personAction(body, res);
     const row = await getBooking(String(body.id || ''));
     if (!row) return res.status(404).json({ ok: false, error: 'Not found' });
     const now = new Date().toISOString();
@@ -190,4 +206,91 @@ export default async function handler(req, res) {
   } catch (err) {
     return res.status(500).json({ ok: false, error: err?.message || 'Clients request failed' });
   }
+}
+
+const DETAIL_KINDS = ['birthday', 'anniversary', 'family', 'decision', 'milestone', 'health', 'interest', 'other'];
+
+function cleanDetail(d = {}) {
+  const date = String(d.date || '').trim();
+  return {
+    kind: DETAIL_KINDS.includes(d.kind) ? d.kind : 'other',
+    label: String(d.label || '').trim().slice(0, 300),
+    date: /^(\d{4}-)?\d{2}-\d{2}$/.test(date) ? date : '',
+    note: String(d.note || '').trim().slice(0, 1000),
+  };
+}
+
+/** Changes that belong to the person, not one conversation. */
+async function personAction(body, res) {
+  const email = normEmail(body.email);
+  const person = await getPerson(email);
+  if (!person) return res.status(404).json({ ok: false, error: 'Not found' });
+  const record = (await getClientRecord(email)) || {};
+  const now = new Date().toISOString();
+  const save = (fields) => upsertClientRecord(email, { name: record.name || person.name, ...fields });
+  const details = Array.isArray(record.details) ? record.details : [];
+
+  switch (body.op) {
+    case 'tier': {
+      const tier = TIERS.some((t) => t.key === body.tier) ? body.tier : null;
+      await save({ tier });
+      await addEvent({ email, kind: 'stage', subject: `tier: ${tier || 'none'}` });
+      break;
+    }
+    case 'stage': {
+      if (!isStage(body.stage)) return res.status(400).json({ ok: false, error: 'Unknown stage' });
+      await save({ stage: body.stage });
+      await addEvent({ email, kind: 'stage', subject: body.stage });
+      break;
+    }
+    case 'notes': {
+      await save({ notes: String(body.notes || '').slice(0, 20000) });
+      break;
+    }
+    case 'detail_add': {
+      const d = cleanDetail(body.detail);
+      if (!d.label) return res.status(400).json({ ok: false, error: 'Add a few words about it.' });
+      await save({ details: [...details, { id: `d${Date.now()}`, ...d, source: 'bart', status: 'confirmed', added_at: now }] });
+      break;
+    }
+    case 'detail_update': {
+      const d = cleanDetail(body.detail);
+      await save({ details: details.map((x) => (x.id === body.detail?.id ? { ...x, ...d, status: 'confirmed', updated_at: now } : x)) });
+      break;
+    }
+    case 'detail_confirm': {
+      await save({ details: details.map((x) => (x.id === body.detail_id ? { ...x, status: 'confirmed', confirmed_at: now } : x)) });
+      break;
+    }
+    case 'detail_remove': {
+      await save({ details: details.filter((x) => x.id !== body.detail_id) });
+      break;
+    }
+    case 'health_override': {
+      const score = body.score === null || body.score === '' ? null : Math.max(0, Math.min(100, Math.round(Number(body.score))));
+      const health = { ...(record.health || {}) };
+      if (score === null || !Number.isFinite(score)) delete health.override;
+      else health.override = { score, note: String(body.note || '').slice(0, 500), at: now };
+      await save({ health });
+      break;
+    }
+    case 'thread': {
+      const r = await updateThread(email);
+      if (!r.ok) return res.status(502).json({ ok: false, error: r.error });
+      break;
+    }
+    case 'web_watch': {
+      const r = await runWebWatch(person);
+      if (!r.ok) return res.status(502).json({ ok: false, error: r.error });
+      break;
+    }
+    case 'web_seen': {
+      await save({ web_watch: { ...(record.web_watch || {}), unseen: false } });
+      break;
+    }
+    default:
+      return res.status(400).json({ ok: false, error: 'Unknown change' });
+  }
+  const fresh = await getPerson(email);
+  return res.status(200).json({ ok: true, person: publicPerson(fresh) });
 }
