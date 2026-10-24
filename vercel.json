@@ -1174,6 +1174,10 @@
       "dest": "/api/calendly/webhook.js"
     },
     {
+      "src": "/api/clients/prep",
+      "dest": "/api/clients/prep.js"
+    },
+    {
       "src": "/api/cron/calendly-hours",
       "dest": "/api/cron/calendly-hours.js"
     },

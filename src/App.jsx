@@ -16,6 +16,7 @@ import JournalPost from "./pages/JournalPost";
 import Podcast from "./pages/Podcast";
 import PodcastEpisode from "./pages/PodcastEpisode";
 import PodcastGuestIntake from "./pages/PodcastGuestIntake";
+import BeforeWeTalk from "./pages/BeforeWeTalk";
 import PodcastGuestView from "./pages/PodcastGuestView";
 import DevotionalPost from "./pages/DevotionalPost";
 import Faith from "./pages/Faith";
@@ -124,6 +125,7 @@ export default function App() {
     if (path === '/podcast') return 'podcast';
     if (/^\/podcast\/guest\/[^/]+$/.test(path)) return 'podcast-guest-view';
     if (path === '/podcast/guest-intake') return 'podcast-guest-intake';
+    if (path === '/before-we-talk') return 'before-we-talk';
     // The link Bart hands someone he has offered a mentor session to. Same
     // form, same release, same pipeline: it arrives on the mentor track.
     if (path === '/podcast/mentor-session') return 'podcast-mentor-session';
@@ -545,6 +547,8 @@ export default function App() {
         setCurrentPage('podcast-guest-view');
       } else if (path === '/podcast/guest-intake') {
         setCurrentPage('podcast-guest-intake');
+      } else if (path === '/before-we-talk') {
+        setCurrentPage('before-we-talk');
       } else if (path === '/podcast/mentor-session') {
         setCurrentPage('podcast-mentor-session');
       } else if (path.startsWith('/podcast/')) {
@@ -851,6 +855,17 @@ export default function App() {
     return (
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Faith />
+        <Footer />
+      </main>
+    );
+  }
+
+  // Before we talk: the private prep form sent after each booking
+  if (currentPage === 'before-we-talk') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <BeforeWeTalk />
         <Footer />
       </main>
     );
