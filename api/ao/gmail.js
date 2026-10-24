@@ -3,6 +3,7 @@
  *
  * GET  /api/ao/gmail            the client addresses to look for
  * POST /api/ao/gmail {messages} file messages on client timelines
+ * POST /api/ao/gmail {transcripts} transcripts Bart emailed to bart+transcripts@
  *
  * Only Bart's own Apps Script can use it: every call carries a Google-signed
  * identity token, checked with Google, that must belong to Bart.
@@ -10,6 +11,7 @@
 
 import { verifiedGoogleEmail, isOwner, clientAddresses, ingestMessages } from '../../lib/calendly/gmailSync.js';
 import { sendToBart } from '../../lib/calendly/followups.js';
+import { queueIncoming, emailedSource } from '../../lib/calendly/transcriptIntake.js';
 import { noticeHtml } from '../../lib/calendly/emailLayout.js';
 
 const SITE = process.env.SITE_BASE_URL || 'https://www.archetypeoriginal.com';
@@ -34,6 +36,22 @@ export default async function handler(req, res) {
     }
     if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'Method not allowed' });
     const body = await readJson(req);
+    // Wispr Flow and Echo transcripts Bart emailed to bart+transcripts@: read on the next 15-minute run.
+    if (Array.isArray(body.transcripts)) {
+      let kept = 0;
+      for (const t of body.transcripts.slice(0, 20)) {
+        if (String(t.text || '').trim().length < 200) continue;
+        await queueIncoming({
+          source: emailedSource(t.subject, t.text),
+          externalId: String(t.id || ''),
+          startedAt: t.date || null,
+          topic: String(t.subject || '').slice(0, 300) || null,
+          transcript: String(t.text),
+        });
+        kept += 1;
+      }
+      return res.status(200).json({ ok: true, kept });
+    }
     const result = await ingestMessages(body.messages);
     for (const h of result.held) {
       const day = new Date(h.send_at).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', timeZone: 'America/Chicago' });

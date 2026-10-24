@@ -14,6 +14,9 @@
 
 var ENDPOINT = 'https://www.archetypeoriginal.com/api/ao/gmail';
 var FIRST_LOOK_DAYS = 30;
+// Bart emails Wispr Flow and Echo transcripts here (2026-10-24).
+var TRANSCRIPT_ADDRESS = 'bart+transcripts@archetypeoriginal.com';
+var TRANSCRIPT_FILES = /\.(txt|vtt|srt|md)$/i;
 
 function setUp() {
   ScriptApp.getProjectTriggers().forEach(function (t) { ScriptApp.deleteTrigger(t); });
@@ -29,7 +32,6 @@ function sync() {
     return;
   }
   var addresses = JSON.parse(res.getContentText()).addresses || [];
-  if (!addresses.length) return;
 
   var props = PropertiesService.getScriptProperties();
   var startedAt = Date.now();
@@ -37,6 +39,12 @@ function sync() {
   // An hour of overlap: the site ignores anything it has already filed.
   var after = Math.floor((since - 3600e3) / 1000);
 
+  sendTranscripts(after, auth);
+
+  if (!addresses.length) {
+    props.setProperty('since', String(startedAt));
+    return;
+  }
   var ids = {};
   for (var i = 0; i < addresses.length; i += 15) {
     var group = addresses.slice(i, i + 15);
@@ -67,6 +75,45 @@ function sync() {
   });
   if (batch.length) send(batch, auth);
   props.setProperty('since', String(startedAt));
+}
+
+/** Transcripts Bart emailed to himself: the message text plus any transcript file attached. */
+function sendTranscripts(after, auth) {
+  var page = Gmail.Users.Messages.list('me', { q: 'to:' + TRANSCRIPT_ADDRESS + ' after:' + after, maxResults: 50 });
+  var out = [];
+  (page.messages || []).forEach(function (ref) {
+    var m = Gmail.Users.Messages.get('me', ref.id, { format: 'full' });
+    var h = headers(m.payload.headers || []);
+    var text = plainText(m.payload);
+    attachments(m.payload).forEach(function (a) {
+      if (!TRANSCRIPT_FILES.test(a.filename)) return;
+      var data = Gmail.Users.Messages.Attachments.get('me', m.id, a.body.attachmentId).data;
+      text += '\n\n' + decode(data);
+    });
+    out.push({
+      id: m.id,
+      date: new Date(Number(m.internalDate)).toISOString(),
+      subject: h['subject'] || '',
+      from: address(h['from']),
+      text: text.slice(0, 400000),
+    });
+  });
+  if (!out.length) return;
+  var res = UrlFetchApp.fetch(ENDPOINT, {
+    method: 'post',
+    contentType: 'application/json',
+    headers: auth,
+    payload: JSON.stringify({ transcripts: out }),
+    muteHttpExceptions: true,
+  });
+  if (res.getResponseCode() !== 200) throw new Error('Auto did not accept the transcripts: ' + res.getContentText());
+}
+
+function attachments(part) {
+  var found = [];
+  if (part && part.filename && part.body && part.body.attachmentId) found.push(part);
+  (part && part.parts ? part.parts : []).forEach(function (p) { found = found.concat(attachments(p)); });
+  return found;
 }
 
 function send(messages, auth) {
