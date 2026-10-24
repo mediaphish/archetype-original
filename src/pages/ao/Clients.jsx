@@ -83,6 +83,49 @@ function Card({ children, className = '' }) {
   return <div className={`rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 ${className}`}>{children}</div>;
 }
 
+/** A transcript that came in on its own and could not be matched to a conversation. */
+function UnmatchedTranscript({ item, conversations, onDone }) {
+  const [pick, setPick] = useState('');
+  const [busy, setBusy] = useState(false);
+  const act = async (body) => {
+    setBusy(true);
+    try {
+      const j = await fetch('/api/ao/clients', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'incoming', incoming_id: item.id, ...body }) }).then((r) => r.json());
+      if (!j.ok) throw new Error(j.error || 'That did not work');
+      await onDone();
+    } catch (e) {
+      window.alert(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const when = item.started_at || item.received_at;
+  return (
+    <Card>
+      <p className="text-sm font-semibold text-gray-900">
+        From {item.source === 'zoom' ? 'Zoom' : item.source}
+        {item.topic ? `: ${item.topic}` : ''}
+      </p>
+      <p className="text-xs text-gray-500">{new Date(when).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</p>
+      <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-xs text-gray-600">{item.preview}</p>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <select value={pick} onChange={(e) => setPick(e.target.value)} className="rounded-lg border border-gray-300 p-2 text-sm">
+          <option value="">Whose conversation is this?</option>
+          {conversations.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}, {new Date(c.at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+            </option>
+          ))}
+        </select>
+        <button type="button" disabled={busy || !pick} onClick={() => act({ inquiry_id: pick })} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">
+          {busy ? 'Reading… (a minute or two)' : 'Read it'}
+        </button>
+        <button type="button" disabled={busy} onClick={() => act({ discard: true })} className="text-sm text-gray-600">Not a client call</button>
+      </div>
+    </Card>
+  );
+}
+
 /** Suggestions only. Each says why, so Bart can judge it in a glance. */
 function NextMoves({ moves }) {
   if (!moves?.length) return null;
@@ -142,12 +185,17 @@ function Home() {
   const [filter, setFilter] = useState('all');
   const [q, setQ] = useState('');
 
+  const load = useCallback(
+    () =>
+      fetch('/api/ao/clients?view=home')
+        .then((r) => r.json())
+        .then((j) => (j.ok ? setData(j) : setError(j.error || 'Could not load')))
+        .catch((e) => setError(e.message)),
+    []
+  );
   useEffect(() => {
-    fetch('/api/ao/clients?view=home')
-      .then((r) => r.json())
-      .then((j) => (j.ok ? setData(j) : setError(j.error || 'Could not load')))
-      .catch((e) => setError(e.message));
-  }, []);
+    load();
+  }, [load]);
 
   const people = useMemo(() => {
     if (!data) return [];
@@ -162,6 +210,17 @@ function Home() {
 
   return (
     <div className="space-y-8">
+      {data.unmatched?.length ? (
+        <section>
+          <Heading>Transcripts to match</Heading>
+          <div className="space-y-2">
+            {data.unmatched.map((t) => (
+              <UnmatchedTranscript key={t.id} item={t} conversations={data.conversations || []} onDone={load} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section>
         <Heading>Needs you</Heading>
         {data.needs.length ? (

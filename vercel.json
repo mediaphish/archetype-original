@@ -1319,6 +1319,10 @@
       "dest": "/api/ao/gmail.js"
     },
     {
+      "src": "/api/zoom/webhook",
+      "dest": "/api/zoom/webhook.js"
+    },
+    {
       "src": "/api/calendly/followup",
       "dest": "/api/calendly/followup.js"
     },

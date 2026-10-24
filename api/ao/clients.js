@@ -15,6 +15,7 @@
  *   plan_approve { item_id }           approve one check-in to send on its date
  *   plan_stop                          stop all check-ins for this conversation
  *   writing_links                      match Bart's action items to his published writing
+ * POST {action:'incoming', incoming_id, inquiry_id | discard}  a transcript that came in on its own
  *
  * GET ?timeline=<email>                that person's timeline
  * GET ?view=home                       the CRM home: needs you, this week, coming up, everyone, numbers
@@ -36,12 +37,7 @@ import {
   consentOf,
   normEmail,
 } from '../../lib/calendly/clientRecords.js';
-import {
-  cleanTranscript,
-  analyzeTranscript,
-  saveTranscript,
-  planFrom,
-} from '../../lib/calendly/transcripts.js';
+import { takeTranscript, listUnmatched, resolveIncoming, readIncomingFor } from '../../lib/calendly/transcriptIntake.js';
 import { homeView, getPerson, publicPerson } from '../../lib/calendly/people.js';
 import { TIERS } from '../../lib/calendly/intelligence.js';
 import { updateThread, runWebWatch } from '../../lib/calendly/thread.js';
@@ -71,7 +67,8 @@ export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       if (req.query?.view === 'home') {
-        return res.status(200).json({ ok: true, stages: STAGES, tiers: TIERS, ...(await homeView()) });
+        const [home, unmatched] = await Promise.all([homeView(), listUnmatched().catch(() => [])]);
+        return res.status(200).json({ ok: true, stages: STAGES, tiers: TIERS, ...home, unmatched });
       }
       if (req.query?.person) {
         const person = await getPerson(String(req.query.person));
@@ -87,6 +84,15 @@ export default async function handler(req, res) {
 
     const body = await readJson(req);
     if (body.action === 'person') return personAction(body, res);
+    if (body.action === 'incoming') {
+      // A transcript that arrived on its own and could not be matched: Bart picks the conversation, or sets it aside.
+      if (body.discard) {
+        await resolveIncoming(String(body.incoming_id || ''), { discard: true });
+        return res.status(200).json({ ok: true });
+      }
+      const r = await readIncomingFor(String(body.incoming_id || ''), String(body.inquiry_id || ''));
+      return res.status(r.ok ? 200 : r.status || 502).json(r.ok ? { ok: true } : { ok: false, error: r.error });
+    }
     const row = await getBooking(String(body.id || ''));
     if (!row) return res.status(404).json({ ok: false, error: 'Not found' });
     const now = new Date().toISOString();
@@ -119,30 +125,8 @@ export default async function handler(req, res) {
         break;
       }
       case 'transcript': {
-        if (consentOf(record, 'record') === 'no') {
-          return res.status(403).json({ ok: false, error: `${row.name} said no to recording, so transcripts are off for them.` });
-        }
-        const transcript = cleanTranscript(body.text);
-        if (transcript.length < 200) return res.status(400).json({ ok: false, error: 'That transcript looks empty or too short.' });
-        const result = await analyzeTranscript(row, transcript);
-        if (!result.ok) return res.status(502).json({ ok: false, error: result.error });
-        await saveTranscript(row, transcript, result.analysis);
-        const a = row.answers || {};
-        await markRow(row, {
-          transcript_at: now,
-          transcript_analysis: result.analysis,
-          // A thank-you that has not gone out yet is replaced by one built from the real conversation.
-          ...(a.thank_you_sent_at ? {} : { thank_you_draft: result.analysis.thank_you, followup_drafted_at: now }),
-          checkin_plan: planFrom(result.analysis, a.scheduled_for),
-          checkins_stopped_at: null,
-        });
-        await addEvent({
-          email,
-          inquiryId: row.id,
-          kind: 'transcript_added',
-          body: result.analysis.summary,
-          meta: { action_items: result.analysis.action_items },
-        });
+        const r = await takeTranscript(row, body.text, { source: 'pasted' });
+        if (!r.ok) return res.status(r.status || 502).json({ ok: false, error: r.error });
         break;
       }
       case 'writing_links': {
