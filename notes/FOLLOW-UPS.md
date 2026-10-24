@@ -22,8 +22,10 @@ a week with captions."
   graphic should be set by the site (like the quote cards and resurface
   cards), with the model only painting the background or illustration.
 - Belongs with Auto's marketing work and the posting cadence Bart set.
-- Reference image: notes/reference-images/2026-10-23-infographic-two-paths-of-leadership.png
-  (someone else's work, for style and format only; do not copy it).
+- Reference images (someone else's work, for style and format only; do not copy):
+  notes/reference-images/2026-10-23-infographic-two-paths-of-leadership.png,
+  notes/reference-images/2026-10-23-infographic-common-misconception.jpg
+  (misconception vs what true leadership embodies, icon-labelled diamond).
 
 ### Auto > Clients, phase 2
 Auto suggests next moves from the pipeline (check-ins after a conversation,
