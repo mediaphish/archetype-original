@@ -67,6 +67,11 @@
       "source": "/philosophy",
       "destination": "/meet-bart",
       "permanent": true
+    },
+    {
+      "source": "/what-i-do",
+      "destination": "/work-with-bart",
+      "permanent": true
     }
   ],
   "builds": [
@@ -501,6 +506,90 @@
     }
   ],
   "routes": [
+    {
+      "src": "^/culture\\-science/anti\\-projects/scoreboard\\-leadership/?$",
+      "status": 308,
+      "headers": {
+        "Location": "/culture-science/scoreboard-leadership"
+      }
+    },
+    {
+      "src": "^/culture\\-science/ali/six\\-leadership\\-conditions/?$",
+      "status": 308,
+      "headers": {
+        "Location": "/culture-science/ali/seven-leadership-conditions"
+      }
+    },
+    {
+      "src": "^/culture\\-science/anti\\-projects/bad\\-leader\\-project/?$",
+      "status": 308,
+      "headers": {
+        "Location": "/culture-science/bad-leader-project"
+      }
+    },
+    {
+      "src": "^/methods/speaking\\-seminars/?$",
+      "status": 308,
+      "headers": {
+        "Location": "/consulting#how-work-shows-up"
+      }
+    },
+    {
+      "src": "^/methods/training\\-education/?$",
+      "status": 308,
+      "headers": {
+        "Location": "/consulting#how-work-shows-up"
+      }
+    },
+    {
+      "src": "^/methods/fractional\\-roles/cco/?$",
+      "status": 308,
+      "headers": {
+        "Location": "/fractional-roles/cco"
+      }
+    },
+    {
+      "src": "^/methods/fractional\\-roles/?$",
+      "status": 308,
+      "headers": {
+        "Location": "/fractional-roles"
+      }
+    },
+    {
+      "src": "^/methods/consulting/?$",
+      "status": 308,
+      "headers": {
+        "Location": "/consulting"
+      }
+    },
+    {
+      "src": "^/methods/mentorship/?$",
+      "status": 308,
+      "headers": {
+        "Location": "/advisory"
+      }
+    },
+    {
+      "src": "^/methods/?$",
+      "status": 308,
+      "headers": {
+        "Location": "/advisory"
+      }
+    },
+    {
+      "src": "^/philosophy/?$",
+      "status": 308,
+      "headers": {
+        "Location": "/meet-bart"
+      }
+    },
+    {
+      "src": "^/what\\-i\\-do/?$",
+      "status": 308,
+      "headers": {
+        "Location": "/work-with-bart"
+      }
+    },
     {
       "src": "/api/chat",
       "dest": "/api/chat.js"

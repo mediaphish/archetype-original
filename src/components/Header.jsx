@@ -58,7 +58,8 @@ export default function Header() {
 
   const navLinkClass = (path) => {
     const base =
-      "text-sm font-medium tracking-wide transition-all duration-200 whitespace-nowrap";
+      // Smaller and tighter between 1024 and 1280 so the menu stays on one line.
+      "text-[13px] xl:text-sm font-medium tracking-normal xl:tracking-wide transition-all duration-200 whitespace-nowrap";
     const active = isActive(path)
       ? "text-[#1A1A1A] border-b-2 border-[#1A1A1A]"
       : "text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] px-1.5 py-0.5 rounded-sm";
@@ -66,7 +67,7 @@ export default function Header() {
   };
 
   const inactivePrimaryNavClass =
-    "text-sm font-medium tracking-wide transition-all duration-200 whitespace-nowrap text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] px-1.5 py-0.5 rounded-sm";
+    "text-[13px] xl:text-sm font-medium tracking-normal xl:tracking-wide transition-all duration-200 whitespace-nowrap text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] px-1.5 py-0.5 rounded-sm";
   const advisoryGroupActive =
     isActive('/work-with-bart') || isActive('/advisory') || isActive('/consulting') || isActive('/fractional-roles');
   /** Public marketing page only — not /operators/login or app subroutes */
@@ -169,7 +170,7 @@ export default function Header() {
 
               {/* Desktop Navigation — center column (lg+ only) */}
               <div className="hidden min-w-0 items-center justify-center lg:flex">
-                <div className="flex max-w-full flex-wrap items-center justify-center gap-2 xl:gap-4">
+                <div className="flex max-w-full flex-nowrap items-center justify-center gap-1 xl:gap-4">
                   {/* Work with Bart (was Leadership Advisory until 2026-10-21) */}
                   <div
                     className="relative"

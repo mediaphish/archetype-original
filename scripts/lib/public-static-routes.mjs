@@ -29,7 +29,6 @@ export const PUBLIC_STATIC_SITEMAP_ROUTES = [
   { path: '/the-room', priority: '0.85', changefreq: 'monthly' },
   { path: '/books', priority: '0.85', changefreq: 'monthly' },
   { path: '/advisory', priority: '0.9', changefreq: 'monthly' },
-  { path: '/what-i-do', priority: '0.8', changefreq: 'monthly' },
   { path: '/accidental-ceo', priority: '0.9', changefreq: 'monthly' },
   { path: '/remaining-human', priority: '0.8', changefreq: 'monthly' },
   { path: '/privacy-policy', priority: '0.3', changefreq: 'yearly' },
