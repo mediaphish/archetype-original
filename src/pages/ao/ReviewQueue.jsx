@@ -3,6 +3,7 @@ import AOHeader from '../../components/ao/AOHeader';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
 import PendingReshares from '../../components/ao/PendingReshares';
 import WeeklyQuoteCards from '../../components/ao/WeeklyQuoteCards';
+import InfographicReview from '../../components/ao/InfographicReview';
 
 function Pill({ tone = 'gray', children }) {
   const tones = {
@@ -817,6 +818,8 @@ export default function ReviewQueue() {
         </div>
 
         <PendingReshares />
+
+        <InfographicReview />
 
         <WeeklyQuoteCards />
 
