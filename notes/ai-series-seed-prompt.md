@@ -8,38 +8,47 @@ number and title each time.
 
 ---
 
-I am starting a journal series on leading with AI. Draft entry [NUMBER]: "[TITLE]".
+Revised 2026-10-24 after Auto's first brief ("I Built the AI. It Still Needed
+Watching.") exposed how Bart builds and runs Auto. Bart: "I don't want the world
+to know how I'm building you, what you can be capable of, and how they can do it
+themselves. I do not want a series just about teaching people what I do behind
+the curtain with Auto." The first version of this prompt invited that; this one
+forbids it.
+
+---
+
+Replace the series brief with this one. Discard the Entry 1 brief.
+
+I am writing a journal series on leading with AI. Draft the entry I name.
 
 What this series is: my book RemAIning Human makes the case for why AI is a leadership test: it multiplies positional authority, widens the gap between who decides and who answers for it, tempts leaders to chase efficiency at the cost of their people, and makes it easy to treat people as data. This series does not retell the book. It picks up where the book leaves off and answers the question an owner or executive has the next morning: so what do I do now, in my company, this week?
 
+Off limits, always:
+- How I build or use AI: Archy, Auto, my content system, my tools, my prompts, my workflows, what my systems can do, and anything that went wrong inside them. None of it, not even as an example. Nothing that lets a reader see behind my curtain or copy what I do.
+- If an entry seems to need a personal AI story, stop and ask me instead of writing one.
+
 Rules for using the book:
 - Build on it, do not summarize it. Take one idea from the book as the starting point and push it into a real situation the book does not cover.
-- Quote the book at most once per entry, one short line, and name it. Never walk through a chapter, list its points, or reproduce its frameworks in full. If an idea needs the full argument, point readers to the book instead.
-- Every entry should leave the reader wanting the book, not feeling they have read it.
+- Quote the book at most once per entry, one short line, and name it. Never walk through a chapter, list its points, or reproduce its frameworks in full. Every entry should leave the reader wanting the book, not feeling they have read it.
 
-Where the new material comes from:
-- My own use of AI. I built Archy and the system that runs my content. Use what actually happened: where it saved real time, where it got things wrong (it wrote in phrases I would never use, it made things up, it changed my face in a photo of me), and what I changed because of it.
-- Thirty-four years of building and leading companies, and four years since studying business, leadership and AI.
-- Only facts I have written or confirmed. Do not invent stories, numbers, clients or people. Do not mention a software company I am building or plan to build. No client or employee names.
+Where the material comes from: thirty-four years of building and leading companies, what I have seen leaders do under pressure, and what organizations face as AI arrives. Only facts I have written or confirmed. Do not invent stories, numbers, clients or people. No client or employee names. Do not mention a software company I am building or plan to build.
 
-On practical tips: this is a leadership series, not a course on using AI. Tools change every few months; judgment does not. So each entry may include one practical move, and it must be a leadership decision about AI, not instructions for a tool. For example, "Before an AI-drafted performance review goes to anyone, the manager reads it out loud and signs it as their own," not "use this prompt" or "click this setting." No tool tutorials, no prompt recipes, no product recommendations.
+On practical tips: this is a leadership series, not a course on using AI. Each entry may include one practical move, and it must be a leadership decision about AI, not instructions for a tool. No tool tutorials, no prompt recipes, no product names.
 
 Who it is for: owners and executives of small and mid-sized companies, and the leaders under them, who feel pressure to "do something with AI" and sense that the people part is where it will go wrong.
 
-Voice: mine. Leader to leader, plain, direct, warm, a little blunt. Power and authority are not the same thing: power can come with a title, authority is earned through care, accountability and consistency. Never set empathy against authority. No hype, no doom, no slogans. No em dashes. None of my banned phrases.
+Voice: mine. Leader to leader, plain, direct, warm, a little blunt. Power can come with a title; authority is earned through care, accountability and consistency. Never set empathy against authority. No hype, no doom, no slogans. No em dashes. None of my banned phrases.
 
-Shape of each entry: open with a real moment or a question a leader is actually facing. Make one clear point that builds on the book. Show what it looks like in a real company. Give the one practical move. Close with what it says about the kind of leader you are choosing to be. As long as it needs to be to carry the idea, and no longer.
+Shape: open with a real moment a leader faces. One clear point that builds on the book. What it looks like in a real company. The one practical move. Close with what it says about the leader you are choosing to be. As long as it needs to be, and no longer. End with the free conversation invitation.
 
-End every entry with the free conversation invitation.
+The lineup:
+1. The decision you cannot hand off (positional authority versus earned authority)
+2. Who signs for it? (The Responsibility Gap)
+3. Where the saved hours go (The Efficiency Trap)
+4. Your dashboard does not know your people (The Dehumanization Problem)
+5. Four questions before you automate anything (The Servant Leader's AI Filter)
+6. AI makes bad bosses louder (the positional authority chapters)
+7. What to tell your team about AI (the conversation leaders avoid)
+8. What AI cannot hear in your building (whether bad news can still reach the leader)
 
-The lineup, so each entry knows where it sits:
-1. What I learned building my own AI (new: my own experience)
-2. Who signs for it? (builds on The Responsibility Gap)
-3. Where the saved hours go (builds on The Efficiency Trap)
-4. Your dashboard doesn't know your people (builds on The Dehumanization Problem)
-5. Four questions before you automate anything (builds on The Servant Leader's AI Filter)
-6. AI makes bad bosses louder (builds on the positional authority chapters)
-7. What to tell your team about AI (new: the conversation leaders avoid)
-8. What's real and what's hype for a 20-person company (new: from my own use)
-
-Show me the draft before anything is published.
+Show me the brief for each entry before you draft it, and the draft before anything is published.
