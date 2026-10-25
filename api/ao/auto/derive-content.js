@@ -17,6 +17,7 @@
  * Body: { slug: string }
  */
 
+import { textOf } from '../../../lib/ao/textModel.js';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -122,13 +123,13 @@ Generate the content derivation plan for this post. Identify 3-5 LinkedIn chunks
 
   try {
     const response = await client.messages.create({
-      model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5',
+      model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5-5',
       max_tokens: 4000,
       system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],
     });
 
-    const text = response.content?.[0]?.text || '';
+    const text = textOf(response) || '';
     const clean = text.replace(/```json|```/g, '').trim();
 
     let plan;

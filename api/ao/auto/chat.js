@@ -8,6 +8,7 @@
  * 2026-07-24-auto-v1-and-broken-journal), rename this file aside, and put the backup in place as chat.js.
  */
 
+import { textOf } from '../../../lib/ao/textModel.js';
 import { normalizeAgent, AGENTS, trimLeadInBeforeName } from '../../../lib/ao/team/agents.js';
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { shouldSavePastedPost } from '../../../lib/ao/pastedPostGate.js';
@@ -2067,8 +2068,8 @@ export async function runChatTurn({ email, body = {}, sendEvent, end = () => {},
         } else {
           const editClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
           const editResponse = await editClient.messages.create({
-            model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5',
-            max_tokens: 1000,
+            model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5-5',
+            max_tokens: 8000, // room for thinking as well as the answer
             system:
               "You revise one social media caption per the requested instruction. Keep Bart's voice rules: no em dashes, no AI signature phrases, short declarative sentences. Return ONLY the revised caption text, nothing else.",
             messages: [
@@ -2078,7 +2079,7 @@ export async function runChatTurn({ email, body = {}, sendEvent, end = () => {},
               },
             ],
           });
-          const revisedCaptionRaw = (editResponse.content?.[0]?.text || '').trim();
+          const revisedCaptionRaw = (textOf(editResponse) || '').trim();
           const voiceResult = await enforceVoiceGuardrails(revisedCaptionRaw, {
             anthropicClient: editClient,
             contextLabel: 'reshare-edit-caption',
@@ -2159,7 +2160,7 @@ export async function runChatTurn({ email, body = {}, sendEvent, end = () => {},
 
           const draftClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
           const draftResponse = await draftClient.messages.create({
-            model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5',
+            model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5-5',
             max_tokens: 4000,
             system: `You are Auto, Bart Paden's AI CMO writing a companion journal entry for Archetype Original.
 
@@ -2190,7 +2191,7 @@ Return markdown only: a # title line, then the full post body.`,
             ],
           });
 
-          const draftedPostRaw = (draftResponse.content?.[0]?.text || '').trim();
+          const draftedPostRaw = (textOf(draftResponse) || '').trim();
           const draftVoice = await enforceVoiceGuardrails(draftedPostRaw, {
             anthropicClient: draftClient,
             contextLabel: 'opportunity-companion-draft',
@@ -2662,7 +2663,7 @@ ${retrievedBlock}
           fullReply = '';
           const synthesisClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
           const synthesisModel =
-            process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-5';
+            process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5-5';
 
           try {
             await Promise.race([
