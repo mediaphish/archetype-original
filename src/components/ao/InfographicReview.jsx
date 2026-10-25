@@ -7,6 +7,7 @@
  * same piece with his note; Set aside drops it. Server: api/ao/infographics.js.
  */
 import React, { useCallback, useEffect, useState } from 'react';
+import { discussUrl } from '../../lib/discussLink.js';
 
 const day = (iso) => new Date(iso).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
@@ -60,6 +61,12 @@ function Item({ item, onDone }) {
           <button type="button" disabled={!!busy} onClick={() => act('discard')} className="min-h-[44px] px-3 text-sm text-gray-600">
             Set aside
           </button>
+          <a
+            href={discussUrl({ text: `about the infographic "${item.source_title}" waiting in the Queue: ` })}
+            className="min-h-[44px] inline-flex items-center px-3 text-sm font-semibold text-gray-700 hover:underline"
+          >
+            Talk it over
+          </a>
         </div>
         {redoOpen ? (
           <div className="space-y-2">

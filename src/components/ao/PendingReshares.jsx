@@ -10,6 +10,7 @@
  * So this lives on the Queue, next to the other work waiting on him, and Settings
  * keeps the engine's switches and points here for the stack.
  */
+import { discussUrl } from '../../lib/discussLink.js';
 import React, { useCallback, useEffect, useState } from 'react';
 
 function formatDay(value) {
@@ -169,6 +170,12 @@ export default function PendingReshares({ onCountChange }) {
                       >
                         {actionLoading[reshare.slug] === 'discard' ? 'Discarding…' : 'Discard'}
                       </button>
+                      <a
+                        href={discussUrl({ text: `about the resurface in the Queue, "${reshare.title}"${reshare.pull_quote ? ` (pull quote: "${reshare.pull_quote}")` : ''}: ` })}
+                        className="min-h-[44px] inline-flex items-center px-4 text-sm font-semibold text-gray-700 hover:underline"
+                      >
+                        Talk it over
+                      </a>
                     </>
                   )}
                 </div>

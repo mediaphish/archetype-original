@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { avatarFor } from './teamAvatars.js';
 
 /**
  * Who on Auto's team is working on what. Bart, 2026-10-25: "Then they run
@@ -30,7 +31,8 @@ function TaskRow({ task, onOpen, onAction }) {
   return (
     <li className="border border-gray-200 rounded-xl p-3 bg-white">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+        <span className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+          <img src={avatarFor(task.agent)} alt="" aria-hidden="true" className="w-6 h-6 rounded-full object-cover bg-orange-50" draggable={false} />
           {task.agent_name} · {STATUS_LABEL[task.status] || task.status}
         </span>
         <span className="text-[11px] text-gray-400">{timeAgo(task.updated_at)}</span>
@@ -182,8 +184,9 @@ export default function TeamBoard({ onOpenThread, onClose }) {
                 key={k}
                 type="button"
                 onClick={() => setAgent(k)}
-                className={`text-xs px-3 py-1 rounded-full border ${agent === k ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-300 text-gray-700'}`}
+                className={`flex items-center gap-1.5 text-xs pl-1 pr-3 py-1 rounded-full border ${agent === k ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-300 text-gray-700'}`}
               >
+                <img src={avatarFor(k)} alt="" aria-hidden="true" className="w-5 h-5 rounded-full object-cover bg-orange-50" draggable={false} />
                 {n}
               </button>
             ))}

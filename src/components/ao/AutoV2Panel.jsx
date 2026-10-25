@@ -20,6 +20,7 @@ import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import TeamBoard from './TeamBoard.jsx';
 import ChatMarkdown from './ChatMarkdown.jsx';
+import { avatarFor } from './teamAvatars.js';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
 import StagedJournalPanel from './StagedJournalPanel.jsx';
 import { resolveDraftArtifactSlug } from './draftArtifactSlug.js';
@@ -447,12 +448,16 @@ function PaperclipIcon() {
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-function TypingIndicator({ label = null }) {
+function TypingIndicator({ label = null, agent = 'auto' }) {
   return (
     <div className="flex gap-3">
-      <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center bg-gray-100 border border-gray-200">
-        <AOMark className="w-3.5 h-3.5 text-gray-500" />
-      </div>
+      <img
+        src={avatarFor(agent)}
+        alt=""
+        aria-hidden="true"
+        className="w-8 h-8 rounded-full flex-shrink-0 object-cover bg-orange-50 border border-orange-100"
+        draggable={false}
+      />
       <div className="bg-gray-50 border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3">
         {label ? (
           <p className="text-sm text-gray-600">{label}</p>
@@ -494,7 +499,39 @@ function TeamTaskNote({ message }) {
   );
 }
 
-function MessageBubble({ message }) {
+// What a reply did that Bart may want to go look at.
+const QUEUE_TOOLS = ['trigger_reshare', 'generate_quote_card', 'generate_designed_card', 'generate_plate_card'];
+const WEEK_TOOLS = ['schedule_captions', 'schedule_journal_publish', 'reach_move_post', 'reach_week', 'publish_journal'];
+
+function ReplyLinks({ message, onNavigate }) {
+  const used = Array.isArray(message.meta?.tools_used) ? message.meta.tools_used : [];
+  const queue = used.some((t) => QUEUE_TOOLS.includes(t));
+  const week = used.some((t) => WEEK_TOOLS.includes(t));
+  const team = used.includes('assign_task');
+  if (!onNavigate || (!queue && !week && !team)) return null;
+  const chip = 'text-xs font-medium px-2.5 py-1 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50';
+  return (
+    <div className="mt-2 flex flex-wrap gap-2 pl-11">
+      {queue ? (
+        <button type="button" className={chip} onClick={() => onNavigate('/ao/library/review-queue')}>
+          Open in Queue
+        </button>
+      ) : null}
+      {week ? (
+        <button type="button" className={chip} onClick={() => onNavigate('/ao/library/review-queue#week')}>
+          See the week
+        </button>
+      ) : null}
+      {team ? (
+        <button type="button" className={chip} onClick={() => message.__openTeam?.()}>
+          Team board
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function MessageBubble({ message, onNavigate }) {
   const isUser = message.role === 'user';
   const raw = String(message.content || '');
   const agentKey = !isUser && message.meta?.agent && message.meta.agent !== 'auto' ? message.meta.agent : null;
@@ -511,16 +548,23 @@ function MessageBubble({ message }) {
 
   return (
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-      <div
-        className={`
-          w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-semibold select-none
-          ${isUser ? 'bg-gray-900 text-white' : 'bg-gray-100 border border-gray-200 text-gray-500'}
-        `}
-        style={{ userSelect: 'none' }}
-        aria-hidden="true"
-      >
-        {isUser ? 'B' : agentKey ? (TEAM_NAMES[agentKey] || 'A').charAt(0) : <AOMark className="w-3.5 h-3.5" />}
-      </div>
+      {isUser ? (
+        <div
+          className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-semibold select-none bg-gray-900 text-white"
+          style={{ userSelect: 'none' }}
+          aria-hidden="true"
+        >
+          B
+        </div>
+      ) : (
+        <img
+          src={avatarFor(agentKey || 'auto')}
+          alt={TEAM_NAMES[agentKey || 'auto']}
+          title={TEAM_NAMES[agentKey || 'auto']}
+          className="w-8 h-8 rounded-full flex-shrink-0 object-cover bg-orange-50 border border-orange-100 select-none"
+          draggable={false}
+        />
+      )}
       <div
         data-quotable={isUser ? undefined : '1'}
         className={`
@@ -1800,9 +1844,13 @@ function ThreadSidebar({
               title={`Start a conversation with ${m.name}`}
               className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-left hover:bg-white transition-colors"
             >
-              <span className="w-6 h-6 rounded-full bg-gray-900 text-white text-[11px] font-semibold flex items-center justify-center flex-shrink-0">
-                {m.name.charAt(0)}
-              </span>
+              <img
+                src={avatarFor(m.key)}
+                alt=""
+                aria-hidden="true"
+                className="w-8 h-8 rounded-full flex-shrink-0 object-cover bg-orange-50 border border-orange-100"
+                draggable={false}
+              />
               <span className="flex-1 min-w-0">
                 <span className="block text-sm font-medium text-gray-900 leading-tight">{m.name}</span>
                 <span className="block text-[11px] text-gray-500 leading-tight">{m.role}</span>
@@ -2835,6 +2883,25 @@ export default function AutoV2Panel({ onNavigate, className,
       // Used when navigating from the Podcast Dashboard via "Build episode."
       const params = new URLSearchParams(window.location.search);
       const seedThreadId = params.get('thread');
+      // "Talk it over" from the Queue opens Auto with Bart's note already started.
+      const compose = params.get('compose');
+      if (compose) {
+        setInput(compose.endsWith(' ') ? compose : `${compose} `);
+        setTimeout(() => {
+          const ta = textareaRef.current;
+          if (ta) {
+            ta.focus();
+            ta.style.height = 'auto';
+            ta.style.height = `${Math.min(ta.scrollHeight, 160)}px`;
+            ta.selectionStart = ta.selectionEnd = ta.value.length;
+          }
+        }, 300);
+        try {
+          params.delete('compose');
+          const rest = params.toString();
+          window.history.replaceState({}, '', `${window.location.pathname}${rest ? `?${rest}` : ''}`);
+        } catch (_) {}
+      }
       if (seedThreadId) {
         await loadThread({ id: seedThreadId });
 
@@ -4040,7 +4107,10 @@ export default function AutoV2Panel({ onNavigate, className,
                 {contextPill}
               </span>
             ) : isMobile ? null : (
-              <span className="text-sm font-medium text-gray-400">{TEAM_NAMES[activeAgent] || 'Auto'}</span>
+              <span className="flex items-center gap-2 text-sm font-medium text-gray-600">
+                <img src={avatarFor(activeAgent)} alt="" aria-hidden="true" className="w-6 h-6 rounded-full object-cover bg-orange-50" draggable={false} />
+                {TEAM_NAMES[activeAgent] || 'Auto'}
+              </span>
             )}
           </div>
           <div className="hidden md:flex items-center gap-2">
@@ -4120,12 +4190,17 @@ export default function AutoV2Panel({ onNavigate, className,
           )}
 
           {visibleChatMessages.map((msg, i) => (
-            <MessageBubble key={msg.id || `${msg.role}-${i}-${msg.created_at}`} message={msg} />
+            <React.Fragment key={msg.id || `${msg.role}-${i}-${msg.created_at}`}>
+              <MessageBubble message={msg} />
+              {msg.role === 'assistant' ? (
+                <ReplyLinks message={{ ...msg, __openTeam: () => setTeamOpen(true) }} onNavigate={onNavigate} />
+              ) : null}
+            </React.Fragment>
           ))}
 
-          {sending && !imageGenerating && <TypingIndicator />}
+          {sending && !imageGenerating && <TypingIndicator agent={activeAgent} />}
 
-          {waitingNote && !sending ? <TypingIndicator label={waitingNote} /> : null}
+          {waitingNote && !sending ? <TypingIndicator label={waitingNote} agent={activeAgent} /> : null}
 
           {imageGenerating && (
             <TypingIndicator label="Generating your image — this may take a moment…" />

@@ -4,6 +4,7 @@ import LoadingSpinner from '../../components/operators/LoadingSpinner';
 import PendingReshares from '../../components/ao/PendingReshares';
 import WeeklyQuoteCards from '../../components/ao/WeeklyQuoteCards';
 import InfographicReview from '../../components/ao/InfographicReview';
+import ReachWeek from '../../components/ao/ReachWeek';
 
 function Pill({ tone = 'gray', children }) {
   const tones = {
@@ -273,6 +274,13 @@ export default function ReviewQueue() {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
+  // "See the week" from a chat lands on Reach's week.
+  useEffect(() => {
+    if (window.location.hash !== '#week') return;
+    const t = setTimeout(() => document.getElementById('week')?.scrollIntoView({ behavior: 'smooth' }), 600);
+    return () => clearTimeout(t);
   }, []);
 
   const loadProfilesPeople = useCallback(async () => {
@@ -819,6 +827,8 @@ export default function ReviewQueue() {
             Back to Auto
           </button>
         </div>
+
+        <ReachWeek onNavigate={handleNavigate} />
 
         <PendingReshares />
 

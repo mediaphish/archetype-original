@@ -1464,6 +1464,10 @@
       "dest": "/api/ao/team/tasks.js"
     },
     {
+      "src": "/api/ao/reach/week",
+      "dest": "/api/ao/reach/week.js"
+    },
+    {
       "src": "/api/ao/team/run",
       "dest": "/api/ao/team/run.js"
     },
