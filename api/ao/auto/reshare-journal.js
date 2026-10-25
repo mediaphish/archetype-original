@@ -18,8 +18,8 @@ import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 import { RESHARE_DAYS, nextReshareDay } from '../../../lib/ao/postingCadence.js';
-import { getOpenAiKey } from '../../../lib/openaiKey.js';
-import { OPENAI_IMAGE_MODEL } from '../../../lib/ao/imageModel.js';
+import { pickBackground, backgroundFile } from '../../../lib/ao/reshareBackgrounds.js';
+import { composeReshareOnBackground } from '../../../lib/ao/generateReshareCardImage.js';
 import {
   enforceVoiceGuardrails,
   enforceVoiceGuardrailsDeep,
@@ -55,25 +55,6 @@ const RESHARE_CHANNELS = [
   { key: 'facebook_business', platform: 'facebook', account_id: 'meta' },
   { key: 'twitter', platform: 'twitter', account_id: 'personal' },
 ];
-
-const BART_PHOTOS = {
-  confrontational: [
-    { file: 'Bart-32.jpg' },
-    { file: 'Bart-44.jpg' },
-    { file: 'Bart-141.jpg' },
-    { file: 'Bart-97.jpg' },
-  ],
-  working: [
-    { file: 'Bart-1.jpg' },
-    { file: 'Bart-4.jpg' },
-    { file: 'Bart-8.jpg' },
-  ],
-  reflective: [
-    { file: 'Bart-52.jpg' },
-    { file: 'Bart-78.jpg' },
-    { file: 'Bart-87.jpg' },
-  ],
-};
 
 const SITE_BASE_URL = process.env.SITE_BASE_URL || 'https://www.archetypeoriginal.com';
 
@@ -156,15 +137,6 @@ function normalizeInstagramCaption(text) {
   return t;
 }
 
-function selectPhotoForArticle(mood) {
-  const pool = BART_PHOTOS[mood] || BART_PHOTOS.confrontational;
-  const pick = pool[Math.floor(Math.random() * pool.length)];
-  return {
-    file: pick.file,
-    url: `${SITE_BASE_URL}/images/${pick.file}`,
-  };
-}
-
 async function extractPullQuote(title, body) {
   const excerpt = body.length > 4000 ? `${body.slice(0, 4000)}\n...` : body;
   const systemPrompt = `You extract a single pull quote from an article, verbatim, for use as a
@@ -236,160 +208,65 @@ Respond with ONLY a JSON object: {"mood": "confrontational" | "working" | "refle
 }
 
 /**
- * OpenAI image EDIT endpoint with Bart's real photo as input — separate from generateDesignImage.
+ * The reshare graphic: one of Bart's approved photos, exactly as he made it,
+ * with the pull quote and the logo added on its open side.
+ *
+ * Bart, 2026-10-24: "I need you to lock Auto out of touching the image
+ * themselves. All it can do is add the text in style with the brand." Until
+ * then each reshare sent a photo of Bart to OpenAI to relight it, and he
+ * rejected the result ("It is exactly what I was afraid of"). No photo goes to
+ * any image model from here; the list is lib/ao/reshareBackgrounds.js.
  */
-async function editPhotoWithDallE({ photoPath, prompt, size }) {
-  const apiKey = getOpenAiKey();
-  if (!apiKey) {
-    console.error('[reshare-journal] editPhotoWithDallE: OpenAI API key not configured');
-    return null;
-  }
+async function recentBackgroundIds() {
   try {
-    const imageBuffer = fs.readFileSync(photoPath);
-    const form = new FormData();
-    form.append('model', OPENAI_IMAGE_MODEL);
-    // Pass a real Uint8Array copy so multipart encoding never sees a pooled Buffer view.
-    form.append(
-      'image',
-      new Blob([new Uint8Array(imageBuffer)], { type: 'image/jpeg' }),
-      path.basename(photoPath)
-    );
-    form.append('prompt', prompt);
-    form.append('size', size);
-    form.append('quality', 'high');
-    // Force raster PNG — napi-rs loadImage rejects unknown/non-raster payloads with
-    // the misleading "Invalid SVG image" error.
-    form.append('output_format', 'png');
-
-    const openaiRes = await fetch('https://api.openai.com/v1/images/edits', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${apiKey}` },
-      body: form,
-    });
-
-    if (!openaiRes.ok) {
-      const errText = await openaiRes.text().catch(() => '');
-      console.error('[reshare-journal] OpenAI image edit error:', openaiRes.status, errText.slice(0, 300));
-      return null;
-    }
-
-    const data = await openaiRes.json();
-    let b64 = data?.data?.[0]?.b64_json;
-    const tempUrl = data?.data?.[0]?.url;
-
-    // Strip accidental data-URL prefix if the API ever returns one inside b64_json.
-    if (typeof b64 === 'string') {
-      const dataUrlMatch = b64.match(/^data:image\/[a-zA-Z0-9.+-]+;base64,(.+)$/s);
-      if (dataUrlMatch) b64 = dataUrlMatch[1];
-    }
-
-    let buffer = null;
-    if (b64) {
-      buffer = Buffer.from(b64, 'base64');
-    } else if (tempUrl) {
-      const imgRes = await fetch(tempUrl);
-      if (!imgRes.ok) {
-        console.error('[reshare-journal] OpenAI image URL download failed:', imgRes.status);
-        return null;
-      }
-      buffer = Buffer.from(await imgRes.arrayBuffer());
-    } else {
-      console.error('[reshare-journal] OpenAI image edit returned no b64_json or url');
-      return null;
-    }
-
-    const magicHex = buffer.subarray(0, 8).toString('hex');
-    const isPng = magicHex.startsWith('89504e47');
-    const isJpeg = magicHex.startsWith('ffd8ff');
-    const isWebp =
-      buffer.length >= 12 &&
-      buffer.subarray(0, 4).toString('ascii') === 'RIFF' &&
-      buffer.subarray(8, 12).toString('ascii') === 'WEBP';
-
-    console.log(
-      '[reshare-journal] editPhotoWithDallE decoded buffer length:',
-      buffer.length,
-      'magic:',
-      magicHex,
-      'format:',
-      isPng ? 'png' : isJpeg ? 'jpeg' : isWebp ? 'webp' : 'unknown'
-    );
-
-    if (!isPng && !isJpeg && !isWebp) {
-      console.error(
-        '[reshare-journal] editPhotoWithDallE returned non-raster bytes (napi-rs would throw Invalid SVG image). Rejecting.'
-      );
-      return null;
-    }
-
-    return { buffer };
-  } catch (err) {
-    console.error('[reshare-journal] editPhotoWithDallE failed:', err?.message || err);
-    return null;
+    const { data } = await scheduledPosts()
+      .select('intent, created_at')
+      .eq('source_kind', 'ao_journal_reshare')
+      .order('created_at', { ascending: false })
+      .limit(60);
+    return (data || []).map((r) => r.intent?.background).filter(Boolean);
+  } catch {
+    return [];
   }
 }
 
 async function generateReshareImage(title, pullQuote, mood, attribution) {
+  void title;
+  void mood;
   if (!pullQuote) return null;
-  const selectedPhoto = selectPhotoForArticle(mood);
-  const photoPath = path.join(process.cwd(), 'public/images', selectedPhoto.file);
-
-  if (!fs.existsSync(photoPath)) {
-    console.error(`[reshare-journal] Selected photo not found on disk: ${photoPath}`);
+  const background = pickBackground(await recentBackgroundIds());
+  const backgroundPath = path.join(process.cwd(), backgroundFile(background.id));
+  if (!fs.existsSync(backgroundPath)) {
+    console.error(`[reshare-journal] Background not found on disk: ${backgroundPath}`);
     return null;
   }
-
-  const stylePrompt =
-    mood === 'confrontational'
-      ? 'bold, high-contrast, direct — a challenge on the page'
-      : mood === 'working'
-        ? 'clean, structured, practical'
-        : 'quiet, warm, personal';
-
-  const prompt = `Adjust only the background and lighting of this photo to feel ${stylePrompt}, using a dark charcoal tone consistent with a professional leadership brand. Do not add any text, words, letters, logos, wordmarks, or graphic overlays of any kind — the image must contain nothing but the photo itself with adjusted background and lighting. Do not alter the subject's face, body, proportions, expression, clothing, or identity in any way — preserve their exact likeness. No stock-photo clichés, no cheesy corporate imagery.`;
-
-  const edited = await editPhotoWithDallE({ photoPath, prompt, size: '1536x1024' });
-  // If the model edit produced unusable bytes (or failed), fall back to the real photo
-  // so compositing still produces an on-brand graphic instead of aborting the reshare.
-  const photoBuffer = edited?.buffer || fs.readFileSync(photoPath);
-  if (!edited?.buffer) {
-    console.warn(
-      '[reshare-journal] Using original photo for compositing — DALL-E edit missing or returned non-raster bytes'
-    );
-  }
-
-  const { generateReshareCardImage } = await import('../../../lib/ao/generateReshareCardImage.js');
-  const composited = await generateReshareCardImage({
-    photoBuffer,
+  const composited = await composeReshareOnBackground({
+    backgroundPath,
+    textSide: background.text,
     pullQuote,
-    mood,
     attribution: attribution || null,
   });
   if (!composited?.ok || !composited.buffer) {
-    console.error('[reshare-journal] generateReshareCardImage failed:', composited?.error);
+    console.error('[reshare-journal] composeReshareOnBackground failed:', composited?.error);
     return null;
   }
 
-  const timestamp = Date.now();
-  const filename = `reshare-1536-1024-${timestamp}.png`;
+  const filename = `reshare-1536-1024-${Date.now()}.png`;
   const storagePath = `ao-design-images/${filename}`;
-
   const { error: uploadError } = await supabaseAdmin.storage
     .from('ao-auto-attachments')
     .upload(storagePath, composited.buffer, { contentType: 'image/png', upsert: false });
-
   if (uploadError) {
-    console.error('[reshare-journal] Final composited image upload error:', uploadError.message);
+    console.error('[reshare-journal] Reshare image upload error:', uploadError.message);
     return null;
   }
-
   const { data: urlData } = supabaseAdmin.storage.from('ao-auto-attachments').getPublicUrl(storagePath);
   if (!urlData?.publicUrl) return null;
-
   return {
     image_url: urlData.publicUrl,
-    photo: selectedPhoto.file,
-    photo_url: selectedPhoto.url,
+    background: background.id,
+    photo: background.id,
+    photo_url: `${SITE_BASE_URL}/images/reshare-backgrounds/${background.id}.png`,
   };
 }
 
@@ -1038,6 +915,7 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
         mood: mood || null,
         photo: generatedImage?.photo || null,
         photo_url: generatedImage?.photo_url || null,
+        background: generatedImage?.background || null,
         created_by_email: 'bart@archetypeoriginal.com',
       },
     });
