@@ -42,13 +42,19 @@ Voice: mine. Leader to leader, plain, direct, warm, a little blunt. Power can co
 Shape: open with a real moment a leader faces. One clear point that builds on the book. What it looks like in a real company. The one practical move. Close with what it says about the leader you are choosing to be. As long as it needs to be, and no longer. End with the free conversation invitation.
 
 The lineup:
-1. The decision you cannot hand off (positional authority versus earned authority)
+1. The decision you cannot hand off (when AI hands a leader a finished answer about a person, the leader still carries the decision)
 2. Who signs for it? (The Responsibility Gap)
 3. Where the saved hours go (The Efficiency Trap)
 4. Your dashboard does not know your people (The Dehumanization Problem)
 5. Four questions before you automate anything (The Servant Leader's AI Filter)
-6. AI makes bad bosses louder (the positional authority chapters)
+6. AI makes bad bosses louder (AI gives whoever holds the title more reach)
 7. What to tell your team about AI (the conversation leaders avoid)
 8. What AI cannot hear in your building (whether bad news can still reach the leader)
 
 Show me the brief for each entry before you draft it, and the draft before anything is published.
+
+---
+
+Note 2026-10-24: entry 1 was first labeled "positional authority versus earned
+authority", which pulled Auto toward Bart's posts on power and dissent. The
+series is about leadership and AI; the labels now say what each entry is about.
