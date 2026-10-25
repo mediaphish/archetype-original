@@ -339,7 +339,8 @@
           "lib/**",
           "ao-knowledge-hq-kit/journal/**",
           "public/images/**",
-          "public/fonts/**"
+          "public/fonts/**",
+          "public/brand/archetype-original-lockup.svg"
         ]
       }
     },

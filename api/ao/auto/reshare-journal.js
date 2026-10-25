@@ -19,7 +19,7 @@ import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 import { RESHARE_DAYS, nextReshareDay } from '../../../lib/ao/postingCadence.js';
 import { pickBackground, backgroundFile } from '../../../lib/ao/reshareBackgrounds.js';
-import { composeReshareOnBackground } from '../../../lib/ao/generateReshareCardImage.js';
+import { composeReshareInBartStyle } from '../../../lib/ao/generateReshareCardImage.js';
 import { writeReshareBrief } from '../../../lib/ao/reshareBrief.js';
 import {
   enforceVoiceGuardrails,
@@ -241,14 +241,14 @@ async function generateReshareImage(title, pullQuote, mood, attribution) {
     console.error(`[reshare-journal] Background not found on disk: ${backgroundPath}`);
     return null;
   }
-  const composited = await composeReshareOnBackground({
+  const composited = await composeReshareInBartStyle({
     backgroundPath,
     textSide: background.text,
     pullQuote,
-    attribution: attribution || null,
   });
+  void attribution;
   if (!composited?.ok || !composited.buffer) {
-    console.error('[reshare-journal] composeReshareOnBackground failed:', composited?.error);
+    console.error('[reshare-journal] composeReshareInBartStyle failed:', composited?.error);
     return null;
   }
 
