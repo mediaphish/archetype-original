@@ -522,7 +522,8 @@
           "lib/**",
           "public/knowledge.json",
           "data/knowledge-full.json",
-          "public/images/ao-logo-black.png"
+          "public/images/ao-logo-black.png",
+          "public/images/ao-logo-offwhite.png"
         ]
       }
     },
@@ -536,7 +537,8 @@
           "lib/**",
           "public/knowledge.json",
           "data/knowledge-full.json",
-          "public/images/ao-logo-black.png"
+          "public/images/ao-logo-black.png",
+          "public/images/ao-logo-offwhite.png"
         ]
       }
     },
