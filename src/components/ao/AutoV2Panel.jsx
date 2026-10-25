@@ -19,6 +19,7 @@ import { createSwipeHandlers } from '../../../lib/ao/touchGestures.js';
 import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import TeamBoard from './TeamBoard.jsx';
+import ChatMarkdown from './ChatMarkdown.jsx';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
 import StagedJournalPanel from './StagedJournalPanel.jsx';
 import { resolveDraftArtifactSlug } from './draftArtifactSlug.js';
@@ -539,7 +540,7 @@ function MessageBubble({ message }) {
             className="rounded-lg mb-2 max-w-full max-h-48 object-contain"
           />
         )}
-        {text}
+        {isUser ? text : <div className="whitespace-normal">{<ChatMarkdown text={text} />}</div>}
         {reshareImageUrl ? (
           <a
             href={reshareImageUrl}
@@ -1553,6 +1554,7 @@ function ThreadSidebar({
   onNewThread,
   onNewAgentThread,
   onOpenTeam,
+  teamNeedsCount = 0,
   onRefresh,
   className = '',
   showHeader = true,
@@ -1784,44 +1786,42 @@ function ThreadSidebar({
   return (
     <div className={`flex flex-col min-h-0 bg-gray-50 ${className}`}>
       {showHeader && (
-        <div className="px-4 py-4 border-b border-gray-200 flex-shrink-0">
-          <div className="flex items-center gap-2 mb-3">
-            <AOMark className="w-5 h-5 text-gray-900" />
-            <span className="text-sm font-semibold text-gray-900">Auto</span>
-          </div>
-          <button
-            type="button"
-            onClick={onNewThread}
-            className="w-full flex items-center gap-2 py-2 px-3 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            <PlusIcon />
-            New conversation
-          </button>
-          {onNewAgentThread ? (
-            <div className="mt-2 grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => onNewAgentThread('jot')}
-                className="py-1.5 px-2 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
-              >
-                Talk to Jot
-              </button>
-              <button
-                type="button"
-                onClick={() => onNewAgentThread('reach')}
-                className="py-1.5 px-2 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
-              >
-                Talk to Reach
-              </button>
-            </div>
-          ) : null}
+        <div className="px-3 pt-3 pb-3 border-b border-gray-200 flex-shrink-0">
+          <p className="px-1 mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Team</p>
+          {[
+            { key: 'auto', name: 'Auto', role: 'CMO', run: () => onNewThread?.() },
+            { key: 'jot', name: 'Jot', role: 'Writer', run: () => (onNewAgentThread ? onNewAgentThread('jot') : onNewThread?.()) },
+            { key: 'reach', name: 'Reach', role: 'Publicist', run: () => (onNewAgentThread ? onNewAgentThread('reach') : onNewThread?.()) },
+          ].map((m) => (
+            <button
+              key={m.key}
+              type="button"
+              onClick={m.run}
+              title={`Start a conversation with ${m.name}`}
+              className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-left hover:bg-white transition-colors"
+            >
+              <span className="w-6 h-6 rounded-full bg-gray-900 text-white text-[11px] font-semibold flex items-center justify-center flex-shrink-0">
+                {m.name.charAt(0)}
+              </span>
+              <span className="flex-1 min-w-0">
+                <span className="block text-sm font-medium text-gray-900 leading-tight">{m.name}</span>
+                <span className="block text-[11px] text-gray-500 leading-tight">{m.role}</span>
+              </span>
+              <PlusIcon />
+            </button>
+          ))}
           {onOpenTeam ? (
             <button
               type="button"
               onClick={onOpenTeam}
-              className="mt-2 w-full py-2 px-3 text-xs font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-700"
+              className="mt-2 w-full flex items-center justify-between py-2 px-3 text-xs font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-700"
             >
-              Team
+              <span>Team board</span>
+              {teamNeedsCount > 0 ? (
+                <span className="ml-2 rounded-full bg-amber-400 text-gray-900 px-2 py-0.5 text-[11px] font-semibold">
+                  {teamNeedsCount} need{teamNeedsCount === 1 ? 's' : ''} you
+                </span>
+              ) : null}
             </button>
           ) : null}
         </div>
@@ -1963,6 +1963,23 @@ export default function AutoV2Panel({ onNavigate, className,
   // finished on the server after the screen lost the stream, and a passage
   // Bart highlighted to reply to.
   const [teamOpen, setTeamOpen] = useState(false);
+  const [teamNeedsCount, setTeamNeedsCount] = useState(0);
+  useEffect(() => {
+    let alive = true;
+    const check = async () => {
+      try {
+        const res = await fetch('/api/ao/team/tasks?limit=40');
+        const json = await res.json().catch(() => ({}));
+        if (alive && res.ok && json.ok) setTeamNeedsCount((json.needs_bart || []).length);
+      } catch (_) {}
+    };
+    check();
+    const t = setInterval(check, 30000);
+    return () => {
+      alive = false;
+      clearInterval(t);
+    };
+  }, [teamOpen]);
   const [waitingNote, setWaitingNote] = useState('');
   const [quoteCandidate, setQuoteCandidate] = useState('');
   const activeThreadIdRef = useRef(null);
@@ -3840,7 +3857,7 @@ export default function AutoV2Panel({ onNavigate, className,
             New chat
           </button>
           {[
-            { key: 'team', label: 'Team', run: () => setTeamOpen(true) },
+            { key: 'team', label: teamNeedsCount > 0 ? `Team board (${teamNeedsCount} need${teamNeedsCount === 1 ? 's' : ''} you)` : 'Team board', run: () => setTeamOpen(true) },
             { key: 'jot', label: 'Talk to Jot', run: () => startNewThread('jot') },
             { key: 'reach', label: 'Talk to Reach', run: () => startNewThread('reach') },
           ].map((item) => (
@@ -3920,6 +3937,7 @@ export default function AutoV2Panel({ onNavigate, className,
           onNewThread={startNewThread}
           onNewAgentThread={(a) => startNewThread(a)}
           onOpenTeam={() => setTeamOpen(true)}
+          teamNeedsCount={teamNeedsCount}
           onRefresh={loadThreadList}
           className="w-56 flex-shrink-0 border-r border-gray-200"
         />
@@ -4022,7 +4040,7 @@ export default function AutoV2Panel({ onNavigate, className,
                 {contextPill}
               </span>
             ) : isMobile ? null : (
-              <span className="text-sm font-medium text-gray-400">Auto</span>
+              <span className="text-sm font-medium text-gray-400">{TEAM_NAMES[activeAgent] || 'Auto'}</span>
             )}
           </div>
           <div className="hidden md:flex items-center gap-2">
