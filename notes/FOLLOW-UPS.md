@@ -32,35 +32,12 @@ wait with this. (Private Archy per client was built 2026-10-24 as a web page.)
 - Test rows to remove when Bart is done looking: "Jordan Test" and "Riley Test"
   in Auto > Clients (both email bart+...@archetypeoriginal.com).
 
-### Weekly infographic posts (asked 2026-10-23)
-Bart, while sharing an infographic he saw ("The Two Paths of Leadership: a
-pyramidal comparison", traditional hierarchy vs servant leadership):
-"As we build the marketing pieces of this, I want to use OpenAI to build
-similar, but on brand and better styled and using my content. I want 3 images
-a week with captions."
-
-- Three images a week, each with a caption.
-- Explainer-style graphics (comparisons, frameworks, simple diagrams), like
-  the reference, but in Archetype Original's brand and built from Bart's own
-  content (books, journal, Culture Science, the five fundamentals).
-- Images through OpenAI (Bart's rule: OpenAI only for images). Captions and
-  the ideas come from Claude using the corpus, in his voice.
-- Lessons already learned: image models garble text, so the words on the
-  graphic should be set by the site (like the quote cards and resurface
-  cards), with the model only painting the background or illustration.
-- Belongs with Auto's marketing work and the posting cadence Bart set.
-- Reference images (someone else's work, for style and format only; do not copy):
-  notes/reference-images/2026-10-23-infographic-two-paths-of-leadership.png,
-  notes/reference-images/2026-10-23-infographic-common-misconception.jpg
-  (misconception vs what true leadership embodies, icon-labelled diamond).
-  notes/reference-images/2026-10-23-infographic-leadership-trifecta.jpg
-  (three overlapping circles with a center point; Venn-style roles).
-
 ### Smaller items
 - Shorten the rising leaders form (page promises "a short note"; form has nine questions).
 - Site visitor stats are off (needs Bart's OK to turn on).
 
 ## Done
+- 2026-10-24 Infographic posts (3 a week, Bart approves each): built from one published piece each, drawn by the site in brand fonts (lib/ao/infographicCanvas.js; layouts framework, paths, myths), waiting in Auto > Queue with editable captions, Approve / Redo / Set aside. Approved ones post Tue, Wed, Thu at 12:30 Central on all five channels. A weekday job keeps three waiting. Reference images in notes/reference-images/ are inspiration only and are never given to the writer.
 - 2026-10-24 Transcripts arrive on their own: Zoom cloud recordings by webhook; Wispr Flow and Echo emailed to bart+transcripts@archetypeoriginal.com (picked up by the Gmail sync script). Unmatched ones wait in "Transcripts to match" on Clients.
 - 2026-10-24 Private Archy per client (/archy/you, signed link sent from the Archy tab in Auto). Uses their conversations with Bart, never his private notes. Hand-offs to Bart: ongoing within a day, season two days, rising leaders five. Log and answers in Auto; Archy use in the Monday summary. Test messages are in Jordan Test's Archy.
 - 2026-10-24 Client email on the timeline: Apps Script "Archetype Original client email sync" in Bart's Google account (script.google.com, code in notes/gmail-sync/), read-only, every 15 minutes, only client addresses. A reply holds the next check-in due within 7 days and emails Bart.
