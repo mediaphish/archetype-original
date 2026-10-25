@@ -5,12 +5,12 @@ When something here gets built, move it to "Done" with the date.
 
 ## Open
 
-### Reshare images from Bart's approved backgrounds (2026-10-24)
-Bart rejected the OpenAI-relit photo on the Oct 28 reshare ("It is exactly what
-I was afraid of"). That reshare is back in review and reshare auto-approve is
-off. Bart is making 10 backgrounds in ChatGPT (1536x1024, open space on one
-side, no text). Reshares then use only those, with the quote and logo set by
-the site and no OpenAI step. Show him a sample before turning auto-approve on.
+### Reshares: auto-approve still off (2026-10-24)
+Reshares now use only Bart's approved photos (public/images/reshare-backgrounds/,
+listed with their open side in lib/ao/reshareBackgrounds.js), untouched, with
+the site adding the text and logo. Bart is sending a 007. Auto-approve stays
+off until Bart OKs the new look; the Accountability Comes First reshare is
+waiting in the Queue with its new image.
 
 ### ALI fresh look (Bart, 2026-10-24: "this next week")
 Take a fresh look at ALI and make sure it still accomplishes the goal of
