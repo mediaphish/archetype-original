@@ -84,6 +84,8 @@ export default async function handler(req, res) {
           ok: true,
           consent: consentOf(record, 'archy'),
           link_sent_at: record?.archy?.link_sent_at || null,
+          // Owner only: Bart can open their Archy exactly as they see it.
+          url: record?.archy?.link_sent_at ? archyUrl(email, Number(record.archy.link_version) || 1) : null,
           messages: await archyHistory(email),
         });
       }

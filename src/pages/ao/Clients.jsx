@@ -438,6 +438,11 @@ function ArchyTab({ person, onPerson, busy }) {
         {data.link_sent_at ? (
           <div className="space-y-2">
             <p className="text-sm text-gray-700">Sent {when(data.link_sent_at)}.</p>
+            {data.url ? (
+              <a href={data.url} target="_blank" rel="noreferrer" className="block text-sm font-semibold text-blue-700">
+                Open their Archy as they see it
+              </a>
+            ) : null}
             <button
               type="button"
               disabled={busy}
