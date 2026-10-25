@@ -14,6 +14,7 @@ import { AGENTS, normalizeAgent } from '../../../../lib/ao/team/agents.js';
 const TEAM_OPENERS = {
   jot: 'Jot: What are we writing? Give me the idea, the angle or the series, and I will research it and come back with a brief.',
   reach: 'Reach: Want the lineup for the week, or is there something you want placed?',
+  producer: 'Producer: Who are we recording next? I can tell you who is prepared, who is waiting, and get show notes ready.',
 };
 
 export default async function handler(req, res) {

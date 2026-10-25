@@ -1476,6 +1476,10 @@
       "dest": "/api/cron/ao/reach-weekly.js?kind=$1"
     },
     {
+      "src": "/api/cron/ao/producer-intake",
+      "dest": "/api/cron/ao/producer-intake.js"
+    },
+    {
       "src": "/api/ao/auto/generate-card-image",
       "dest": "/api/ao/auto/generate-card-image.js"
     },
@@ -2095,6 +2099,10 @@
     {
       "path": "/api/cron/ao/reach-weekly/report",
       "schedule": "30 13 * * 1"
+    },
+    {
+      "path": "/api/cron/ao/producer-intake",
+      "schedule": "*/30 * * * *"
     }
   ]
 }

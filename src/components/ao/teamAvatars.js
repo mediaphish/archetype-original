@@ -9,6 +9,14 @@ export const TEAM_AVATARS = {
   reach: '/images/team/reach.png',
 };
 
+/** A plain initial for a teammate whose art has not arrived yet (the Producer). */
+function initialAvatar(letter) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="#111827"/><text x="32" y="41" font-family="Inter,Arial,sans-serif" font-size="26" font-weight="700" fill="#ffffff" text-anchor="middle">${letter}</text></svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
 export function avatarFor(agent) {
-  return TEAM_AVATARS[agent] || TEAM_AVATARS.auto;
+  if (TEAM_AVATARS[agent]) return TEAM_AVATARS[agent];
+  if (agent === 'producer') return initialAvatar('P');
+  return TEAM_AVATARS.auto;
 }
