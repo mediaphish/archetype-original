@@ -364,7 +364,121 @@ const TABS = [
   ['profile', 'Profile'],
   ['research', 'Research'],
   ['notes', 'Notes'],
+  ['archy', 'Archy'],
 ];
+
+// Bart, 2026-10-24: "Ongoing within a day, a season within two days, rising leaders within five days."
+const ARCHY_WINDOW = { ongoing: 'within a day', season: 'within two days', rising: 'within five days' };
+
+function archyLinkLetter(person) {
+  const first = String(person.name || '').trim().split(/\s+/)[0] || 'there';
+  const window = ARCHY_WINDOW[person.tier] || ARCHY_WINDOW.season;
+  return `Hi ${first},\n\nYou said yes to a private Archy, so here it is. Archy is the AI trained on my writing, and yours also knows what we have talked through together. Use it between our conversations: to think something through, to check yourself against what you said you would do, or to ask what I would say.\n\nOnly you and I can see it. If something needs me, Archy will pass it to me, and I will answer ${window}.\n\nBart`;
+}
+
+/** Their private Archy: send the link, answer what Archy handed over, read everything it said. */
+function ArchyTab({ person, onPerson, busy }) {
+  const [data, setData] = useState(null);
+  const [letter, setLetter] = useState(() => archyLinkLetter(person));
+  const [answers, setAnswers] = useState({});
+  const load = useCallback(() => {
+    fetch(`/api/ao/clients?archy=${encodeURIComponent(person.email)}`)
+      .then((r) => r.json())
+      .then((j) => setData(j.ok ? j : { error: j.error }))
+      .catch((e) => setData({ error: e.message }));
+  }, [person.email]);
+  useEffect(() => {
+    load();
+  }, [load]);
+  const act = async (op, extra) => {
+    await onPerson(op, extra);
+    load();
+  };
+  if (!data) return <Card><p className="text-sm text-gray-500">Loading…</p></Card>;
+  if (data.error) return <Card><p className="text-sm text-red-800">{data.error}</p></Card>;
+  const first = String(person.name || '').trim().split(/\s+/)[0];
+  if (data.consent !== 'yes') {
+    return (
+      <Card>
+        <p className="text-sm text-gray-700">
+          {data.consent === 'no' ? `${first} said no to a private Archy.` : `${first} has not answered the private Archy question on Before we talk yet.`} It only opens for people who said yes.
+        </p>
+      </Card>
+    );
+  }
+  const waiting = data.messages.filter((m) => m.handoff_status === 'waiting');
+  const when = (iso) => new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  return (
+    <div className="space-y-4">
+      {waiting.length ? (
+        <Card>
+          <Heading>Handed to you</Heading>
+          <div className="space-y-4">
+            {waiting.map((m) => (
+              <div key={m.id} className="rounded-xl bg-red-50 p-3">
+                <p className="text-sm font-semibold text-red-900">{m.handoff_reason}</p>
+                <p className="text-xs text-red-800">Answer by {new Date(m.answer_by).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</p>
+                <textarea
+                  value={answers[m.id] ?? `Hi ${first},\n\n\n\nBart`}
+                  onChange={(e) => setAnswers((a) => ({ ...a, [m.id]: e.target.value }))}
+                  className="mt-2 min-h-[140px] w-full rounded-lg border border-gray-300 bg-white p-3 text-sm"
+                />
+                <button type="button" disabled={busy} onClick={() => act('archy_answer', { handoff_id: m.id, text: answers[m.id] ?? '' })} className="mt-2 rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">
+                  Send my answer
+                </button>
+                <p className="mt-1 text-xs text-gray-600">Goes to {first} by email and shows in their Archy.</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      ) : null}
+
+      <Card>
+        <Heading>Their link</Heading>
+        {data.link_sent_at ? (
+          <div className="space-y-2">
+            <p className="text-sm text-gray-700">Sent {when(data.link_sent_at)}.</p>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                if (window.confirm(`Turn off ${first}'s current link? You can send a new one after.`)) act('archy_revoke');
+              }}
+              className="text-sm font-semibold text-gray-700"
+            >
+              Turn off this link
+            </button>
+          </div>
+        ) : (
+          <div>
+            <p className="mb-2 text-sm text-gray-600">Nothing goes to {first} until you press Send. The link goes below your note as a button.</p>
+            <textarea value={letter} onChange={(e) => setLetter(e.target.value)} className="min-h-[220px] w-full rounded-lg border border-gray-300 p-3 text-sm leading-relaxed" />
+            <button type="button" disabled={busy} onClick={() => act('archy_send_link', { subject: 'Your private Archy', text: letter })} className="mt-2 rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">
+              Send {first} their Archy
+            </button>
+          </div>
+        )}
+      </Card>
+
+      <Card>
+        <Heading>Everything Archy has said to {first}</Heading>
+        {data.messages.length ? (
+          <ol className="space-y-3">
+            {data.messages.map((m) => (
+              <li key={m.id} className="border-l-2 border-gray-200 pl-3">
+                <p className="text-xs text-gray-500">{m.role === 'user' ? first : m.role === 'bart' ? 'You' : 'Archy'} · {when(m.at)}</p>
+                <p className="whitespace-pre-wrap text-sm text-gray-900">{m.content}</p>
+                {m.handoff_reason ? <p className="mt-1 text-xs text-red-800">Handed to you: {m.handoff_reason}{m.handoff_status === 'answered' ? ' (answered)' : ''}</p> : null}
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p className="text-sm text-gray-500">Nothing yet.</p>
+        )}
+      </Card>
+    </div>
+  );
+}
 
 const DETAIL_KINDS = [
   ['birthday', 'Birthday'],
@@ -778,7 +892,7 @@ function Person({ email }) {
 
       <nav className="sticky top-[52px] z-10 -mx-4 mb-4 flex gap-1 overflow-x-auto border-b border-gray-200 bg-gray-50/95 px-4 backdrop-blur md:top-[73px]" aria-label="Client sections">
         {TABS.map(([key, label]) => {
-          const dot = (key === 'now' && p.needs.length) || (key === 'research' && p.web_watch?.unseen) || (key === 'profile' && p.details.some((d) => d.status === 'suggested'));
+          const dot = (key === 'now' && p.needs.length) || (key === 'research' && p.web_watch?.unseen) || (key === 'profile' && p.details.some((d) => d.status === 'suggested')) || (key === 'archy' && p.archy_waiting > 0);
           return (
             <button key={key} type="button" onClick={() => setTab(key)} className={`relative min-h-[44px] shrink-0 px-3 text-sm ${tab === key ? 'border-b-2 border-gray-900 font-semibold text-gray-900' : 'text-gray-600'}`}>
               {label}
@@ -794,6 +908,7 @@ function Person({ email }) {
       {tab === 'profile' ? <ProfileTab person={p} tiers={data.tiers} onPerson={onPerson} busy={busy} /> : null}
       {tab === 'research' ? <ResearchTab person={p} onSession={onSession} onPerson={onPerson} busy={busy} /> : null}
       {tab === 'notes' ? <NotesTab person={p} onPerson={onPerson} busy={busy} /> : null}
+      {tab === 'archy' ? <ArchyTab person={p} onPerson={onPerson} busy={busy} /> : null}
     </div>
   );
 }

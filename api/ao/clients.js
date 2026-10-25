@@ -20,6 +20,7 @@
  * GET ?timeline=<email>                that person's timeline
  * GET ?view=home                       the CRM home: needs you, this week, coming up, everyone, numbers
  * GET ?person=<email>                  one person across all their conversations
+ * GET ?archy=<email>                  that person's private Archy conversation
  * POST {action:'person', email, op, …} person-level changes: tier, stage, notes,
  *      details (add, update, remove, confirm), health override, thread, web watch
  *
@@ -37,6 +38,7 @@ import {
   consentOf,
   normEmail,
 } from '../../lib/calendly/clientRecords.js';
+import { history as archyHistory, newArchyLink, archyUrl, recordBartAnswer } from '../../lib/calendly/privateArchy.js';
 import { takeTranscript, listUnmatched, resolveIncoming, readIncomingFor } from '../../lib/calendly/transcriptIntake.js';
 import { homeView, getPerson, publicPerson } from '../../lib/calendly/people.js';
 import { TIERS } from '../../lib/calendly/intelligence.js';
@@ -74,6 +76,16 @@ export default async function handler(req, res) {
         const person = await getPerson(String(req.query.person));
         if (!person) return res.status(404).json({ ok: false, error: 'Not found' });
         return res.status(200).json({ ok: true, stages: STAGES, tiers: TIERS, person: publicPerson(person) });
+      }
+      if (req.query?.archy) {
+        const email = normEmail(String(req.query.archy));
+        const record = await getClientRecord(email);
+        return res.status(200).json({
+          ok: true,
+          consent: consentOf(record, 'archy'),
+          link_sent_at: record?.archy?.link_sent_at || null,
+          messages: await archyHistory(email),
+        });
       }
       if (req.query?.timeline) {
         return res.status(200).json({ ok: true, events: await listEvents(String(req.query.timeline)) });
@@ -278,6 +290,31 @@ async function personAction(body, res) {
     }
     case 'web_seen': {
       await save({ web_watch: { ...(record.web_watch || {}), unseen: false } });
+      break;
+    }
+    // Private Archy. Nothing reaches the client until Bart presses Send.
+    case 'archy_send_link':
+    case 'archy_answer': {
+      if (consentOf(record, 'archy') !== 'yes') return res.status(403).json({ ok: false, error: `${person.name} has not said yes to a private Archy.` });
+      const row = person.rows.slice().sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))[0];
+      const text = String(body.text || '').trim();
+      if (!row || !text) return res.status(400).json({ ok: false, error: 'Nothing to send.' });
+      if (body.op === 'archy_send_link') {
+        const url = await newArchyLink(email);
+        const r = await sendToClient(row, { subject: String(body.subject || 'Your private Archy').slice(0, 200), text, cta: { label: 'Open your Archy', url } }, { kind: 'archy_link_sent' });
+        if (!r.ok) return res.status(502).json({ ok: false, error: r.error });
+      } else {
+        const fresh = await getClientRecord(email);
+        const url = archyUrl(email, Number(fresh?.archy?.link_version) || 1);
+        await recordBartAnswer(email, String(body.handoff_id || ''), text);
+        const r = await sendToClient(row, { subject: 'About your question to Archy', text, cta: { label: 'Open your Archy', url } }, { kind: 'archy_answer_sent' });
+        if (!r.ok) return res.status(502).json({ ok: false, error: r.error });
+      }
+      break;
+    }
+    case 'archy_revoke': {
+      const version = (Number(record.archy?.link_version) || 1) + 1;
+      await save({ archy: { ...(record.archy || {}), link_version: version, link_sent_at: null } });
       break;
     }
     default:

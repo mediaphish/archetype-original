@@ -1303,6 +1303,10 @@
       "dest": "/api/clients/prep.js"
     },
     {
+      "src": "/api/clients/archy",
+      "dest": "/api/clients/archy.js"
+    },
+    {
       "src": "/api/cron/calendly-hours",
       "dest": "/api/cron/calendly-hours.js"
     },

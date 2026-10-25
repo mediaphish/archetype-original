@@ -17,6 +17,7 @@ import Podcast from "./pages/Podcast";
 import PodcastEpisode from "./pages/PodcastEpisode";
 import PodcastGuestIntake from "./pages/PodcastGuestIntake";
 import BeforeWeTalk from "./pages/BeforeWeTalk";
+import ArchyYou from "./pages/ArchyYou";
 import PodcastGuestView from "./pages/PodcastGuestView";
 import DevotionalPost from "./pages/DevotionalPost";
 import Faith from "./pages/Faith";
@@ -176,6 +177,7 @@ export default function App() {
     if (path === '/culture-science' || path.startsWith('/culture-science/')) {
       return 'culture-science';
     }
+    if (path === '/archy/you') return 'archy-you';
     if (path === '/archy' || path.startsWith('/archy/')) return 'archy';
     if (path === '/philosophy') return 'about';
     if (path === '/consulting') return 'methods-consulting';
@@ -631,6 +633,8 @@ export default function App() {
         } else {
           setCurrentPage('culture-science');
         }
+      } else if (path === '/archy/you') {
+        setCurrentPage('archy-you');
       } else if (path === '/archy' || path.startsWith('/archy/')) {
         // Only allow main Archy page - placeholder subpages removed
         setCurrentPage('archy');
@@ -855,6 +859,17 @@ export default function App() {
     return (
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Faith />
+        <Footer />
+      </main>
+    );
+  }
+
+  // A client's private Archy, by signed link
+  if (currentPage === 'archy-you') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <ArchyYou />
         <Footer />
       </main>
     );

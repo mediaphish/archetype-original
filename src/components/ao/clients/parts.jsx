@@ -419,6 +419,9 @@ export const EVENT_LABELS = {
   checkins_stopped: 'Check-ins stopped',
   stage: 'Stage changed',
   reply: 'They wrote to you',
+  archy_message: 'Used their private Archy',
+  archy_link_sent: 'Private Archy link sent',
+  archy_answer_sent: 'You answered their Archy question',
   email_out: 'You wrote to them',
 };
 
