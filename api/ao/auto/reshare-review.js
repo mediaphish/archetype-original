@@ -16,7 +16,8 @@ import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 import { RESHARE_DAYS } from '../../../lib/ao/postingCadence.js';
-import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
+import { scheduledPosts, updateById } from '../../../lib/db/scheduledPosts.js';
+import { writeReshareBrief } from '../../../lib/ao/reshareBrief.js';
 
 /**
  * Find the best day this week to schedule a reshare post.
@@ -131,7 +132,7 @@ export async function approveOrDiscardReshare(action, slug) {
 
   try {
     const { data: pendingRows, error: fetchError } = await scheduledPosts()
-      .select('id, platform, caption, image_url, intent, scheduled_at')
+      .select('id, platform, account_id, caption, image_url, intent, scheduled_at')
       .eq('status', 'pending_review')
       .eq('source_kind', 'ao_journal_reshare')
       .filter('intent->>slug', 'eq', safeSlug);
@@ -259,17 +260,38 @@ export default async function handler(req, res) {
           title: row.intent?.title || slug,
           journal_url: row.intent?.journal_url || '',
           selection_reason: row.intent?.selection_reason || '',
+          pull_quote: row.intent?.pull_quote || '',
+          brief: row.intent?.brief || '',
           image_url: row.image_url || null,
           posts: [],
         };
       }
+      if (!grouped[slug].image_url && row.image_url) grouped[slug].image_url = row.image_url;
       grouped[slug].posts.push({
         id: row.id,
         platform: row.platform,
+        account_id: row.account_id,
         caption: row.caption,
+        image_url: row.image_url || null,
         scheduled_at: row.scheduled_at,
+        intent: row.intent,
       });
     }
+
+    // A reshare made before briefs existed gets one now, once, and keeps it.
+    for (const g of Object.values(grouped)) {
+      if (g.brief) continue;
+      try {
+        const linkedin = g.posts.find((p) => p.platform === 'linkedin') || g.posts[0];
+        g.brief = (await writeReshareBrief({ title: g.title, pullQuote: g.pull_quote, selectionReason: g.selection_reason, caption: linkedin?.caption })) || '';
+        if (g.brief) {
+          for (const p of g.posts) await updateById(p.id, { intent: { ...(p.intent || {}), brief: g.brief } });
+        }
+      } catch (err) {
+        console.warn('[reshare-review] brief not written:', err?.message || err);
+      }
+    }
+    for (const g of Object.values(grouped)) for (const p of g.posts) delete p.intent;
 
     return res.status(200).json({
       ok: true,

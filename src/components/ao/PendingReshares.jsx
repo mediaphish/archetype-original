@@ -24,7 +24,6 @@ export default function PendingReshares({ onCountChange }) {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState({});
   const [actionResult, setActionResult] = useState({});
-  const [expanded, setExpanded] = useState({});
 
   useEffect(() => {
     let cancelled = false;
@@ -95,126 +94,111 @@ export default function PendingReshares({ onCountChange }) {
 
   return (
     <section className="rounded-2xl border border-gray-200 bg-white p-5 mb-6">
-      <div className="flex items-baseline justify-between mb-1">
-        <h2 className="text-lg font-semibold text-gray-900">Reshares waiting on you ({pending.length})</h2>
-      </div>
+      <h2 className="text-lg font-semibold text-gray-900">Reshares waiting on you ({pending.length})</h2>
       <p className="text-sm text-gray-500 mb-4">
-        Finished posts for all four channels. Approve one and it goes out on the date shown.
+        What goes out, exactly as it will look. Approve and it is scheduled for the next reshare day.
       </p>
 
-      <div className="space-y-3">
+      <div className="space-y-6">
         {pending.map((reshare) => {
           const day = formatDay(reshare.posts?.[0]?.scheduled_at);
-          // All four channels carry the same picture, so the first one that has
-          // it speaks for the set.
-          const image = (reshare.posts || []).map((p) => p.image_url).find(Boolean) || null;
-          const isOpen = !!expanded[reshare.slug];
+          const image = reshare.image_url || (reshare.posts || []).map((p) => p.image_url).find(Boolean) || null;
+          const posts = groupCaptions(reshare.posts || []);
           return (
-            <div key={reshare.slug} className="border border-gray-200 rounded-xl overflow-hidden">
-              <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
-                <div className="flex items-start gap-3">
-                  {/* The picture that goes out, at a size you can actually judge.
-                      Before this the panel named the channels and showed the words
-                      and left the image invisible, so the only way to see what was
-                      about to be published was to ask. */}
-                  {image ? (
-                    <a href={image} target="_blank" rel="noopener noreferrer" className="shrink-0">
-                      <img
-                        src={image}
-                        alt={`Image for ${reshare.title}`}
-                        className="w-28 h-28 sm:w-36 sm:h-36 object-cover rounded-lg border border-gray-200 bg-white"
-                        loading="lazy"
-                      />
+            <article key={reshare.slug} className="border border-gray-200 rounded-2xl overflow-hidden">
+              {/* The graphic at full width: the photo, the pull quote and the logo as posted. */}
+              {image ? (
+                <a href={image} target="_blank" rel="noopener noreferrer" className="block bg-gray-900">
+                  <img src={image} alt={`Reshare image for ${reshare.title}`} className="w-full h-auto" loading="lazy" />
+                </a>
+              ) : (
+                <div className="bg-red-50 border-b border-red-200 p-6 text-sm font-semibold text-red-700">No image. Instagram will refuse this.</div>
+              )}
+
+              <div className="p-4 sm:p-5 space-y-4">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <a href={reshare.journal_url} target="_blank" rel="noopener noreferrer" className="text-base font-semibold text-gray-900 hover:underline">
+                      {reshare.title}
                     </a>
-                  ) : (
-                    <div className="shrink-0 w-28 h-28 sm:w-36 sm:h-36 rounded-lg border border-dashed border-red-300 bg-red-50 flex items-center justify-center p-2">
-                      <span className="text-[11px] font-semibold text-red-700 text-center leading-tight">
-                        No image. Instagram will refuse this.
-                      </span>
-                    </div>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-3">
-                      <p className="text-sm font-semibold text-gray-900">{reshare.title}</p>
-                      {day && (
-                        <span className="shrink-0 text-xs font-semibold text-gray-700 bg-white border border-gray-200 rounded-full px-3 py-1">
-                          {day}
-                        </span>
-                      )}
-                    </div>
-                    <a
-                      href={reshare.journal_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-blue-600 hover:underline break-all"
-                    >
-                      {reshare.journal_url}
-                    </a>
-                    <p className="text-xs text-gray-500 mt-2">
-                      {(reshare.posts || []).map((p) => p.platform).join(', ')}
-                    </p>
                   </div>
+                  {day ? <span className="shrink-0 text-xs font-semibold text-gray-700 bg-gray-50 border border-gray-200 rounded-full px-3 py-1">{day}</span> : null}
+                </div>
+
+                {reshare.brief ? (
+                  <div className="rounded-xl bg-amber-50 border border-amber-200 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-800 mb-1">Why this one</p>
+                    <p className="text-sm text-gray-900 leading-relaxed">{reshare.brief}</p>
+                  </div>
+                ) : null}
+
+                {reshare.pull_quote ? (
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 mb-1">Pull quote on the image</p>
+                    <p className="text-sm text-gray-900 italic">&ldquo;{reshare.pull_quote}&rdquo;</p>
+                  </div>
+                ) : null}
+
+                <div className="space-y-3">
+                  {posts.map((post) => (
+                    <div key={post.key} className="rounded-xl border border-gray-100 bg-gray-50 p-3">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 mb-1">{post.label}</p>
+                      <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">{post.caption}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  {actionResult[reshare.slug] ? (
+                    <p className={`text-sm font-medium ${actionResult[reshare.slug].ok ? 'text-green-700' : 'text-red-700'}`}>{actionResult[reshare.slug].message}</p>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => runAction(reshare.slug, 'approve')}
+                        disabled={!!actionLoading[reshare.slug]}
+                        className="min-h-[44px] px-5 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700 disabled:opacity-50"
+                      >
+                        {actionLoading[reshare.slug] === 'approve' ? 'Approving…' : 'Approve'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => runAction(reshare.slug, 'discard')}
+                        disabled={!!actionLoading[reshare.slug]}
+                        className="min-h-[44px] px-4 border border-gray-200 bg-white text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                      >
+                        {actionLoading[reshare.slug] === 'discard' ? 'Discarding…' : 'Discard'}
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
-
-              <div className="px-4 py-3">
-                <button
-                  type="button"
-                  onClick={() => setExpanded((prev) => ({ ...prev, [reshare.slug]: !isOpen }))}
-                  className="text-xs font-medium text-gray-600 hover:text-gray-900"
-                >
-                  {isOpen ? 'Hide the posts' : `Read the ${reshare.posts?.length || 0} posts`}
-                </button>
-
-                {isOpen && (
-                  <div className="mt-3 space-y-3">
-                    {(reshare.posts || []).map((post) => (
-                      <div key={post.id}>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">
-                          {post.platform}
-                          {post.image_url ? '' : ' (no image)'}
-                        </p>
-                        <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">{post.caption}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="px-4 py-3 border-t border-gray-100 flex items-center gap-3">
-                {actionResult[reshare.slug] ? (
-                  <p
-                    className={`text-xs font-medium ${
-                      actionResult[reshare.slug].ok ? 'text-green-700' : 'text-red-700'
-                    }`}
-                  >
-                    {actionResult[reshare.slug].message}
-                  </p>
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => runAction(reshare.slug, 'approve')}
-                      disabled={!!actionLoading[reshare.slug]}
-                      className="px-4 py-2 bg-gray-900 text-white text-xs font-semibold rounded-lg hover:bg-gray-700 disabled:opacity-50"
-                    >
-                      {actionLoading[reshare.slug] === 'approve' ? 'Approving…' : 'Approve'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => runAction(reshare.slug, 'discard')}
-                      disabled={!!actionLoading[reshare.slug]}
-                      className="px-4 py-2 border border-gray-200 bg-white text-gray-700 text-xs font-semibold rounded-lg hover:bg-gray-50 disabled:opacity-50"
-                    >
-                      {actionLoading[reshare.slug] === 'discard' ? 'Discarding…' : 'Discard'}
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
+            </article>
           );
         })}
       </div>
     </section>
   );
+}
+
+const CHANNEL_ORDER = ['linkedin', 'instagram', 'facebook', 'twitter'];
+const CHANNEL_NAME = { linkedin: 'LinkedIn', instagram: 'Instagram', facebook: 'Facebook', twitter: 'X' };
+
+/** One block per distinct caption; the two Instagram accounts share one, so they show once. */
+function groupCaptions(posts) {
+  const out = [];
+  const seen = new Map();
+  const sorted = posts.slice().sort((a, b) => CHANNEL_ORDER.indexOf(a.platform) - CHANNEL_ORDER.indexOf(b.platform));
+  for (const p of sorted) {
+    const key = `${p.platform}:${p.caption}`;
+    const name = CHANNEL_NAME[p.platform] || p.platform;
+    if (seen.has(key)) {
+      const entry = out[seen.get(key)];
+      if (p.platform === 'instagram') entry.label = 'Instagram (both accounts)';
+      continue;
+    }
+    seen.set(key, out.length);
+    out.push({ key, label: name, caption: p.caption });
+  }
+  return out;
 }

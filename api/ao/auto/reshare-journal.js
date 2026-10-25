@@ -20,6 +20,7 @@ import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 import { RESHARE_DAYS, nextReshareDay } from '../../../lib/ao/postingCadence.js';
 import { pickBackground, backgroundFile } from '../../../lib/ao/reshareBackgrounds.js';
 import { composeReshareOnBackground } from '../../../lib/ao/generateReshareCardImage.js';
+import { writeReshareBrief } from '../../../lib/ao/reshareBrief.js';
 import {
   enforceVoiceGuardrails,
   enforceVoiceGuardrailsDeep,
@@ -860,6 +861,14 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
     };
   }
 
+  // Two sentences for Bart on why this one is worth resharing, shown in the Queue.
+  let brief = null;
+  try {
+    brief = await writeReshareBrief({ title, pullQuote, selectionReason, caption: captions.linkedin_personal });
+  } catch (err) {
+    console.warn('[reshare-journal] brief not written:', err?.message || err);
+  }
+
   let autoApprove = false;
   let scheduleDay = null;
   if (!forcePendingReview) {
@@ -912,6 +921,7 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
         reshare: true,
         selection_reason: selectionReason,
         pull_quote: pullQuote || null,
+        brief: brief || null,
         mood: mood || null,
         photo: generatedImage?.photo || null,
         photo_url: generatedImage?.photo_url || null,

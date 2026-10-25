@@ -223,7 +223,10 @@ const TABS = [
 export default function ReviewQueue() {
   const [email, setEmail] = useState('');
   const [authChecked, setAuthChecked] = useState(false);
-  const [activeTab, setActiveTab] = useState('corpus');
+  // Folded away until Bart opens a tab (2026-10-24: "This is too much and not
+  // all that helpful."). The reshares, infographics and quote cards above are
+  // what he reviews week to week.
+  const [activeTab, setActiveTab] = useState(null);
   const [quotes, setQuotes] = useState([]);
   const [quotesPage, setQuotesPage] = useState({ status: 'pending', limit: 10, offset: 0, total: null });
   const [pageSize, setPageSize] = useState(10);
@@ -825,12 +828,9 @@ export default function ReviewQueue() {
 
         <div className="mb-2">
           <h2 className="text-xl font-bold text-gray-900">
-            {activeTab === 'corpus'
-              ? 'Corpus drafts'
-              : activeTab === 'held'
-                ? 'Held'
-                : 'Profiles'}
+            {!activeTab ? 'Other drafts' : activeTab === 'corpus' ? 'Corpus drafts' : activeTab === 'held' ? 'Held' : 'Profiles'}
           </h2>
+          {!activeTab ? <p className="text-gray-600 mt-1 text-sm">Folded away. Tap one to open it.</p> : null}
           {activeTab === 'corpus' ? (
             <p className="text-gray-600 mt-1 text-sm">
               Rapid Write and other corpus queue items. Generate a <strong>hero image</strong> (16:9, no text in the frame), then approve it before publishing so it can flow into the journal file.
@@ -854,7 +854,7 @@ export default function ReviewQueue() {
               <button
                 key={key}
                 type="button"
-                onClick={() => setActiveTab(key)}
+                onClick={() => setActiveTab((cur) => (cur === key ? null : key))}
                 className={[
                   'shrink-0 px-3 py-2 text-sm font-medium rounded-full border',
                   'min-h-[44px]',
