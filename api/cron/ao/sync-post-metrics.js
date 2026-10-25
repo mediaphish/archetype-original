@@ -77,11 +77,31 @@ export async function fetchFacebookPostMetrics(postId, pageToken) {
       /* ignore */
     }
 
+    // Views. This was hard-coded to 0, so every Facebook post read as unseen.
+    // Meta retired post_impressions; post_media_view is the current count and
+    // works with the page token we already hold. Best-effort like shares.
+    let impressions = 0;
+    let clicks = 0;
+    try {
+      const insightsUrl = `${GRAPH_BASE}/${postId}/insights?metric=post_media_view,post_clicks&access_token=${pageToken}`;
+      const insRes = await fetch(insightsUrl);
+      const insJson = await insRes.json().catch(() => ({}));
+      if (insRes.ok && !insJson.error) {
+        for (const m of insJson.data || []) {
+          const v = Number(m?.values?.[0]?.value) || 0;
+          if (m.name === 'post_media_view') impressions = v;
+          if (m.name === 'post_clicks') clicks = v;
+        }
+      }
+    } catch (_) {
+      /* ignore */
+    }
+
     return {
       ok: true,
       metrics: {
-        impressions: 0,
-        clicks: 0,
+        impressions,
+        clicks,
         reactions: json.likes?.summary?.total_count || 0,
         comments: json.comments?.summary?.total_count || 0,
         shares,

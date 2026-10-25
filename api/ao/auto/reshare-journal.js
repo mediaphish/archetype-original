@@ -677,7 +677,8 @@ async function resolveScheduleDayIfAutoApprove() {
       if (!RESHARE_DAYS.includes(candidate.getDay())) continue;
       const { data: existing } = await scheduledPosts()
         .select('id')
-        .eq('source_kind', 'ao_journal_reshare')
+        // A day that already has a reshare or a journal entry launching is taken.
+        .in('source_kind', ['ao_journal_reshare', 'journal_launch'])
         .in('status', ['scheduled', 'pending_review'])
         .gte('scheduled_at', `${ymd}T00:00:00Z`)
         .lt('scheduled_at', `${ymd}T23:59:59Z`)
@@ -937,6 +938,7 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
 
   const insertResult = await insertScheduledPostsSafely(rows, {
     select: 'id, platform, scheduled_at, status',
+    spread: true,
   });
 
   if (!insertResult.ok) {

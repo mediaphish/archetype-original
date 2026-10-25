@@ -16,7 +16,7 @@ import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 import { RESHARE_DAYS } from '../../../lib/ao/postingCadence.js';
-import { scheduledPosts, updateById } from '../../../lib/db/scheduledPosts.js';
+import { scheduledPosts, updateById, spreadAgainstCalendar } from '../../../lib/db/scheduledPosts.js';
 import { writeReshareBrief } from '../../../lib/ao/reshareBrief.js';
 
 /**
@@ -85,7 +85,8 @@ async function findBestReshareDay() {
 
     const { data: existing } = await scheduledPosts()
       .select('id')
-      .eq('source_kind', 'ao_journal_reshare')
+      // A day that already has a reshare or a journal entry launching is taken.
+      .in('source_kind', ['ao_journal_reshare', 'journal_launch'])
       .in('status', ['scheduled', 'pending_review'])
       .gte('scheduled_at', `${ymd}T00:00:00Z`)
       .lt('scheduled_at', `${ymd}T23:59:59Z`)
@@ -96,8 +97,8 @@ async function findBestReshareDay() {
     }
   }
 
-  // Nothing free in the next week: fall forward to the next Monday, Wednesday or
-  // Friday rather than to tomorrow, which could be a Saturday.
+  // Nothing free in the next week: fall forward to the next weekday rather than
+  // to tomorrow, which could be a Saturday.
   const fallback = new Date(today);
   do {
     fallback.setDate(fallback.getDate() + 1);
@@ -191,21 +192,37 @@ export async function approveOrDiscardReshare(action, slug) {
     const scheduleDay = await findBestReshareDay();
     const keepFloor = Date.now() + 60 * 60 * 1000;
 
-    const updates = [];
+    const planned = [];
     for (const row of pendingRows) {
       const existing = row.scheduled_at ? new Date(row.scheduled_at).getTime() : NaN;
       const keepExisting = Number.isFinite(existing) && existing > keepFloor;
-      const scheduledAt = keepExisting
-        ? new Date(existing).toISOString()
-        : await toScheduledAt(scheduleDay, row.platform);
+      planned.push({
+        id: row.id,
+        platform: row.platform,
+        account_id: row.account_id,
+        source_kind: 'ao_journal_reshare',
+        keep: keepExisting,
+        scheduled_at: keepExisting
+          ? new Date(existing).toISOString()
+          : await toScheduledAt(scheduleDay, row.platform),
+      });
+    }
+    // Rows that got this week's day are spaced from what is already on each
+    // account, so a reshare does not land on top of another post.
+    const toSpace = planned.filter((p) => !p.keep);
+    const spaced = toSpace.length ? await spreadAgainstCalendar(toSpace) : [];
+    const spacedById = new Map(spaced.map((p) => [p.id, p.scheduled_at]));
+
+    const updates = [];
+    for (const p of planned) {
       updates.push(
         scheduledPosts()
           .update({
             status: 'scheduled',
-            scheduled_at: scheduledAt,
+            scheduled_at: spacedById.get(p.id) || p.scheduled_at,
             updated_at: new Date().toISOString(),
           })
-          .eq('id', row.id)
+          .eq('id', p.id)
       );
     }
 
