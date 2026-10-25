@@ -2337,11 +2337,15 @@ export default function AutoV2Panel({ onNavigate, className,
     // Only fire if the user's current message contains a transcript or explicitly
     // asks to process an episode. Do not fire based on old signals in thread history.
     const currentUserMessage = String(lastUser?.content || '').trim();
+    // A long message is not a transcript: on 2026-10-24 a pasted journal series
+    // brief was processed as a podcast episode because it ran past 500
+    // characters. Only an explicit transcript or an explicit ask counts.
     const isEpisodeRequest =
       /\[EPISODE_TRANSCRIPT\]/i.test(currentUserMessage) ||
       /process.{0,20}episode/i.test(currentUserMessage) ||
       /episode.{0,20}transcript/i.test(currentUserMessage) ||
-      currentUserMessage.length > 500; // Pasted transcript
+      /riverside/i.test(currentUserMessage) ||
+      /\[Attached file:|--- Attached file:/i.test(currentUserMessage); // an uploaded transcript file
 
     if (!isEpisodeRequest) return;
 
