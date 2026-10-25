@@ -20,15 +20,13 @@ integration waits for this review.
 
 ### Apps (tabled by Bart 2026-10-24, "I'm not agreeing with you")
 Clients' Archy as an app and the Auto dashboard as an app on his devices.
-Bart wants to discuss before any direction is chosen. Private Archy per
-client and phone notifications wait with this.
+Bart wants to discuss before any direction is chosen. Phone notifications
+wait with this. (Private Archy per client was built 2026-10-24 as a web page.)
 
 ### Client CRM, next pieces (planned 2026-10-23)
-- Transcripts arriving on their own: Zoom transcripts or Calendly Notetaker
-  could send them to Auto after each call instead of pasting/uploading.
-- Private Archy per client, with the searchable log and weekly accountability
-  review. Only for clients who said yes; their conversations never touch the
-  public corpus. Tiers decide how fast Bart answers what Archy hands him.
+- Watch the first real Zoom call: the transcript should arrive on its own
+  (Zoom app "Archetype Original Auto transcripts", webhook /api/zoom/webhook).
+  Not yet seen with a real recording.
 - Tiers (rising leaders / season / ongoing): access levels, from the
   2026-10-23 brainstorm table.
 - Test rows to remove when Bart is done looking: "Jordan Test" and "Riley Test"
@@ -63,6 +61,8 @@ a week with captions."
 - Site visitor stats are off (needs Bart's OK to turn on).
 
 ## Done
+- 2026-10-24 Transcripts arrive on their own: Zoom cloud recordings by webhook; Wispr Flow and Echo emailed to bart+transcripts@archetypeoriginal.com (picked up by the Gmail sync script). Unmatched ones wait in "Transcripts to match" on Clients.
+- 2026-10-24 Private Archy per client (/archy/you, signed link sent from the Archy tab in Auto). Uses their conversations with Bart, never his private notes. Hand-offs to Bart: ongoing within a day, season two days, rising leaders five. Log and answers in Auto; Archy use in the Monday summary. Test messages are in Jordan Test's Archy.
 - 2026-10-24 Client email on the timeline: Apps Script "Archetype Original client email sync" in Bart's Google account (script.google.com, code in notes/gmail-sync/), read-only, every 15 minutes, only client addresses. A reply holds the next check-in due within 7 days and emails Bart.
 - 2026-10-24 Links to Bart's writing beside his own action items; suggested next moves on Clients home and each person; Monday summary email (skipped until there are real clients).
 - 2026-10-24 Email records: one SPF record (Google + Resend), duplicate removed by Bart.
