@@ -8,6 +8,7 @@
  * 2026-07-24-auto-v1-and-broken-journal), rename this file aside, and put the backup in place as chat.js.
  */
 
+import { normalizeAgent } from '../../../lib/ao/team/agents.js';
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { shouldSavePastedPost } from '../../../lib/ao/pastedPostGate.js';
 import { signalsImageDiscussion } from '../../../lib/ao/imageDiscussionSignal.js';
@@ -1204,16 +1205,6 @@ export default async function handler(req, res) {
   res.setHeader('X-Accel-Buffering', 'no');
   res.flushHeaders();
 
-  // Heartbeat: keeps real bytes flowing to the client during any long silent
-  // gap, so nothing between Vercel and the browser treats the connection as
-  // idle. Declared here rather than further down because the abort listener
-  // below needs to clear it.
-  //
-  // It used to start only after model token streaming finished, which protected
-  // post-processing and left the model turn itself completely unguarded. See the
-  // comment at the start call for why that was the actual bug.
-  let heartbeatTimer = null;
-
   // The client aborts after 90 seconds of silence, and when it does the server
   // never finds out. It kept running to its own 270 second budget and kept
   // writing to the database, so a user who retried briefly had two overlapping
@@ -1232,11 +1223,52 @@ export default async function handler(req, res) {
 
   req.on('close', () => {
     clientGone = true;
-    if (heartbeatTimer) {
-      clearInterval(heartbeatTimer);
-      heartbeatTimer = null;
-    }
   });
+
+  await runChatTurn({
+    email: auth.email,
+    body: req.body || {},
+    sendEvent,
+    end: () => {
+      try {
+        res.end();
+      } catch (_) {
+        // Already closed
+      }
+    },
+    isClientGone: () => clientGone,
+  });
+}
+
+/**
+ * One full Auto turn: save Bart's message, run the model with every tool, apply
+ * every check, save the reply. The chat screen calls it through the handler
+ * above; background team tasks call it directly (lib/ao/team/runTask.js), so a
+ * task gets exactly the same Auto, not a lighter copy.
+ *
+ * Bart, 2026-10-25, on background work: "I desperately need this." Leaving
+ * the chat no longer throws the reply away; it is finished and saved.
+ *
+ * @param {{
+ *   email: string,
+ *   body: { message: string, thread_id?: string, attachments?: object[], agent?: string },
+ *   sendEvent: (event: string, data: object) => void,
+ *   end?: () => void,
+ *   isClientGone?: () => boolean,
+ * }} turn
+ */
+export async function runChatTurn({ email, body = {}, sendEvent, end = () => {}, isClientGone = () => false }) {
+  const auth = { email };
+  const turnStartedAt = Date.now();
+  // Heartbeat: keeps real bytes flowing to the client during any long silent
+  // gap, so nothing between Vercel and the browser treats the connection as
+  // idle. Declared here rather than further down because the abort listener
+  // below needs to clear it.
+  //
+  // It used to start only after model token streaming finished, which protected
+  // post-processing and left the model turn itself completely unguarded. See the
+  // comment at the start call for why that was the actual bug.
+  let heartbeatTimer = null;
 
   /**
    * End the response with an error, clearing the heartbeat first.
@@ -1253,14 +1285,14 @@ export default async function handler(req, res) {
       heartbeatTimer = null;
     }
     sendEvent('error', { ok: false, error });
-    res.end();
+    end();
   };
 
-  const { message, thread_id, attachments } = req.body || {};
+  const { message, thread_id, attachments, agent: requestedAgent, task_id: taskId = null } = body || {};
 
   if (!String(message || '').trim()) {
     sendEvent('error', { ok: false, error: 'message required' });
-    res.end();
+    end();
     return;
   }
 
@@ -1268,6 +1300,8 @@ export default async function handler(req, res) {
 
   try {
     const thread = await ensureAutoThread(auth.email, thread_id || '');
+    // Who on the team is speaking in this conversation: Auto, Jot or Reach.
+    const agent = normalizeAgent(requestedAgent || thread?.state?.agent);
 
     // Persist user message immediately — before any model call.
     // If runAutoChat times out or fails, the message is already in the database
@@ -1278,7 +1312,9 @@ export default async function handler(req, res) {
       role: 'user',
       mode: 'plan',
       content: userMessage,
-      meta: { auto_v2: true },
+      // A team task's assignment carries meta.team_task so the screen shows it
+      // as a note from the team, not as something Bart typed.
+      meta: { auto_v2: true, ...(body?.message_meta && typeof body.message_meta === 'object' ? body.message_meta : {}) },
     });
 
     const prior = await getAutoThreadState(auth.email, thread.id);
@@ -1493,6 +1529,10 @@ export default async function handler(req, res) {
       userMessage,
       chatAttachedImageUrlsThisTurn,
       chatAttachedImageUrlsPrior,
+      agent,
+      // A conversation that belongs to a task reports on it, also when Bart is
+      // the one talking in it.
+      taskId: taskId || thread?.state?.task_id || null,
     };
 
     async function runDirectImageIfNeeded() {
@@ -1643,13 +1683,12 @@ export default async function handler(req, res) {
     // If the client aborted while the model was working, stop before the writes.
     // Continuing would keep mutating drafts for a browser that is gone, and the
     // user's retry would race those writes.
-    if (clientGone) {
-      if (heartbeatTimer) {
-        clearInterval(heartbeatTimer);
-        heartbeatTimer = null;
-      }
-      console.warn('[chat.js] client disconnected during model turn; skipping post-stream processing');
-      return;
+    // If Bart left while the model was working, finish anyway and save the
+    // reply so it is waiting when he comes back. The chat screen no longer
+    // offers an instant retry when it loses the stream; it waits for this save
+    // instead, so a retry cannot race these writes.
+    if (isClientGone()) {
+      console.warn('[chat.js] client left during the model turn; finishing and saving the reply');
     }
 
     // Action-claim gate: do not wipe a real streamed reply.
@@ -2821,6 +2860,7 @@ ${retrievedBlock}
       content: fullReply,
       meta: {
         auto_v2: true,
+        agent,
         ...reshareMeta,
         tools_used: Array.isArray(streamResult?.toolsUsed) ? streamResult.toolsUsed : [],
         tool_results: sanitizeToolResultsForMeta(
@@ -2920,6 +2960,22 @@ ${retrievedBlock}
       }
     }
 
+    // Bart answered a teammate's question in the task's own conversation: put
+    // the task back to work, unless the teammate already reported this turn.
+    if (!taskId && thread?.state?.task_id) {
+      try {
+        const { getTask, updateTask } = await import('../../../lib/ao/team/tasks.js');
+        const open = await getTask(thread.state.task_id);
+        if (open && open.status === 'needs_bart' && Date.parse(open.updated_at) < turnStartedAt) {
+          await updateTask(open.id, { status: 'queued', question: null, last_note: 'Bart answered in the conversation.' });
+          const { kickTask } = await import('../../../lib/ao/team/runTask.js');
+          await kickTask(open.id);
+        }
+      } catch (err) {
+        console.warn('[chat.js] could not resume the task after Bart answered:', err?.message || err);
+      }
+    }
+
     const finalState = await getAutoThreadState(auth.email, thread.id);
 
     if (heartbeatTimer) {
@@ -2939,7 +2995,7 @@ ${retrievedBlock}
       idea_id: null,
       action_log_id: null,
     });
-    res.end();
+    end();
     return;
   } catch (err) {
     if (heartbeatTimer) {
@@ -2953,7 +3009,7 @@ ${retrievedBlock}
         error: err?.message || 'Server error',
         persisted_user_message: userMessage,
       });
-      res.end();
+      end();
     } catch (_) {
       // Headers already sent or client disconnected
     }

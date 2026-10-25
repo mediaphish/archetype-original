@@ -18,6 +18,7 @@ import { createPortal } from 'react-dom';
 import { createSwipeHandlers } from '../../../lib/ao/touchGestures.js';
 import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import EpisodeDraftReview from './EpisodeDraftReview.jsx';
+import TeamBoard from './TeamBoard.jsx';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
 import StagedJournalPanel from './StagedJournalPanel.jsx';
 import { resolveDraftArtifactSlug } from './draftArtifactSlug.js';
@@ -470,9 +471,33 @@ function TypingIndicator({ label = null }) {
   );
 }
 
+const TEAM_NAMES = { auto: 'Auto', jot: 'Jot', reach: 'Reach' };
+
+/** A background task's assignment or pass, shown as a team note rather than as Bart's words. */
+function TeamTaskNote({ message }) {
+  const [open, setOpen] = useState(false);
+  const text = String(message.content || '');
+  const firstLine = text.split('\n')[0].replace(/^\[TEAM TASK[^\]]*\]\s*/, '');
+  const isAssignment = /^\[TEAM TASK from /.test(text);
+  return (
+    <div className="flex justify-center">
+      <div className="max-w-[85%] w-full rounded-xl border border-dashed border-gray-300 bg-white px-3 py-2 text-xs text-gray-600">
+        <button type="button" onClick={() => setOpen((v) => !v)} className="w-full text-left">
+          <span className="font-semibold text-gray-700">{isAssignment ? 'Assignment' : 'Background pass'}</span>
+          {message.meta?.pass > 1 ? ` · pass ${message.meta.pass}` : ''} · {firstLine.slice(0, 140)}
+          <span className="text-gray-400"> {open ? 'Hide' : 'Show'}</span>
+        </button>
+        {open ? <div className="mt-2 whitespace-pre-wrap text-gray-700">{text}</div> : null}
+      </div>
+    </div>
+  );
+}
+
 function MessageBubble({ message }) {
   const isUser = message.role === 'user';
   const raw = String(message.content || '');
+  const agentKey = !isUser && message.meta?.agent && message.meta.agent !== 'auto' ? message.meta.agent : null;
+  if (isUser && message.meta?.team_task) return <TeamTaskNote message={message} />;
   const withoutImages = stripGeneratedImageBlocksFromChat(raw);
   const { cleanText } = parseArtifact(withoutImages);
   const text = cleanText || withoutImages;
@@ -493,9 +518,10 @@ function MessageBubble({ message }) {
         style={{ userSelect: 'none' }}
         aria-hidden="true"
       >
-        {isUser ? 'B' : <AOMark className="w-3.5 h-3.5" />}
+        {isUser ? 'B' : agentKey ? (TEAM_NAMES[agentKey] || 'A').charAt(0) : <AOMark className="w-3.5 h-3.5" />}
       </div>
       <div
+        data-quotable={isUser ? undefined : '1'}
         className={`
           max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap
           ${isUser
@@ -1071,7 +1097,7 @@ function ArtifactPanel({
   const stagedJournalSlug = resolveDraftArtifactSlug(artifact);
   const stagedJournal = Boolean(stagedJournalSlug);
   return (
-    <div className="flex h-full min-h-0 min-w-0 w-full flex-shrink-0 flex-col border-l border-gray-200 bg-gray-50">
+    <div data-quotable="1" className="flex h-full min-h-0 min-w-0 w-full flex-shrink-0 flex-col border-l border-gray-200 bg-gray-50">
       <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between gap-2">
         <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide truncate pr-2">
           {hasCards && (artifact?.type === 'captions' || artifact?.type === 'list')
@@ -1525,6 +1551,8 @@ function ThreadSidebar({
   activeThreadId,
   onSelectThread,
   onNewThread,
+  onNewAgentThread,
+  onOpenTeam,
   onRefresh,
   className = '',
   showHeader = true,
@@ -1769,6 +1797,33 @@ function ThreadSidebar({
             <PlusIcon />
             New conversation
           </button>
+          {onNewAgentThread ? (
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => onNewAgentThread('jot')}
+                className="py-1.5 px-2 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+              >
+                Talk to Jot
+              </button>
+              <button
+                type="button"
+                onClick={() => onNewAgentThread('reach')}
+                className="py-1.5 px-2 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+              >
+                Talk to Reach
+              </button>
+            </div>
+          ) : null}
+          {onOpenTeam ? (
+            <button
+              type="button"
+              onClick={onOpenTeam}
+              className="mt-2 w-full py-2 px-3 text-xs font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-700"
+            >
+              Team
+            </button>
+          ) : null}
         </div>
       )}
 
@@ -1842,6 +1897,9 @@ export default function AutoV2Panel({ onNavigate, className,
   const [threads, setThreads] = useState([]);
   const [archivedThreads, setArchivedThreads] = useState([]);
   const [activeThreadId, setActiveThreadId] = useState(null);
+  useEffect(() => {
+    activeThreadIdRef.current = activeThreadId;
+  }, [activeThreadId]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [imageGenerating, setImageGenerating] = useState(false);
@@ -1901,6 +1959,14 @@ export default function AutoV2Panel({ onNavigate, className,
   const clearedAt = useRef(null);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
+  // Auto's team (2026-10-25): the team board, a reply that is still being
+  // finished on the server after the screen lost the stream, and a passage
+  // Bart highlighted to reply to.
+  const [teamOpen, setTeamOpen] = useState(false);
+  const [waitingNote, setWaitingNote] = useState('');
+  const [quoteCandidate, setQuoteCandidate] = useState('');
+  const activeThreadIdRef = useRef(null);
+  const quoteClearTimer = useRef(null);
   const fileInputRef = useRef(null);
   const imageUploadInputRef = useRef(null);
   const [uploadingHeaderImage, setUploadingHeaderImage] = useState(false);
@@ -2809,12 +2875,17 @@ export default function AutoV2Panel({ onNavigate, className,
     [loadThread]
   );
 
-  const startNewThread = useCallback(async () => {
+  const startNewThread = useCallback(async (agentArg) => {
     if (startingNew || sending || loading) return;
+    const agent = typeof agentArg === 'string' ? agentArg : null;
+    const who = agent === 'jot' ? 'Jot' : agent === 'reach' ? 'Reach' : null;
     const ok = window.confirm(
-      'Start a new conversation? This chat will be set aside (not deleted). You will see an empty thread so you can begin fresh.'
+      who
+        ? `Start a conversation with ${who}? This chat will be set aside (not deleted).`
+        : 'Start a new conversation? This chat will be set aside (not deleted). You will see an empty thread so you can begin fresh.'
     );
     if (!ok) return;
+    setTeamOpen(false);
     setStartingNew(true);
     setError('');
     setArtifact(null);
@@ -2835,7 +2906,11 @@ export default function AutoV2Panel({ onNavigate, className,
     processedJournalPublishKeys.current = new Set();
     processedDevotionalPublishKeys.current = new Set();
     try {
-      const res = await fetch('/api/ao/auto/thread/new', { method: 'POST' });
+      const res = await fetch('/api/ao/auto/thread/new', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(agent ? { agent } : {}),
+      });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || 'Could not start a new chat');
       setInput('');
@@ -2913,6 +2988,88 @@ export default function AutoV2Panel({ onNavigate, className,
 
     return body || '';
   }
+
+  const waitForSavedReply = useCallback(
+    async (threadId, sentAtMs, outgoingText) => {
+      setWaitingNote('Still working on this. The reply will show up here when it is done, and you can switch to another chat in the meantime.');
+      const deadline = Date.now() + 6 * 60 * 1000;
+      while (Date.now() < deadline) {
+        await new Promise((r) => setTimeout(r, 10000));
+        try {
+          const url = threadId ? `/api/ao/auto/session?thread_id=${encodeURIComponent(threadId)}` : '/api/ao/auto/session';
+          const res = await fetch(url);
+          const json = await res.json().catch(() => ({}));
+          const msgs = Array.isArray(json.messages) ? json.messages : [];
+          const last = msgs[msgs.length - 1];
+          if (res.ok && last && last.role === 'assistant' && Date.parse(last.created_at || 0) >= sentAtMs - 2000) {
+            if (!threadId || activeThreadIdRef.current === threadId || activeThreadIdRef.current === json.thread?.id) {
+              setMessages(msgs);
+              syncArtifactFromMessages(msgs);
+            }
+            setWaitingNote('');
+            return;
+          }
+        } catch (_) {
+          // Keep waiting
+        }
+      }
+      setWaitingNote('');
+      setError('The reply has not arrived after six minutes. Your message was saved. Tap Retry to send it again.');
+      setInput(outgoingText || '');
+    },
+    [syncArtifactFromMessages]
+  );
+
+  // Highlight a passage in a reply or a draft, then tap "Reply to highlighted".
+  useEffect(() => {
+    const onSelectionChange = () => {
+      const sel = typeof window !== 'undefined' && window.getSelection ? window.getSelection() : null;
+      const text = sel ? String(sel.toString() || '').trim() : '';
+      const node = sel?.anchorNode;
+      const el = node ? (node.nodeType === 1 ? node : node.parentElement) : null;
+      if (text && el?.closest && el.closest('[data-quotable="1"]')) {
+        if (quoteClearTimer.current) clearTimeout(quoteClearTimer.current);
+        setQuoteCandidate(text.slice(0, 4000));
+      } else if (!text) {
+        // Tapping the button clears the selection first, so keep the passage a moment.
+        if (quoteClearTimer.current) clearTimeout(quoteClearTimer.current);
+        quoteClearTimer.current = setTimeout(() => setQuoteCandidate(''), 6000);
+      }
+    };
+    document.addEventListener('selectionchange', onSelectionChange);
+    return () => document.removeEventListener('selectionchange', onSelectionChange);
+  }, []);
+
+  // Who this conversation is with: the last teammate who answered in it.
+  const activeAgent = useMemo(() => {
+    for (let i = messages.length - 1; i >= 0; i -= 1) {
+      const m = messages[i];
+      if (m?.role === 'assistant' && m.meta?.agent) return m.meta.agent;
+    }
+    return 'auto';
+  }, [messages]);
+
+  const replyToHighlighted = useCallback(() => {
+    if (!quoteCandidate) return;
+    const quoted = quoteCandidate
+      .split('\n')
+      .map((l) => `> ${l}`)
+      .join('\n');
+    setInput((prev) => `${prev && prev.trim() ? `${prev.replace(/\s*$/, '')}\n\n` : ''}${quoted}\n\n`);
+    setQuoteCandidate('');
+    try {
+      window.getSelection()?.removeAllRanges();
+    } catch (_) {}
+    setTimeout(() => {
+      const ta = textareaRef.current;
+      if (ta) {
+        ta.focus();
+        ta.style.height = 'auto';
+        ta.style.height = `${Math.min(ta.scrollHeight, 160)}px`;
+        ta.selectionStart = ta.selectionEnd = ta.value.length;
+      }
+    }, 0);
+  }, [quoteCandidate]);
 
   const sendMessage = useCallback(
     async (messageText) => {
@@ -3205,6 +3362,14 @@ export default function AutoV2Panel({ onNavigate, className,
         // The user's message may already be in the database (persisted before the
         // model call). Show an error with a Retry button. Never make the user retype.
         const aborted = e?.name === 'AbortError' || /aborted/i.test(String(e?.message || ''));
+        // The server now finishes and saves the reply even when the screen
+        // loses the stream, so wait for it rather than asking Bart to retry.
+        if (aborted) {
+          const sentAtMs = Number(String(optimisticMsg.id).replace('opt-', '')) || Date.now();
+          setMessages((prev) => prev.filter((m) => !String(m.id || '').startsWith('streaming-')));
+          waitForSavedReply(activeThreadIdRef.current, sentAtMs, outgoing);
+          return;
+        }
         // Two different failures used to share one message, which is why this
         // read as intermittent for weeks. A stall means something is stuck; the
         // hard cap means Auto was genuinely still working and ran out of budget.
@@ -3230,7 +3395,7 @@ export default function AutoV2Panel({ onNavigate, className,
         setImageGenerating(false);
       }
     },
-    [input, sending, activeThreadId, pendingFiles, loadThreadList, syncArtifactFromMessages, isMobile]
+    [input, sending, activeThreadId, pendingFiles, loadThreadList, syncArtifactFromMessages, isMobile, waitForSavedReply]
   );
 
   const handleKeyDown = useCallback(
@@ -3675,6 +3840,24 @@ export default function AutoV2Panel({ onNavigate, className,
             New chat
           </button>
           {[
+            { key: 'team', label: 'Team', run: () => setTeamOpen(true) },
+            { key: 'jot', label: 'Talk to Jot', run: () => startNewThread('jot') },
+            { key: 'reach', label: 'Talk to Reach', run: () => startNewThread('reach') },
+          ].map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              disabled={startingNew || sending || loading}
+              onClick={() => {
+                setMobileMenuOpen(false);
+                item.run();
+              }}
+              className="block w-full rounded-xl px-4 py-3.5 text-left text-[15px] text-gray-800 hover:bg-gray-50 disabled:opacity-40"
+            >
+              {item.label}
+            </button>
+          ))}
+          {[
             { key: 'transcript', label: 'Download transcript', disabled: visibleChatMessages.length === 0, run: () => downloadTranscriptAsMd(messages, activeThreadId) },
             { key: 'publish', label: generatedImages?.length ? `Publish ${generatedImages.length} cards` : 'Publish cards', disabled: !generatedImages?.length, run: () => publishCards() },
             { key: 'library', label: 'Library', run: () => onNavigate?.('/ao/library') },
@@ -3735,6 +3918,8 @@ export default function AutoV2Panel({ onNavigate, className,
           activeThreadId={activeThreadId}
           onSelectThread={loadThread}
           onNewThread={startNewThread}
+          onNewAgentThread={(a) => startNewThread(a)}
+          onOpenTeam={() => setTeamOpen(true)}
           onRefresh={loadThreadList}
           className="w-56 flex-shrink-0 border-r border-gray-200"
         />
@@ -3922,6 +4107,8 @@ export default function AutoV2Panel({ onNavigate, className,
 
           {sending && !imageGenerating && <TypingIndicator />}
 
+          {waitingNote && !sending ? <TypingIndicator label={waitingNote} /> : null}
+
           {imageGenerating && (
             <TypingIndicator label="Generating your image — this may take a moment…" />
           )}
@@ -3997,6 +4184,22 @@ export default function AutoV2Panel({ onNavigate, className,
           }}
           {...(isMobile ? composerSwipe : {})}
         >
+          {quoteCandidate ? (
+            <div className="mb-2 flex items-center gap-2">
+              <button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={replyToHighlighted}
+                className="flex-1 min-w-0 text-left text-xs bg-amber-50 border border-amber-200 text-amber-900 rounded-lg px-3 py-2"
+              >
+                <span className="font-semibold">Reply to highlighted:</span>{' '}
+                <span className="italic">“{quoteCandidate.length > 90 ? `${quoteCandidate.slice(0, 90)}…` : quoteCandidate}”</span>
+              </button>
+              <button type="button" onClick={() => setQuoteCandidate('')} className="text-xs text-gray-400 px-2" aria-label="Dismiss">
+                ×
+              </button>
+            </div>
+          ) : null}
           <div className="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 focus-within:border-gray-400 focus-within:bg-white transition-colors">
 
             <button
@@ -4049,7 +4252,7 @@ export default function AutoV2Panel({ onNavigate, className,
                 e.target.style.height = `${Math.min(e.target.scrollHeight, 160)}px`;
               }}
               onKeyDown={handleKeyDown}
-              placeholder="Talk to Auto…"
+              placeholder={`Talk to ${TEAM_NAMES[activeAgent] || 'Auto'}…`}
               rows={1}
               disabled={sending || startingNew}
               className="flex-1 bg-transparent text-sm text-gray-900 placeholder-gray-400 resize-none outline-none leading-relaxed disabled:opacity-50"
@@ -4143,6 +4346,22 @@ export default function AutoV2Panel({ onNavigate, className,
         )
       ) : null}
 
+      {teamOpen && typeof document !== 'undefined'
+        ? createPortal(
+            <div className="fixed inset-0 z-[80] flex justify-end bg-black/30" onClick={() => setTeamOpen(false)}>
+              <div className="h-full w-full sm:w-[420px] shadow-xl" onClick={(e) => e.stopPropagation()}>
+                <TeamBoard
+                  onClose={() => setTeamOpen(false)}
+                  onOpenThread={(id) => {
+                    setTeamOpen(false);
+                    handleSelectThread({ id });
+                  }}
+                />
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
     </div>
   );
 }

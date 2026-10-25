@@ -6,6 +6,15 @@ import {
 } from '../../../../lib/ao/autoHub.js';
 import { runAutoChat } from '../../../../lib/ao/autoV2.js';
 import { getScheduleContext } from '../../../../lib/ao/getScheduleContext.js';
+import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
+import { AGENTS, normalizeAgent } from '../../../../lib/ao/team/agents.js';
+
+// A conversation opened directly with a teammate starts with them, in their
+// own voice, instead of Auto's orientation.
+const TEAM_OPENERS = {
+  jot: 'Jot: What are we writing? Give me the idea, the angle or the series, and I will research it and come back with a brief.',
+  reach: 'Reach: Want the lineup for the week, or is there something you want placed?',
+};
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -17,6 +26,23 @@ export default async function handler(req, res) {
 
   try {
     const thread = await startNewAutoThread(auth.email);
+    const agent = normalizeAgent(req.body?.agent);
+
+    if (agent !== 'auto') {
+      await supabaseAdmin
+        .from('ao_auto_threads')
+        .update({ title: AGENTS[agent].name, state: { ...(thread.state || {}), agent } })
+        .eq('id', thread.id);
+      await addAutoMessage({
+        threadId: thread.id,
+        role: 'assistant',
+        mode: 'plan',
+        content: TEAM_OPENERS[agent],
+        meta: { auto_v2: true, orientation: true, agent },
+      });
+      const opened = await getAutoThreadState(auth.email, thread.id);
+      return res.status(200).json({ ok: true, thread: opened.thread, messages: opened.messages, attachments: opened.attachments });
+    }
 
     // Auto-orientation: run Auto immediately after thread creation so the
     // first message in every new thread is Auto's opening, not a blank screen.

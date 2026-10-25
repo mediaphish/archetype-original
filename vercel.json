@@ -311,6 +311,24 @@
       }
     },
     {
+      "src": "api/ao/team/run.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 300,
+        "memory": 1024,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "public/devotional-schedule.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/**",
+          "ao-knowledge-hq-kit/**"
+        ]
+      }
+    },
+    {
       "src": "api/ao/auto/thread/new.js",
       "use": "@vercel/node",
       "config": {
@@ -1442,6 +1460,14 @@
       "dest": "/api/ao/auto/chat.js"
     },
     {
+      "src": "/api/ao/team/tasks",
+      "dest": "/api/ao/team/tasks.js"
+    },
+    {
+      "src": "/api/ao/team/run",
+      "dest": "/api/ao/team/run.js"
+    },
+    {
       "src": "/api/ao/auto/generate-card-image",
       "dest": "/api/ao/auto/generate-card-image.js"
     },
@@ -2049,6 +2075,10 @@
     {
       "path": "/api/ao/auto/reshare-journal",
       "schedule": "0 12 * * 1,3,5"
+    },
+    {
+      "path": "/api/ao/team/run",
+      "schedule": "*/5 * * * *"
     }
   ]
 }
