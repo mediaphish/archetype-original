@@ -8,6 +8,8 @@ export function shouldShowPublicArchy(pathname) {
   if (p === '/ali' || p.startsWith('/ali/')) return false;
   if (p.startsWith('/ao')) return false;
   if (p.startsWith('/operators')) return false;
+  // A client's private Archy: the public one in the corner would be a second, different Archy.
+  if (p === '/archy/you') return false;
   return true;
 }
 
