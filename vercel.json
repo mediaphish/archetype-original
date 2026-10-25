@@ -1468,6 +1468,10 @@
       "dest": "/api/ao/team/run.js"
     },
     {
+      "src": "/api/cron/ao/reach-weekly/([^/]+)",
+      "dest": "/api/cron/ao/reach-weekly.js?kind=$1"
+    },
+    {
       "src": "/api/ao/auto/generate-card-image",
       "dest": "/api/ao/auto/generate-card-image.js"
     },
@@ -2079,6 +2083,14 @@
     {
       "path": "/api/ao/team/run",
       "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/ao/reach-weekly/lookahead",
+      "schedule": "0 14 * * 4"
+    },
+    {
+      "path": "/api/cron/ao/reach-weekly/report",
+      "schedule": "30 13 * * 1"
     }
   ]
 }

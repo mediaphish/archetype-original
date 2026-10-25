@@ -8,7 +8,7 @@
  * 2026-07-24-auto-v1-and-broken-journal), rename this file aside, and put the backup in place as chat.js.
  */
 
-import { normalizeAgent } from '../../../lib/ao/team/agents.js';
+import { normalizeAgent, AGENTS, trimLeadInBeforeName } from '../../../lib/ao/team/agents.js';
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { shouldSavePastedPost } from '../../../lib/ao/pastedPostGate.js';
 import { signalsImageDiscussion } from '../../../lib/ao/imageDiscussionSignal.js';
@@ -2852,6 +2852,10 @@ ${retrievedBlock}
         console.warn('[chat.js] placeholder artifact repair failed (non-fatal):', artifactErr?.message || artifactErr);
       }
     }
+
+    // A teammate's reply starts with their name. Anything short before it is
+    // the model thinking aloud ahead of a tool call, which Bart should not read.
+    if (agent !== 'auto') fullReply = trimLeadInBeforeName(fullReply, AGENTS[agent]?.name);
 
     await addAutoMessage({
       threadId: thread.id,
