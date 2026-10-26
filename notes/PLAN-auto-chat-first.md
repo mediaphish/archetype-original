@@ -284,10 +284,16 @@ Answered 2026-10-26:
   3. The automated posts: resurfaces, quote cards, infographics.
   4. The podcast's next steps, all aspects.
 
-Still open:
+- **The tabs:** "If we can get it where I focus only on chat seamlessly, I'm
+  ok with fast. If you think it could be clunky, that's fine to slow down.
+  Especially if I can have the Agents on the team give me links to what's on
+  the tabs, or pull from them in chat so I don't have to bounce around and
+  chase where to look." So: from Phase 1 on, the team links to or pulls in
+  whatever is on a tab, so Bart never has to go looking. Each tab is retired
+  as soon as chat fully covers it, one at a time, and only once using it in
+  chat is not clunky. The tabs stay reachable until then.
 
-1. **The tabs.** Keep Library, Queue, Podcast and CRM as tabs while chat
-   grows, or move faster to chat only?
+All decisions are answered.
 
 ## Guardrails that do not change
 
