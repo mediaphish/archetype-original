@@ -68,7 +68,7 @@ export default function ReachWeek({ onNavigate }) {
           <img src={avatarFor('reach')} alt="" aria-hidden="true" className="w-9 h-9 rounded-full object-cover bg-orange-50 border border-orange-100" />
           <div>
             <h2 className="text-xl font-bold text-gray-900">The week</h2>
-            <p className="text-xs text-gray-500">From Reach{week?.week_of ? `, week of ${shortDate(week.week_of)}` : ''}</p>
+            <p className="text-xs text-gray-500">From Vox{week?.week_of ? `, week of ${shortDate(week.week_of)}` : ''}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -90,7 +90,7 @@ export default function ReachWeek({ onNavigate }) {
             onClick={() => talk(`about the ${which === 'next' ? 'week ahead' : 'week'}: `)}
             className="min-h-[36px] px-3 rounded-lg text-sm font-semibold border border-gray-300 text-gray-700 bg-white"
           >
-            Talk to Reach
+            Talk to Vox
           </button>
         </div>
       </div>
@@ -132,7 +132,7 @@ export default function ReachWeek({ onNavigate }) {
                     onClick={() => talk(`${DAY_LABEL[d.weekday]} ${shortDate(d.date)} has no ${gap.missing.toLowerCase()}. What should fill it? `)}
                     className="mt-2 w-full text-left text-xs rounded-lg bg-amber-50 border border-amber-200 text-amber-900 px-2 py-1.5"
                   >
-                    Missing: {gap.missing}. Ask Reach what fits.
+                    Missing: {gap.missing}. Ask Vox what fits.
                   </button>
                 ) : null}
                 {d.notes.map((n, i) => (

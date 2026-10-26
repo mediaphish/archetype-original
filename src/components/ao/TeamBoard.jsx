@@ -146,7 +146,7 @@ export default function TeamBoard({ onOpenThread, onClose }) {
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
         <div>
           <p className="text-sm font-semibold text-gray-900">Team</p>
-          <p className="text-xs text-gray-500">Auto, Jot, Reach and Cam</p>
+          <p className="text-xs text-gray-500">Ada, Jot, Vox and Cam</p>
         </div>
         {onClose ? (
           <button type="button" onClick={onClose} className="text-sm text-gray-500 px-2 py-1" aria-label="Close the team board">
@@ -175,16 +175,16 @@ export default function TeamBoard({ onOpenThread, onClose }) {
           ) : null
         )}
         {board && !board.needs_bart.length && !board.working.length && !board.finished.length ? (
-          <p className="text-sm text-gray-500">Nobody is on a task yet. Tell Auto what you want, or hand something off below.</p>
+          <p className="text-sm text-gray-500">Nobody is on a task yet. Tell Ada what you want, or hand something off below.</p>
         ) : null}
         <section className="border-t border-gray-200 pt-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Hand something off</p>
           <div className="flex gap-2 mb-2">
             {[
               ['jot', 'Jot'],
-              ['reach', 'Reach'],
+              ['reach', 'Vox'],
               ['producer', 'Cam'],
-              ['auto', 'Auto'],
+              ['auto', 'Ada'],
             ].map(([k, n]) => (
               <button
                 key={k}

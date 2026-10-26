@@ -4,7 +4,7 @@
  * The link opens Auto with a note already started, so he only types his part.
  */
 export function discussUrl({ text = '', agent = 'auto' } = {}) {
-  const name = agent === 'jot' ? 'Jot' : agent === 'reach' ? 'Reach' : agent === 'producer' ? 'Cam' : null;
+  const name = agent === 'jot' ? 'Jot' : agent === 'reach' ? 'Vox' : agent === 'producer' ? 'Cam' : null;
   const opener = name ? `${name}, ${text}` : text;
   return `/ao/analyst?compose=${encodeURIComponent(opener)}`;
 }

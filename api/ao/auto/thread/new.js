@@ -13,7 +13,7 @@ import { AGENTS, normalizeAgent } from '../../../../lib/ao/team/agents.js';
 // own voice, instead of Auto's orientation.
 const TEAM_OPENERS = {
   jot: 'Jot: What are we writing? Give me the idea, the angle or the series, and I will research it and come back with a brief.',
-  reach: 'Reach: Want the lineup for the week, or is there something you want placed?',
+  reach: 'Vox: Want the lineup for the week, or is there something you want placed?',
   producer: 'Cam: Who are we recording next? I can tell you who is prepared, who is waiting, and get show notes ready.',
 };
 

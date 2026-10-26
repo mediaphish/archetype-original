@@ -478,7 +478,7 @@ function TypingIndicator({ label = null, agent = 'auto' }) {
   );
 }
 
-const TEAM_NAMES = { auto: 'Auto', jot: 'Jot', reach: 'Reach', producer: 'Cam' };
+const TEAM_NAMES = { auto: 'Ada', jot: 'Jot', reach: 'Vox', producer: 'Cam' };
 
 /** A background task's assignment or pass, shown as a team note rather than as Bart's words. */
 function TeamTaskNote({ message }) {
@@ -1841,9 +1841,9 @@ function ThreadSidebar({
         <div className="px-3 pt-3 pb-3 border-b border-gray-200 flex-shrink-0">
           <p className="px-1 mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Team</p>
           {[
-            { key: 'auto', name: 'Auto', role: 'CMO', run: () => onNewThread?.() },
+            { key: 'auto', name: 'Ada', role: 'Marketing Director', run: () => onNewThread?.() },
             { key: 'jot', name: 'Jot', role: 'Writer', run: () => (onNewAgentThread ? onNewAgentThread('jot') : onNewThread?.()) },
-            { key: 'reach', name: 'Reach', role: 'Publicist', run: () => (onNewAgentThread ? onNewAgentThread('reach') : onNewThread?.()) },
+            { key: 'reach', name: 'Vox', role: 'Publicist', run: () => (onNewAgentThread ? onNewAgentThread('reach') : onNewThread?.()) },
             { key: 'producer', name: 'Cam', role: 'Producer', run: () => (onNewAgentThread ? onNewAgentThread('producer') : onNewThread?.()) },
           ].map((m) => (
             <button
@@ -2971,7 +2971,7 @@ export default function AutoV2Panel({ onNavigate, className,
   const startNewThread = useCallback(async (agentArg) => {
     if (startingNew || sending || loading) return;
     const agent = typeof agentArg === 'string' ? agentArg : null;
-    const who = agent === 'jot' ? 'Jot' : agent === 'reach' ? 'Reach' : agent === 'producer' ? 'Cam' : null;
+    const who = agent === 'jot' ? 'Jot' : agent === 'reach' ? 'Vox' : agent === 'producer' ? 'Cam' : null;
     const ok = window.confirm(
       who
         ? `Start a conversation with ${who}? This chat will be set aside (not deleted).`
@@ -3452,7 +3452,7 @@ export default function AutoV2Panel({ onNavigate, className,
         // Everyone else Bart @mentioned answers in turn, each in their own voice.
         const brought = mentionedAgents(outgoing).slice(1);
         for (const teammate of brought) {
-          const name = TEAM_NAMES[teammate] || 'Auto';
+          const name = TEAM_NAMES[teammate] || 'Ada';
           try {
             const r = await fetch('/api/ao/auto/chat', {
               method: 'POST',
@@ -3970,7 +3970,7 @@ export default function AutoV2Panel({ onNavigate, className,
           {[
             { key: 'team', label: teamNeedsCount > 0 ? `Team board (${teamNeedsCount} need${teamNeedsCount === 1 ? 's' : ''} you)` : 'Team board', run: () => setTeamOpen(true) },
             { key: 'jot', label: 'Talk to Jot', run: () => startNewThread('jot') },
-            { key: 'reach', label: 'Talk to Reach', run: () => startNewThread('reach') },
+            { key: 'reach', label: 'Talk to Vox', run: () => startNewThread('reach') },
             { key: 'producer', label: 'Talk to Cam', run: () => startNewThread('producer') },
           ].map((item) => (
             <button
@@ -4154,7 +4154,7 @@ export default function AutoV2Panel({ onNavigate, className,
             ) : isMobile ? null : (
               <span className="flex items-center gap-2 text-sm font-medium text-gray-600">
                 <img src={avatarFor(activeAgent)} alt="" aria-hidden="true" className="w-6 h-6 rounded-full object-cover bg-orange-50" draggable={false} />
-                {TEAM_NAMES[activeAgent] || 'Auto'}
+                {TEAM_NAMES[activeAgent] || 'Ada'}
               </span>
             )}
           </div>
@@ -4410,7 +4410,7 @@ export default function AutoV2Panel({ onNavigate, className,
                 e.target.style.height = `${Math.min(e.target.scrollHeight, 160)}px`;
               }}
               onKeyDown={handleKeyDown}
-              placeholder={`Talk to ${TEAM_NAMES[activeAgent] || 'Auto'}… (@ brings in a teammate)`}
+              placeholder={`Talk to ${TEAM_NAMES[activeAgent] || 'Ada'}… (@ brings in a teammate)`}
               rows={1}
               disabled={sending || startingNew}
               className="flex-1 bg-transparent text-sm text-gray-900 placeholder-gray-400 resize-none outline-none leading-relaxed disabled:opacity-50"

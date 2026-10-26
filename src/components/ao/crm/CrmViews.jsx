@@ -23,7 +23,7 @@ export function go(path) {
 
 export const personPath = (email) => `/ao/crm?c=${encodeURIComponent(email)}`;
 
-const OWNER_NAMES = { bart: 'You', auto: 'Auto', jot: 'Jot', reach: 'Reach', producer: 'Cam' };
+const OWNER_NAMES = { bart: 'You', auto: 'Ada', jot: 'Jot', reach: 'Vox', producer: 'Cam' };
 
 function ago(iso) {
   if (!iso) return 'no contact yet';
