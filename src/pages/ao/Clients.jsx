@@ -1,14 +1,19 @@
 /**
- * Auto > Clients (/ao/clients), the CRM.
+ * Auto > CRM (/ao/crm, and the old /ao/clients address).
+ *
+ * Bart, 2026-10-25: "It needs to look and work like a CRM ... open the page,
+ * know what to do, or have an AI I can ask about it quickly." Four views on a
+ * phone-first bar: Today, People, Pipeline, Ask (src/components/ao/crm/CrmViews.jsx).
+ * Today keeps this week's calls, dates coming up and the numbers underneath.
  *
  * Bart, 2026-10-24: "Treat this piece of Auto like a CRM. What I see when I
  * open it is the most important stuff at the top." And the person page was
  * "clunky": it needs a senior UX pass and to fit how he works.
  *
  * Two screens:
- *   Home      /ao/clients            what needs you, this week, coming up,
+ *   Home      /ao/crm                what needs you, this week, coming up,
  *                                     your numbers, everyone at a glance
- *   Person    /ao/clients?c=<email>  one person across all conversations:
+ *   Person    /ao/crm?c=<email>      one person across all conversations:
  *                                     Now, Conversations, Messages, Profile,
  *                                     Research, Notes
  * Built for the phone first. Server: api/ao/clients.js. Nothing reaches a
@@ -32,14 +37,7 @@ import {
   Research,
   Timeline,
 } from '../../components/ao/clients/parts';
-
-function go(path) {
-  window.history.pushState({}, '', path);
-  window.dispatchEvent(new PopStateEvent('popstate'));
-  window.scrollTo({ top: 0, behavior: 'instant' });
-}
-
-const personPath = (email) => `/ao/clients?c=${encodeURIComponent(email)}`;
+import { go, personPath, TodayView, PeopleView, PipelineView, AskView, PersonCrmBox } from '../../components/ao/crm/CrmViews.jsx';
 
 function ago(iso) {
   if (!iso) return 'never';
@@ -179,7 +177,7 @@ function Metric({ label, value, hint }) {
   );
 }
 
-function Home() {
+function Home({ compact = false }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
@@ -211,7 +209,7 @@ function Home() {
   return (
     <div className="space-y-8">
       {data.unmatched?.length ? (
-        <section>
+        <section id="transcripts" className="scroll-mt-28">
           <Heading>Transcripts to match</Heading>
           <div className="space-y-2">
             {data.unmatched.map((t) => (
@@ -221,7 +219,7 @@ function Home() {
         </section>
       ) : null}
 
-      <section>
+      {compact ? null : <section>
         <Heading>Needs you</Heading>
         {data.needs.length ? (
           <div className="space-y-2">
@@ -245,7 +243,7 @@ function Home() {
         ) : (
           <Card><p className="text-sm text-gray-600">Nothing needs you right now.</p></Card>
         )}
-      </section>
+      </section>}
 
       <section>
         <Heading>This week</Heading>
@@ -317,7 +315,7 @@ function Home() {
         <p className="mt-2 text-xs text-gray-400">Test clients are left out of these numbers.</p>
       </section>
 
-      <section>
+      {compact ? null : <section>
         <Heading>Everyone</Heading>
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by name or company" className="mb-3 w-full rounded-xl border border-gray-300 bg-white p-3 text-sm" />
         <div className="-mx-4 mb-3 flex gap-2 overflow-x-auto px-4">
@@ -350,7 +348,7 @@ function Home() {
           ))}
           {!people.length ? <p className="p-4 text-sm text-gray-500">No one matches.</p> : null}
         </div>
-      </section>
+      </section>}
     </div>
   );
 }
@@ -859,7 +857,7 @@ function Person({ email }) {
 
   return (
     <div>
-      <button type="button" onClick={() => go('/ao/clients')} className="mb-3 text-sm text-gray-600">‹ Clients</button>
+      <button type="button" onClick={() => (window.history.length > 1 ? window.history.back() : go('/ao/crm?view=people'))} className="mb-3 min-h-[44px] text-sm text-gray-600">‹ Back</button>
 
       <Card className="mb-4">
         <div className="flex items-start gap-4">
@@ -886,14 +884,17 @@ function Person({ email }) {
           </div>
         ) : null}
         {showHealth ? <HealthDetail person={p} onPerson={onPerson} busy={busy} /> : null}
-        <div className="mt-3 flex flex-wrap gap-2">
+        <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-gray-500">Stage</p>
+        <div className="mt-1 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
           {data.stages.map((s) => (
-            <button key={s.key} type="button" disabled={busy} onClick={() => onPerson('stage', { stage: s.key })} className={`min-h-[32px] rounded-full px-3 text-xs font-semibold ${p.stage === s.key ? 'bg-gray-900 text-white' : 'border border-gray-300 bg-white text-gray-700'}`}>
+            <button key={s.key} type="button" disabled={busy} onClick={() => onPerson('stage', { stage: s.key })} className={`min-h-[36px] shrink-0 rounded-full px-3 text-xs font-semibold ${p.stage === s.key ? 'bg-gray-900 text-white' : 'border border-gray-300 bg-white text-gray-700'}`}>
               {s.label}
             </button>
           ))}
         </div>
       </Card>
+
+      <PersonCrmBox key={`crm-${p.stage}`} email={email} />
 
       <nav className="sticky top-[52px] z-10 -mx-4 mb-4 flex gap-1 overflow-x-auto border-b border-gray-200 bg-gray-50/95 px-4 backdrop-blur md:top-[73px]" aria-label="Client sections">
         {TABS.map(([key, label]) => {
@@ -918,26 +919,67 @@ function Person({ email }) {
   );
 }
 
+const VIEWS = [
+  ['today', 'Today'],
+  ['people', 'People'],
+  ['pipeline', 'Pipeline'],
+  ['ask', 'Ask'],
+];
+
+function readUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const view = params.get('view');
+  return { email: params.get('c'), view: VIEWS.some(([k]) => k === view) ? view : 'today' };
+}
+
 export default function AOClients() {
   const authed = useAuth();
-  const [email, setEmail] = useState(() => new URLSearchParams(window.location.search).get('c'));
+  const [where, setWhere] = useState(readUrl);
   useEffect(() => {
-    const onPop = () => setEmail(new URLSearchParams(window.location.search).get('c'));
+    // The old address keeps working; the CRM lives at /ao/crm now.
+    if (window.location.pathname === '/ao/clients') window.history.replaceState({}, '', `/ao/crm${window.location.search}${window.location.hash}`);
+    const onPop = () => setWhere(readUrl());
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   }, []);
   if (!authed) return null;
+  const { email, view } = where;
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       <AOHeader active="clients" onNavigate={go} />
-      <main className="container mx-auto max-w-3xl px-4 py-5">
+      <main className="container mx-auto max-w-3xl px-4 py-4">
         {email ? (
           <Person key={email} email={email} />
         ) : (
           <>
-            <h1 className="mb-1 text-2xl font-semibold text-gray-900">Clients</h1>
-            <p className="mb-6 text-sm text-gray-600">Nothing goes to anyone until you press Send.</p>
-            <Home />
+            <div className="mb-3 flex items-baseline justify-between gap-3">
+              <h1 className="text-2xl font-semibold text-gray-900">CRM</h1>
+              <p className="text-xs text-gray-500">Nothing goes to anyone until you approve it.</p>
+            </div>
+            <nav className="sticky top-[52px] z-10 -mx-4 mb-4 grid grid-cols-4 border-b border-gray-200 bg-gray-50/95 px-2 backdrop-blur md:top-[73px]" aria-label="CRM views">
+              {VIEWS.map(([key, label]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => go(key === 'today' ? '/ao/crm' : `/ao/crm?view=${key}`)}
+                  aria-current={view === key ? 'page' : undefined}
+                  className={`min-h-[48px] text-sm ${view === key ? 'border-b-2 border-[#DB0812] font-semibold text-gray-900' : 'text-gray-600'}`}
+                >
+                  {label}
+                </button>
+              ))}
+            </nav>
+            {view === 'today' ? (
+              <>
+                <TodayView />
+                <div className="mt-10 border-t border-gray-200 pt-6">
+                  <Home compact />
+                </div>
+              </>
+            ) : null}
+            {view === 'people' ? <PeopleView /> : null}
+            {view === 'pipeline' ? <PipelineView /> : null}
+            {view === 'ask' ? <AskView /> : null}
           </>
         )}
       </main>

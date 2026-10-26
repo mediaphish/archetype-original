@@ -127,7 +127,7 @@ export default async function handler(req, res) {
             `Record: ${consent.record?.answer || 'not answered'} · Private Archy: ${consent.archy?.answer || 'not answered'} · Check-ins: ${consent.checkins?.answer || 'not answered'}`,
             podcast === 'yes' ? 'Open to being a podcast guest.' : null,
           ],
-          cta: { label: 'Open in Auto', url: `${process.env.SITE_URL || 'https://www.archetypeoriginal.com'}/ao/clients` },
+          cta: { label: 'Open in Auto', url: `${process.env.SITE_URL || 'https://www.archetypeoriginal.com'}/ao/crm` },
         }),
       }).catch(() => {});
     }

@@ -51,7 +51,7 @@ export default async function handler(req, res) {
         html: noticeHtml({
           title: `${r.name} needs you`,
           lines: [r.handoff, `They were told you answer ${answerWindowLabel(tier)}: by ${by}.`],
-          cta: { label: 'Answer in Auto', url: `${SITE}/ao/clients?c=${encodeURIComponent(email)}` },
+          cta: { label: 'Answer in Auto', url: `${SITE}/ao/crm?c=${encodeURIComponent(email)}` },
         }),
       });
     }

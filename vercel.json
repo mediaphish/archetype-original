@@ -329,6 +329,24 @@
       }
     },
     {
+      "src": "api/ao/crm-ask.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 300,
+        "memory": 1024,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "public/devotional-schedule.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/**",
+          "ao-knowledge-hq-kit/**"
+        ]
+      }
+    },
+    {
       "src": "api/ao/auto/thread/new.js",
       "use": "@vercel/node",
       "config": {
@@ -1469,6 +1487,14 @@
     {
       "src": "/api/ao/team/tasks",
       "dest": "/api/ao/team/tasks.js"
+    },
+    {
+      "src": "/api/ao/crm",
+      "dest": "/api/ao/crm.js"
+    },
+    {
+      "src": "/api/ao/crm-ask",
+      "dest": "/api/ao/crm-ask.js"
     },
     {
       "src": "/api/ao/team/outbox",

@@ -68,7 +68,7 @@ export default async function handler(req, res) {
         html: noticeHtml({
           title: `${h.name} wrote to you`,
           lines: [`The check-in planned for ${day} is on hold so it does not cross their note.`, 'Edit it, send it on its date anyway, or leave it held.'],
-          cta: { label: 'Open Clients in Auto', url: `${SITE}/ao/clients` },
+          cta: { label: 'Open the CRM', url: `${SITE}/ao/crm` },
         }),
       });
     }

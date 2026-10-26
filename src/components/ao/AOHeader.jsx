@@ -9,7 +9,7 @@ const TABS = [
   { key: 'library', path: '/ao/library', label: 'Library' },
   { key: 'queue', path: '/ao/library/review-queue', label: 'Queue' },
   { key: 'podcast', path: '/ao/podcast', label: 'Podcast' },
-  { key: 'clients', path: '/ao/clients', label: 'Clients' },
+  { key: 'clients', path: '/ao/crm', label: 'CRM' },
   { key: 'settings', path: '/ao/settings', label: 'Settings' },
 ];
 
