@@ -61,3 +61,13 @@ Bottom bar on a phone, always in thumb reach: **Today · People · Ask · Queue*
 2. **People and Person**, redesigned phone first, plus the pipeline view.
 3. **Follow-ups with owners**, sources, and team emails living on each person.
 4. **A phone pass over every other view**: Auto chat, Team board, Queue, Podcast.
+
+## Built 2026-10-25 (overnight)
+
+- Phases 1 to 3 are live: the CRM at /ao/crm with Today, People, Pipeline and
+  Ask; call, text and email on every person; a next step with a date and an
+  owner; relationship and source; teammate-owned steps handed to that teammate
+  as background work; Auto and the team read the CRM before saying anything
+  about a person.
+- Not yet: phase 4, the phone pass over Auto chat, Team board, Queue and
+  Podcast.
