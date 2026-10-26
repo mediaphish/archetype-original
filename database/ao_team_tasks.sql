@@ -4,7 +4,7 @@
 -- engine as the chat (api/ao/auto/chat.js runChatTurn), in its own conversation.
 create table if not exists ao_team_tasks (
   id uuid primary key default gen_random_uuid(),
-  agent text not null check (agent in ('auto', 'jot', 'reach', 'producer')),
+  agent text not null check (agent in ('auto', 'jot', 'reach', 'producer', 'editor')),
   title text not null,
   brief text not null,
   status text not null default 'queued'
@@ -34,4 +34,4 @@ alter table ao_team_tasks enable row level security;
 
 -- 2026-10-25: the Producer joins the team.
 alter table ao_team_tasks drop constraint if exists ao_team_tasks_agent_check;
-alter table ao_team_tasks add constraint ao_team_tasks_agent_check check (agent in ('auto', 'jot', 'reach', 'producer'));
+alter table ao_team_tasks add constraint ao_team_tasks_agent_check check (agent in ('auto', 'jot', 'reach', 'producer', 'editor'));
