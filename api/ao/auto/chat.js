@@ -9,7 +9,7 @@
  */
 
 import { textOf } from '../../../lib/ao/textModel.js';
-import { normalizeAgent, AGENTS, trimLeadInBeforeName } from '../../../lib/ao/team/agents.js';
+import { normalizeAgent, AGENTS, trimLeadInBeforeName, mentionedAgents } from '../../../lib/ao/team/agents.js';
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { shouldSavePastedPost } from '../../../lib/ao/pastedPostGate.js';
 import { signalsImageDiscussion } from '../../../lib/ao/imageDiscussionSignal.js';
@@ -1302,7 +1302,9 @@ export async function runChatTurn({ email, body = {}, sendEvent, end = () => {},
   try {
     const thread = await ensureAutoThread(auth.email, thread_id || '');
     // Who on the team is speaking in this conversation: Auto, Jot or Reach.
-    const agent = normalizeAgent(requestedAgent || thread?.state?.agent);
+    // An @mention (or a message opening with a teammate's name) brings that
+    // teammate in for this reply; otherwise the conversation's own teammate answers.
+    const agent = normalizeAgent(requestedAgent || mentionedAgents(userMessage)[0] || thread?.state?.agent);
 
     // Persist user message immediately — before any model call.
     // If runAutoChat times out or fails, the message is already in the database

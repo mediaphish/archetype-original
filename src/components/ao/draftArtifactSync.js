@@ -76,6 +76,47 @@ export function resolveArtifactPanelState(msgs = []) {
     return { artifact: fallback, clear: false, source: 'fallback' };
   }
 
+  // A teammate worked on a draft that was written in another conversation
+  // (approved it, made its image, scheduled it). Bart, 2026-10-25: "All my tabs
+  // on the right above the artifact panel are now gone." Open that draft here
+  // so its tabs follow the work.
+  const worked = findDraftWorkedByTools(all);
+  if (worked) {
+    return { artifact: worked, clear: false, source: 'tools' };
+  }
+
   // Conversational turn with no tags in history — keep existing panel (caller must not clear).
   return { artifact: null, clear: false, source: 'none' };
+}
+
+const DRAFT_TOOLS = new Set([
+  'save_draft',
+  'present_outline',
+  'approve_draft',
+  'approve_stage',
+  'generate_image',
+  'schedule_captions',
+  'schedule_journal_publish',
+  'get_schedule_status',
+  'publish_journal',
+]);
+
+/** The newest journal draft a reply's tools touched, as a panel artifact to load by slug. */
+export function findDraftWorkedByTools(msgs = []) {
+  const all = Array.isArray(msgs) ? msgs : [];
+  for (let i = all.length - 1; i >= 0; i -= 1) {
+    const m = all[i];
+    if (String(m?.role || '') !== 'assistant') continue;
+    const rows = Array.isArray(m?.meta?.tool_results) ? m.meta.tool_results : [];
+    for (let j = rows.length - 1; j >= 0; j -= 1) {
+      const row = rows[j];
+      if (!row || !DRAFT_TOOLS.has(row.name)) continue;
+      const r = row.result && typeof row.result === 'object' ? row.result : {};
+      const slug = String(r.slug || r.draft?.slug || '').trim();
+      if (!slug || r.ok === false) continue;
+      if (r.kind && r.kind !== 'journal') continue;
+      return { type: 'draft', slug, label: String(r.title || r.draft?.title || slug), content: '' };
+    }
+  }
+  return null;
 }

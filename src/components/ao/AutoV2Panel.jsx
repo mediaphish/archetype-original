@@ -21,6 +21,7 @@ import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import TeamBoard from './TeamBoard.jsx';
 import ChatMarkdown from './ChatMarkdown.jsx';
 import { avatarFor } from './teamAvatars.js';
+import { mentionedAgents, MENTION_CHOICES, pendingMention } from '../../lib/teamMentions.js';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
 import StagedJournalPanel from './StagedJournalPanel.jsx';
 import { resolveDraftArtifactSlug } from './draftArtifactSlug.js';
@@ -536,6 +537,13 @@ function MessageBubble({ message, onNavigate }) {
   const raw = String(message.content || '');
   const agentKey = !isUser && message.meta?.agent && message.meta.agent !== 'auto' ? message.meta.agent : null;
   if (isUser && message.meta?.team_task) return <TeamTaskNote message={message} />;
+  if (isUser && message.meta?.team_note) {
+    return (
+      <div className="flex justify-center">
+        <p className="text-xs text-gray-500 italic">{String(message.content || '').replace(/^\[TEAM\]\s*/, '').split('\n')[0]}</p>
+      </div>
+    );
+  }
   const withoutImages = stripGeneratedImageBlocksFromChat(raw);
   const { cleanText } = parseArtifact(withoutImages);
   const text = cleanText || withoutImages;
@@ -2658,7 +2666,7 @@ export default function AutoV2Panel({ onNavigate, className,
       // (still run image accumulation below when messages exist)
     } else if (resolved.artifact) {
       setArtifact(resolved.artifact);
-      const slug = extractSlugFromDraftContent(resolved.artifact.content);
+      const slug = extractSlugFromDraftContent(resolved.artifact.content) || resolved.artifact.slug || null;
       if (slug && resolved.artifact.type === 'draft') {
         void (async () => {
           try {
@@ -3440,6 +3448,41 @@ export default function AutoV2Panel({ onNavigate, className,
         }
 
         if (json.thread?.id) setActiveThreadId(json.thread.id);
+
+        // Everyone else Bart @mentioned answers in turn, each in their own voice.
+        const brought = mentionedAgents(outgoing).slice(1);
+        for (const teammate of brought) {
+          const name = TEAM_NAMES[teammate] || 'Auto';
+          try {
+            const r = await fetch('/api/ao/auto/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                thread_id: json.thread?.id || activeThreadId || null,
+                agent: teammate,
+                message: `[TEAM] Bart brought ${name} in too. ${name}, add your part to Bart's last message above. Do not repeat what was already said, and do not speak for anyone else.`,
+                message_meta: { team_note: true },
+              }),
+            });
+            const raw = await r.text();
+            const lines = raw.split('\n').filter((l) => l.startsWith('data: '));
+            for (let k = lines.length - 1; k >= 0; k -= 1) {
+              let payload = null;
+              try {
+                payload = JSON.parse(lines[k].slice(6));
+              } catch (_) {}
+              if (payload && payload.ok !== undefined) {
+                if (payload.ok && Array.isArray(payload.messages)) {
+                  setMessages(payload.messages);
+                  syncArtifactFromMessages(payload.messages);
+                }
+                break;
+              }
+            }
+          } catch (_) {
+            // One teammate not answering must not undo the reply already shown.
+          }
+        }
 
         await loadThreadList();
       } catch (e) {
@@ -4279,6 +4322,26 @@ export default function AutoV2Panel({ onNavigate, className,
           }}
           {...(isMobile ? composerSwipe : {})}
         >
+          {pendingMention(input) !== null ? (
+            <div className="mb-2 flex flex-wrap gap-2">
+              {MENTION_CHOICES.filter((c) => c.handle.toLowerCase().startsWith(pendingMention(input) || '')).map((c) => (
+                <button
+                  key={c.key}
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    setInput((prev) => prev.replace(/@(\w*)$/, `@${c.handle} `));
+                    setTimeout(() => textareaRef.current?.focus(), 0);
+                  }}
+                  className="flex items-center gap-2 rounded-full border border-gray-300 bg-white pl-1 pr-3 py-1 text-xs text-gray-800 hover:bg-gray-50"
+                >
+                  <img src={avatarFor(c.key)} alt="" aria-hidden="true" className="w-6 h-6 rounded-full object-cover bg-orange-50" />
+                  <span className="font-semibold">@{c.handle}</span>
+                  <span className="text-gray-500">{c.role}</span>
+                </button>
+              ))}
+            </div>
+          ) : null}
           {quoteCandidate ? (
             <div className="mb-2 flex items-center gap-2">
               <button
@@ -4347,7 +4410,7 @@ export default function AutoV2Panel({ onNavigate, className,
                 e.target.style.height = `${Math.min(e.target.scrollHeight, 160)}px`;
               }}
               onKeyDown={handleKeyDown}
-              placeholder={`Talk to ${TEAM_NAMES[activeAgent] || 'Auto'}…`}
+              placeholder={`Talk to ${TEAM_NAMES[activeAgent] || 'Auto'}… (@ brings in a teammate)`}
               rows={1}
               disabled={sending || startingNew}
               className="flex-1 bg-transparent text-sm text-gray-900 placeholder-gray-400 resize-none outline-none leading-relaxed disabled:opacity-50"
