@@ -278,11 +278,15 @@ Answered 2026-10-26:
   that did not go out, a job that stopped) still come through; everything
   else waits for the morning #today thread.
 
+- **First project channels** ("Probably more..."):
+  1. AI & Leadership (the Leading with AI series).
+  2. The next Biblical Archetype entry: a positive example after Rehoboam.
+  3. The automated posts: resurfaces, quote cards, infographics.
+  4. The podcast's next steps, all aspects.
+
 Still open:
 
-1. **First projects.** Which two or three projects should get their own
-   channel first?
-2. **The tabs.** Keep Library, Queue, Podcast and CRM as tabs while chat
+1. **The tabs.** Keep Library, Queue, Podcast and CRM as tabs while chat
    grows, or move faster to chat only?
 
 ## Guardrails that do not change
