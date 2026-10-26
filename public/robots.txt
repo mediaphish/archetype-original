@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /occ
 
 Sitemap: https://www.archetypeoriginal.com/sitemap.xml

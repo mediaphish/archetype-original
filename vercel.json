@@ -592,6 +592,13 @@
   ],
   "routes": [
     {
+      "src": "^/occ(/.*)?$",
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow"
+      },
+      "continue": true
+    },
+    {
       "src": "^/culture\\-science/anti\\-projects/scoreboard\\-leadership/?$",
       "status": 308,
       "headers": {

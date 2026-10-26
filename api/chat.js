@@ -51,6 +51,22 @@ function loadKnowledgeCorpus() {
   return { docs: [] };
 }
 
+/** One document from data/knowledge-full.json, which holds the non-public types too. */
+let fullCorpusCache = null;
+function findInFullCorpus(slug) {
+  try {
+    if (!fullCorpusCache) {
+      const candidates = [path.join(process.cwd(), 'data', 'knowledge-full.json'), '/var/task/data/knowledge-full.json'];
+      const found = candidates.find((p) => fs.existsSync(p));
+      fullCorpusCache = found ? JSON.parse(fs.readFileSync(found, 'utf8')) : { docs: [] };
+    }
+    return (fullCorpusCache.docs || []).find((d) => d?.slug === slug) || null;
+  } catch (err) {
+    console.error('[archy] full corpus read failed:', err?.message || err);
+    return null;
+  }
+}
+
 // Search knowledge corpus for relevant content
 function searchKnowledge(query, corpus, opts = {}) {
   const maxResults = Math.max(3, Math.min(24, Number(opts.maxDocs) || 5));
@@ -377,7 +393,9 @@ export default async function handler(req, res) {
   if (pageContext?.kind === 'article' && pageContext.slug) {
     const slug = String(pageContext.slug);
     if (!relevantKnowledge.some((doc) => doc?.slug === slug)) {
-      const doc = (knowledgeCorpus.docs || []).find((d) => d?.slug === slug);
+      // Pieces kept out of the public file (a talk, for one) live in the full
+      // corpus Archy's passages are built from.
+      const doc = (knowledgeCorpus.docs || []).find((d) => d?.slug === slug) || findInFullCorpus(slug);
       if (doc) {
         relevantKnowledge = [doc, ...relevantKnowledge].slice(0, archyDepth.maxDocs || 20);
         console.log('[archy] pinned the page being read into retrieval:', slug);

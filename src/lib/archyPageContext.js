@@ -48,7 +48,14 @@ export function readArticleTitle(doc = typeof document !== 'undefined' ? documen
  * in view. Null rather than an empty object, so the server can tell the
  * difference between "no article" and "article we failed to read".
  */
+/** Talk pages reached by QR code, pinned to the talk itself (see /occ). */
+const TALK_PAGES = {
+  '/occ': { slug: 'people-first-leadership-occ-2026', title: 'People First Leadership' },
+};
+
 export function buildPageContext(pathname, doc) {
+  const talk = TALK_PAGES[String(pathname || '').replace(/\/$/, '')];
+  if (talk) return { kind: 'article', slug: talk.slug, title: talk.title, path: pathname };
   const slug = articleSlugFromPath(pathname);
   if (!slug) return null;
   const title = readArticleTitle(doc);

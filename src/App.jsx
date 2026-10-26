@@ -110,6 +110,7 @@ import ALIEULAPage from "./pages/ALIEULA.jsx";
 import EngagementInquiryPage from "./pages/EngagementInquiry";
 import AccidentalCEOPage from "./pages/AccidentalCEO";
 import RemainingHumanPage from "./pages/RemainingHuman";
+import OCCPage from "./pages/OCC";
 import AdvisoryPage from "./pages/Advisory";
 import WorkWithBartPage from "./pages/WorkWithBart";
 import TheRoomPage from "./pages/TheRoom";
@@ -191,6 +192,7 @@ export default function App() {
     if (path === '/advisory') return 'advisory';
     if (path === '/work-with-bart') return 'work-with-bart';
     if (path === '/remaining-human') return 'remaining-human';
+    if (path === '/occ' || path === '/occ/') return 'occ';
     // Operators Platform routes
     if (path === '/operators') return 'operators-landing';
     if (path === '/operators/login') return 'operators-login';
@@ -660,6 +662,8 @@ export default function App() {
         setCurrentPage('work-with-bart');
       } else if (path === '/remaining-human') {
         setCurrentPage('remaining-human');
+      } else if (path === '/occ' || path === '/occ/') {
+        setCurrentPage('occ');
       } else {
         setCurrentPage('home');
       }
@@ -843,6 +847,11 @@ export default function App() {
         <Footer />
       </main>
     );
+  }
+
+  // One talk's landing page, reached by QR code only (no global nav/footer).
+  if (currentPage === 'occ') {
+    return <OCCPage />;
   }
 
   // Remaining Human standalone landing page (no global nav/footer)

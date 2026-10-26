@@ -14,7 +14,7 @@ Bart Paden spent 34 years building businesses, including Midwestern Interactive,
 
 ## Services
 
-- Work with Bart: one conversation, a season, an ongoing relationship, or a rate for rising leaders, plus consulting and fractional roles. https://www.archetypeoriginal.com/work-with-bart
+- Work with Bart: a free first conversation (up to ninety minutes), then a season or an ongoing relationship, plus consulting and fractional roles. Rising leaders are welcome. https://www.archetypeoriginal.com/work-with-bart
 - Leadership Advisory: private, one-to-one advisory for founders and executives. One room, outside the system, no consequence. https://www.archetypeoriginal.com/advisory
 - Consulting: https://www.archetypeoriginal.com/consulting
 - Fractional Leadership: C-suite fractional roles. https://www.archetypeoriginal.com/fractional-roles
@@ -723,7 +723,7 @@ How is Archetype Original different from other leadership firms?
 
 It's built from lived leadership, not theory alone.
 
-I spent 33 years inside real organizations before I started teaching anyone else. The frameworks here came from that experience, not from academic research or someone else's model.
+I spent 34 years inside real organizations before I started teaching anyone else. The frameworks here came from that experience, not from academic research or someone else's model.
 
 There's no hype here. No motivational performance. No borrowed language dressed up as original thinking. The work is grounded in responsibility, restraint, and the kind of leadership that holds up when things get hard.
 
@@ -781,7 +781,7 @@ Leadership is not neutral. Every decision, reaction, and habit is teaching peopl
 
 What is Archetype Original?
 
-Archetype Original is the work I built after 33 years of leading real organizations and watching the same problems repeat everywhere I looked.
+Archetype Original is the work I built after 34 years of leading real organizations and watching the same problems repeat everywhere I looked.
 
 It's a leadership consultancy and knowledge system built around responsibility, clarity, and long-term cultural health. It exists to help leaders build cultures that are stable, accountable, and human.
 
@@ -1711,10 +1711,10 @@ Devotional series
 
 The Servant Leadership Devotional Series publishes one entry per day, connecting Scripture to the real pressures of leadership. Formation for leaders who want clarity, restraint, and genuine care for people.
 
-Published devotional entries: 295.
+Published devotional entries: 298.
 Browse the series at https://www.archetypeoriginal.com/faith.
 Individual devotional URLs are listed in https://www.archetypeoriginal.com/sitemap.xml.
 
 
 
-Generated at: 2026-10-22T19:16:53.074Z
+Generated at: 2026-10-26T01:23:59.784Z
