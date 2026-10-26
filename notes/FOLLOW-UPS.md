@@ -10,6 +10,9 @@ When something here gets built, move it to "Done" with the date.
 be a full group chat with everyone being able to speak up at will or on
 request. It brings all the experience we have to the table for every project.
 No different than in my company as we self organized around a project."
+Then: "Auto is my Slack with my Team." So the model is Slack: channels per
+project or topic, everyone in them, threads, @mentions, and the team posting
+updates there instead of only answering.
 Today each teammate (Auto, Jot, Reach, Cam) has its own chats, and @mentions
 bring one in. To plan with Bart before building: who answers by default, when
 a teammate speaks up unasked (only with something real to add), how to keep
