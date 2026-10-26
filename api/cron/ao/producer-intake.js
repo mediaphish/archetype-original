@@ -1,6 +1,6 @@
 /**
  * Every 30 minutes: anyone in the podcast pipeline whose prep is missing gets
- * handed to the Producer as a background task, one at a time. September's plan
+ * handed to Cam, the producer, as a background task, one at a time. September's plan
  * found people waiting weeks with nothing prepared and failures that surfaced
  * only as "Not available." Now the Producer picks them up and Bart is emailed
  * when each one is ready. Secured by CRON_SECRET.

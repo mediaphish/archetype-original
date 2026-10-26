@@ -7,6 +7,7 @@ export const TEAM_AVATARS = {
   auto: '/images/team/auto.png',
   jot: '/images/team/jot.png',
   reach: '/images/team/reach.png',
+  producer: '/images/team/cam.png',
 };
 
 /** A plain initial for a teammate whose art has not arrived yet (the Producer). */

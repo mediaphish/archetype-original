@@ -6,6 +6,9 @@
  * mail to or from those addresses (read-only), and sends it to Auto so it
  * lands on each client's timeline. Nothing else in the inbox is read.
  *
+ * It also sends the emails Bart approved in his Queue (written by Auto's team),
+ * every 5 minutes, from his own account, so they sit in his Sent folder.
+ *
  * It proves it is Bart with a Google-signed identity token. No password or
  * key is stored here.
  *
@@ -21,7 +24,56 @@ var TRANSCRIPT_FILES = /\.(txt|vtt|srt|md)$/i;
 function setUp() {
   ScriptApp.getProjectTriggers().forEach(function (t) { ScriptApp.deleteTrigger(t); });
   ScriptApp.newTrigger('sync').timeBased().everyMinutes(15).create();
+  ScriptApp.newTrigger('sendOutbox').timeBased().everyMinutes(5).create();
   sync();
+  sendOutbox();
+}
+
+/**
+ * Emails the team wrote and Bart approved. Only approved ones are handed over;
+ * each goes out once, from this account, and the site is told what was sent.
+ */
+function sendOutbox() {
+  var auth = { Authorization: 'Bearer ' + ScriptApp.getIdentityToken() };
+  var res = UrlFetchApp.fetch(ENDPOINT + '?outbox=1', { headers: auth, muteHttpExceptions: true });
+  if (res.getResponseCode() !== 200) {
+    console.error('Could not get approved emails: ' + res.getResponseCode() + ' ' + res.getContentText());
+    return;
+  }
+  var emails = JSON.parse(res.getContentText()).emails || [];
+  if (!emails.length) return;
+  var me = Session.getActiveUser().getEmail();
+  var results = emails.map(function (e) {
+    try {
+      var sent = Gmail.Users.Messages.send({ raw: rawEmail(e, me) }, 'me');
+      return { id: e.id, ok: true, message_id: sent.id, thread_id: sent.threadId };
+    } catch (err) {
+      return { id: e.id, ok: false, error: String(err && err.message || err) };
+    }
+  });
+  UrlFetchApp.fetch(ENDPOINT, {
+    method: 'post',
+    contentType: 'application/json',
+    headers: auth,
+    payload: JSON.stringify({ sent: results }),
+    muteHttpExceptions: true,
+  });
+}
+
+function rawEmail(e, me) {
+  var to = e.to_name ? '"' + String(e.to_name).replace(/"/g, '') + '" <' + e.to_email + '>' : e.to_email;
+  var lines = [
+    'To: ' + to,
+    'From: "' + String(e.from_name || 'Bart Paden').replace(/"/g, '') + '" <' + me + '>',
+    'Subject: =?UTF-8?B?' + Utilities.base64Encode(e.subject, Utilities.Charset.UTF_8) + '?=',
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset=UTF-8',
+    'Content-Transfer-Encoding: base64',
+    'X-AO-Team: ' + (e.agent || 'auto'),
+    '',
+    Utilities.base64Encode(e.body, Utilities.Charset.UTF_8),
+  ];
+  return Utilities.base64EncodeWebSafe(lines.join('\r\n'), Utilities.Charset.UTF_8);
 }
 
 function sync() {

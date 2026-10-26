@@ -4,6 +4,8 @@
  * GET  /api/ao/gmail            the client addresses to look for
  * POST /api/ao/gmail {messages} file messages on client timelines
  * POST /api/ao/gmail {transcripts} transcripts Bart emailed to bart+transcripts@
+ * GET  /api/ao/gmail?outbox=1   team emails Bart approved, for his Gmail to send
+ * POST /api/ao/gmail {sent}     what his Gmail sent (see lib/ao/team/outbox.js)
  *
  * Only Bart's own Apps Script can use it: every call carries a Google-signed
  * identity token, checked with Google, that must belong to Bart.
@@ -13,6 +15,7 @@ import { verifiedGoogleEmail, isOwner, clientAddresses, ingestMessages } from '.
 import { sendToBart } from '../../lib/calendly/followups.js';
 import { queueIncoming, emailedSource } from '../../lib/calendly/transcriptIntake.js';
 import { noticeHtml } from '../../lib/calendly/emailLayout.js';
+import { takeApprovedForSending, recordSent, releaseStuckSending } from '../../lib/ao/team/outbox.js';
 
 const SITE = process.env.SITE_BASE_URL || 'https://www.archetypeoriginal.com';
 
@@ -32,10 +35,15 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
+      if (req.query?.outbox) {
+        await releaseStuckSending();
+        return res.status(200).json({ ok: true, emails: await takeApprovedForSending(10) });
+      }
       return res.status(200).json({ ok: true, addresses: await clientAddresses() });
     }
     if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'Method not allowed' });
     const body = await readJson(req);
+    if (Array.isArray(body.sent)) return res.status(200).json(await recordSent(body.sent));
     // Wispr Flow and Echo transcripts Bart emailed to bart+transcripts@: read on the next 15-minute run.
     if (Array.isArray(body.transcripts)) {
       let kept = 0;

@@ -5,6 +5,7 @@ import PendingReshares from '../../components/ao/PendingReshares';
 import WeeklyQuoteCards from '../../components/ao/WeeklyQuoteCards';
 import InfographicReview from '../../components/ao/InfographicReview';
 import ReachWeek from '../../components/ao/ReachWeek';
+import OutboxReview from '../../components/ao/OutboxReview';
 
 function Pill({ tone = 'gray', children }) {
   const tones = {
@@ -827,6 +828,8 @@ export default function ReviewQueue() {
             Back to Auto
           </button>
         </div>
+
+        <OutboxReview />
 
         <ReachWeek onNavigate={handleNavigate} />
 

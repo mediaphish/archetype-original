@@ -146,7 +146,7 @@ export default function TeamBoard({ onOpenThread, onClose }) {
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
         <div>
           <p className="text-sm font-semibold text-gray-900">Team</p>
-          <p className="text-xs text-gray-500">Auto, Jot, Reach and the Producer</p>
+          <p className="text-xs text-gray-500">Auto, Jot, Reach and Cam</p>
         </div>
         {onClose ? (
           <button type="button" onClick={onClose} className="text-sm text-gray-500 px-2 py-1" aria-label="Close the team board">
@@ -157,6 +157,11 @@ export default function TeamBoard({ onOpenThread, onClose }) {
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-5">
         {error ? <p className="text-sm text-red-700">{error}</p> : null}
         {!board && !error ? <p className="text-sm text-gray-500">Loading…</p> : null}
+        {board?.emails_waiting ? (
+          <a href="/ao/library/review-queue#emails" className="block rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+            <span className="font-semibold">{board.emails_waiting} email{board.emails_waiting === 1 ? '' : 's'} waiting on you.</span> Review in the Queue.
+          </a>
+        ) : null}
         {sections.map(([label, rows]) =>
           rows && rows.length ? (
             <section key={label}>
@@ -178,7 +183,7 @@ export default function TeamBoard({ onOpenThread, onClose }) {
             {[
               ['jot', 'Jot'],
               ['reach', 'Reach'],
-              ['producer', 'Producer'],
+              ['producer', 'Cam'],
               ['auto', 'Auto'],
             ].map(([k, n]) => (
               <button

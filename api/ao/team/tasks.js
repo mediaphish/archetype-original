@@ -13,7 +13,9 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
-      return res.status(200).json(await listBoard({ limit: Number(req.query?.limit) || 40 }));
+      const board = await listBoard({ limit: Number(req.query?.limit) || 40 });
+      const { countWaiting } = await import('../../../lib/ao/team/outbox.js');
+      return res.status(200).json({ ...board, emails_waiting: await countWaiting().catch(() => 0) });
     }
     if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'Method not allowed' });
 

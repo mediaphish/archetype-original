@@ -477,7 +477,7 @@ function TypingIndicator({ label = null, agent = 'auto' }) {
   );
 }
 
-const TEAM_NAMES = { auto: 'Auto', jot: 'Jot', reach: 'Reach', producer: 'Producer' };
+const TEAM_NAMES = { auto: 'Auto', jot: 'Jot', reach: 'Reach', producer: 'Cam' };
 
 /** A background task's assignment or pass, shown as a team note rather than as Bart's words. */
 function TeamTaskNote({ message }) {
@@ -1836,7 +1836,7 @@ function ThreadSidebar({
             { key: 'auto', name: 'Auto', role: 'CMO', run: () => onNewThread?.() },
             { key: 'jot', name: 'Jot', role: 'Writer', run: () => (onNewAgentThread ? onNewAgentThread('jot') : onNewThread?.()) },
             { key: 'reach', name: 'Reach', role: 'Publicist', run: () => (onNewAgentThread ? onNewAgentThread('reach') : onNewThread?.()) },
-            { key: 'producer', name: 'Producer', role: 'Podcast', run: () => (onNewAgentThread ? onNewAgentThread('producer') : onNewThread?.()) },
+            { key: 'producer', name: 'Cam', role: 'Producer', run: () => (onNewAgentThread ? onNewAgentThread('producer') : onNewThread?.()) },
           ].map((m) => (
             <button
               key={m.key}
@@ -2019,7 +2019,7 @@ export default function AutoV2Panel({ onNavigate, className,
       try {
         const res = await fetch('/api/ao/team/tasks?limit=40');
         const json = await res.json().catch(() => ({}));
-        if (alive && res.ok && json.ok) setTeamNeedsCount((json.needs_bart || []).length);
+        if (alive && res.ok && json.ok) setTeamNeedsCount((json.needs_bart || []).length + (Number(json.emails_waiting) || 0));
       } catch (_) {}
     };
     check();
@@ -2963,7 +2963,7 @@ export default function AutoV2Panel({ onNavigate, className,
   const startNewThread = useCallback(async (agentArg) => {
     if (startingNew || sending || loading) return;
     const agent = typeof agentArg === 'string' ? agentArg : null;
-    const who = agent === 'jot' ? 'Jot' : agent === 'reach' ? 'Reach' : agent === 'producer' ? 'the Producer' : null;
+    const who = agent === 'jot' ? 'Jot' : agent === 'reach' ? 'Reach' : agent === 'producer' ? 'Cam' : null;
     const ok = window.confirm(
       who
         ? `Start a conversation with ${who}? This chat will be set aside (not deleted).`
@@ -3928,7 +3928,7 @@ export default function AutoV2Panel({ onNavigate, className,
             { key: 'team', label: teamNeedsCount > 0 ? `Team board (${teamNeedsCount} need${teamNeedsCount === 1 ? 's' : ''} you)` : 'Team board', run: () => setTeamOpen(true) },
             { key: 'jot', label: 'Talk to Jot', run: () => startNewThread('jot') },
             { key: 'reach', label: 'Talk to Reach', run: () => startNewThread('reach') },
-            { key: 'producer', label: 'Talk to the Producer', run: () => startNewThread('producer') },
+            { key: 'producer', label: 'Talk to Cam', run: () => startNewThread('producer') },
           ].map((item) => (
             <button
               key={item.key}
