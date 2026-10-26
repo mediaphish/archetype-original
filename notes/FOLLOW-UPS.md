@@ -56,14 +56,14 @@ wait with this. (Private Archy per client was built 2026-10-24 as a web page.)
   Not yet seen with a real recording.
 - Tiers (rising leaders / season / ongoing): access levels, from the
   2026-10-23 brainstorm table.
-- Test rows to remove when Bart is done looking: "Jordan Test" and "Riley Test"
-  in Auto > Clients (both email bart+...@archetypeoriginal.com).
 
 ### Smaller items
 - Shorten the rising leaders form (page promises "a short note"; form has nine questions).
 - Site visitor stats are off (needs Bart's OK to turn on).
 
 ## Done
+
+- 2026-10-26 Journal posts always go live at 6:00am Central (ready before the 9:30 launch posts); Wednesday's moved from 8:00. Approved reshares keep their time only if it is a Friday; the Trust reshare moved to Fri Nov 6. Test people Jordan Test and Riley Test deleted.
 - 2026-10-25 Infographics: four more designs (pyramid of up to seven stages with an optional This week box, lessons, pillars, comparison table). Hard rule: nothing borrowed from the examples Bart shares. A word check (lib/ao/infographicOriginality.js) and a second reader send borrowed or reworded lines back to the writer; after three tries the graphic is refused. The same rule is in the team's instructions.
 - 2026-10-24 Infographic posts (3 a week, Bart approves each): built from one published piece each, drawn by the site in brand fonts (lib/ao/infographicCanvas.js; layouts framework, paths, myths), waiting in Auto > Queue with editable captions, Approve / Redo / Set aside. Approved ones post Tue, Wed, Thu at 12:30 Central on all five channels. A weekday job keeps three waiting. Reference images in notes/reference-images/ are inspiration only and are never given to the writer.
 - 2026-10-24 Transcripts arrive on their own: Zoom cloud recordings by webhook; Wispr Flow and Echo emailed to bart+transcripts@archetypeoriginal.com (picked up by the Gmail sync script). Unmatched ones wait in "Transcripts to match" on Clients.

@@ -195,7 +195,13 @@ export async function approveOrDiscardReshare(action, slug) {
     const planned = [];
     for (const row of pendingRows) {
       const existing = row.scheduled_at ? new Date(row.scheduled_at).getTime() : NaN;
-      const keepExisting = Number.isFinite(existing) && existing > keepFloor;
+      // Only a real reshare day counts as planned. 2026-10-26: a time filled in
+      // automatically when the reshare was made (a Tuesday) was kept on approve,
+      // and the reshare skipped the Friday rule (Bart: "Resurface is a Friday task").
+      const chicagoDow = Number.isFinite(existing)
+        ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(new Date(existing).toLocaleDateString('en-US', { timeZone: 'America/Chicago', weekday: 'short' }))
+        : -1;
+      const keepExisting = Number.isFinite(existing) && existing > keepFloor && RESHARE_DAYS.includes(chicagoDow);
       planned.push({
         id: row.id,
         platform: row.platform,
