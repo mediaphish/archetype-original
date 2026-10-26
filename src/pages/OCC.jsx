@@ -144,18 +144,18 @@ export default function OCC() {
           <div className="text-lg leading-relaxed">
             <DashList>
               <DashItem>
-                <a href="mailto:bart@archetypeoriginal.com" className="underline decoration-[#DB0812] underline-offset-4">
+                <a href="mailto:bart@archetypeoriginal.com" className="text-[#2B2929] no-underline hover:underline active:underline decoration-[#A8A9AD] underline-offset-4">
                   bart@archetypeoriginal.com
                 </a>
               </DashItem>
               <DashItem>
-                <a href="tel:+14173880680" className="underline decoration-[#DB0812] underline-offset-4">
+                <a href="tel:+14173880680" className="text-[#2B2929] no-underline hover:underline active:underline decoration-[#A8A9AD] underline-offset-4">
                   (417) 388-0680
                 </a>
               </DashItem>
               {SOCIAL.map((s) => (
                 <DashItem key={s.label}>
-                  <a href={s.href} target="_blank" rel="noopener noreferrer" className="underline decoration-[#DB0812] underline-offset-4">
+                  <a href={s.href} target="_blank" rel="noopener noreferrer" className="text-[#2B2929] no-underline hover:underline active:underline decoration-[#A8A9AD] underline-offset-4">
                     Archetype Original on {s.label}
                   </a>
                 </DashItem>
