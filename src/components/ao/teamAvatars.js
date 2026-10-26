@@ -19,5 +19,7 @@ function initialAvatar(letter) {
 export function avatarFor(agent) {
   if (TEAM_AVATARS[agent]) return TEAM_AVATARS[agent];
   if (agent === 'producer') return initialAvatar('P');
+  // Red has no art yet (2026-10-26).
+  if (agent === 'editor') return initialAvatar('R');
   return TEAM_AVATARS.auto;
 }

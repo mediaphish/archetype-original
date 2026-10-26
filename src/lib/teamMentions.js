@@ -3,7 +3,7 @@
  * two to the same answers). Bart, 2026-10-25: "Can we do an "@Reach" type
  * thing to bring them in?"
  */
-const MENTION_NAMES = { ada: 'auto', jot: 'jot', vox: 'reach', cam: 'producer', producer: 'producer' };
+const MENTION_NAMES = { ada: 'auto', jot: 'jot', vox: 'reach', cam: 'producer', producer: 'producer', red: 'editor' };
 
 export function mentionedAgents(message) {
   const text = String(message || '');
@@ -11,14 +11,14 @@ export function mentionedAgents(message) {
   const add = (k) => {
     if (k && !out.includes(k)) out.push(k);
   };
-  const lead = text.match(/^\s*(ada|jot|vox|cam)\s*[,:]/i);
+  const lead = text.match(/^\s*(ada|jot|vox|cam|red)\s*[,:]/i);
   if (lead) add(MENTION_NAMES[lead[1].toLowerCase()]);
-  const re = /(^|[^\w@])@(ada|jot|vox|cam|producer|team)\b/gi;
+  const re = /(^|[^\w@])@(ada|jot|vox|cam|red|producer|team)\b/gi;
   let m;
   while ((m = re.exec(text))) {
     const word = m[2].toLowerCase();
     // @team brings in everyone, Ada first (2026-10-26, Phase 1).
-    if (word === 'team') ['auto', 'jot', 'reach', 'producer'].forEach(add);
+    if (word === 'team') ['auto', 'jot', 'reach', 'producer', 'editor'].forEach(add);
     else add(MENTION_NAMES[word]);
   }
   return out;
@@ -29,6 +29,7 @@ export const MENTION_CHOICES = [
   { key: 'jot', handle: 'Jot', role: 'Writer' },
   { key: 'reach', handle: 'Vox', role: 'Publicist' },
   { key: 'producer', handle: 'Cam', role: 'Producer' },
+  { key: 'editor', handle: 'Red', role: 'Editor' },
   { key: 'team', handle: 'team', role: 'Everyone' },
 ];
 

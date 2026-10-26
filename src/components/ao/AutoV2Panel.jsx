@@ -483,7 +483,7 @@ function TypingIndicator({ label = null, agent = 'auto' }) {
   );
 }
 
-const TEAM_NAMES = { auto: 'Ada', jot: 'Jot', reach: 'Vox', producer: 'Cam' };
+const TEAM_NAMES = { auto: 'Ada', jot: 'Jot', reach: 'Vox', producer: 'Cam', editor: 'Red' };
 
 /** A background task's assignment or pass, shown as a team note rather than as Bart's words. */
 function TeamTaskNote({ message }) {
@@ -1927,8 +1927,9 @@ export function ThreadSidebar({
               { key: 'jot', name: 'Jot', role: 'Writer' },
               { key: 'reach', name: 'Vox', role: 'Publicist' },
               { key: 'producer', name: 'Cam', role: 'Producer' },
+              { key: 'editor', name: 'Red', role: 'Editor' },
             ].map((m) => (
-              <div key={m.key} className="flex flex-col items-center w-12" title={`${m.name}, ${m.role}. Bring them in with @${m.name}.`}>
+              <div key={m.key} className="flex flex-col items-center w-10" title={`${m.name}, ${m.role}. Bring them in with @${m.name}.`}>
                 <img
                   src={avatarFor(m.key)}
                   alt=""
