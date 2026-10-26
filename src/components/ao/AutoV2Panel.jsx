@@ -3662,9 +3662,25 @@ export default function AutoV2Panel({ onNavigate, className,
           await teammateTurn(teammate, `[TEAM] Bart brought ${name} in too. ${name}, add your part to Bart's last message above. Do not repeat what was already said, and do not speak for anyone else.`);
         }
 
+        // Ada runs the team: a teammate she brings in by name in her reply
+        // ("@Jot, take the outline") answers next, in their own bubble.
+        // One level only, so teammates never set each other off in a loop.
+        const answeredBy = (() => {
+          const list = Array.isArray(json.messages) ? json.messages : [];
+          for (let k = list.length - 1; k >= 0; k -= 1) if (list[k].role === 'assistant') return list[k].meta?.agent || 'auto';
+          return 'auto';
+        })();
+        const handedTo = mentionedAgents(String(json.assistant_message || '').replace(/^\s*\w+:\s*/, ' ')).filter(
+          (k) => k !== answeredBy && !named.includes(k)
+        );
+        for (const teammate of handedTo) {
+          const name = TEAM_NAMES[teammate] || 'Ada';
+          await teammateTurn(teammate, `[TEAM] ${name}, ${TEAM_NAMES[answeredBy] || 'Ada'} brought you in above. Do your part of what was asked, as yourself, and do not speak for anyone else.`);
+        }
+
         // The whole team is in every thread: when nobody was named, anyone
         // with something real to add speaks up (Phase 1, 2026-10-26).
-        if (!named.length && replyThreadId) {
+        if (!named.length && !handedTo.length && replyThreadId) {
           try {
             const r = await fetch('/api/ao/team/speak-up', {
               method: 'POST',
