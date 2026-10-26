@@ -256,6 +256,15 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: stored.error || 'Could not save submission.' });
     }
 
+    // Every guest is a contact in the CRM from the moment they sign up. A CRM
+    // hiccup must never fail their submission.
+    try {
+      const { addGuestAsContact } = await import('../../lib/calendly/podcastContacts.js');
+      await addGuestAsContact(stored.guest);
+    } catch (err) {
+      console.warn('[guest-intake] could not add the guest to the CRM:', err?.message || err);
+    }
+
     const from = process.env.CONTACT_FROM;
     const to = contactFormRecipient();
     if (!process.env.RESEND_API_KEY || !from) {

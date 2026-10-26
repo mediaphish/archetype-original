@@ -17,6 +17,13 @@ export default async function handler(req, res) {
   if (!cronSecret || provided !== cronSecret) return res.status(401).json({ ok: false, error: 'Unauthorized' });
 
   try {
+    // Keep every guest in the CRM as a contact, in case one slipped in another way.
+    try {
+      const { syncPodcastGuestsToCrm } = await import('../../../lib/calendly/podcastContacts.js');
+      await syncPodcastGuestsToCrm();
+    } catch (err) {
+      console.warn('[producer-intake] CRM sync skipped:', err?.message || err);
+    }
     const list = await listPodcastGuests();
     if (!list.ok) return res.status(500).json(list);
     const waiting = list.guests.filter((g) => !g.prepared && g.release_agreed);
