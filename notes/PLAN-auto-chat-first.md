@@ -266,6 +266,16 @@ instead of waiting for all of them.
 These are real choices with different outcomes. Everything else I will
 decide and explain as I go.
 
+Answered 2026-10-26:
+- **Names:** Auto is the whole system. The team is Ada (Marketing Director,
+  keeps Auto's picture), Jot (writer), Vox (publicist, formerly Reach) and Cam
+  (producer). Only @Ada, @Jot, @Vox and @Cam; the old @ names are gone. Live.
+- **How Auto reaches him:** push notifications on his phone. Auto is added to
+  the iPhone home screen from Safari, gets its own icon, and sends real
+  notifications that open the right thread. No App Store. Built in Phase 3.
+
+Still open:
+
 1. **Names.** Keep Auto, Jot, Reach and Cam, or rename some now (it is
    easier before the team is in every channel)?
 2. **How loud.** Break-ins by email for urgent things only, or also a phone
