@@ -20,8 +20,13 @@ const SOCIAL = [
   { label: 'Facebook', href: 'https://www.facebook.com/archetypeoriginal' },
   { label: 'Instagram', href: 'https://www.instagram.com/archetypeoriginal' },
   { label: 'X', href: 'https://x.com/archetypeog' },
-  { label: 'YouTube', href: 'https://www.youtube.com/@aovideolibrary' },
+  // The footer's YouTube link (youtube.com/@aovideolibrary) returns "not found",
+  // so it is left out here.
 ];
+
+// The deck's type: Rubik Bold for headings and quotes, Nunito Sans for labels
+// and body text (Bart, 2026-10-25: "fonts need to align with the presentation").
+const display = "font-['Rubik',sans-serif] font-bold";
 
 function openArchy() {
   window.dispatchEvent(new CustomEvent('ao-open-chat'));
@@ -48,24 +53,30 @@ function DashItem({ children }) {
 
 export default function OCC() {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-white font-inter text-[#2B2929]">
+    <div className="min-h-screen overflow-x-hidden bg-white font-['Nunito_Sans',sans-serif] text-[#2B2929]">
       <Helmet>
         <title>People First Leadership | Archetype Original</title>
         <meta name="robots" content="noindex, nofollow" />
         <meta name="googlebot" content="noindex, nofollow" />
         <meta name="description" content="People First Leadership, a talk by Bart Paden at Ozark Christian College." />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&family=Rubik:wght@700&display=swap"
+        />
       </Helmet>
 
       <main>
         <header className="mx-auto max-w-2xl px-5 pb-10 pt-12 sm:px-8 sm:pt-16">
           <img src="/brand/archetype-original-lockup.svg" alt="Archetype Original" className="mb-10 h-10 w-auto" />
-          <h1 className="font-playfair text-4xl leading-[1.08] text-[#2B2929] sm:text-5xl">People First Leadership</h1>
+          <h1 className={`${display} text-4xl leading-[1.08] text-[#2B2929] sm:text-5xl`}>People First Leadership</h1>
           <p className="mt-3 text-base text-[#6B6B6B]">Ozark Christian College, October 26, 2026</p>
         </header>
 
         <section className="mx-auto max-w-2xl px-5 pb-12 sm:px-8">
           <figure>
-            <blockquote className="font-playfair text-2xl leading-snug text-[#2B2929] sm:text-3xl">
+            <blockquote className={`${display} text-2xl leading-snug text-[#2B2929] sm:text-3xl`}>
               “If you grow people, you grow the organization. If you use people, you lose it.”
             </blockquote>
             <figcaption className="mt-4 text-sm font-semibold text-[#DB0812]">Bart Paden</figcaption>
@@ -93,9 +104,9 @@ export default function OCC() {
         <section className="bg-[#E1DED8]">
           <div className="mx-auto max-w-2xl px-5 py-12 sm:px-8">
             <p className={`${eyebrow} mb-5 text-[#2B2929]`}>Take this with you</p>
-            <p className="font-playfair text-3xl leading-tight text-[#2B2929] sm:text-4xl">Faith. Curiosity. Humility.</p>
+            <p className={`${display} text-3xl leading-tight text-[#2B2929] sm:text-4xl`}>Faith. Curiosity. Humility.</p>
             <p className={`${eyebrow} mb-2 mt-10 text-[#2B2929]`}>One question for the week</p>
-            <p className="font-playfair text-2xl leading-snug text-[#DB0812] sm:text-3xl">Who did I make better this week?</p>
+            <p className={`${display} text-2xl leading-snug text-[#DB0812] sm:text-3xl`}>Who did I make better this week?</p>
           </div>
         </section>
 
@@ -103,7 +114,7 @@ export default function OCC() {
           <div className="mx-auto max-w-2xl px-5 py-12 sm:px-8">
             <p className={`${eyebrow} mb-5 text-[#A8A9AD]`}>In Greenleaf’s words</p>
             <figure>
-              <blockquote className="font-playfair text-xl leading-relaxed text-white sm:text-2xl">
+              <blockquote className={`${display} text-xl leading-relaxed text-white sm:text-2xl`}>
                 “The servant-leader is servant first… It begins with the natural feeling that one wants to serve, to serve
                 first. Then conscious choice brings one to aspire to lead.”
               </blockquote>
@@ -126,7 +137,7 @@ export default function OCC() {
 
         <section className="mx-auto max-w-2xl px-5 pb-12 sm:px-8">
           <p className={`${eyebrow} mb-5 text-[#A8A9AD]`}>Keep the conversation going</p>
-          <p className="mb-4 font-playfair text-2xl text-[#2B2929]">Bart Paden</p>
+          <p className={`${display} mb-4 text-2xl text-[#2B2929]`}>Bart Paden</p>
           <div className="text-lg leading-relaxed">
             <DashList>
               <DashItem>
