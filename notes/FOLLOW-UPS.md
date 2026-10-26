@@ -13,6 +13,19 @@ No different than in my company as we self organized around a project."
 Then: "Auto is my Slack with my Team." So the model is Slack: channels per
 project or topic, everyone in them, threads, @mentions, and the team posting
 updates there instead of only answering.
+Then, the full picture (Bart, 2026-10-25): "Projects needs to be part of it.
+I could interact with any of the tabs in Auto as a chat." Examples he gave:
+- A thread asking for quote card metrics: Auto answers with charts, Cam and
+  Reach talk design and content for social, Jot does a post mortem on a
+  journal entry that flopped.
+- A thread asking for an update on Reshares or Quote Cards to spot check
+  quality.
+- Auto breaks in on its own: a podcast episode is blowing up; Reach is pulled
+  in to build on it. "Two way communication."
+- "All in chat. No dashboard. But I could call for a dashboard in chat!"
+(He may rename some teammates.) So: chat is the front door to everything in
+Auto; screens become cards shown inside a message (charts, the Queue items,
+a dashboard) on request; the team starts threads when something needs Bart.
 Today each teammate (Auto, Jot, Reach, Cam) has its own chats, and @mentions
 bring one in. To plan with Bart before building: who answers by default, when
 a teammate speaks up unasked (only with something real to add), how to keep
