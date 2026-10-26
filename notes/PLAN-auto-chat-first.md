@@ -219,6 +219,7 @@ Each phase is usable on its own, so Bart gets value from the first one
 instead of waiting for all of them.
 
 ### Phase 1: one conversation, the whole team
+**Built 2026-10-26.** Channels, threads in channels, the lead answers, the speak-up check (at most two, usually nobody), @team, and links to the tabs. Not yet seen signed in by Bart.
 - Channels and threads in Auto's chat, with the standing channels above.
 - Every thread includes the whole team; one answers, others speak up only
   with something real; @mentions and @team.
