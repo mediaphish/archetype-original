@@ -22,6 +22,7 @@ import TeamBoard from './TeamBoard.jsx';
 import ChatMarkdown from './ChatMarkdown.jsx';
 import { avatarFor } from './teamAvatars.js';
 import { channelOfThread, groupByChannel } from '../../lib/channels.js';
+import { splitBySpeaker } from '../../lib/speakerSplit.js';
 import { speakUpMessage } from '../../lib/speakUpMessage.js';
 import { mentionedAgents, MENTION_CHOICES, pendingMention } from '../../lib/teamMentions.js';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
@@ -549,7 +550,7 @@ function ReplyLinks({ message, onNavigate }) {
   );
 }
 
-function MessageBubble({ message, onNavigate }) {
+export function MessageBubble({ message, onNavigate }) {
   const isUser = message.role === 'user';
   const raw = String(message.content || '');
   const agentKey = !isUser && message.meta?.agent && message.meta.agent !== 'auto' ? message.meta.agent : null;
@@ -571,62 +572,77 @@ function MessageBubble({ message, onNavigate }) {
 
   if (!text && !message.meta?.image_url && !reshareImageUrl) return null;
 
-  return (
-    <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-      {isUser ? (
-        <div
-          className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-semibold select-none bg-gray-900 text-white"
-          style={{ userSelect: 'none' }}
-          aria-hidden="true"
-        >
-          B
-        </div>
-      ) : (
-        <img
-          src={avatarFor(agentKey || 'auto')}
-          alt={TEAM_NAMES[agentKey || 'auto']}
-          title={TEAM_NAMES[agentKey || 'auto']}
-          className="w-8 h-8 rounded-full flex-shrink-0 object-cover bg-orange-50 border border-orange-100 select-none"
-          draggable={false}
-        />
-      )}
-      <div
-        data-quotable={isUser ? undefined : '1'}
-        className={`
-          max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap
-          ${isUser
-            ? message.meta?.failed
-              ? 'bg-red-900 text-white rounded-tr-sm opacity-70'
-              : 'bg-gray-900 text-white rounded-tr-sm'
-            : 'bg-gray-50 text-gray-900 border border-gray-200 rounded-tl-sm'
-          }
-        `}
-      >
-        {message.meta?.image_url && (
+  // One bubble per teammate, like a real group chat (2026-10-26).
+  const parts = isUser ? [{ agent: null, text }] : splitBySpeaker(text, agentKey || 'auto');
+  const segments = parts.length ? parts : [{ agent: agentKey || 'auto', text: '' }];
+
+  const bubble = (seg, i) => {
+    const who = isUser ? null : seg.agent || 'auto';
+    return (
+      <div key={i} className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+        {isUser ? (
+          <div
+            className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-semibold select-none bg-gray-900 text-white"
+            style={{ userSelect: 'none' }}
+            aria-hidden="true"
+          >
+            B
+          </div>
+        ) : (
           <img
-            src={message.meta.image_url}
-            alt=""
-            className="rounded-lg mb-2 max-w-full max-h-48 object-contain"
+            src={avatarFor(who)}
+            alt={TEAM_NAMES[who]}
+            title={TEAM_NAMES[who]}
+            className="w-8 h-8 rounded-full flex-shrink-0 object-cover bg-orange-50 border border-orange-100 select-none"
+            draggable={false}
           />
         )}
-        {isUser ? text : <div className="whitespace-normal">{<ChatMarkdown text={text} />}</div>}
-        {reshareImageUrl ? (
-          <a
-            href={reshareImageUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block mt-3"
+        <div className="max-w-[75%] min-w-0">
+          {!isUser && segments.length > 1 ? (
+            <p className="mb-1 text-[11px] font-semibold text-gray-500">{TEAM_NAMES[who]}</p>
+          ) : null}
+          <div
+            data-quotable={isUser ? undefined : '1'}
+            className={`
+              rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap
+              ${isUser
+                ? message.meta?.failed
+                  ? 'bg-red-900 text-white rounded-tr-sm opacity-70'
+                  : 'bg-gray-900 text-white rounded-tr-sm'
+                : 'bg-gray-50 text-gray-900 border border-gray-200 rounded-tl-sm'
+              }
+            `}
           >
-            <img
-              src={reshareImageUrl}
-              alt="Reshare image preview"
-              className="rounded-lg w-full h-auto block border border-gray-200"
-            />
-          </a>
-        ) : null}
+            {i === 0 && message.meta?.image_url && (
+              <img
+                src={message.meta.image_url}
+                alt=""
+                className="rounded-lg mb-2 max-w-full max-h-48 object-contain"
+              />
+            )}
+            {isUser ? seg.text : <div className="whitespace-normal">{<ChatMarkdown text={seg.text} />}</div>}
+            {i === segments.length - 1 && reshareImageUrl ? (
+              <a
+                href={reshareImageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block mt-3"
+              >
+                <img
+                  src={reshareImageUrl}
+                  alt="Reshare image preview"
+                  className="rounded-lg w-full h-auto block border border-gray-200"
+                />
+              </a>
+            ) : null}
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
+
+  if (segments.length === 1) return bubble(segments[0], 0);
+  return <div className="space-y-3">{segments.map(bubble)}</div>;
 }
 
 function QuoteCardPreview({ content }) {
