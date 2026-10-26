@@ -5,6 +5,17 @@ When something here gets built, move it to "Done" with the date.
 
 ## Open
 
+### Auto: every chat is a group chat (Bart, 2026-10-25, not started)
+"I don't think we need separate chats for the agents in Auto. Every chat can
+be a full group chat with everyone being able to speak up at will or on
+request. It brings all the experience we have to the table for every project.
+No different than in my company as we self organized around a project."
+Today each teammate (Auto, Jot, Reach, Cam) has its own chats, and @mentions
+bring one in. To plan with Bart before building: who answers by default, when
+a teammate speaks up unasked (only with something real to add), how to keep
+replies from piling up on a phone, and what happens to the existing separate
+chats.
+
 ### Reshares: auto-approve still off (2026-10-24)
 Reshares now use only Bart's approved photos (public/images/reshare-backgrounds/,
 listed with their open side in lib/ao/reshareBackgrounds.js), untouched, with
