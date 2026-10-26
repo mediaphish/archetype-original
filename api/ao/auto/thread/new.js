@@ -8,6 +8,7 @@ import { runAutoChat } from '../../../../lib/ao/autoV2.js';
 import { getScheduleContext } from '../../../../lib/ao/getScheduleContext.js';
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
 import { AGENTS, normalizeAgent } from '../../../../lib/ao/team/agents.js';
+import { getChannel } from '../../../../lib/ao/team/channels.js';
 
 // A conversation opened directly with a teammate starts with them, in their
 // own voice, instead of Auto's orientation.
@@ -27,12 +28,19 @@ export default async function handler(req, res) {
 
   try {
     const thread = await startNewAutoThread(auth.email);
-    const agent = normalizeAgent(req.body?.agent);
+    // A thread started in a channel belongs to it, and the channel's lead
+    // answers by default (notes/PLAN-auto-chat-first.md, Phase 1).
+    const channel = req.body?.channel ? await getChannel(auth.email, String(req.body.channel)) : null;
+    const agent = normalizeAgent(req.body?.agent || channel?.lead);
+    if (channel) {
+      thread.state = { ...(thread.state || {}), channel: channel.key };
+      await supabaseAdmin.from('ao_auto_threads').update({ state: thread.state }).eq('id', thread.id);
+    }
 
     if (agent !== 'auto') {
       await supabaseAdmin
         .from('ao_auto_threads')
-        .update({ title: AGENTS[agent].name, state: { ...(thread.state || {}), agent } })
+        .update({ title: channel ? `#${channel.name}` : AGENTS[agent].name, state: { ...(thread.state || {}), agent } })
         .eq('id', thread.id);
       await addAutoMessage({
         threadId: thread.id,

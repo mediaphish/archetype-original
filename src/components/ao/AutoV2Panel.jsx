@@ -21,6 +21,8 @@ import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import TeamBoard from './TeamBoard.jsx';
 import ChatMarkdown from './ChatMarkdown.jsx';
 import { avatarFor } from './teamAvatars.js';
+import { channelOfThread, groupByChannel } from '../../lib/channels.js';
+import { speakUpMessage } from '../../lib/speakUpMessage.js';
 import { mentionedAgents, MENTION_CHOICES, pendingMention } from '../../lib/teamMentions.js';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
 import StagedJournalPanel from './StagedJournalPanel.jsx';
@@ -504,12 +506,17 @@ function TeamTaskNote({ message }) {
 const QUEUE_TOOLS = ['trigger_reshare', 'generate_quote_card', 'generate_designed_card', 'generate_plate_card'];
 const WEEK_TOOLS = ['schedule_captions', 'schedule_journal_publish', 'reach_move_post', 'reach_week', 'publish_journal'];
 
+// Replies that used the CRM link to it, so Bart never has to go looking (2026-10-26).
+const CRM_TOOLS = ['crm_today', 'crm_people', 'crm_person', 'crm_update', 'crm_add_contact'];
+
 function ReplyLinks({ message, onNavigate }) {
   const used = Array.isArray(message.meta?.tools_used) ? message.meta.tools_used : [];
   const queue = used.some((t) => QUEUE_TOOLS.includes(t));
   const week = used.some((t) => WEEK_TOOLS.includes(t));
   const team = used.includes('assign_task');
-  if (!onNavigate || (!queue && !week && !team)) return null;
+  const crm = used.some((t) => CRM_TOOLS.includes(t));
+  const emails = used.includes('draft_email');
+  if (!onNavigate || (!queue && !week && !team && !crm && !emails)) return null;
   const chip = 'text-xs font-medium px-2.5 py-1 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50';
   return (
     <div className="mt-2 flex flex-wrap gap-2 pl-11">
@@ -526,6 +533,16 @@ function ReplyLinks({ message, onNavigate }) {
       {team ? (
         <button type="button" className={chip} onClick={() => message.__openTeam?.()}>
           Team board
+        </button>
+      ) : null}
+      {emails ? (
+        <button type="button" className={chip} onClick={() => onNavigate('/ao/library/review-queue#emails')}>
+          Emails waiting
+        </button>
+      ) : null}
+      {crm ? (
+        <button type="button" className={chip} onClick={() => onNavigate('/ao/crm')}>
+          Open the CRM
         </button>
       ) : null}
     </div>
@@ -1598,7 +1615,7 @@ function DotsVerticalIcon({ className = 'w-4 h-4' }) {
   );
 }
 
-function ThreadSidebar({
+export function ThreadSidebar({
   threads,
   archivedThreads,
   activeThreadId,
@@ -1610,8 +1627,14 @@ function ThreadSidebar({
   onRefresh,
   className = '',
   showHeader = true,
+  channels = null,
+  onNewInChannel = null,
+  onMoveThread = null,
+  onNewChannel = null,
 }) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [openChannels, setOpenChannels] = useState({});
+  const [movingId, setMovingId] = useState(null);
   const [showOlder, setShowOlder] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
@@ -1655,6 +1678,18 @@ function ThreadSidebar({
     [archivedThreads, showArchived, filterBySearch]
   );
 
+  const byChannel = useMemo(() => {
+    const grouped = groupByChannel(visibleMain);
+    // A thread whose channel is not listed (a project set aside) shows under #general, never nowhere.
+    const known = new Set([...(channels?.standing || []), ...(channels?.projects || [])].map((c) => c.key));
+    for (const k of Object.keys(grouped)) {
+      if (known.size && !known.has(k)) {
+        grouped.general = [...(grouped.general || []), ...grouped[k]];
+        delete grouped[k];
+      }
+    }
+    return grouped;
+  }, [visibleMain, channels]);
   const { pinned, today, previous7Days, older } = useMemo(
     () => bucketThreadsByRecency(visibleMain),
     [visibleMain]
@@ -1786,12 +1821,12 @@ function ThreadSidebar({
                 e.stopPropagation();
                 setOpenMenuId((prev) => (prev === thread.id ? null : thread.id));
               }}
-              className="p-1.5 rounded-md text-gray-400 opacity-0 group-hover:opacity-100 hover:text-gray-700 hover:bg-gray-100 transition-opacity"
+              className="p-1.5 rounded-md text-gray-400 opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:text-gray-700 hover:bg-gray-100 transition-opacity"
             >
               <DotsVerticalIcon />
             </button>
             {openMenuId === thread.id && (
-              <div className="absolute right-0 top-full z-50 mt-1 w-36 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+              <div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
                 <button
                   type="button"
                   className="w-full text-left px-3 py-2 text-xs text-gray-700 hover:bg-gray-50"
@@ -1810,6 +1845,34 @@ function ThreadSidebar({
                 >
                   {thread.pinned ? 'Unpin' : 'Pin'}
                 </button>
+                {onMoveThread && channels ? (
+                  movingId === thread.id ? (
+                    <div className="max-h-56 overflow-y-auto border-t border-gray-100 py-1">
+                      {[...(channels.standing || []), ...(channels.projects || [])].map((c) => (
+                        <button
+                          key={c.key}
+                          type="button"
+                          className={`w-full text-left px-3 py-1.5 text-xs hover:bg-gray-50 ${channelOfThread(thread) === c.key ? 'font-semibold text-gray-900' : 'text-gray-700'}`}
+                          onClick={async () => {
+                            setOpenMenuId(null);
+                            setMovingId(null);
+                            await onMoveThread(thread.id, c.key);
+                          }}
+                        >
+                          # {c.name}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="w-full text-left px-3 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                      onClick={() => setMovingId(thread.id)}
+                    >
+                      Move to…
+                    </button>
+                  )
+                ) : null}
                 <button
                   type="button"
                   className="w-full text-left px-3 py-2 text-xs text-red-600 hover:bg-red-50"
@@ -1839,34 +1902,27 @@ function ThreadSidebar({
     <div className={`flex flex-col min-h-0 bg-gray-50 ${className}`}>
       {showHeader && (
         <div className="px-3 pt-3 pb-3 border-b border-gray-200 flex-shrink-0">
-          <p className="px-1 mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Team</p>
-          {[
-            { key: 'auto', name: 'Ada', role: 'Marketing Director', run: () => onNewThread?.() },
-            { key: 'jot', name: 'Jot', role: 'Writer', run: () => (onNewAgentThread ? onNewAgentThread('jot') : onNewThread?.()) },
-            { key: 'reach', name: 'Vox', role: 'Publicist', run: () => (onNewAgentThread ? onNewAgentThread('reach') : onNewThread?.()) },
-            { key: 'producer', name: 'Cam', role: 'Producer', run: () => (onNewAgentThread ? onNewAgentThread('producer') : onNewThread?.()) },
-          ].map((m) => (
-            <button
-              key={m.key}
-              type="button"
-              onClick={m.run}
-              title={`Start a conversation with ${m.name}`}
-              className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-left hover:bg-white transition-colors"
-            >
-              <img
-                src={avatarFor(m.key)}
-                alt=""
-                aria-hidden="true"
-                className="w-8 h-8 rounded-full flex-shrink-0 object-cover bg-orange-50 border border-orange-100"
-                draggable={false}
-              />
-              <span className="flex-1 min-w-0">
-                <span className="block text-sm font-medium text-gray-900 leading-tight">{m.name}</span>
-                <span className="block text-[11px] text-gray-500 leading-tight">{m.role}</span>
-              </span>
-              <PlusIcon />
-            </button>
-          ))}
+          <p className="px-1 mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Team, in every thread</p>
+          <div className="flex items-start justify-between px-1">
+            {[
+              { key: 'auto', name: 'Ada', role: 'Marketing' },
+              { key: 'jot', name: 'Jot', role: 'Writer' },
+              { key: 'reach', name: 'Vox', role: 'Publicist' },
+              { key: 'producer', name: 'Cam', role: 'Producer' },
+            ].map((m) => (
+              <div key={m.key} className="flex flex-col items-center w-12" title={`${m.name}, ${m.role}. Bring them in with @${m.name}.`}>
+                <img
+                  src={avatarFor(m.key)}
+                  alt=""
+                  aria-hidden="true"
+                  className="w-9 h-9 rounded-full object-cover bg-orange-50 border border-orange-100"
+                  draggable={false}
+                />
+                <span className="mt-1 text-[11px] font-medium text-gray-800 leading-none">{m.name}</span>
+                <span className="text-[10px] text-gray-500 leading-tight">{m.role}</span>
+              </div>
+            ))}
+          </div>
           {onOpenTeam ? (
             <button
               type="button"
@@ -1905,6 +1961,65 @@ function ThreadSidebar({
           <p className="text-xs text-gray-400 px-4 py-3">No conversations yet.</p>
         )}
 
+        {channels && !searchQuery.trim() ? (
+          <>
+            {pinned.length > 0 && renderSection('Pinned', pinned)}
+            {[
+              ['Channels', channels.standing || []],
+              ['Projects', channels.projects || []],
+            ].map(([label, list]) => (
+              <div key={label} className="mb-3">
+                <div className="flex items-center justify-between px-4 py-1.5">
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">{label}</p>
+                  {label === 'Projects' && onNewChannel ? (
+                    <button type="button" onClick={onNewChannel} className="text-[11px] font-semibold text-gray-500 hover:text-gray-900" aria-label="New project channel">
+                      + New
+                    </button>
+                  ) : null}
+                </div>
+                {list.map((c) => {
+                  const items = (byChannel[c.key] || []).filter((t) => !t.pinned);
+                  const open = !!openChannels[c.key];
+                  const shown = open ? items : items.slice(0, 3);
+                  const hasActive = items.some((t) => t.id === activeThreadId);
+                  return (
+                    <div key={c.key} className="mb-1">
+                      <div className={`group flex items-center gap-2 px-3 py-1.5 ${hasActive ? 'text-gray-900' : 'text-gray-700'}`}>
+                        <img src={avatarFor(c.lead)} alt="" aria-hidden="true" className="w-5 h-5 rounded-full object-cover bg-orange-50 flex-shrink-0" draggable={false} />
+                        <span className="flex-1 min-w-0 truncate text-sm font-semibold" title={c.purpose}>
+                          # {c.name}
+                        </span>
+                        {items.length ? <span className="text-[11px] text-gray-400">{items.length}</span> : null}
+                        {onNewInChannel ? (
+                          <button
+                            type="button"
+                            onClick={() => onNewInChannel(c.key)}
+                            aria-label={`New thread in ${c.name}`}
+                            title={`New thread in #${c.name}`}
+                            className="min-w-[32px] min-h-[32px] inline-flex items-center justify-center rounded-md text-gray-500 hover:bg-white hover:text-gray-900"
+                          >
+                            <PlusIcon />
+                          </button>
+                        ) : null}
+                      </div>
+                      {shown.map(renderThreadRow)}
+                      {items.length > 3 ? (
+                        <button
+                          type="button"
+                          onClick={() => setOpenChannels((o) => ({ ...o, [c.key]: !open }))}
+                          className="w-full text-left px-4 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-800"
+                        >
+                          {open ? 'Show fewer' : `Show ${items.length - 3} more`}
+                        </button>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </>
+        ) : (
+          <>
         {pinned.length > 0 && renderSection('Pinned', pinned)}
         {renderSection('Today', today)}
         {renderSection('Previous 7 days', previous7Days)}
@@ -1920,6 +2035,8 @@ function ThreadSidebar({
             </button>
             {showOlder && older.map(renderThreadRow)}
           </div>
+        )}
+          </>
         )}
 
         <div className="mt-2 border-t border-gray-200 pt-2">
@@ -1952,6 +2069,7 @@ export default function AutoV2Panel({ onNavigate, className,
 }) {
   const [messages, setMessages] = useState([]);
   const [threads, setThreads] = useState([]);
+  const [channels, setChannels] = useState(null);
   const [archivedThreads, setArchivedThreads] = useState([]);
   const [activeThreadId, setActiveThreadId] = useState(null);
   useEffect(() => {
@@ -2790,8 +2908,13 @@ export default function AutoV2Panel({ onNavigate, className,
     try {
       const [sessionRes, draftsRes] = await Promise.all([
         fetch('/api/ao/auto/session'),
-        fetch('/api/ao/auto/drafts?limit=40'),
+        fetch('/api/ao/auto/drafts?limit=80'),
       ]);
+      // Channels (Phase 1). The chat still works if they cannot load.
+      fetch('/api/ao/channels')
+        .then((r) => r.json())
+        .then((j) => (j?.ok ? setChannels({ standing: j.standing || [], projects: j.projects || [] }) : null))
+        .catch(() => {});
       const sessionJson = await sessionRes.json().catch(() => ({}));
       const draftsJson = await draftsRes.json().catch(() => ({}));
 
@@ -2968,11 +3091,12 @@ export default function AutoV2Panel({ onNavigate, className,
     [loadThread]
   );
 
-  const startNewThread = useCallback(async (agentArg) => {
+  const startNewThread = useCallback(async (agentArg, channelKey = null) => {
     if (startingNew || sending || loading) return;
     const agent = typeof agentArg === 'string' ? agentArg : null;
     const who = agent === 'jot' ? 'Jot' : agent === 'reach' ? 'Vox' : agent === 'producer' ? 'Cam' : null;
-    const ok = window.confirm(
+    // A thread started in a channel needs no warning: nothing is set aside that cannot be reopened.
+    const ok = channelKey ? true : window.confirm(
       who
         ? `Start a conversation with ${who}? This chat will be set aside (not deleted).`
         : 'Start a new conversation? This chat will be set aside (not deleted). You will see an empty thread so you can begin fresh.'
@@ -3002,7 +3126,7 @@ export default function AutoV2Panel({ onNavigate, className,
       const res = await fetch('/api/ao/auto/thread/new', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(agent ? { agent } : {}),
+        body: JSON.stringify({ ...(agent ? { agent } : {}), ...(channelKey ? { channel: channelKey } : {}) }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || 'Could not start a new chat');
@@ -3134,6 +3258,40 @@ export default function AutoV2Panel({ onNavigate, className,
   }, []);
 
   // Who this conversation is with: the last teammate who answered in it.
+  const activeThread = useMemo(() => (threads || []).find((t) => t.id === activeThreadId) || null, [threads, activeThreadId]);
+  const activeChannelKey = activeThread ? channelOfThread(activeThread) : 'general';
+  const activeChannel = useMemo(
+    () => [...(channels?.standing || []), ...(channels?.projects || [])].find((c) => c.key === activeChannelKey) || null,
+    [channels, activeChannelKey]
+  );
+
+  const moveThread = useCallback(
+    async (threadId, key) => {
+      try {
+        const res = await fetch('/api/ao/channels', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'move', thread_id: threadId, key }) });
+        const json = await res.json().catch(() => ({}));
+        if (!json.ok) throw new Error(json.error || 'Could not move it');
+        await loadThreadList();
+      } catch (e) {
+        setError(e.message || 'Could not move it');
+      }
+    },
+    [loadThreadList]
+  );
+
+  const newChannel = useCallback(async () => {
+    const name = window.prompt('Name the new project channel');
+    if (!name || !name.trim()) return;
+    try {
+      const res = await fetch('/api/ao/channels', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'create', name: name.trim() }) });
+      const json = await res.json().catch(() => ({}));
+      if (!json.ok) throw new Error(json.error || 'Could not make the channel');
+      await loadThreadList();
+    } catch (e) {
+      setError(e.message || 'Could not make the channel');
+    }
+  }, [loadThreadList]);
+
   const activeAgent = useMemo(() => {
     for (let i = messages.length - 1; i >= 0; i -= 1) {
       const m = messages[i];
@@ -3450,17 +3608,16 @@ export default function AutoV2Panel({ onNavigate, className,
         if (json.thread?.id) setActiveThreadId(json.thread.id);
 
         // Everyone else Bart @mentioned answers in turn, each in their own voice.
-        const brought = mentionedAgents(outgoing).slice(1);
-        for (const teammate of brought) {
-          const name = TEAM_NAMES[teammate] || 'Ada';
+        const replyThreadId = json.thread?.id || activeThreadId || null;
+        const teammateTurn = async (teammate, message) => {
           try {
             const r = await fetch('/api/ao/auto/chat', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                thread_id: json.thread?.id || activeThreadId || null,
+                thread_id: replyThreadId,
                 agent: teammate,
-                message: `[TEAM] Bart brought ${name} in too. ${name}, add your part to Bart's last message above. Do not repeat what was already said, and do not speak for anyone else.`,
+                message,
                 message_meta: { team_note: true },
               }),
             });
@@ -3481,6 +3638,32 @@ export default function AutoV2Panel({ onNavigate, className,
             }
           } catch (_) {
             // One teammate not answering must not undo the reply already shown.
+          }
+        };
+        const named = mentionedAgents(outgoing);
+        for (const teammate of named.slice(1)) {
+          const name = TEAM_NAMES[teammate] || 'Ada';
+          await teammateTurn(teammate, `[TEAM] Bart brought ${name} in too. ${name}, add your part to Bart's last message above. Do not repeat what was already said, and do not speak for anyone else.`);
+        }
+
+        // The whole team is in every thread: when nobody was named, anyone
+        // with something real to add speaks up (Phase 1, 2026-10-26).
+        if (!named.length && replyThreadId) {
+          try {
+            const r = await fetch('/api/ao/team/speak-up', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ thread_id: replyThreadId }),
+            });
+            const up = await r.json().catch(() => ({}));
+            for (const sp of Array.isArray(up?.speakers) ? up.speakers : []) {
+              setWaitingNote(`${sp.name} has something to add…`);
+              await teammateTurn(sp.agent, speakUpMessage(sp));
+            }
+          } catch (_) {
+            // The answer stands on its own if the check does not run.
+          } finally {
+            setWaitingNote('');
           }
         }
 
@@ -3969,9 +4152,9 @@ export default function AutoV2Panel({ onNavigate, className,
           </button>
           {[
             { key: 'team', label: teamNeedsCount > 0 ? `Team board (${teamNeedsCount} need${teamNeedsCount === 1 ? 's' : ''} you)` : 'Team board', run: () => setTeamOpen(true) },
-            { key: 'jot', label: 'Talk to Jot', run: () => startNewThread('jot') },
-            { key: 'reach', label: 'Talk to Vox', run: () => startNewThread('reach') },
-            { key: 'producer', label: 'Talk to Cam', run: () => startNewThread('producer') },
+            { key: 'writing', label: 'New in #writing', run: () => startNewThread(null, 'writing') },
+            { key: 'social', label: 'New in #social', run: () => startNewThread(null, 'social') },
+            { key: 'podcast', label: 'New in #podcast', run: () => startNewThread(null, 'podcast') },
           ].map((item) => (
             <button
               key={item.key}
@@ -4051,6 +4234,10 @@ export default function AutoV2Panel({ onNavigate, className,
           onOpenTeam={() => setTeamOpen(true)}
           teamNeedsCount={teamNeedsCount}
           onRefresh={loadThreadList}
+          channels={channels}
+          onNewInChannel={(key) => startNewThread(null, key)}
+          onMoveThread={moveThread}
+          onNewChannel={newChannel}
           className="w-56 flex-shrink-0 border-r border-gray-200"
         />
       )}
@@ -4063,6 +4250,10 @@ export default function AutoV2Panel({ onNavigate, className,
           onSelectThread={handleSelectThread}
           onNewThread={startNewThread}
           onRefresh={loadThreadList}
+          channels={channels}
+          onNewInChannel={(key) => startNewThread(null, key)}
+          onMoveThread={moveThread}
+          onNewChannel={newChannel}
           className="flex-1 w-full min-h-0 overflow-y-auto"
           showHeader={false}
         />
@@ -4152,9 +4343,11 @@ export default function AutoV2Panel({ onNavigate, className,
                 {contextPill}
               </span>
             ) : isMobile ? null : (
-              <span className="flex items-center gap-2 text-sm font-medium text-gray-600">
-                <img src={avatarFor(activeAgent)} alt="" aria-hidden="true" className="w-6 h-6 rounded-full object-cover bg-orange-50" draggable={false} />
-                {TEAM_NAMES[activeAgent] || 'Ada'}
+              <span className="flex items-center gap-2 text-sm font-medium text-gray-600" title={activeChannel?.purpose || ''}>
+                {activeChannel ? <span className="font-semibold text-gray-900"># {activeChannel.name}</span> : null}
+                <img src={avatarFor(activeChannel?.lead || activeAgent)} alt="" aria-hidden="true" className="w-6 h-6 rounded-full object-cover bg-orange-50" draggable={false} />
+                {TEAM_NAMES[activeChannel?.lead || activeAgent] || 'Ada'}
+                <span className="text-xs font-normal text-gray-400">leads, whole team in</span>
               </span>
             )}
           </div>
@@ -4410,7 +4603,7 @@ export default function AutoV2Panel({ onNavigate, className,
                 e.target.style.height = `${Math.min(e.target.scrollHeight, 160)}px`;
               }}
               onKeyDown={handleKeyDown}
-              placeholder={`Talk to ${TEAM_NAMES[activeAgent] || 'Ada'}… (@ brings in a teammate)`}
+              placeholder={`${activeChannel ? `Message #${activeChannel.name}` : `Talk to ${TEAM_NAMES[activeAgent] || 'Ada'}`}… (@ brings in a teammate, @team everyone)`}
               rows={1}
               disabled={sending || startingNew}
               className="flex-1 bg-transparent text-sm text-gray-900 placeholder-gray-400 resize-none outline-none leading-relaxed disabled:opacity-50"

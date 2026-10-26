@@ -1485,6 +1485,14 @@
       "dest": "/api/ao/auto/chat.js"
     },
     {
+      "src": "/api/ao/channels",
+      "dest": "/api/ao/channels.js"
+    },
+    {
+      "src": "/api/ao/team/speak-up",
+      "dest": "/api/ao/team/speak-up.js"
+    },
+    {
       "src": "/api/ao/team/tasks",
       "dest": "/api/ao/team/tasks.js"
     },

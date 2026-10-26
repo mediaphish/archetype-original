@@ -13,9 +13,14 @@ export function mentionedAgents(message) {
   };
   const lead = text.match(/^\s*(ada|jot|vox|cam)\s*[,:]/i);
   if (lead) add(MENTION_NAMES[lead[1].toLowerCase()]);
-  const re = /(^|[^\w@])@(ada|jot|vox|cam|producer)\b/gi;
+  const re = /(^|[^\w@])@(ada|jot|vox|cam|producer|team)\b/gi;
   let m;
-  while ((m = re.exec(text))) add(MENTION_NAMES[m[2].toLowerCase()]);
+  while ((m = re.exec(text))) {
+    const word = m[2].toLowerCase();
+    // @team brings in everyone, Ada first (2026-10-26, Phase 1).
+    if (word === 'team') ['auto', 'jot', 'reach', 'producer'].forEach(add);
+    else add(MENTION_NAMES[word]);
+  }
   return out;
 }
 
@@ -24,6 +29,7 @@ export const MENTION_CHOICES = [
   { key: 'jot', handle: 'Jot', role: 'Writer' },
   { key: 'reach', handle: 'Vox', role: 'Publicist' },
   { key: 'producer', handle: 'Cam', role: 'Producer' },
+  { key: 'team', handle: 'team', role: 'Everyone' },
 ];
 
 /** The @word being typed at the end of the box, if any. */
