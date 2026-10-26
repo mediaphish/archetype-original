@@ -7,11 +7,52 @@ import { avatarFor } from './teamAvatars.js';
  * leave from his own Gmail within about five minutes.
  */
 
+/** Whether the email was read against what is on record about the person. */
+function AccuracyNote({ accuracy, onRecheck, busy }) {
+  const ok = accuracy?.checked && !(accuracy.issues || []).length;
+  const issues = accuracy?.issues || [];
+  return (
+    <div className={`rounded-lg border px-3 py-2 text-sm ${ok ? 'border-green-200 bg-green-50 text-green-900' : 'border-amber-200 bg-amber-50 text-amber-900'}`}>
+      {ok ? <p>Checked against what is on record. Nothing unsupported.</p> : null}
+      {!accuracy ? <p>Not checked against the record yet.</p> : null}
+      {accuracy && !accuracy.checked ? <p>{accuracy.note || 'The accuracy check could not run.'}</p> : null}
+      {issues.length ? (
+        <ul className="list-none space-y-1 pl-0">
+          {issues.map((i, k) => (
+            <li key={k}>
+              <span className="font-semibold">"{i.quote}"</span> {i.why}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      <button type="button" disabled={busy} onClick={onRecheck} className="mt-1 text-xs font-semibold underline disabled:opacity-50">
+        {busy ? 'Checking…' : 'Check again'}
+      </button>
+    </div>
+  );
+}
+
 function EmailCard({ email, onDone }) {
   const [subject, setSubject] = useState(email.subject);
   const [body, setBody] = useState(email.body);
   const [busy, setBusy] = useState('');
   const [result, setResult] = useState(null);
+  const [accuracy, setAccuracy] = useState(email.accuracy || null);
+
+  const recheck = async () => {
+    setBusy('recheck');
+    try {
+      const res = await fetch('/api/ao/team/outbox', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'recheck', id: email.id, subject, body }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (json.ok) setAccuracy(json.accuracy);
+    } finally {
+      setBusy('');
+    }
+  };
 
   const act = async (action) => {
     setBusy(action);
@@ -48,6 +89,7 @@ function EmailCard({ email, onDone }) {
       <input value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
       <label className="block text-[11px] font-semibold uppercase tracking-wide text-gray-500">Email</label>
       <textarea value={body} onChange={(e) => setBody(e.target.value)} className="min-h-[200px] w-full rounded-lg border border-gray-300 p-3 text-sm leading-relaxed" />
+      <AccuracyNote accuracy={accuracy} onRecheck={recheck} busy={busy === 'recheck'} />
       <p className="text-xs text-gray-500">Sends from bart@archetypeoriginal.com as "{email.agent_name}, for Bart Paden". Replies come to your inbox.</p>
       {result ? (
         <p className="text-sm font-medium text-gray-800">{result}</p>
