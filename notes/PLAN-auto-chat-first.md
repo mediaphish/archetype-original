@@ -276,14 +276,10 @@ Answered 2026-10-26:
 
 Still open:
 
-1. **Names.** Keep Auto, Jot, Reach and Cam, or rename some now (it is
-   easier before the team is in every channel)?
-2. **How loud.** Break-ins by email for urgent things only, or also a phone
-   notification (that needs the app question you tabled on 2026-10-24)?
-3. **Quiet hours.** 9 PM to 7 AM Central, or different?
-4. **First projects.** Which two or three projects should get their own
+1. **Quiet hours.** 9 PM to 7 AM Central, or different?
+2. **First projects.** Which two or three projects should get their own
    channel first?
-5. **The tabs.** Keep Library, Queue, Podcast and CRM as tabs while chat
+3. **The tabs.** Keep Library, Queue, Podcast and CRM as tabs while chat
    grows, or move faster to chat only?
 
 ## Guardrails that do not change
