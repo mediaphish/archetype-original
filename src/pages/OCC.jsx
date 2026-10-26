@@ -29,6 +29,9 @@ const SOCIAL = [
 const display = "font-['Rubik',sans-serif] font-bold";
 
 function openArchy() {
+  // On a phone Archy opens in place of the page, at the top. The button sits
+  // low on the page, so go to the top first or the student sees a blank screen.
+  window.scrollTo({ top: 0, behavior: 'instant' });
   window.dispatchEvent(new CustomEvent('ao-open-chat'));
 }
 
