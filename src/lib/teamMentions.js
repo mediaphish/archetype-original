@@ -3,7 +3,7 @@
  * two to the same answers). Bart, 2026-10-25: "Can we do an "@Reach" type
  * thing to bring them in?"
  */
-const MENTION_NAMES = { ada: 'auto', auto: 'auto', jot: 'jot', vox: 'reach', reach: 'reach', cam: 'producer', producer: 'producer' };
+const MENTION_NAMES = { ada: 'auto', jot: 'jot', vox: 'reach', cam: 'producer', producer: 'producer' };
 
 export function mentionedAgents(message) {
   const text = String(message || '');
@@ -11,9 +11,9 @@ export function mentionedAgents(message) {
   const add = (k) => {
     if (k && !out.includes(k)) out.push(k);
   };
-  const lead = text.match(/^\s*(ada|auto|jot|vox|reach|cam)\s*[,:]/i);
+  const lead = text.match(/^\s*(ada|jot|vox|cam)\s*[,:]/i);
   if (lead) add(MENTION_NAMES[lead[1].toLowerCase()]);
-  const re = /(^|[^\w@])@(ada|auto|jot|vox|reach|cam|producer)\b/gi;
+  const re = /(^|[^\w@])@(ada|jot|vox|cam|producer)\b/gi;
   let m;
   while ((m = re.exec(text))) add(MENTION_NAMES[m[2].toLowerCase()]);
   return out;
