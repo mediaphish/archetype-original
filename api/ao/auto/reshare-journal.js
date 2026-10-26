@@ -18,7 +18,7 @@ import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 import { RESHARE_DAYS, nextReshareDay } from '../../../lib/ao/postingCadence.js';
-import { pickBackground, backgroundFile } from '../../../lib/ao/reshareBackgrounds.js';
+import { chooseBackgroundFor, backgroundFile } from '../../../lib/ao/reshareBackgrounds.js';
 import { composeReshareInBartStyle } from '../../../lib/ao/generateReshareCardImage.js';
 import { writeReshareBrief } from '../../../lib/ao/reshareBrief.js';
 import {
@@ -232,10 +232,10 @@ async function recentBackgroundIds() {
 }
 
 async function generateReshareImage(title, pullQuote, mood, attribution) {
-  void title;
   void mood;
   if (!pullQuote) return null;
-  const background = pickBackground(await recentBackgroundIds());
+  // The photo whose mood fits the quote, at random among those not used lately.
+  const background = await chooseBackgroundFor({ title, quote: pullQuote, recentIds: await recentBackgroundIds() });
   const backgroundPath = path.join(process.cwd(), backgroundFile(background.id));
   if (!fs.existsSync(backgroundPath)) {
     console.error(`[reshare-journal] Background not found on disk: ${backgroundPath}`);
