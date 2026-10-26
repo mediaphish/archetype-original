@@ -343,8 +343,10 @@ function downloadTranscriptAsMd(messages, threadId) {
   const lines = [`# Auto Transcript — ${dateStr}\n`];
 
   for (const msg of visibleMessages) {
-    const role = msg.role === 'user' ? '**Bart**' : '**Auto**';
     const raw = String(msg.content || '');
+    // Each speaker by name, and the team's own notes never shown as Bart's (2026-10-26).
+    const teamNote = msg.role === 'user' && (msg.meta?.team_note || msg.meta?.team_task || /^\s*\[(TEAM|TEAM TASK|SYSTEM)[\] ]/.test(raw));
+    const role = teamNote ? '**Team note**' : msg.role === 'user' ? '**Bart**' : `**${TEAM_NAMES[msg.meta?.agent || 'auto'] || 'Ada'}**`;
     // Strip internal tags that are not useful in a transcript
     const clean = raw
       .replace(/\[IMAGES_GENERATED\][\s\S]*?\[\/IMAGES_GENERATED\]/g, '[Images generated]')
@@ -3657,7 +3659,12 @@ export default function AutoV2Panel({ onNavigate, className,
           }
         };
         const named = mentionedAgents(outgoing);
-        for (const teammate of named.slice(1)) {
+        // @team means the whole team is listening, not that everyone answers:
+        // the first answers, the rest go through the speak-up check below
+        // (2026-10-26: two teammates answered an editing request about their own areas).
+        const teamCall = /(^|[^\w@])@team\b/i.test(outgoing);
+        const explicit = teamCall ? mentionedAgents(outgoing.replace(/@team\b/gi, ' ')).filter((k) => k !== named[0]) : named.slice(1);
+        for (const teammate of explicit) {
           const name = TEAM_NAMES[teammate] || 'Ada';
           await teammateTurn(teammate, `[TEAM] Bart brought ${name} in too. ${name}, add your part to Bart's last message above. Do not repeat what was already said, and do not speak for anyone else.`);
         }
@@ -3680,7 +3687,7 @@ export default function AutoV2Panel({ onNavigate, className,
 
         // The whole team is in every thread: when nobody was named, anyone
         // with something real to add speaks up (Phase 1, 2026-10-26).
-        if (!named.length && !handedTo.length && replyThreadId) {
+        if ((!named.length || teamCall) && !handedTo.length && replyThreadId) {
           try {
             const r = await fetch('/api/ao/team/speak-up', {
               method: 'POST',
@@ -3743,6 +3750,17 @@ export default function AutoV2Panel({ onNavigate, className,
 
   const handleKeyDown = useCallback(
     (e) => {
+      // While the @ list is open, Enter or Tab picks the first match instead of
+      // sending (2026-10-26: Bart's message went out cut off at "@tea").
+      if ((e.key === 'Enter' || e.key === 'Tab') && !e.shiftKey) {
+        const typed = pendingMention(e.currentTarget?.value ?? input);
+        const pick = typed !== null ? MENTION_CHOICES.find((c) => c.handle.toLowerCase().startsWith(typed)) : null;
+        if (pick) {
+          e.preventDefault();
+          setInput((prev) => prev.replace(/@(\w*)$/, `@${pick.handle} `));
+          return;
+        }
+      }
       if (e.key === 'Enter') {
         if (isMobile) {
           // On mobile, Enter always inserts a newline.
@@ -3755,7 +3773,7 @@ export default function AutoV2Panel({ onNavigate, className,
         }
       }
     },
-    [sendMessage, isMobile]
+    [sendMessage, isMobile, input]
   );
 
   const handleApprove = useCallback(() => {
