@@ -147,7 +147,7 @@ app.
   (or a phone notification once that is set up), so he does not have to
   keep Auto open.
 - **Quiet hours and a daily limit**, so it never turns into noise: nothing
-  between 9 PM and 7 AM Central except failures, and the small stuff rolls
+  between 10 PM and 9 AM Central on weekdays (10 AM on weekends) except failures, and the small stuff rolls
   into the morning #today thread instead of its own interruption.
 - **Two way.** Every break-in can be answered in the thread ("yes, do it",
   "pull in Reach", "not now"), and the team acts on the answer.
@@ -273,13 +273,16 @@ Answered 2026-10-26:
 - **How Auto reaches him:** push notifications on his phone. Auto is added to
   the iPhone home screen from Safari, gets its own icon, and sends real
   notifications that open the right thread. No App Store. Built in Phase 3.
+- **Quiet hours (Central):** 10 PM to 9 AM on weekday mornings (Monday to
+  Friday), 10 PM to 10 AM on Saturday and Sunday mornings. Failures (a post
+  that did not go out, a job that stopped) still come through; everything
+  else waits for the morning #today thread.
 
 Still open:
 
-1. **Quiet hours.** 9 PM to 7 AM Central, or different?
-2. **First projects.** Which two or three projects should get their own
+1. **First projects.** Which two or three projects should get their own
    channel first?
-3. **The tabs.** Keep Library, Queue, Podcast and CRM as tabs while chat
+2. **The tabs.** Keep Library, Queue, Podcast and CRM as tabs while chat
    grows, or move faster to chat only?
 
 ## Guardrails that do not change
