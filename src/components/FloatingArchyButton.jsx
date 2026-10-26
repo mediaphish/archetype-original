@@ -290,7 +290,9 @@ export default function FloatingArchyButton() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={floatingButtonClassName}
+        // On a phone the open chat has its own close button, and this one sat on
+        // top of Send (2026-10-25, checking /occ for Ozark Christian College).
+        className={`${floatingButtonClassName}${!isMd && isOpen ? ' hidden' : ''}`}
         aria-expanded={isOpen}
         aria-controls={isMd ? 'archy-desktop-drawer' : 'archy-mobile-drawer-slot'}
         aria-label={isOpen ? 'Close Archy chat' : 'Chat with Archy'}
