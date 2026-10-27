@@ -5,6 +5,15 @@ When something here gets built, move it to "Done" with the date.
 
 ## Open
 
+### Three more roles Bart is considering (Bart, 2026-10-27, not started)
+"I'm not expecting all of these to be created now, but I do see some value in them."
+- **Bit (IT):** "would only monitor setup and functionality. Anytime something is broken or disconnected it would create a report and either share it directly with you or with me to share with you." Fits the Settings page he wants to show each account's health, and the silent failures found 2026-10-27 (seven quick checks failing for weeks, the caption check reading shortened copies).
+- **Sal (sales):** "looking at opportunities to sell. This would include asking for sales tools, content, etc. that would help me find and close opportunities. I HATE sales, so this could be a huge helper." Must follow the soft, no-pressure rule (see the funnel-without-selling note). Natural home for the client follow-through work Ada carries now, and for #crm.
+- **Faith agent (name not chosen):** devotionals move into Auto within 30 days (a full year written, to be reworked and scheduled to a Facebook Page instead of a Group). Trained on the faith side of the corpus (devotionals, the Biblical Archetype series) to help him find content and tools for leadership in the faith space. The devotional rules move with it: overlap check before adding, real ESV text, his review format.
+
+### Chat for everything (Bart, 2026-10-27)
+"If chat can bring to the table what exists in the tabs on the artifact panel, I'm down. My ultimate goal is chat for everything." Each post step (brief, post, image, schedule, captions, publish) as a card in the conversation with its buttons, so the panel becomes optional.
+
 ### iPhone Duo: two layouts for every screen he uses (Bart, 2026-10-27, not started)
 "I have ordered the iPhone Duo. Across the board, with all of the layouts and
 systems, specifically those that I use, we need to make sure that it flexes to
