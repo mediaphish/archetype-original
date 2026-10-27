@@ -63,3 +63,14 @@ G. Manual post reminders. A push at the planned time with the caption ready to c
 Resulting menu: Auto, Calendar, Podcast, CRM, Settings.
 
 Suggested order: A and B together first (they remove the most hunting), then E, then C and D, then F and G.
+
+## Bart's answers (2026-10-27)
+
+1. As much in chat as possible, even if it is a queue channel.
+2, 3, 4. Moving to chat fixes these. He needs one easy place to see what needs his attention, and chat is it.
+5. "Why cut off? I didn't ask for this." Nothing on his screen cuts messages off. The team was reading short copies (the huddle saw only 1,500 characters of each message; history clipped at 20,000) and reported whole captions and posts as "cut off". Fixed the same day: the team reads full copies, any shortened copy is marked as not a cut-off, and the team rules say so. Fix E no longer includes "never paste long posts in full".
+6. Approval buttons in chat.
+7. Settings has to matter, and settings should be handled in chat when wired right ("Hey @ada, can you make sure all my social channels are set up and functional?").
+8. He posts the two hand-posted channels in the moment, which is why the schedule comes before the captions. Fix G (reminders) is dropped.
+
+Revised plan: a #queue channel in chat where every item waiting on him is a card with Approve, Change and Set aside buttons; the Queue page retires once the channel covers it. Then quieter chat, then Calendar and the cleanup, then settings through chat with a Settings page that shows whether each account is working.
