@@ -5,6 +5,23 @@ When something here gets built, move it to "Done" with the date.
 
 ## Open
 
+### iPhone Duo: two layouts for every screen he uses (Bart, 2026-10-27, not started)
+"I have ordered the iPhone Duo. Across the board, with all of the layouts and
+systems, specifically those that I use, we need to make sure that it flexes to
+be that front screen for pure mobile. Then, when I open up the broader screen,
+it's reorganized specifically for my use case in that device."
+Folded: today's phone layout. Open: a layout made for that size, not a
+stretched phone or a squeezed desktop (for Auto, likely the conversation and
+the post panel side by side, or #queue beside the chat). Plan it once the
+device and its screen sizes are known; check Auto, #queue, CRM, Podcast and
+Settings first.
+
+### #crm as a chat like #queue (Bart, 2026-10-27, not started)
+"The same thing would be applied to a CRM chat, where the team is servicing
+people that I need to communicate with." Like #queue: people waiting on him
+(replies to send, check-ins to approve, follow-ups due) as cards in chat with
+their buttons, so the CRM tab can retire the way the Queue tab did.
+
 ### Auto: every chat is a group chat (Bart, 2026-10-25, not started)
 "I don't think we need separate chats for the agents in Auto. Every chat can
 be a full group chat with everyone being able to speak up at will or on
