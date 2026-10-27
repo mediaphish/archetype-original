@@ -68,12 +68,12 @@ export function resolveArtifactPanelState(msgs = []) {
   const lastAssistant = [...all].reverse().find((m) => String(m?.role || '') === 'assistant');
   const fromLatest = parseArtifact(String(lastAssistant?.content || '')).artifact;
   if (fromLatest) {
-    return { artifact: fromLatest, clear: false, source: 'latest' };
+    return { artifact: keepPostTabs(fromLatest, all), clear: false, source: 'latest' };
   }
 
   const fallback = findLatestArtifactInMessages(all);
   if (fallback) {
-    return { artifact: fallback, clear: false, source: 'fallback' };
+    return { artifact: keepPostTabs(fallback, all), clear: false, source: 'fallback' };
   }
 
   // A teammate worked on a draft that was written in another conversation
@@ -87,6 +87,25 @@ export function resolveArtifactPanelState(msgs = []) {
 
   // Conversational turn with no tags in history — keep existing panel (caller must not clear).
   return { artifact: null, clear: false, source: 'none' };
+}
+
+/**
+ * A journal post's captions belong in that post's Captions tab, never in a
+ * panel of their own. 2026-10-27: Cam sent the caption set as its own panel
+ * item, the post's tabs disappeared, and Bart saw the approved header stacked
+ * over raw caption text: "The used to be dropped into the Captions tab on the
+ * artifact panel. What happened?" When the thread has a journal post, the post
+ * stays in the panel and its Captions tab reads the captions from the chat.
+ */
+export function keepPostTabs(artifact, msgs = []) {
+  if (!artifact || artifact.type !== 'captions') return artifact;
+  const all = Array.isArray(msgs) ? msgs : [];
+  for (const m of [...all].reverse()) {
+    if (String(m?.role || '') !== 'assistant') continue;
+    const { artifact: a } = parseArtifact(String(m.content || ''));
+    if (a && a.type === 'draft') return a;
+  }
+  return findDraftWorkedByTools(all) || artifact;
 }
 
 const DRAFT_TOOLS = new Set([
