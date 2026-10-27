@@ -4501,7 +4501,10 @@ export default function AutoV2Panel({ onNavigate, className,
     if (stage === 'image') {
       sendMessage('Image approved.');
     } else if (stage === 'captions') {
-      sendMessage('Captions approved. Do not schedule anything yet; the schedule is the next approval.');
+      // Schedule comes before Captions (2026-10-27), so the times are already
+      // approved here. The old wording ("the schedule is the next approval")
+      // made the team ask Bart to approve the schedule a second time.
+      sendMessage('Captions approved. The schedule is already approved, so queue the automatic captions at those times now.');
     }
   };
 

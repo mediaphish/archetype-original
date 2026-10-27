@@ -35,3 +35,13 @@ test('a message sent by a button never clears what Bart is typing', () => {
   expect(src).toMatch(/if \(messageText === undefined\) setInput\(''\);/);
   expect(src).not.toMatch(/\n\s+setInput\(''\);\n\s+setMessages\(\(prev\) => \[\.\.\.prev, optimisticMsg\]\)/);
 });
+
+// 2026-10-27: approving captions told the team "the schedule is the next approval",
+// so Bart was asked to approve a schedule he had already approved.
+test('approving captions never asks for the schedule again', () => {
+  const src = require('fs').readFileSync(require('path').join(__dirname, '../AutoV2Panel.jsx'), 'utf8');
+  expect(src).not.toMatch(/sendMessage\('Captions approved\. Do not schedule anything yet/);
+  expect(src).toMatch(/The schedule is already approved, so queue the automatic captions/);
+  const team = require('fs').readFileSync(require('path').join(__dirname, '../../../../lib/ao/team/agents.js'), 'utf8');
+  expect(team).toMatch(/An approval on record stands/);
+});
