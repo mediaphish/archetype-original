@@ -28,3 +28,10 @@ test('shows nothing when no question is open', () => {
   const { container } = render(<PinnedQuestions questions={[]} onYes={() => {}} onAnswer={() => {}} />);
   expect(container.innerHTML).toBe('');
 });
+
+// 2026-10-27: tapping Yes erased the comment Bart was in the middle of typing.
+test('a message sent by a button never clears what Bart is typing', () => {
+  const src = require('fs').readFileSync(require('path').join(__dirname, '../AutoV2Panel.jsx'), 'utf8');
+  expect(src).toMatch(/if \(messageText === undefined\) setInput\(''\);/);
+  expect(src).not.toMatch(/\n\s+setInput\(''\);\n\s+setMessages\(\(prev\) => \[\.\.\.prev, optimisticMsg\]\)/);
+});

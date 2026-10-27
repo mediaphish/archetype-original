@@ -3630,7 +3630,7 @@ export default function AutoV2Panel({ onNavigate, className,
         if (fileSnaps.length > 0) return;
         queueRef.current = [...queueRef.current, textInput.trim()];
         setQueued(queueRef.current);
-        setInput('');
+        if (messageText === undefined) setInput('');
         if (textareaRef.current) textareaRef.current.style.height = '22px';
         return;
       }
@@ -3669,7 +3669,9 @@ export default function AutoV2Panel({ onNavigate, className,
       };
 
       setPendingFiles([]);
-      setInput('');
+      // A message sent by a button (Yes on a pinned question) leaves what Bart
+      // was typing in the box (2026-10-27: tapping Yes erased his comment).
+      if (messageText === undefined) setInput('');
       setMessages((prev) => [...prev, optimisticMsg]);
       sendingRef.current = true;
       setSending(true);
@@ -4006,7 +4008,7 @@ export default function AutoV2Panel({ onNavigate, className,
               for (const teammate of handedTo) {
                 if (!live()) return;
                 const name = TEAM_NAMES[teammate] || 'Ada';
-                await teammateTurn(teammate, `[TEAM] ${name}, ${TEAM_NAMES[answeredBy] || 'Ada'} brought you in above. Do your part of what was asked, as yourself, and do not speak for anyone else.`);
+                await teammateTurn(teammate, `[TEAM] ${name}, ${TEAM_NAMES[answeredBy] || 'Ada'} brought you in above. Do your part of what was asked, as yourself, and do not speak for anyone else. If the post is still waiting on Bart's OK for an earlier step, do not start yours: say in one line that you will pick it up once he approves, and stop.`);
               }
 
               // The whole team is in every thread: when nobody was named, anyone
@@ -4093,7 +4095,7 @@ export default function AutoV2Panel({ onNavigate, className,
             )
         );
         // Restore the input text so the user can retry without retyping.
-        setInput(outgoing);
+        if (messageText === undefined) setInput(outgoing);
       } finally {
         if (stallTimer) clearInterval(stallTimer);
         sendingRef.current = false;
@@ -5003,7 +5005,8 @@ export default function AutoV2Panel({ onNavigate, className,
               }}
               onAnswer={(q) => {
                 dismissQuestion(q);
-                setInput((prev) => `${quotedReply(q.question)}${prev && prev.trim() ? prev : ''}`);
+                // What he was typing stays first; the question is quoted under it.
+                setInput((prev) => `${prev && prev.trim() ? `${prev.replace(/\s*$/, '')}\n\n` : ''}${quotedReply(q.question)}`);
                 focusChatInput();
               }}
             />
