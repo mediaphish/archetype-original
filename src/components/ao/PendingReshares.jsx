@@ -174,7 +174,7 @@ export default function PendingReshares({ onCountChange }) {
                         href={discussUrl({ text: `about the resurface in the Queue, "${reshare.title}"${reshare.pull_quote ? ` (pull quote: "${reshare.pull_quote}")` : ''}: `, topic: `Resurface: ${reshare.title}` })}
                         className="min-h-[44px] inline-flex items-center px-4 text-sm font-semibold text-gray-700 hover:underline"
                       >
-                        Talk it over
+                        Change
                       </a>
                     </>
                   )}

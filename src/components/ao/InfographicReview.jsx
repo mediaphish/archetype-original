@@ -65,7 +65,7 @@ function Item({ item, onDone }) {
             href={discussUrl({ text: `about the infographic "${item.source_title}" waiting in the Queue: `, topic: `Infographic: ${item.source_title}` })}
             className="min-h-[44px] inline-flex items-center px-3 text-sm font-semibold text-gray-700 hover:underline"
           >
-            Talk it over
+            Change
           </a>
         </div>
         {redoOpen ? (

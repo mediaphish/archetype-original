@@ -1509,6 +1509,10 @@
       "dest": "/api/ao/team/outbox.js"
     },
     {
+      "src": "/api/ao/queue",
+      "dest": "/api/ao/queue.js"
+    },
+    {
       "src": "/api/ao/reach/week",
       "dest": "/api/ao/reach/week.js"
     },

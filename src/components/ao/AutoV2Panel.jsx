@@ -45,6 +45,7 @@ import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 import { metricsAlertKeyFor } from '../../lib/metricsAlertKey';
 import { orderDesignImagesNewestFirst } from '../../lib/designImageOrder.js';
 import { KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
+import QueueFeed from './QueueFeed.jsx';
 import {
   MAX_TOTAL_ATTACHMENT_BYTES,
   attachmentOverLimitMessage,
@@ -1712,6 +1713,29 @@ export function TeamFacepile({ members = MENTION_CHOICES.filter((c) => c.key !==
   );
 }
 
+/**
+ * #queue at the top of the sidebar, with the count of what is waiting on Bart
+ * (2026-10-27: "Need a way to easily see what needs my attention.").
+ */
+export function QueueChannelRow({ count = 0, active = false, onOpen }) {
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className={`mx-2 mb-3 flex w-[calc(100%-1rem)] items-center gap-2 rounded-lg px-2 py-2 text-left ${active ? 'bg-white shadow-sm' : 'hover:bg-white'}`}
+    >
+      <span className="flex-1 text-sm font-semibold text-gray-900"># queue</span>
+      {count > 0 ? (
+        <span className="min-w-[22px] rounded-full bg-red-600 px-1.5 py-0.5 text-center text-[11px] font-bold text-white" aria-label={`${count} waiting on you`}>
+          {count}
+        </span>
+      ) : (
+        <span className="text-[11px] text-gray-400">caught up</span>
+      )}
+    </button>
+  );
+}
+
 export function ThreadSidebar({
   threads,
   archivedThreads,
@@ -1728,6 +1752,9 @@ export function ThreadSidebar({
   onNewInChannel = null,
   onMoveThread = null,
   onNewChannel = null,
+  onOpenQueue = null,
+  queueCount = 0,
+  queueOpen = false,
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [openChannels, setOpenChannels] = useState({});
@@ -2041,6 +2068,9 @@ export function ThreadSidebar({
 
         {channels && !searchQuery.trim() ? (
           <>
+            {onOpenQueue ? (
+              <QueueChannelRow count={queueCount} active={queueOpen} onOpen={onOpenQueue} />
+            ) : null}
             {pinned.length > 0 && renderSection('Pinned', pinned)}
             {[
               ['Channels', channels.standing || []],
@@ -2217,6 +2247,31 @@ export default function AutoV2Panel({ onNavigate, className,
   // Bart highlighted to reply to.
   const [teamOpen, setTeamOpen] = useState(false);
   const [teamNeedsCount, setTeamNeedsCount] = useState(0);
+  // #queue (2026-10-27): what is waiting on Bart, opened in place of the chat.
+  const [queueOpen, setQueueOpen] = useState(() => {
+    try {
+      return new URLSearchParams(window.location.search).get('queue') === '1';
+    } catch (_) {
+      return false;
+    }
+  });
+  const [queueCount, setQueueCount] = useState(0);
+  useEffect(() => {
+    let alive = true;
+    const check = async () => {
+      try {
+        const res = await fetch('/api/ao/queue');
+        const json = await res.json().catch(() => ({}));
+        if (alive && res.ok && json.ok) setQueueCount(Number(json.count) || 0);
+      } catch (_) {}
+    };
+    check();
+    const t = setInterval(check, 30000);
+    return () => {
+      alive = false;
+      clearInterval(t);
+    };
+  }, [queueOpen]);
   useEffect(() => {
     let alive = true;
     const check = async () => {
@@ -3194,14 +3249,28 @@ export default function AutoV2Panel({ onNavigate, className,
 
   const handleSelectThread = useCallback(
     async (thread) => {
+      setQueueOpen(false);
       await loadThread(thread);
       setMobileTab('chat');
     },
     [loadThread]
   );
+  const openQueue = useCallback(() => {
+    setQueueOpen(true);
+    setMobileTab('chat');
+  }, []);
+  const openThreadFromQueue = useCallback(
+    (threadId) => {
+      if (!threadId) return;
+      setQueueOpen(false);
+      handleSelectThread({ id: threadId });
+    },
+    [handleSelectThread]
+  );
 
   const startNewThread = useCallback(async (agentArg, channelKey = null) => {
     if (startingNew || sending || loading) return;
+    setQueueOpen(false);
     const agent = typeof agentArg === 'string' ? agentArg : null;
     const who = agent === 'jot' ? 'Jot' : agent === 'reach' ? 'Vox' : agent === 'producer' ? 'Cam' : null;
     // A thread started in a channel needs no warning: nothing is set aside that cannot be reopened.
@@ -4482,9 +4551,12 @@ export default function AutoV2Panel({ onNavigate, className,
           threads={threads}
           archivedThreads={archivedThreads}
           activeThreadId={activeThreadId}
-          onSelectThread={loadThread}
+          onSelectThread={handleSelectThread}
           onNewThread={startNewThread}
           onNewAgentThread={(a) => startNewThread(a)}
+          onOpenQueue={openQueue}
+          queueCount={queueCount}
+          queueOpen={queueOpen}
           onOpenTeam={() => setTeamOpen(true)}
           teamNeedsCount={teamNeedsCount}
           onRefresh={loadThreadList}
@@ -4503,6 +4575,9 @@ export default function AutoV2Panel({ onNavigate, className,
           activeThreadId={activeThreadId}
           onSelectThread={handleSelectThread}
           onNewThread={startNewThread}
+          onOpenQueue={openQueue}
+          queueCount={queueCount}
+          queueOpen={queueOpen}
           onRefresh={loadThreadList}
           channels={channels}
           onNewInChannel={(key) => startNewThread(null, key)}
@@ -4517,11 +4592,21 @@ export default function AutoV2Panel({ onNavigate, className,
         className="flex flex-1 min-h-0 min-w-0 flex-row overflow-hidden"
       >
         <div
-          className={`flex min-h-0 min-w-0 flex-col overflow-hidden ${dividerDragging ? 'select-none' : ''} ${
+          className={`relative flex min-h-0 min-w-0 flex-col overflow-hidden ${dividerDragging ? 'select-none' : ''} ${
             !isMobile && artifactOpen ? '' : 'flex-1'
           }`}
           style={!isMobile && artifactOpen ? { width: `${splitPercent}%`, flexShrink: 0 } : undefined}
         >
+        {queueOpen ? (
+          <div className="absolute inset-0 z-30 flex flex-col bg-white">
+            {isMobile ? (
+              <button type="button" onClick={() => setMobileTab('chats')} className="flex-shrink-0 border-b border-gray-100 px-4 py-2 text-left text-xs font-semibold text-gray-500">
+                ‹ Channels
+              </button>
+            ) : null}
+            <QueueFeed onOpenThread={openThreadFromQueue} onCount={setQueueCount} />
+          </div>
+        ) : null}
         {linkedinTokenWarning && (
           <div className={`flex-shrink-0 flex items-center justify-between gap-3 px-4 py-2 text-xs ${
             linkedinTokenWarning.status === 'expired'
