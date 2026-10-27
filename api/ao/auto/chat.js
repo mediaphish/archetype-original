@@ -2943,6 +2943,27 @@ ${retrievedBlock}
       },
     });
 
+    // Bart's corrections, to anyone on the team, are kept as standing training
+    // for everyone even when the teammate who answered did not save one
+    // (2026-10-27: "when I correct someone on the team ... locked in as
+    // training across the board"). His reply is already on screen by now.
+    try {
+      const used = Array.isArray(streamResult?.toolsUsed) ? streamResult.toolsUsed : [];
+      if (!body?.message_meta && !used.includes('save_note')) {
+        const { captureCorrection } = await import('../../../lib/ao/team/correctionCapture.js');
+        const kept = await captureCorrection({
+          email: auth.email,
+          userMessage,
+          priorMessages,
+          threadId: thread.id,
+          about: thread?.title || null,
+        });
+        if (kept?.saved) console.log('[chat.js] Bart\'s correction kept as a lesson:', kept.how);
+      }
+    } catch (ccErr) {
+      console.warn('[chat.js] correction capture failed (non-fatal):', ccErr?.message || ccErr);
+    }
+
     // Phase 2: capture durable stated preferences from Bart's message into
     // owner-scoped memory (cross-thread). Conservative — misses are OK.
     try {
