@@ -158,7 +158,7 @@ export default function TeamBoard({ onOpenThread, onClose }) {
         {error ? <p className="text-sm text-red-700">{error}</p> : null}
         {!board && !error ? <p className="text-sm text-gray-500">Loading…</p> : null}
         {board?.emails_waiting ? (
-          <a href="/ao/library/review-queue#emails" className="block rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          <a href="/ao/analyst?queue=1" className="block rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
             <span className="font-semibold">{board.emails_waiting} email{board.emails_waiting === 1 ? '' : 's'} waiting on you.</span> Review in the Queue.
           </a>
         ) : null}

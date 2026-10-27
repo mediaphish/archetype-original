@@ -1035,7 +1035,7 @@ export default function Settings() {
               </p>
               <button
                 type="button"
-                onClick={() => handleNavigate('/ao/library/review-queue')}
+                onClick={() => handleNavigate('/ao/analyst?queue=1')}
                 className="mt-3 px-4 py-2 bg-gray-900 text-white text-xs font-semibold rounded-lg hover:bg-gray-700"
               >
                 Open the Queue

@@ -91,6 +91,14 @@ export default function QueueFeed({ onOpenThread, onCount, className = '' }) {
     return () => clearInterval(t);
   }, [load]);
 
+  // The review cards inside save on their own. After any button press here,
+  // check again so the count drops as soon as the item is done (2026-10-27:
+  // "that number never went down").
+  const recheckSoon = useCallback(() => {
+    setTimeout(load, 1500);
+    setTimeout(load, 6000);
+  }, [load]);
+
   const c = data?.counts || {};
   return (
     <div className={`flex min-h-0 flex-1 flex-col bg-white ${className}`}>
@@ -106,7 +114,12 @@ export default function QueueFeed({ onOpenThread, onCount, className = '' }) {
           Refresh
         </button>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+      <div
+        className="min-h-0 flex-1 overflow-y-auto px-4 py-4"
+        onClickCapture={(e) => {
+          if (e.target?.closest?.('button')) recheckSoon();
+        }}
+      >
         <div className="mx-auto max-w-3xl space-y-6">
           {error ? <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p> : null}
           {data && !data.count ? (

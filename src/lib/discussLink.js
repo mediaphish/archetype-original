@@ -13,5 +13,7 @@ export function discussUrl({ text = '', agent = 'auto', topic = '', channel = 's
   return `/ao/analyst?compose=${encodeURIComponent(opener)}${fresh}`;
 }
 
-export const QUEUE_PATH = '/ao/library/review-queue';
+// The Queue page retired into #queue in chat (2026-10-27). The week's plan
+// still lives on the old page until the Calendar replaces it.
+export const QUEUE_PATH = '/ao/analyst?queue=1';
 export const WEEK_PATH = '/ao/library/review-queue#week';

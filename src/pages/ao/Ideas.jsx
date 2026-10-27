@@ -573,7 +573,7 @@ export default function Ideas() {
             </div>
             <button
               type="button"
-              onClick={() => handleNavigate('/ao/library/review-queue')}
+              onClick={() => handleNavigate('/ao/analyst?queue=1')}
               className="min-h-[44px] px-4 py-2 rounded-lg border border-gray-300 bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800"
             >
               Open review queue

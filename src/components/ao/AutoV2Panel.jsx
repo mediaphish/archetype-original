@@ -47,6 +47,7 @@ import { orderDesignImagesNewestFirst } from '../../lib/designImageOrder.js';
 import { KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import QueueFeed from './QueueFeed.jsx';
 import { idleStatus } from '../../lib/teamStatus.js';
+import { openQuestions, quotedReply } from '../../lib/openQuestions.js';
 import {
   MAX_TOTAL_ATTACHMENT_BYTES,
   attachmentOverLimitMessage,
@@ -457,6 +458,62 @@ function PaperclipIcon() {
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
+/**
+ * The team's open questions, pinned above the message box until Bart answers
+ * (2026-10-27: a question scrolled off the screen when the next teammate
+ * spoke). One at a time with "1 of 2" so a phone screen stays calm; Yes
+ * answers it in one tap, Answer quotes it into the box for a fuller reply.
+ */
+export function PinnedQuestions({ questions, onYes, onAnswer, disabled = false }) {
+  const [index, setIndex] = useState(0);
+  const [expanded, setExpanded] = useState(false);
+  const count = questions.length;
+  const i = Math.min(index, count - 1);
+  useEffect(() => setExpanded(false), [i, count]);
+  if (!count) return null;
+  const q = questions[i];
+  return (
+    <div className="mb-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2" role="region" aria-label="Questions waiting on you">
+      <div className="flex items-start gap-2">
+        <img src={avatarFor(q.agent)} alt="" aria-hidden="true" className="mt-0.5 h-6 w-6 flex-shrink-0 rounded-full object-cover" draggable={false} />
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-semibold text-amber-900">
+            {q.name} is waiting on you
+            {count > 1 ? <span className="font-normal text-amber-800">{` · ${i + 1} of ${count}`}</span> : null}
+          </p>
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            className={`mt-0.5 block w-full text-left text-sm leading-snug text-gray-900 ${expanded ? '' : 'line-clamp-2'}`}
+          >
+            {q.question}
+          </button>
+        </div>
+      </div>
+      <div className="mt-2 flex items-center gap-2 pl-8">
+        {q.yesNo ? (
+          <button type="button" disabled={disabled} onClick={() => onYes(q)} className="min-h-[36px] rounded-lg bg-gray-900 px-4 text-sm font-semibold text-white disabled:opacity-50">
+            Yes
+          </button>
+        ) : null}
+        <button type="button" onClick={() => onAnswer(q)} className="min-h-[36px] rounded-lg border border-gray-300 bg-white px-4 text-sm font-semibold text-gray-800">
+          Answer
+        </button>
+        {count > 1 ? (
+          <div className="ml-auto flex items-center gap-1">
+            <button type="button" aria-label="Previous question" disabled={i === 0} onClick={() => setIndex(i - 1)} className="min-h-[36px] min-w-[36px] rounded-lg text-lg text-gray-600 disabled:opacity-30">
+              ‹
+            </button>
+            <button type="button" aria-label="Next question" disabled={i === count - 1} onClick={() => setIndex(i + 1)} className="min-h-[36px] min-w-[36px] rounded-lg text-lg text-gray-600 disabled:opacity-30">
+              ›
+            </button>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 /** The still counterpart to the working animation: nobody is working, and what that means. */
 function IdleStatus({ label }) {
   return (
@@ -550,8 +607,8 @@ function ReplyLinks({ message, onNavigate }) {
   return (
     <div className="mt-2 flex flex-wrap gap-2 pl-11">
       {queue ? (
-        <button type="button" className={chip} onClick={() => onNavigate('/ao/library/review-queue')}>
-          Open in Queue
+        <button type="button" className={chip} onClick={() => onNavigate('/ao/analyst?queue=1')}>
+          Open #queue
         </button>
       ) : null}
       {week ? (
@@ -565,7 +622,7 @@ function ReplyLinks({ message, onNavigate }) {
         </button>
       ) : null}
       {emails ? (
-        <button type="button" className={chip} onClick={() => onNavigate('/ao/library/review-queue#emails')}>
+        <button type="button" className={chip} onClick={() => onNavigate('/ao/analyst?queue=1')}>
           Emails waiting
         </button>
       ) : null}
@@ -2266,7 +2323,21 @@ export default function AutoV2Panel({ onNavigate, className,
       return false;
     }
   });
+  // A link to /ao/analyst?queue=1 while the chat is already open (a teammate's
+  // link, the old Queue menu) opens #queue too.
+  useEffect(() => {
+    const onNav = () => {
+      try {
+        if (new URLSearchParams(window.location.search).get('queue') === '1') setQueueOpen(true);
+      } catch (_) {}
+    };
+    window.addEventListener('popstate', onNav);
+    return () => window.removeEventListener('popstate', onNav);
+  }, []);
   const [queueCount, setQueueCount] = useState(0);
+  // Rechecked when the conversation changes too, so an approval made in a
+  // post's panel takes the number down right away, not up to 30 seconds later.
+  const [queueNudge, setQueueNudge] = useState(0);
   useEffect(() => {
     let alive = true;
     const check = async () => {
@@ -2282,7 +2353,11 @@ export default function AutoV2Panel({ onNavigate, className,
       alive = false;
       clearInterval(t);
     };
-  }, [queueOpen]);
+  }, [queueOpen, queueNudge]);
+  useEffect(() => {
+    const t = setTimeout(() => setQueueNudge((n) => n + 1), 1500);
+    return () => clearTimeout(t);
+  }, [messages.length]);
   useEffect(() => {
     let alive = true;
     const check = async () => {
@@ -2481,6 +2556,7 @@ export default function AutoV2Panel({ onNavigate, className,
 
   const contextPill = useMemo(() => extractContextPill(visibleChatMessages), [visibleChatMessages]);
   const idleLine = useMemo(() => idleStatus(visibleChatMessages), [visibleChatMessages]);
+  const pinnedQuestions = useMemo(() => openQuestions(visibleChatMessages), [visibleChatMessages]);
 
   const hasArtifactContent = useMemo(
     () =>
@@ -4516,7 +4592,7 @@ export default function AutoV2Panel({ onNavigate, className,
             { key: 'transcript', label: 'Download transcript', disabled: visibleChatMessages.length === 0, run: () => downloadTranscriptAsMd(messages, activeThreadId) },
             { key: 'publish', label: generatedImages?.length ? `Publish ${generatedImages.length} cards` : 'Publish cards', disabled: !generatedImages?.length, run: () => publishCards() },
             { key: 'library', label: 'Library', run: () => onNavigate?.('/ao/library') },
-            { key: 'queue', label: 'Queue', run: () => onNavigate?.('/ao/library/review-queue') },
+            { key: 'queue', label: 'Queue', run: () => onNavigate?.('/ao/analyst?queue=1') },
             { key: 'podcast', label: 'Podcast', run: () => onNavigate?.('/ao/podcast') },
             { key: 'settings', label: 'Settings', run: () => onNavigate?.('/ao/settings') },
           ].map((item) => (
@@ -4890,6 +4966,17 @@ export default function AutoV2Panel({ onNavigate, className,
           }}
           {...(isMobile ? composerSwipe : {})}
         >
+          {!queueOpen ? (
+            <PinnedQuestions
+              questions={pinnedQuestions}
+              disabled={sending}
+              onYes={(q) => sendMessageRef.current?.(quotedReply(q.question, 'Yes.'))}
+              onAnswer={(q) => {
+                setInput((prev) => `${quotedReply(q.question)}${prev && prev.trim() ? prev : ''}`);
+                focusChatInput();
+              }}
+            />
+          ) : null}
           {pendingMention(input) !== null ? (
             <div className="mb-2 flex flex-wrap gap-2">
               {MENTION_CHOICES.filter((c) => c.handle.toLowerCase().startsWith(pendingMention(input) || '')).map((c) => (
