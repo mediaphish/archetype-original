@@ -5,8 +5,15 @@
     <link>https://www.archetypeoriginal.com/journal</link>
     <description>Essays on leadership, culture, and accountability by Bart Paden.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 30 Sep 2026 14:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 26 Oct 2026 13:00:35 GMT</lastBuildDate>
     <atom:link href="https://www.archetypeoriginal.com/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The Rehoboam Archetype</title>
+      <link>https://www.archetypeoriginal.com/journal/the-rehoboam-archetype</link>
+      <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/the-rehoboam-archetype</guid>
+      <pubDate>Mon, 26 Oct 2026 13:00:35 GMT</pubDate>
+      <description>Israel waited three days for an answer. They had gathered at Shechem to make Rehoboam king.</description>
+    </item>
     <item>
       <title>I Called Myself Retired</title>
       <link>https://www.archetypeoriginal.com/journal/i-called-myself-retired</link>
@@ -349,13 +356,6 @@
       <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/why-servant-leadership-disrupts-unaccountable-power</guid>
       <pubDate>Thu, 19 Feb 2026 00:00:00 GMT</pubDate>
       <description>Post 7 of the Unaccountable series marks the pivot from diagnosis to disruption, examining how Servant Leadership restores consequence to insulated systems and exposes authority that cannot survive accountability.</description>
-    </item>
-    <item>
-      <title>The Distraction Play</title>
-      <link>https://www.archetypeoriginal.com/journal/the-distraction-play</link>
-      <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/the-distraction-play</guid>
-      <pubDate>Wed, 18 Feb 2026 00:00:00 GMT</pubDate>
-      <description>Narcissistic leaders keep teams busy with noise to avoid accountability. Servant leaders resist constant pivots and focus attention on what truly matters.</description>
     </item>
   </channel>
 </rss>

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-16T22:08:09.705Z",
-  "count": 301,
+  "generated_at": "2026-10-27T18:04:05.552Z",
+  "count": 304,
   "devotionals": [
     {
       "slug": "made-new",
@@ -3011,6 +3011,36 @@
       "summary": "A leader entrusted with people is expected to be spent on them rather than the other way around.",
       "email_summary": "A leader entrusted with people is expected to be spent on them rather than the other way around.",
       "scripture_reference": "2 Corinthians 12:14–15 (ESV)"
+    },
+    {
+      "slug": "a-tomb-for-yourself",
+      "title": "A Tomb for Yourself",
+      "publish_date": "2026-10-29",
+      "date": "2026-10-29",
+      "status": "published",
+      "summary": "Every leader leaves a mark. A steward who carves a monument for himself has decided the position exists for him rather than for the household.",
+      "email_summary": "Every leader leaves a mark. A steward who carves a monument for himself has decided the position exists for him rather than for the household.",
+      "scripture_reference": "Isaiah 22:15–19 (ESV)"
+    },
+    {
+      "slug": "no-ground-for-complaint",
+      "title": "No Ground for Complaint",
+      "publish_date": "2026-10-30",
+      "date": "2026-10-30",
+      "status": "published",
+      "summary": "Stewardship done well is boring under inspection, with no side arrangement to explain and no number that needs context.",
+      "email_summary": "Stewardship done well is boring under inspection, with no side arrangement to explain and no number that needs context.",
+      "scripture_reference": "Daniel 6:3–4 (ESV)"
+    },
+    {
+      "slug": "for-such-a-time-as-this",
+      "title": "For Such a Time as This",
+      "publish_date": "2026-10-31",
+      "date": "2026-10-31",
+      "status": "published",
+      "summary": "The position arrived before the moment did, and keeping silent inside it is also a decision about what the position was for.",
+      "email_summary": "The position arrived before the moment did, and keeping silent inside it is also a decision about what the position was for.",
+      "scripture_reference": "Esther 4:13–14 (ESV)"
     }
   ]
 }
