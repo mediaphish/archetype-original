@@ -32,3 +32,12 @@ test('only the last paragraph counts, and quotes are not questions', () => {
   expect(questionOf('Which of these fits?')).toBe('Which of these fits?');
   expect(openQuestions([{ role: 'assistant', meta: { agent: 'jot' }, content: 'Which of these fits?' }])[0].yesNo).toBe(false);
 });
+
+// 2026-10-27: a status note ending in a post title was pinned as Des's question.
+test('a status note that ends in a title is not a question to Bart', () => {
+  expect(questionOf('The Nov 5 card is waiting on Jot to pick its line from *Who Signs for It?*.')).toBeNull();
+  expect(questionOf('The Nov 5 card is waiting on Jot to pick its line from Who Signs for It?')).toBeNull();
+  expect(questionOf('**Is "Who Signs for It?" approved?** Once you say yes, Vox books it.')).toBe('Is "Who Signs for It?" approved?');
+  expect(questionOf('Bart, which day works?')).toBe('Bart, which day works?');
+  expect(questionOf('Here it is. Want me to move it to Friday?')).toBe('Want me to move it to Friday?');
+});

@@ -45,3 +45,10 @@ test('approving captions never asks for the schedule again', () => {
   const team = require('fs').readFileSync(require('path').join(__dirname, '../../../../lib/ao/team/agents.js'), 'utf8');
   expect(team).toMatch(/An approval on record stands/);
 });
+
+// 2026-10-27: "I closed the artifact panel because it was tied to Josiah. It re-opened on its own."
+test('a closed panel reopens only for something new', () => {
+  const src = require('fs').readFileSync(require('path').join(__dirname, '../AutoV2Panel.jsx'), 'utf8');
+  expect(src).toMatch(/if \(artifactKey && artifactKey !== dismissedPanelRef\.current\.artifact\) signalNewArtifact\(\);/);
+  expect(src).toMatch(/onClose=\{closeArtifactPanel\}/);
+});

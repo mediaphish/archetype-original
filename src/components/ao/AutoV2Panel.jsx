@@ -2648,12 +2648,24 @@ export default function AutoV2Panel({ onNavigate, className,
     focusChatInput();
   }, [loading, startingNew, sending, focusChatInput]);
 
-  useEffect(() => {
-    if (artifact) signalNewArtifact();
-  }, [artifact, signalNewArtifact]);
+  // What was in the panel when Bart closed it. The panel reopens on its own
+  // only for something new, not for the same post or image rebuilt by the
+  // next check for messages (2026-10-27: "I closed the artifact panel because
+  // it was tied to Josiah. It re-opened on its own.").
+  const artifactKey = artifact ? `${artifact.type}|${artifact.slug || resolveDraftArtifactSlug(artifact) || artifact.label || ''}` : null;
+  const latestImageKey = [...generatedImages.map((g) => g?.url || g?.card), ...generatedDesignImages.map((g) => g?.url)].filter(Boolean).slice(-1)[0] || null;
+  const dismissedPanelRef = useRef({ artifact: null, image: null });
+  const closeArtifactPanel = useCallback(() => {
+    dismissedPanelRef.current = { artifact: artifactKey, image: latestImageKey };
+    setArtifactOpen(false);
+  }, [artifactKey, latestImageKey]);
 
   useEffect(() => {
-    if (generatedImages.length > 0 || generatedDesignImages.length > 0) {
+    if (artifactKey && artifactKey !== dismissedPanelRef.current.artifact) signalNewArtifact();
+  }, [artifactKey, signalNewArtifact]);
+
+  useEffect(() => {
+    if ((generatedImages.length > 0 || generatedDesignImages.length > 0) && latestImageKey !== dismissedPanelRef.current.image) {
       signalNewArtifact();
       // Auto-advance to the newest card when new images arrive
       if (generatedImages.length > 0) {
@@ -2661,7 +2673,7 @@ export default function AutoV2Panel({ onNavigate, className,
         setCurrentCardIndex(sorted.length - 1);
       }
     }
-  }, [generatedImages, generatedDesignImages, signalNewArtifact]);
+  }, [generatedImages, generatedDesignImages, latestImageKey, signalNewArtifact]);
 
   useEffect(() => {
     if (!Array.isArray(messages) || messages.length === 0) return;
@@ -5143,7 +5155,7 @@ export default function AutoV2Panel({ onNavigate, className,
             >
               <ArtifactPanel
                 {...artifactPanelProps}
-                onClose={() => setArtifactOpen(false)}
+                onClose={closeArtifactPanel}
               />
             </div>
           </>

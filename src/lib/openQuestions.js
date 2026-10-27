@@ -16,14 +16,24 @@ import { TEAM_NAMES } from './teamStatus.js';
 
 // [TEAM] notes and [TEAM TASK from ...] hand-offs are the system, not Bart.
 const isTeamNote = (m) => Boolean(m?.meta?.team_note) || /^\s*\[TEAM\b/.test(String(m?.content || ''));
+// Same length in and out, so positions found in the masked copy fit the original.
+const squashKeepLength = (t) => String(t || '').replace(/[*_`>]/g, ' ');
 const squash = (t) => String(t || '').replace(/[*_`>]/g, '').replace(/\s+/g, ' ').trim();
 
 const YES_NO = /^(does|do|did|is|are|was|can|could|should|would|will|shall|want|ok|okay|sound|good|ready|happy|any objection|shall|may)\b/i;
 
-/** Hides quoted text (a line of the post, a title) so its "?" is not taken for a question to Bart. */
+/** Hides quoted or italic text (a line of the post, a title) so its "?" is not taken for a question to Bart. */
 function maskQuotes(text) {
-  return text.replace(/"[^"\n]*"|“[^”\n]*”/g, (q) => q.replace(/[^\s]/g, 'x'));
+  return text.replace(/"[^"\n]*"|“[^”\n]*”|(?<!\*)\*(?!\*)[^*\n]+(?<!\*)\*(?!\*)|(?<![\w_])_(?!_)[^_\n]+_(?![\w_])/g, (q) => q.replace(/[^\s]/g, 'x'));
 }
+
+/**
+ * A question to Bart opens like one ("Should I...", "Do you...", "Bart, which...").
+ * 2026-10-27: "The Nov 5 card is waiting on Jot to pick its line from Who Signs
+ * for It?" was pinned as Des's question to him. It was a status note ending in
+ * a post title.
+ */
+const OPENS_AS_QUESTION = /^(?:\W*\w+,\s*)?(who|what|when|where|why|how|which|whose|does|do|did|is|are|was|were|can|could|should|would|will|shall|may|might|want|ok|okay|any|have|has|am|sound|ready|happy|good)\b/i;
 
 /** Pure: the question sentences in a message's last paragraph. */
 export function questionOf(content) {
@@ -35,14 +45,16 @@ export function questionOf(content) {
     .filter(Boolean);
   const last = paragraphs[paragraphs.length - 1] || '';
   if (!last.includes('?') || /^\s*>/.test(last)) return null;
-  const text = squash(last).replace(/^(Ada|Jot|Vox|Cam|Red):\s*/, '');
-  const masked = maskQuotes(text);
+  // Italics are masked before the asterisks are dropped.
+  const raw = String(last).replace(/\s+/g, ' ').trim().replace(/^\**(Ada|Jot|Vox|Cam|Red|Des)\**:\s*/, '');
+  const masked = squashKeepLength(maskQuotes(raw));
+  const text = squashKeepLength(raw);
   const out = [];
   const re = /[^.?!]*\?/g;
   let m;
   while ((m = re.exec(masked))) {
-    const original = text.slice(m.index, m.index + m[0].length).trim();
-    if (original.length > 3) out.push(original);
+    const original = squash(text.slice(m.index, m.index + m[0].length));
+    if (original.length > 3 && OPENS_AS_QUESTION.test(original)) out.push(original);
   }
   return out.join(' ') || null;
 }
