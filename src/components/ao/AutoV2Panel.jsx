@@ -4008,7 +4008,7 @@ export default function AutoV2Panel({ onNavigate, className,
               for (const teammate of handedTo) {
                 if (!live()) return;
                 const name = TEAM_NAMES[teammate] || 'Ada';
-                await teammateTurn(teammate, `[TEAM] ${name}, ${TEAM_NAMES[answeredBy] || 'Ada'} brought you in above. Do your part of what was asked, as yourself, and do not speak for anyone else. If the post is still waiting on Bart's OK for an earlier step, do not start yours: say in one line that you will pick it up once he approves, and stop.`);
+                await teammateTurn(teammate, `[TEAM] ${name}, ${TEAM_NAMES[answeredBy] || 'Ada'} brought you in above. Do your part of what was asked, as yourself, and do not speak for anyone else.`);
               }
 
               // The whole team is in every thread: when nobody was named, anyone
