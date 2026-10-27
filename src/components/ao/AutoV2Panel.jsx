@@ -1735,7 +1735,7 @@ function DotsVerticalIcon({ className = 'w-4 h-4' }) {
  * "I think there are going to be more agents").
  */
 const FACEPILE_SHOWN = 5;
-export function TeamFacepile({ members = MENTION_CHOICES.filter((c) => c.key !== 'team') }) {
+export function TeamFacepile({ members = MENTION_CHOICES.filter((c) => c.key !== 'team'), compact = false }) {
   const [open, setOpen] = useState(false);
   const shown = members.slice(0, FACEPILE_SHOWN);
   const extra = members.length - shown.length;
@@ -1763,7 +1763,7 @@ export function TeamFacepile({ members = MENTION_CHOICES.filter((c) => c.key !==
             <span className="flex w-7 h-7 items-center justify-center rounded-full bg-gray-200 text-[10px] font-semibold text-gray-700 ring-2 ring-gray-50">+{extra}</span>
           ) : null}
         </span>
-        <span className="min-w-0 flex-1 truncate text-xs text-gray-600">{members.length} teammates</span>
+        <span className={compact ? 'sr-only' : 'min-w-0 flex-1 truncate text-xs text-gray-600'}>{members.length} teammates</span>
         <span className="text-[10px] text-gray-400" aria-hidden="true">{open ? '▲' : '▼'}</span>
       </button>
       {open ? (
@@ -1826,6 +1826,7 @@ export function ThreadSidebar({
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [openChannels, setOpenChannels] = useState({});
+  const [expandedChannels, setExpandedChannels] = useState({});
   const [movingId, setMovingId] = useState(null);
   const [showOlder, setShowOlder] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
@@ -2093,23 +2094,27 @@ export function ThreadSidebar({
   return (
     <div className={`flex flex-col min-h-0 bg-gray-50 ${className}`}>
       {showHeader && (
-        <div className="px-3 pt-3 pb-3 border-b border-gray-200 flex-shrink-0">
-          <p className="px-1 mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Team, in every thread</p>
-          <TeamFacepile />
-          {onOpenTeam ? (
-            <button
-              type="button"
-              onClick={onOpenTeam}
-              className="mt-2 w-full flex items-center justify-between py-2 px-3 text-xs font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-700"
-            >
-              <span>Team board</span>
-              {teamNeedsCount > 0 ? (
-                <span className="ml-2 rounded-full bg-amber-400 text-gray-900 px-2 py-0.5 text-[11px] font-semibold">
-                  {teamNeedsCount} need{teamNeedsCount === 1 ? 's' : ''} you
-                </span>
-              ) : null}
-            </button>
-          ) : null}
+        // One short row (2026-10-27, Bart: the sidebar "is a little bit messy").
+        <div className="px-3 pt-3 pb-2 border-b border-gray-200 flex-shrink-0">
+          <div className="flex items-start gap-2">
+            <div className="min-w-0 flex-1">
+              <TeamFacepile compact />
+            </div>
+            {onOpenTeam ? (
+              <button
+                type="button"
+                onClick={onOpenTeam}
+                className="mt-0.5 flex flex-shrink-0 items-center gap-1.5 rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-700"
+              >
+                <span>Team board</span>
+                {teamNeedsCount > 0 ? (
+                  <span className="rounded-full bg-amber-400 px-1.5 text-[11px] font-semibold text-gray-900" aria-label={`${teamNeedsCount} need you`}>
+                    {teamNeedsCount}
+                  </span>
+                ) : null}
+              </button>
+            ) : null}
+          </div>
         </div>
       )}
 
@@ -2156,16 +2161,31 @@ export function ThreadSidebar({
                 {list.map((c) => {
                   const items = (byChannel[c.key] || []).filter((t) => !t.pinned);
                   const open = !!openChannels[c.key];
-                  const shown = open ? items : items.slice(0, 3);
                   const hasActive = items.some((t) => t.id === activeThreadId);
+                  // Each channel is one line; only the one Bart is in shows its
+                  // conversations unless he opens another (2026-10-27).
+                  const expanded = expandedChannels[c.key] ?? hasActive;
+                  const shown = !expanded ? [] : open ? items : items.slice(0, 3);
                   return (
-                    <div key={c.key} className="mb-1">
-                      <div className={`group flex items-center gap-2 px-3 py-1.5 ${hasActive ? 'text-gray-900' : 'text-gray-700'}`}>
-                        <img src={avatarFor(c.lead)} alt="" aria-hidden="true" className="w-5 h-5 rounded-full object-cover bg-orange-50 flex-shrink-0" draggable={false} />
-                        <span className="flex-1 min-w-0 truncate text-sm font-semibold" title={c.purpose}>
-                          # {c.name}
-                        </span>
-                        {items.length ? <span className="text-[11px] text-gray-400">{items.length}</span> : null}
+                    <div key={c.key} className="mb-0.5">
+                      <div className={`group flex items-center gap-2 px-3 py-1 ${hasActive ? 'text-gray-900' : 'text-gray-700'}`}>
+                        <button
+                          type="button"
+                          onClick={() => setExpandedChannels((o) => ({ ...o, [c.key]: !expanded }))}
+                          aria-expanded={expanded}
+                          aria-label={`${expanded ? 'Hide' : 'Show'} conversations in #${c.name}`}
+                          title={c.purpose}
+                          className="flex min-h-[32px] min-w-0 flex-1 items-center gap-2 rounded-md text-left hover:bg-white"
+                        >
+                          <img src={avatarFor(c.lead)} alt="" aria-hidden="true" className="w-5 h-5 rounded-full object-cover bg-orange-50 flex-shrink-0" draggable={false} />
+                          <span className="flex-1 min-w-0 truncate text-sm font-semibold"># {c.name}</span>
+                          {items.length ? <span className="text-[11px] text-gray-400">{items.length}</span> : null}
+                          {items.length ? (
+                            <span className="text-[10px] text-gray-400" aria-hidden="true">
+                              {expanded ? '▾' : '▸'}
+                            </span>
+                          ) : null}
+                        </button>
                         {onNewInChannel ? (
                           <button
                             type="button"
@@ -2179,7 +2199,7 @@ export function ThreadSidebar({
                         ) : null}
                       </div>
                       {shown.map(renderThreadRow)}
-                      {items.length > 3 ? (
+                      {expanded && items.length > 3 ? (
                         <button
                           type="button"
                           onClick={() => setOpenChannels((o) => ({ ...o, [c.key]: !open }))}
@@ -4660,7 +4680,7 @@ export default function AutoV2Panel({ onNavigate, className,
           onNewInChannel={(key) => startNewThread(null, key)}
           onMoveThread={moveThread}
           onNewChannel={newChannel}
-          className="w-56 flex-shrink-0 border-r border-gray-200"
+          className="w-64 xl:w-72 flex-shrink-0 border-r border-gray-200"
         />
       )}
 

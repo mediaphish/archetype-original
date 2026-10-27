@@ -38,6 +38,8 @@ function renderSidebar(extra = {}) {
   return props;
 }
 
+const openChannel = (name) => fireEvent.click(screen.getByRole('button', { name: `Show conversations in #${name}` }));
+
 describe('ThreadSidebar with channels', () => {
   it('groups threads under their channels and projects', () => {
     renderSidebar();
@@ -45,8 +47,20 @@ describe('ThreadSidebar with channels', () => {
     expect(screen.getByText('# general')).toBeInTheDocument();
     expect(screen.getByText('# AI & Leadership')).toBeInTheDocument();
     expect(screen.getByText('Quote card numbers')).toBeInTheDocument();
+    openChannel('general');
     expect(screen.getByText('Plain old chat')).toBeInTheDocument();
     expect(screen.getByText('Projects')).toBeInTheDocument();
+  });
+
+  it('shows one line per channel, with conversations only for the one in use', () => {
+    renderSidebar();
+    // t1 (#social) is open, so #social shows its conversations and #general folds.
+    expect(screen.getByText('Quote card numbers')).toBeInTheDocument();
+    expect(screen.queryByText('Plain old chat')).toBeNull();
+    openChannel('general');
+    expect(screen.getByText('Plain old chat')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Hide conversations in #social' }));
+    expect(screen.queryByText('Quote card numbers')).toBeNull();
   });
 
   it('starts a thread in a channel with its plus button', () => {
@@ -57,6 +71,7 @@ describe('ThreadSidebar with channels', () => {
 
   it('moves a thread to another channel from its menu', () => {
     const props = renderSidebar();
+    openChannel('general');
     const row = screen.getByText('Plain old chat').closest('div.group');
     fireEvent.click(within(row).getByRole('button', { name: 'Chat options' }));
     fireEvent.click(screen.getByRole('button', { name: 'Move to…' }));
@@ -72,6 +87,7 @@ describe('ThreadSidebar with channels', () => {
 
   it('never loses a thread whose channel is not listed', () => {
     renderSidebar();
+    openChannel('general');
     // "Old chat with Jot" belongs to #team, which this list does not have.
     expect(screen.getByText('Old chat with Jot')).toBeInTheDocument();
   });
