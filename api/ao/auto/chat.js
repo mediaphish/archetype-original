@@ -9,7 +9,7 @@
  */
 
 import { textOf } from '../../../lib/ao/textModel.js';
-import { normalizeAgent, AGENTS, trimLeadInBeforeName, mentionedAgents } from '../../../lib/ao/team/agents.js';
+import { normalizeAgent, AGENTS, trimLeadInBeforeName, mentionedAgents, isImageAsk } from '../../../lib/ao/team/agents.js';
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { shouldSavePastedPost } from '../../../lib/ao/pastedPostGate.js';
 import { signalsImageDiscussion } from '../../../lib/ao/imageDiscussionSignal.js';
@@ -1304,13 +1304,57 @@ export async function runChatTurn({ email, body = {}, sendEvent, end = () => {},
     // Who on the team is speaking in this conversation: Auto, Jot or Reach.
     // An @mention (or a message opening with a teammate's name) brings that
     // teammate in for this reply; otherwise the conversation's own teammate answers.
-    const agent = normalizeAgent(requestedAgent || mentionedAgents(userMessage)[0] || thread?.state?.agent);
+    // An image Bart asks for is Cam's to make (2026-10-27).
+    const agent = normalizeAgent(
+      requestedAgent || mentionedAgents(userMessage)[0] || (!body?.message_meta && isImageAsk(userMessage) ? 'producer' : null) || thread?.state?.agent
+    );
+
+    const fromBart = !body?.message_meta?.team_note && !body?.message_meta?.team_task && !/^\s*\[(TEAM|TEAM TASK|SYSTEM)/.test(userMessage);
+
+    // Retry after a failed screen: the first send was already saved and may
+    // already be answered or still being worked on. Never save it twice or
+    // answer it twice (2026-10-27: a retry put Bart's notes in the thread twice).
+    let reusedUserMessage = null;
+    if (body?.retry && fromBart) {
+      const { retryDecision } = await import('../../../lib/ao/team/interrupt.js');
+      const recent = await getAutoThreadState(auth.email, thread.id);
+      const decision = retryDecision(recent.messages, userMessage);
+      if (decision.action === 'answered' || decision.action === 'working') {
+        if (heartbeatTimer) {
+          clearInterval(heartbeatTimer);
+          heartbeatTimer = null;
+        }
+        sendEvent('done', {
+          ok: true,
+          thread: recent.thread,
+          messages: recent.messages,
+          attachments: recent.attachments,
+          assistant_message: decision.reply || '',
+          pending: decision.action === 'working',
+          receipts: [],
+        });
+        end();
+        return;
+      }
+      if (decision.action === 'reuse') reusedUserMessage = decision.message;
+    }
+
+    // Bart speaking ends any team huddle in this thread: his word comes first
+    // (2026-10-27: "I was trying to say Generate image and couldn't get a word in").
+    if (fromBart && thread?.state?.huddle?.active) {
+      try {
+        const { stopHuddle } = await import('../../../lib/ao/team/huddle.js');
+        await stopHuddle(thread.id, 'Bart spoke');
+      } catch (err) {
+        console.warn('[chat.js] could not stop the huddle:', err?.message || err);
+      }
+    }
 
     // Persist user message immediately — before any model call.
     // If runAutoChat times out or fails, the message is already in the database
     // and appears in the thread on reload. The user should never lose what they
     // typed because Auto failed.
-    const persistedUserMessage = await addAutoMessage({
+    const persistedUserMessage = reusedUserMessage || await addAutoMessage({
       threadId: thread.id,
       role: 'user',
       mode: 'plan',

@@ -23,6 +23,7 @@ import ChatMarkdown from './ChatMarkdown.jsx';
 import { avatarFor } from './teamAvatars.js';
 import { channelOfThread, groupByChannel } from '../../lib/channels.js';
 import { splitBySpeaker } from '../../lib/speakerSplit.js';
+import ImageZoom, { isZoomableImage } from './ImageZoom.jsx';
 import { speakUpMessage } from '../../lib/speakUpMessage.js';
 import { mentionedAgents, MENTION_CHOICES, pendingMention } from '../../lib/teamMentions.js';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
@@ -454,30 +455,43 @@ function PaperclipIcon() {
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
+/**
+ * The working animation. It always moves and counts the seconds, with or
+ * without a label, so Bart can tell the team is still at it in the
+ * background (2026-10-27: "I couldn't tell if Auto was still working").
+ */
 function TypingIndicator({ label = null, agent = 'auto' }) {
+  const [startedAt] = useState(() => Date.now());
+  const [, tick] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => tick((n) => n + 1), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const secs = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
+  const elapsed = secs < 60 ? `${secs}s` : `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3" role="status" aria-live="polite">
       <img
         src={avatarFor(agent)}
         alt=""
         aria-hidden="true"
-        className="w-8 h-8 rounded-full flex-shrink-0 object-cover bg-orange-50 border border-orange-100"
+        className="w-8 h-8 rounded-full flex-shrink-0 object-cover bg-orange-50 border border-orange-100 animate-pulse"
         draggable={false}
       />
       <div className="bg-gray-50 border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3">
-        {label ? (
-          <p className="text-sm text-gray-600">{label}</p>
-        ) : (
-          <div className="flex gap-1 items-center h-4">
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1 items-center h-4" aria-hidden="true">
             {[0, 150, 300].map((delay) => (
               <span
                 key={delay}
-                className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                className="w-1.5 h-1.5 bg-ao-red rounded-full animate-bounce"
                 style={{ animationDelay: `${delay}ms` }}
               />
             ))}
           </div>
-        )}
+          {label ? <p className="text-sm text-gray-600">{label}</p> : <p className="text-sm text-gray-500">Working…</p>}
+          <span className="text-xs text-gray-400 tabular-nums">{elapsed}</span>
+        </div>
       </div>
     </div>
   );
@@ -1188,8 +1202,16 @@ function ArtifactPanel({
   // silently never engaged. See draftArtifactSlug.js.
   const stagedJournalSlug = resolveDraftArtifactSlug(artifact);
   const stagedJournal = Boolean(stagedJournalSlug);
+  // Tap any image in the panel to open it full screen and pinch to zoom (2026-10-27).
+  const [zoomImage, setZoomImage] = useState(null);
+  const openZoom = (e) => {
+    if (!isZoomableImage(e.target)) return;
+    e.preventDefault();
+    setZoomImage({ src: e.target.currentSrc || e.target.src, alt: e.target.alt || '' });
+  };
   return (
-    <div data-quotable="1" className="flex h-full min-h-0 min-w-0 w-full flex-shrink-0 flex-col border-l border-gray-200 bg-gray-50">
+    <div data-quotable="1" onClick={openZoom} className="flex h-full min-h-0 min-w-0 w-full flex-shrink-0 flex-col border-l border-gray-200 bg-gray-50">
+      {zoomImage ? <ImageZoom src={zoomImage.src} alt={zoomImage.alt} onClose={() => setZoomImage(null)} /> : null}
       <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between gap-2">
         <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide truncate pr-2">
           {hasCards && (artifact?.type === 'captions' || artifact?.type === 'list')
@@ -2179,6 +2201,15 @@ export default function AutoV2Panel({ onNavigate, className,
     };
   }, [teamOpen]);
   const [waitingNote, setWaitingNote] = useState('');
+  // The team still working after the reply (teammates, huddles), shown with
+  // the working animation; and Bart's messages typed while a reply was still
+  // coming, sent in order as soon as it lands (2026-10-27).
+  const [teamBusy, setTeamBusy] = useState(false);
+  const [queued, setQueued] = useState([]);
+  const queueRef = useRef([]);
+  const bgGenRef = useRef(0);
+  const sendingRef = useRef(false);
+  const sendMessageRef = useRef(null);
   const [quoteCandidate, setQuoteCandidate] = useState('');
   const activeThreadIdRef = useRef(null);
   const quoteClearTimer = useRef(null);
@@ -3346,11 +3377,25 @@ export default function AutoV2Panel({ onNavigate, className,
   }, [quoteCandidate]);
 
   const sendMessage = useCallback(
-    async (messageText) => {
+    async (messageText, opts = {}) => {
       const textInput = messageText !== undefined ? String(messageText) : input;
-      const fileSnaps = pendingFiles;
+      const fileSnaps = opts.fromQueue ? [] : pendingFiles;
 
-      if ((!textInput.trim() && pendingFiles.length === 0) || sending) return;
+      if (!textInput.trim() && fileSnaps.length === 0) return;
+      // A reply is still coming: hold this one and send it the moment that
+      // reply lands, the way Bart can keep typing while I work (2026-10-27).
+      if (sendingRef.current) {
+        if (fileSnaps.length > 0) return;
+        queueRef.current = [...queueRef.current, textInput.trim()];
+        setQueued(queueRef.current);
+        setInput('');
+        if (textareaRef.current) textareaRef.current.style.height = '22px';
+        return;
+      }
+      // Bart's word comes first: the team's background follow-ups stop updating the screen.
+      bgGenRef.current += 1;
+      setTeamBusy(false);
+      setWaitingNote('');
 
       if (totalAttachmentBytes(fileSnaps) > MAX_TOTAL_ATTACHMENT_BYTES) {
         setError(attachmentOverLimitMessage());
@@ -3384,6 +3429,7 @@ export default function AutoV2Panel({ onNavigate, className,
       setPendingFiles([]);
       setInput('');
       setMessages((prev) => [...prev, optimisticMsg]);
+      sendingRef.current = true;
       setSending(true);
       setImageGenerating(false);
       setError('');
@@ -3475,6 +3521,7 @@ export default function AutoV2Panel({ onNavigate, className,
             thread_id: activeThreadId || null,
             message: outgoing,
             attachments: attachments.length > 0 ? attachments : undefined,
+            retry: opts.retry ? true : undefined,
           }),
           signal: controller.signal,
         });
@@ -3630,106 +3677,146 @@ export default function AutoV2Panel({ onNavigate, className,
 
         if (json.thread?.id) setActiveThreadId(json.thread.id);
 
-        // Everyone else Bart @mentioned answers in turn, each in their own voice.
-        const replyThreadId = json.thread?.id || activeThreadId || null;
-        const teammateTurn = async (teammate, message) => {
-          try {
-            const r = await fetch('/api/ao/auto/chat', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                thread_id: replyThreadId,
-                agent: teammate,
-                message,
-                message_meta: { team_note: true },
-              }),
-            });
-            const raw = await r.text();
-            const lines = raw.split('\n').filter((l) => l.startsWith('data: '));
-            for (let k = lines.length - 1; k >= 0; k -= 1) {
-              let payload = null;
-              try {
-                payload = JSON.parse(lines[k].slice(6));
-              } catch (_) {}
-              if (payload && payload.ok !== undefined) {
-                if (payload.ok && Array.isArray(payload.messages)) {
-                  setMessages(payload.messages);
-                  syncArtifactFromMessages(payload.messages);
-                }
-                break;
-              }
-            }
-          } catch (_) {
-            // One teammate not answering must not undo the reply already shown.
-          }
+        // A Retry whose first send is still being answered on the server: wait for that reply.
+        if (json.pending) {
+          const firstSend = [...(Array.isArray(json.messages) ? json.messages : [])]
+            .reverse()
+            .find((m) => m.role === 'user' && String(m.content || '').trim() === String(outgoing).trim());
+          const sentAtMs = firstSend ? Date.parse(firstSend.created_at) : Date.now();
+          waitForSavedReply(json.thread?.id || activeThreadIdRef.current, sentAtMs, outgoing);
+          return;
+        }
+
+        // The team's follow-ups (teammates Bart named, hand-offs, the speak-up
+        // check and huddles) run in the background, so Bart can keep talking
+        // (2026-10-27: "Auto forces me to wait until every agent is done
+        // talking"). A new message from him stops them updating the screen.
+        const myGen = bgGenRef.current;
+        const live = () => bgGenRef.current === myGen;
+        const showFromTeam = (msgs) => {
+          if (!live() || !Array.isArray(msgs)) return;
+          setMessages(msgs);
+          syncArtifactFromMessages(msgs);
         };
-        const named = mentionedAgents(outgoing);
-        // @team means the whole team is listening, not that everyone answers:
-        // the first answers, the rest go through the speak-up check below
-        // (2026-10-26: two teammates answered an editing request about their own areas).
-        const teamCall = /(^|[^\w@])@team\b/i.test(outgoing);
-        const explicit = teamCall ? mentionedAgents(outgoing.replace(/@team\b/gi, ' ')).filter((k) => k !== named[0]) : named.slice(1);
-        for (const teammate of explicit) {
-          const name = TEAM_NAMES[teammate] || 'Ada';
-          await teammateTurn(teammate, `[TEAM] Bart brought ${name} in too. ${name}, add your part to Bart's last message above. Do not repeat what was already said, and do not speak for anyone else.`);
-        }
+        const noteIfLive = (note) => {
+          if (live()) setWaitingNote(note);
+        };
+        if (!queueRef.current.length) {
+          (async () => {
+            setTeamBusy(true);
+            try {
 
-        // Ada runs the team: a teammate she brings in by name in her reply
-        // ("@Jot, take the outline") answers next, in their own bubble.
-        // One level only, so teammates never set each other off in a loop.
-        const answeredBy = (() => {
-          const list = Array.isArray(json.messages) ? json.messages : [];
-          for (let k = list.length - 1; k >= 0; k -= 1) if (list[k].role === 'assistant') return list[k].meta?.agent || 'auto';
-          return 'auto';
-        })();
-        const handedTo = mentionedAgents(String(json.assistant_message || '').replace(/^\s*\w+:\s*/, ' ')).filter(
-          (k) => k !== answeredBy && !named.includes(k)
-        );
-        for (const teammate of handedTo) {
-          const name = TEAM_NAMES[teammate] || 'Ada';
-          await teammateTurn(teammate, `[TEAM] ${name}, ${TEAM_NAMES[answeredBy] || 'Ada'} brought you in above. Do your part of what was asked, as yourself, and do not speak for anyone else.`);
-        }
-
-        // The whole team is in every thread: when nobody was named, anyone
-        // with something real to add speaks up (Phase 1, 2026-10-26).
-        if ((!named.length || teamCall) && !handedTo.length && replyThreadId) {
-          try {
-            const r = await fetch('/api/ao/team/speak-up', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ thread_id: replyThreadId }),
-            });
-            const up = await r.json().catch(() => ({}));
-            if (up?.huddle) {
-              // The team huddles on the server; show each turn as it lands (2026-10-26).
-              const started = Date.now();
-              let seen = -1;
-              while (Date.now() - started < 12 * 60 * 1000) {
-                await new Promise((res) => setTimeout(res, 5000));
-                if (activeThreadIdRef.current && activeThreadIdRef.current !== replyThreadId) break;
-                const st = await fetch(`/api/ao/auto/session?thread_id=${encodeURIComponent(replyThreadId)}`).then((x) => x.json()).catch(() => null);
-                if (!st?.ok) continue;
-                const msgs = Array.isArray(st.messages) ? st.messages : [];
-                if (msgs.length !== seen) {
-                  seen = msgs.length;
-                  setMessages(msgs);
+              // Everyone else Bart @mentioned answers in turn, each in their own voice.
+              const replyThreadId = json.thread?.id || activeThreadId || null;
+              const teammateTurn = async (teammate, message) => {
+                try {
+                  const r = await fetch('/api/ao/auto/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      thread_id: replyThreadId,
+                      agent: teammate,
+                      message,
+                      message_meta: { team_note: true },
+                    }),
+                  });
+                  const raw = await r.text();
+                  const lines = raw.split('\n').filter((l) => l.startsWith('data: '));
+                  for (let k = lines.length - 1; k >= 0; k -= 1) {
+                    let payload = null;
+                    try {
+                      payload = JSON.parse(lines[k].slice(6));
+                    } catch (_) {}
+                    if (payload && payload.ok !== undefined) {
+                      if (payload.ok && Array.isArray(payload.messages)) {
+                        showFromTeam(payload.messages);
+                      }
+                      break;
+                    }
+                  }
+                } catch (_) {
+                  // One teammate not answering must not undo the reply already shown.
                 }
-                const h = st.thread?.state?.huddle;
-                if (!h?.active) break;
-                const who = TEAM_NAMES[h.closing ? 'auto' : h.last] || 'The team';
-                setWaitingNote(h.closing ? 'Ada is wrapping up the huddle…' : h.turns ? `Team huddle: ${who} just spoke…` : 'The team is huddling…');
+              };
+              const named = mentionedAgents(outgoing);
+              // @team means the whole team is listening, not that everyone answers:
+              // the first answers, the rest go through the speak-up check below
+              // (2026-10-26: two teammates answered an editing request about their own areas).
+              const teamCall = /(^|[^\w@])@team\b/i.test(outgoing);
+              const explicit = teamCall ? mentionedAgents(outgoing.replace(/@team\b/gi, ' ')).filter((k) => k !== named[0]) : named.slice(1);
+              for (const teammate of explicit) {
+                if (!live()) return;
+                const name = TEAM_NAMES[teammate] || 'Ada';
+                await teammateTurn(teammate, `[TEAM] Bart brought ${name} in too. ${name}, add your part to Bart's last message above. Do not repeat what was already said, and do not speak for anyone else.`);
               }
-            } else {
-              for (const sp of Array.isArray(up?.speakers) ? up.speakers : []) {
-                setWaitingNote(`${sp.name} has something to add…`);
-                await teammateTurn(sp.agent, speakUpMessage(sp));
+
+              // Ada runs the team: a teammate she brings in by name in her reply
+              // ("@Jot, take the outline") answers next, in their own bubble.
+              // One level only, so teammates never set each other off in a loop.
+              const answeredBy = (() => {
+                const list = Array.isArray(json.messages) ? json.messages : [];
+                for (let k = list.length - 1; k >= 0; k -= 1) if (list[k].role === 'assistant') return list[k].meta?.agent || 'auto';
+                return 'auto';
+              })();
+              const handedTo = mentionedAgents(String(json.assistant_message || '').replace(/^\s*\w+:\s*/, ' ')).filter(
+                (k) => k !== answeredBy && !named.includes(k)
+              );
+              for (const teammate of handedTo) {
+                if (!live()) return;
+                const name = TEAM_NAMES[teammate] || 'Ada';
+                await teammateTurn(teammate, `[TEAM] ${name}, ${TEAM_NAMES[answeredBy] || 'Ada'} brought you in above. Do your part of what was asked, as yourself, and do not speak for anyone else.`);
               }
+
+              // The whole team is in every thread: when nobody was named, anyone
+              // with something real to add speaks up (Phase 1, 2026-10-26).
+              if ((!named.length || teamCall) && !handedTo.length && replyThreadId) {
+                try {
+                  const r = await fetch('/api/ao/team/speak-up', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ thread_id: replyThreadId }),
+                  });
+                  const up = await r.json().catch(() => ({}));
+                  if (up?.huddle) {
+                    // The team huddles on the server; show each turn as it lands (2026-10-26).
+                    const started = Date.now();
+                    let seen = -1;
+                    while (Date.now() - started < 12 * 60 * 1000) {
+                      await new Promise((res) => setTimeout(res, 5000));
+                      if (!live() || (activeThreadIdRef.current && activeThreadIdRef.current !== replyThreadId)) break;
+                      const st = await fetch(`/api/ao/auto/session?thread_id=${encodeURIComponent(replyThreadId)}`).then((x) => x.json()).catch(() => null);
+                      if (!st?.ok) continue;
+                      const msgs = Array.isArray(st.messages) ? st.messages : [];
+                      if (msgs.length !== seen) {
+                        seen = msgs.length;
+                        showFromTeam(msgs);
+                      }
+                      const h = st.thread?.state?.huddle;
+                      if (!h?.active) break;
+                      const who = TEAM_NAMES[h.closing ? 'auto' : h.last] || 'The team';
+                      noteIfLive(h.closing ? 'Ada is wrapping up the huddle…' : h.turns ? `Team huddle: ${who} just spoke…` : 'The team is huddling…');
+                    }
+                  } else {
+                    for (const sp of Array.isArray(up?.speakers) ? up.speakers : []) {
+                      if (!live()) break;
+                      noteIfLive(`${sp.name} has something to add…`);
+                      await teammateTurn(sp.agent, speakUpMessage(sp));
+                    }
+                  }
+                } catch (_) {
+                  // The answer stands on its own if the check does not run.
+                } finally {
+                  noteIfLive('');
+                }
+              }
+            } finally {
+              if (live()) {
+                setTeamBusy(false);
+                setWaitingNote('');
+              }
+              loadThreadList();
             }
-          } catch (_) {
-            // The answer stands on its own if the check does not run.
-          } finally {
-            setWaitingNote('');
-          }
+          })();
         }
 
         await loadThreadList();
@@ -3767,12 +3854,53 @@ export default function AutoV2Panel({ onNavigate, className,
         setInput(outgoing);
       } finally {
         if (stallTimer) clearInterval(stallTimer);
+        sendingRef.current = false;
         setSending(false);
         setImageGenerating(false);
+        // Send what Bart typed while this reply was coming, in order.
+        const next = queueRef.current[0];
+        if (next) {
+          queueRef.current = queueRef.current.slice(1);
+          setQueued(queueRef.current);
+          setTimeout(() => sendMessageRef.current?.(next, { fromQueue: true }), 0);
+        }
       }
     },
     [input, sending, activeThreadId, pendingFiles, loadThreadList, syncArtifactFromMessages, isMobile, waitForSavedReply]
   );
+
+  sendMessageRef.current = sendMessage;
+
+  // Opening a conversation where the team is still at it (a huddle, a
+  // teammate's task): show the working animation and their turns as they land.
+  useEffect(() => {
+    if (!activeThreadId) return undefined;
+    let alive = true;
+    const gen = bgGenRef.current;
+    (async () => {
+      let seen = -1;
+      for (let i = 0; i < 120 && alive; i += 1) {
+        if (i > 0) await new Promise((r) => setTimeout(r, 6000));
+        if (!alive || bgGenRef.current !== gen || sendingRef.current) return;
+        const st = await fetch(`/api/ao/auto/session?thread_id=${encodeURIComponent(activeThreadId)}`).then((x) => x.json()).catch(() => null);
+        if (!alive || bgGenRef.current !== gen || sendingRef.current || !st?.ok) return;
+        const msgs = Array.isArray(st.messages) ? st.messages : [];
+        if (i > 0 && msgs.length !== seen) {
+          setMessages(msgs);
+          syncArtifactFromMessages(msgs);
+        }
+        seen = msgs.length;
+        if (!st.team_working) {
+          if (i > 0) setTeamBusy(false);
+          return;
+        }
+        setTeamBusy(true);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [activeThreadId, syncArtifactFromMessages]);
 
   const handleKeyDown = useCallback(
     (e) => {
@@ -4511,6 +4639,20 @@ export default function AutoV2Panel({ onNavigate, className,
 
           {waitingNote && !sending ? <TypingIndicator label={waitingNote} agent={activeAgent} /> : null}
 
+          {teamBusy && !waitingNote && !sending ? <TypingIndicator label="The team is still working. You can keep typing." agent={activeAgent} /> : null}
+
+          {queued.map((text, qi) => (
+            <div key={`queued-${qi}`} className="flex flex-row-reverse gap-3 opacity-60">
+              <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-semibold bg-gray-900 text-white" aria-hidden="true">
+                B
+              </div>
+              <div className="max-w-[75%] min-w-0">
+                <div className="rounded-2xl rounded-tr-sm px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap bg-gray-900 text-white">{text}</div>
+                <p className="mt-1 text-right text-[11px] text-gray-400">Sends as soon as this reply lands</p>
+              </div>
+            </div>
+          ))}
+
           {imageGenerating && (
             <TypingIndicator label="Generating your image — this may take a moment…" />
           )}
@@ -4529,7 +4671,7 @@ export default function AutoV2Panel({ onNavigate, className,
                   onClick={() => {
                     setError('');
                     setMessages((prev) => prev.filter((m) => !m.meta?.failed));
-                    sendMessage(input);
+                    sendMessage(input, { retry: true });
                   }}
                   className="self-start px-3 py-1.5 bg-red-700 text-white text-xs font-semibold rounded-lg hover:bg-red-800 transition-colors"
                 >
@@ -4676,7 +4818,7 @@ export default function AutoV2Panel({ onNavigate, className,
               onKeyDown={handleKeyDown}
               placeholder={`${activeChannel ? `Message #${activeChannel.name}` : `Talk to ${TEAM_NAMES[activeAgent] || 'Ada'}`}… (@ brings in a teammate, @team everyone)`}
               rows={1}
-              disabled={sending || startingNew}
+              disabled={startingNew}
               className="flex-1 bg-transparent text-sm text-gray-900 placeholder-gray-400 resize-none outline-none leading-relaxed disabled:opacity-50"
               style={{ minHeight: '22px', height: '22px' }}
               aria-label="Message Auto"
@@ -4685,7 +4827,7 @@ export default function AutoV2Panel({ onNavigate, className,
             <button
               type="button"
               onClick={() => sendMessage()}
-              disabled={(!input.trim() && pendingFiles.length === 0) || sending || startingNew}
+              disabled={(!input.trim() && pendingFiles.length === 0) || (sending && pendingFiles.length > 0) || startingNew}
               className="flex-shrink-0 w-8 h-8 bg-gray-900 text-white rounded-lg flex items-center justify-center hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               aria-label="Send message"
             >

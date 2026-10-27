@@ -71,8 +71,26 @@ export default async function handler(req, res) {
       /* never block session load */
     }
 
+    // Whether the team is still working in this conversation (a huddle, or a
+    // teammate's task), so the screen can show the working animation (2026-10-27).
+    let teamWorking = Boolean(state.thread?.state?.huddle?.active);
+    if (!teamWorking && state.thread?.id) {
+      try {
+        const { data: busy } = await supabaseAdmin
+          .from('ao_team_tasks')
+          .select('id')
+          .eq('parent_thread_id', state.thread.id)
+          .in('status', ['queued', 'running'])
+          .limit(1);
+        teamWorking = Boolean(busy && busy.length);
+      } catch (_) {
+        // The animation is a nicety; the conversation loads without it.
+      }
+    }
+
     return res.status(200).json({
       ok: true,
+      team_working: teamWorking,
       thread: state.thread,
       messages: state.messages,
       attachments: state.attachments,
