@@ -9,8 +9,10 @@ import React from 'react';
 
 function inline(text, keyBase) {
   const out = [];
-  // Order matters: links, then bold, then italics, then inline code.
-  const re = /(\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]*)\))|(\*\*\*([^*]+)\*\*\*)|(\*\*([^*]+)\*\*)|(\*([^*\s][^*]*)\*)|(`([^`]+)`)/g;
+  // Order matters: pictures, links, then bold, then italics, then inline code.
+  // A picture the team shows (2026-10-27: Des's quote cards came through as
+  // "!Before the Sun Sets card" links) is drawn as the image itself, https only.
+  const re = /(!\[([^\]]*)\]\((https:\/\/[^\s)]+)\))|(\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]*)\))|(\*\*\*([^*]+)\*\*\*)|(\*\*([^*]+)\*\*)|(\*([^*\s][^*]*)\*)|(`([^`]+)`)/g;
   let last = 0;
   let m;
   let i = 0;
@@ -19,24 +21,28 @@ function inline(text, keyBase) {
     const k = `${keyBase}-${i++}`;
     if (m[1]) {
       out.push(
-        <a key={k} href={m[3]} target={m[3].startsWith('/') ? undefined : '_blank'} rel="noopener noreferrer" className="underline">
-          {m[2]}
-        </a>
+        <img key={k} src={m[3]} alt={m[2] || ''} loading="lazy" className="my-2 block max-h-[420px] w-auto max-w-full cursor-zoom-in rounded-lg border border-gray-200" />
       );
     } else if (m[4]) {
       out.push(
+        <a key={k} href={m[6]} target={m[6].startsWith('/') ? undefined : '_blank'} rel="noopener noreferrer" className="underline">
+          {m[5]}
+        </a>
+      );
+    } else if (m[7]) {
+      out.push(
         <strong key={k}>
-          <em>{m[5]}</em>
+          <em>{m[8]}</em>
         </strong>
       );
-    } else if (m[6]) {
-      out.push(<strong key={k}>{m[7]}</strong>);
-    } else if (m[8]) {
-      out.push(<em key={k}>{m[9]}</em>);
-    } else if (m[10]) {
+    } else if (m[9]) {
+      out.push(<strong key={k}>{m[10]}</strong>);
+    } else if (m[11]) {
+      out.push(<em key={k}>{m[12]}</em>);
+    } else if (m[13]) {
       out.push(
         <code key={k} className="px-1 rounded bg-gray-100 text-[0.92em]">
-          {m[11]}
+          {m[14]}
         </code>
       );
     }
