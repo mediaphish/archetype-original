@@ -1659,6 +1659,59 @@ function DotsVerticalIcon({ className = 'w-4 h-4' }) {
   );
 }
 
+/**
+ * The team, the way Slack shows a channel's members: a stack of overlapping
+ * faces with a count, and a tap opens everyone with name and role. It holds
+ * any number of teammates (2026-10-27: the row of five ran the roles together,
+ * "I think there are going to be more agents").
+ */
+const FACEPILE_SHOWN = 5;
+export function TeamFacepile({ members = MENTION_CHOICES.filter((c) => c.key !== 'team') }) {
+  const [open, setOpen] = useState(false);
+  const shown = members.slice(0, FACEPILE_SHOWN);
+  const extra = members.length - shown.length;
+  return (
+    <div className="px-1">
+      <button
+        type="button"
+        data-testid="team-facepile"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-center gap-2 rounded-lg py-1 text-left hover:bg-gray-100"
+      >
+        <span className="flex -space-x-2">
+          {shown.map((m) => (
+            <img
+              key={m.key}
+              src={avatarFor(m.key)}
+              alt=""
+              aria-hidden="true"
+              className="w-7 h-7 rounded-full object-cover bg-orange-50 ring-2 ring-gray-50"
+              draggable={false}
+            />
+          ))}
+          {extra > 0 ? (
+            <span className="flex w-7 h-7 items-center justify-center rounded-full bg-gray-200 text-[10px] font-semibold text-gray-700 ring-2 ring-gray-50">+{extra}</span>
+          ) : null}
+        </span>
+        <span className="min-w-0 flex-1 truncate text-xs text-gray-600">{members.length} teammates</span>
+        <span className="text-[10px] text-gray-400" aria-hidden="true">{open ? '▲' : '▼'}</span>
+      </button>
+      {open ? (
+        <ul data-testid="team-list" className="mt-1 space-y-0.5">
+          {members.map((m) => (
+            <li key={m.key} className="flex items-center gap-2 rounded-md px-1 py-1" title={`Bring ${m.handle} in with @${m.handle}.`}>
+              <img src={avatarFor(m.key)} alt="" aria-hidden="true" className="w-6 h-6 rounded-full object-cover bg-orange-50" draggable={false} />
+              <span className="text-xs font-medium text-gray-900">{m.handle}</span>
+              <span className="min-w-0 truncate text-xs text-gray-500">{m.role}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
+
 export function ThreadSidebar({
   threads,
   archivedThreads,
@@ -1947,27 +2000,7 @@ export function ThreadSidebar({
       {showHeader && (
         <div className="px-3 pt-3 pb-3 border-b border-gray-200 flex-shrink-0">
           <p className="px-1 mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Team, in every thread</p>
-          <div className="flex items-start justify-between px-1">
-            {[
-              { key: 'auto', name: 'Ada', role: 'Marketing' },
-              { key: 'jot', name: 'Jot', role: 'Writer' },
-              { key: 'reach', name: 'Vox', role: 'Publicist' },
-              { key: 'producer', name: 'Cam', role: 'Producer' },
-              { key: 'editor', name: 'Red', role: 'Editor' },
-            ].map((m) => (
-              <div key={m.key} className="flex flex-col items-center w-10" title={`${m.name}, ${m.role}. Bring them in with @${m.name}.`}>
-                <img
-                  src={avatarFor(m.key)}
-                  alt=""
-                  aria-hidden="true"
-                  className="w-9 h-9 rounded-full object-cover bg-orange-50 border border-orange-100"
-                  draggable={false}
-                />
-                <span className="mt-1 text-[11px] font-medium text-gray-800 leading-none">{m.name}</span>
-                <span className="text-[10px] text-gray-500 leading-tight">{m.role}</span>
-              </div>
-            ))}
-          </div>
+          <TeamFacepile />
           {onOpenTeam ? (
             <button
               type="button"
