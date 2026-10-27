@@ -9,11 +9,17 @@ test('a question stays pinned when another teammate speaks after it', () => {
   expect(open).toEqual([expect.objectContaining({ name: 'Jot', question: 'Does "own the answer" match how you\'d say it?', yesNo: true })]);
 });
 
-test('two stacked questions can be answered one at a time by quoting', () => {
-  const both = openQuestions([jot, vox]);
-  expect(both.map((q) => q.name)).toEqual(['Jot', 'Vox']);
-  const afterOne = openQuestions([jot, vox, { role: 'user', content: quotedReply(both[1].question, 'Yes.') }]);
-  expect(afterOne.map((q) => q.name)).toEqual(['Jot']);
+test('any reply from Bart closes every question asked before it', () => {
+  expect(openQuestions([jot, vox, { role: 'user', content: quotedReply(vox.content, 'Yes.') }])).toEqual([]);
+  // A question asked after his reply stays open.
+  expect(openQuestions([jot, { role: 'user', content: 'Yes.' }, vox]).map((q) => q.name)).toEqual(['Vox']);
+});
+
+test('team hand-offs are not Bart, and quoted post lines and drafts are not questions', () => {
+  expect(openQuestions([jot, { role: 'user', content: '[TEAM TASK from Jot] Edit: who-signs-for-it' }]).map((q) => q.name)).toEqual(['Jot']);
+  expect(questionOf('The line now reads: "Put the question to the manager first: why is the number what it is? If not, wait."')).toBeNull();
+  expect(questionOf('Saved.\n\n[ARTIFACT title="Post"]\nWhy does it matter?\n[/ARTIFACT]')).toBeNull();
+  expect(questionOf('**Is "Who Signs for It?" approved?** Once you say yes, Vox books it.')).toBe('Is "Who Signs for It?" approved?');
 });
 
 test('a plain reply from Bart answers everything open', () => {

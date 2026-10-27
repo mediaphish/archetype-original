@@ -2576,7 +2576,14 @@ export default function AutoV2Panel({ onNavigate, className,
 
   const contextPill = useMemo(() => extractContextPill(visibleChatMessages), [visibleChatMessages]);
   const idleLine = useMemo(() => idleStatus(visibleChatMessages), [visibleChatMessages]);
-  const pinnedQuestions = useMemo(() => openQuestions(visibleChatMessages), [visibleChatMessages]);
+  // A question hides the moment Bart taps Yes or Answer (2026-10-27: "as soon
+  // as I click it needs to go away"); his reply then closes it for good.
+  const [dismissedQuestions, setDismissedQuestions] = useState(() => new Set());
+  const pinnedQuestions = useMemo(
+    () => openQuestions(visibleChatMessages).filter((q) => !dismissedQuestions.has(q.id)),
+    [visibleChatMessages, dismissedQuestions]
+  );
+  const dismissQuestion = useCallback((q) => setDismissedQuestions((prev) => new Set(prev).add(q.id)), []);
 
   const hasArtifactContent = useMemo(
     () =>
@@ -4990,8 +4997,12 @@ export default function AutoV2Panel({ onNavigate, className,
             <PinnedQuestions
               questions={pinnedQuestions}
               disabled={sending}
-              onYes={(q) => sendMessageRef.current?.(quotedReply(q.question, 'Yes.'))}
+              onYes={(q) => {
+                dismissQuestion(q);
+                sendMessageRef.current?.(quotedReply(q.question, 'Yes.'));
+              }}
               onAnswer={(q) => {
+                dismissQuestion(q);
                 setInput((prev) => `${quotedReply(q.question)}${prev && prev.trim() ? prev : ''}`);
                 focusChatInput();
               }}
