@@ -8,6 +8,7 @@ export const TEAM_AVATARS = {
   jot: '/images/team/jot.png',
   reach: '/images/team/reach.png',
   producer: '/images/team/cam.png',
+  editor: '/images/team/red.png',
 };
 
 /** A plain initial for a teammate whose art has not arrived yet (the Producer). */
@@ -19,7 +20,5 @@ function initialAvatar(letter) {
 export function avatarFor(agent) {
   if (TEAM_AVATARS[agent]) return TEAM_AVATARS[agent];
   if (agent === 'producer') return initialAvatar('P');
-  // Red has no art yet (2026-10-26).
-  if (agent === 'editor') return initialAvatar('R');
   return TEAM_AVATARS.auto;
 }
