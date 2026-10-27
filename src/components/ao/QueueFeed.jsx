@@ -62,7 +62,7 @@ export function PostCard({ post, onOpenThread }) {
       <p className="text-base font-semibold text-gray-900">{post.title}</p>
       <p className="mt-0.5 text-sm text-gray-600">{post.label}</p>
       <button type="button" onClick={open} className="mt-3 min-h-[44px] rounded-lg bg-red-600 px-5 text-sm font-semibold text-white">
-        Open the post
+        {post.step === 'brief' ? 'Open the brief' : 'Open the post'}
       </button>
     </div>
   );
@@ -120,7 +120,7 @@ export default function QueueFeed({ onOpenThread, onCount, className = '' }) {
           ))}
 
           {(data?.posts || []).map((p) => (
-            <QueuePost key={`p-${p.slug}`} agent="jot" what="journal post">
+            <QueuePost key={`p-${p.slug}`} agent="jot" what={p.step === 'brief' ? 'journal brief' : 'journal post'}>
               <PostCard post={p} onOpenThread={onOpenThread} />
             </QueuePost>
           ))}
