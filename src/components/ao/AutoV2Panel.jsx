@@ -560,7 +560,11 @@ export function MessageBubble({ message, onNavigate }) {
   if (isUser && message.meta?.team_note) {
     return (
       <div className="flex justify-center">
-        <p className="text-xs text-gray-500 italic">{String(message.content || '').replace(/^\[TEAM\]\s*/, '').split('\n')[0]}</p>
+        <p className="text-xs text-gray-500 italic">
+          {message.meta?.huddle
+            ? String(message.content || '').replace(/^\[TEAM\]\s*Huddle\.\s*/, '').split(/\. Speak to |\. Do not retell/)[0]
+            : String(message.content || '').replace(/^\[TEAM\]\s*/, '').split('\n')[0]}
+        </p>
       </div>
     );
   }
@@ -3696,9 +3700,30 @@ export default function AutoV2Panel({ onNavigate, className,
               body: JSON.stringify({ thread_id: replyThreadId }),
             });
             const up = await r.json().catch(() => ({}));
-            for (const sp of Array.isArray(up?.speakers) ? up.speakers : []) {
-              setWaitingNote(`${sp.name} has something to add…`);
-              await teammateTurn(sp.agent, speakUpMessage(sp));
+            if (up?.huddle) {
+              // The team huddles on the server; show each turn as it lands (2026-10-26).
+              const started = Date.now();
+              let seen = -1;
+              while (Date.now() - started < 12 * 60 * 1000) {
+                await new Promise((res) => setTimeout(res, 5000));
+                if (activeThreadIdRef.current && activeThreadIdRef.current !== replyThreadId) break;
+                const st = await fetch(`/api/ao/auto/session?thread_id=${encodeURIComponent(replyThreadId)}`).then((x) => x.json()).catch(() => null);
+                if (!st?.ok) continue;
+                const msgs = Array.isArray(st.messages) ? st.messages : [];
+                if (msgs.length !== seen) {
+                  seen = msgs.length;
+                  setMessages(msgs);
+                }
+                const h = st.thread?.state?.huddle;
+                if (!h?.active) break;
+                const who = TEAM_NAMES[h.closing ? 'auto' : h.last] || 'The team';
+                setWaitingNote(h.closing ? 'Ada is wrapping up the huddle…' : h.turns ? `Team huddle: ${who} just spoke…` : 'The team is huddling…');
+              }
+            } else {
+              for (const sp of Array.isArray(up?.speakers) ? up.speakers : []) {
+                setWaitingNote(`${sp.name} has something to add…`);
+                await teammateTurn(sp.agent, speakUpMessage(sp));
+              }
             }
           } catch (_) {
             // The answer stands on its own if the check does not run.
