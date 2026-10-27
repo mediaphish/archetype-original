@@ -425,7 +425,7 @@ function PublishTab({ schedule, plan = null, slug, onChanged }) {
       ) : null}
 
       <div>
-        <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">Still to post by hand</p>
+        <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">You post by hand</p>
         <ul className="space-y-2">
           {manual.map((m) => (
             <li key={m.key} data-testid={`manual-${m.key}`} className="rounded-xl border border-gray-200 bg-white px-3 py-2">
@@ -438,7 +438,11 @@ function PublishTab({ schedule, plan = null, slug, onChanged }) {
                 </span>
                 {m.postedAt ? (
                   <span className="flex items-center gap-3 text-xs">
-                    <span className="text-green-700">Posted {formatWhen(new Date(m.postedAt).getTime())}</span>
+                    <span className="text-green-700">
+                      {m.scheduledByBart
+                        ? `Scheduled by you${m.goesOutAt || planned[m.key] ? ` for ${formatWhen(new Date(m.goesOutAt || planned[m.key]).getTime())}` : ''}`
+                        : `Posted ${formatWhen(new Date(m.postedAt).getTime())}`}
+                    </span>
                     <button type="button" disabled={busy === m.key} onClick={() => mark(m.key, false)} className="text-gray-500 underline">
                       Undo
                     </button>
