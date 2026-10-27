@@ -4161,31 +4161,29 @@ export default function AutoV2Panel({ onNavigate, className,
       >
         <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-gray-300" aria-hidden />
 
-        {/* Threads first. Bart's loudest complaint tonight was that he could not
-            get from one post to another from his phone. */}
-        <div className="px-2 pt-3">
-          <div className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
-            Chats
-          </div>
-          {threads.length === 0 ? (
-            <div className="px-4 py-3 text-sm text-gray-400">No other chats yet.</div>
-          ) : (
-            threads.slice(0, 8).map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  loadThread(t);
-                }}
-                className={`block w-full truncate rounded-xl px-4 py-3 text-left text-[15px] ${
-                  t.id === activeThreadId ? 'bg-gray-100 font-semibold text-gray-900' : 'text-gray-800 hover:bg-gray-50'
-                }`}
-              >
-                {t.title || 'Untitled chat'}
-              </button>
-            ))
-          )}
+        {/* Threads first, grouped by channel like the desktop sidebar (2026-10-26:
+            the phone still showed a flat list of old chats). */}
+        <div className="pt-1">
+          <ThreadSidebar
+            threads={threads}
+            archivedThreads={archivedThreads}
+            activeThreadId={activeThreadId}
+            onSelectThread={(t) => {
+              setMobileMenuOpen(false);
+              loadThread(t);
+            }}
+            onNewThread={startNewThread}
+            onRefresh={loadThreadList}
+            channels={channels}
+            onNewInChannel={(key) => {
+              setMobileMenuOpen(false);
+              startNewThread(null, key);
+            }}
+            onMoveThread={moveThread}
+            onNewChannel={newChannel}
+            showHeader={false}
+            className="w-full"
+          />
         </div>
         <div className="mx-4 my-2 h-px bg-gray-200" />
 
@@ -4203,9 +4201,6 @@ export default function AutoV2Panel({ onNavigate, className,
           </button>
           {[
             { key: 'team', label: teamNeedsCount > 0 ? `Team board (${teamNeedsCount} need${teamNeedsCount === 1 ? 's' : ''} you)` : 'Team board', run: () => setTeamOpen(true) },
-            { key: 'writing', label: 'New in #writing', run: () => startNewThread(null, 'writing') },
-            { key: 'social', label: 'New in #social', run: () => startNewThread(null, 'social') },
-            { key: 'podcast', label: 'New in #podcast', run: () => startNewThread(null, 'podcast') },
           ].map((item) => (
             <button
               key={item.key}
