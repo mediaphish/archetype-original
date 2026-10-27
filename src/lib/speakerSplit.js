@@ -6,9 +6,9 @@
  * This splits it at each line that opens with a teammate's name, so each part
  * shows as that teammate's own bubble with their picture.
  */
-const NAME_TO_KEY = { ada: 'auto', auto: 'auto', jot: 'jot', vox: 'reach', reach: 'reach', cam: 'producer', red: 'editor' };
+const NAME_TO_KEY = { ada: 'auto', auto: 'auto', jot: 'jot', vox: 'reach', reach: 'reach', cam: 'producer', red: 'editor', des: 'designer' };
 
-const LABEL = /^\s*(?:\*\*)?(Ada|Auto|Jot|Vox|Reach|Cam|Red)(?:\*\*)?:(?:\*\*)?\s*/;
+const LABEL = /^\s*(?:\*\*)?(Ada|Auto|Jot|Vox|Reach|Cam|Red|Des)(?:\*\*)?:(?:\*\*)?\s*/;
 
 /** @returns {Array<{ agent: string, text: string }>} */
 export function splitBySpeaker(text, defaultAgent = 'auto') {

@@ -1306,7 +1306,7 @@ export async function runChatTurn({ email, body = {}, sendEvent, end = () => {},
     // teammate in for this reply; otherwise the conversation's own teammate answers.
     // An image Bart asks for is Cam's to make (2026-10-27).
     const agent = normalizeAgent(
-      requestedAgent || mentionedAgents(userMessage)[0] || (!body?.message_meta && isImageAsk(userMessage) ? 'producer' : null) || thread?.state?.agent
+      requestedAgent || mentionedAgents(userMessage)[0] || (!body?.message_meta && isImageAsk(userMessage) ? 'designer' : null) || thread?.state?.agent
     );
 
     const fromBart = !body?.message_meta?.team_note && !body?.message_meta?.team_task && !/^\s*\[(TEAM|TEAM TASK|SYSTEM)/.test(userMessage);

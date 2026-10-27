@@ -20,5 +20,7 @@ function initialAvatar(letter) {
 export function avatarFor(agent) {
   if (TEAM_AVATARS[agent]) return TEAM_AVATARS[agent];
   if (agent === 'producer') return initialAvatar('P');
+  // Des has no art yet (hired 2026-10-27); Bart draws the team's pictures.
+  if (agent === 'designer') return initialAvatar('D');
   return TEAM_AVATARS.auto;
 }

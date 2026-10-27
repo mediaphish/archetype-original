@@ -17,7 +17,7 @@ import PendingReshares from './PendingReshares.jsx';
 import InfographicReview from './InfographicReview.jsx';
 import WeeklyQuoteCards from './WeeklyQuoteCards.jsx';
 
-const NAMES = { auto: 'Ada', jot: 'Jot', reach: 'Vox', producer: 'Cam', editor: 'Red' };
+const NAMES = { auto: 'Ada', jot: 'Jot', reach: 'Vox', producer: 'Cam', editor: 'Red', designer: 'Des' };
 
 /** One post in the channel: who posted it and what it is, then the card. */
 export function QueuePost({ agent, what, children }) {
