@@ -566,7 +566,7 @@ function TypingIndicator({ label = null, agent = 'auto' }) {
   );
 }
 
-const TEAM_NAMES = { auto: 'Ada', jot: 'Jot', reach: 'Vox', producer: 'Cam', editor: 'Red', designer: 'Des' };
+const TEAM_NAMES = { auto: 'Ada', jot: 'Jot', reach: 'Vox', producer: 'Cam', editor: 'Red', designer: 'Des', it: 'Bit' };
 
 /** A background task's assignment or pass, shown as a team note rather than as Bart's words. */
 function TeamTaskNote({ message }) {
@@ -3402,7 +3402,7 @@ export default function AutoV2Panel({ onNavigate, className,
     if (startingNew || sending || loading) return;
     setQueueOpen(false);
     const agent = typeof agentArg === 'string' ? agentArg : null;
-    const who = agent === 'jot' ? 'Jot' : agent === 'reach' ? 'Vox' : agent === 'producer' ? 'Cam' : agent === 'designer' ? 'Des' : null;
+    const who = agent === 'jot' ? 'Jot' : agent === 'reach' ? 'Vox' : agent === 'producer' ? 'Cam' : agent === 'designer' ? 'Des' : agent === 'it' ? 'Bit' : null;
     // A thread started in a channel needs no warning: nothing is set aside that cannot be reopened.
     const ok = channelKey ? true : window.confirm(
       who

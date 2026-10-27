@@ -11,7 +11,7 @@ const team = (n) => Array.from({ length: n }, (_, i) => ({ key: `k${i}`, handle:
 
 test('shows the faces and the count, roles only once opened', () => {
   render(<TeamFacepile />);
-  expect(screen.getByTestId('team-facepile')).toHaveTextContent('6 teammates');
+  expect(screen.getByTestId('team-facepile')).toHaveTextContent('7 teammates');
   expect(screen.queryByTestId('team-list')).toBeNull();
   fireEvent.click(screen.getByTestId('team-facepile'));
   const list = screen.getByTestId('team-list');

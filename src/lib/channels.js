@@ -9,7 +9,7 @@ export function channelOfThread(thread) {
   if (st.task_id) return 'team';
   // The one-on-one chats with Jot, Vox and Cam become the history of #team.
   const agent = String(st.agent || 'auto').toLowerCase();
-  return ['jot', 'reach', 'producer', 'designer'].includes(agent) ? 'team' : 'general';
+  return ['jot', 'reach', 'producer', 'designer', 'it'].includes(agent) ? 'team' : 'general';
 }
 
 /** Threads grouped by channel key, newest first in each. */

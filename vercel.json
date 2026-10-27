@@ -1529,6 +1529,10 @@
       "dest": "/api/cron/ao/producer-intake.js"
     },
     {
+      "src": "/api/cron/ao/bit",
+      "dest": "/api/cron/ao/bit.js"
+    },
+    {
       "src": "/api/ao/auto/generate-card-image",
       "dest": "/api/ao/auto/generate-card-image.js"
     },
@@ -2152,6 +2156,10 @@
     {
       "path": "/api/cron/ao/producer-intake",
       "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/cron/ao/bit",
+      "schedule": "40 */6 * * *"
     }
   ]
 }

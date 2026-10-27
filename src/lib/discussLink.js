@@ -4,7 +4,7 @@
  * The link opens Auto with a note already started, so he only types his part.
  */
 export function discussUrl({ text = '', agent = 'auto', topic = '', channel = 'social' } = {}) {
-  const name = agent === 'jot' ? 'Jot' : agent === 'reach' ? 'Vox' : agent === 'producer' ? 'Cam' : agent === 'designer' ? 'Des' : null;
+  const name = agent === 'jot' ? 'Jot' : agent === 'reach' ? 'Vox' : agent === 'producer' ? 'Cam' : agent === 'designer' ? 'Des' : agent === 'it' ? 'Bit' : null;
   const opener = name ? `${name}, ${text}` : text;
   // Each thing talked over gets its own conversation, never the one already
   // open (Bart, 2026-10-27: "I don't think we can have multiple conversations

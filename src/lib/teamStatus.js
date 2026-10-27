@@ -8,7 +8,7 @@
  * the time, so silence never has to be guessed at.
  */
 
-export const TEAM_NAMES = { auto: 'Ada', jot: 'Jot', reach: 'Vox', producer: 'Cam', editor: 'Red', designer: 'Des' };
+export const TEAM_NAMES = { auto: 'Ada', jot: 'Jot', reach: 'Vox', producer: 'Cam', editor: 'Red', designer: 'Des', it: 'Bit' };
 
 const isTeamNote = (m) => Boolean(m?.meta?.team_note) || /^\s*\[TEAM\]/.test(String(m?.content || ''));
 

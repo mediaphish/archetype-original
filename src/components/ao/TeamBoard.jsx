@@ -146,7 +146,7 @@ export default function TeamBoard({ onOpenThread, onClose }) {
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
         <div>
           <p className="text-sm font-semibold text-gray-900">Team</p>
-          <p className="text-xs text-gray-500">Ada, Jot, Vox, Cam, Red and Des</p>
+          <p className="text-xs text-gray-500">Ada, Jot, Vox, Cam, Red, Des and Bit</p>
         </div>
         {onClose ? (
           <button type="button" onClick={onClose} className="text-sm text-gray-500 px-2 py-1" aria-label="Close the team board">
@@ -186,6 +186,7 @@ export default function TeamBoard({ onOpenThread, onClose }) {
               ['producer', 'Cam'],
               ['editor', 'Red'],
               ['designer', 'Des'],
+              ['it', 'Bit'],
               ['auto', 'Ada'],
             ].map(([k, n]) => (
               <button
