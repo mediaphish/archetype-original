@@ -46,6 +46,7 @@ import { metricsAlertKeyFor } from '../../lib/metricsAlertKey';
 import { orderDesignImagesNewestFirst } from '../../lib/designImageOrder.js';
 import { KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import QueueFeed from './QueueFeed.jsx';
+import { idleStatus } from '../../lib/teamStatus.js';
 import {
   MAX_TOTAL_ATTACHMENT_BYTES,
   attachmentOverLimitMessage,
@@ -455,6 +456,16 @@ function PaperclipIcon() {
 }
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
+
+/** The still counterpart to the working animation: nobody is working, and what that means. */
+function IdleStatus({ label }) {
+  return (
+    <div className="flex items-center gap-2 pl-11 text-xs text-gray-500" role="status" aria-live="polite">
+      <span className="h-2 w-2 flex-shrink-0 rounded-full bg-gray-300" aria-hidden="true" />
+      <span>{label}</span>
+    </div>
+  );
+}
 
 /**
  * The working animation. It always moves and counts the seconds, with or
@@ -2293,6 +2304,9 @@ export default function AutoV2Panel({ onNavigate, className,
   // the working animation; and Bart's messages typed while a reply was still
   // coming, sent in order as soon as it lands (2026-10-27).
   const [teamBusy, setTeamBusy] = useState(false);
+  // The server's word that a huddle or a teammate's task is running here,
+  // kept apart from teamBusy (the follow-ups this screen itself is running).
+  const [serverWorking, setServerWorking] = useState(false);
   const [queued, setQueued] = useState([]);
   const queueRef = useRef([]);
   const bgGenRef = useRef(0);
@@ -2466,6 +2480,7 @@ export default function AutoV2Panel({ onNavigate, className,
   );
 
   const contextPill = useMemo(() => extractContextPill(visibleChatMessages), [visibleChatMessages]);
+  const idleLine = useMemo(() => idleStatus(visibleChatMessages), [visibleChatMessages]);
 
   const hasArtifactContent = useMemo(
     () =>
@@ -4002,27 +4017,32 @@ export default function AutoV2Panel({ onNavigate, className,
     let alive = true;
     const gen = bgGenRef.current;
     (async () => {
+      // Keeps checking while the conversation is open, not only while someone
+      // works, so work the team starts later shows up too (2026-10-27: "I
+      // have no clue" whether the team was still at it).
       let seen = -1;
-      for (let i = 0; i < 120 && alive; i += 1) {
-        if (i > 0) await new Promise((r) => setTimeout(r, 6000));
-        if (!alive || bgGenRef.current !== gen || sendingRef.current) return;
+      let working = false;
+      const started = Date.now();
+      for (let i = 0; alive && Date.now() - started < 60 * 60000; i += 1) {
+        if (i > 0) await new Promise((r) => setTimeout(r, working ? 6000 : 20000));
+        if (!alive || bgGenRef.current !== gen) return;
+        if (sendingRef.current) continue;
         const st = await fetch(`/api/ao/auto/session?thread_id=${encodeURIComponent(activeThreadId)}`).then((x) => x.json()).catch(() => null);
-        if (!alive || bgGenRef.current !== gen || sendingRef.current || !st?.ok) return;
+        if (!alive || bgGenRef.current !== gen) return;
+        if (sendingRef.current || !st?.ok) continue;
         const msgs = Array.isArray(st.messages) ? st.messages : [];
         if (i > 0 && msgs.length !== seen) {
           setMessages(msgs);
           syncArtifactFromMessages(msgs);
         }
         seen = msgs.length;
-        if (!st.team_working) {
-          if (i > 0) setTeamBusy(false);
-          return;
-        }
-        setTeamBusy(true);
+        working = Boolean(st.team_working);
+        setServerWorking(working);
       }
     })();
     return () => {
       alive = false;
+      setServerWorking(false);
     };
   }, [activeThreadId, syncArtifactFromMessages]);
 
@@ -4779,7 +4799,9 @@ export default function AutoV2Panel({ onNavigate, className,
 
           {waitingNote && !sending ? <TypingIndicator label={waitingNote} agent={activeAgent} /> : null}
 
-          {teamBusy && !waitingNote && !sending ? <TypingIndicator label="The team is still working. You can keep typing." agent={activeAgent} /> : null}
+          {(teamBusy || serverWorking) && !waitingNote && !sending ? <TypingIndicator label="The team is still working. You can keep typing." agent={activeAgent} /> : null}
+
+          {!teamBusy && !serverWorking && !waitingNote && !sending && !imageGenerating && queued.length === 0 && idleLine ? <IdleStatus label={idleLine} /> : null}
 
           {queued.map((text, qi) => (
             <div key={`queued-${qi}`} className="flex flex-row-reverse gap-3 opacity-60">
