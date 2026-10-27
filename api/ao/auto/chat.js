@@ -1453,6 +1453,28 @@ export async function runChatTurn({ email, body = {}, sendEvent, end = () => {},
       console.error('[chat.js] chat attached image facts load failed:', loadAttErr?.message);
     }
 
+    // Images used on an earlier turn stay in front of the team for the whole
+    // conversation (2026-10-27: Cam lost Bart's 21 RemAIning Human images one
+    // reply after he attached them).
+    try {
+      const chatAttMod = await import('../../../lib/ao/chatAttachedImageFact.js');
+      const all = await chatAttMod.loadThreadReferenceImages(thread.id);
+      const shown = new Set(
+        (chatAttachedFactTexts.match(/https?:\/\/\S+/g) || []).map((u) => u.replace(/[.,)]+$/, ''))
+      );
+      const earlier = all.filter((i) => !shown.has(i.url));
+      if (earlier.length) {
+        chatAttachedFactTexts = [chatAttachedFactTexts, chatAttMod.formatThreadReferenceImagesNote(earlier)]
+          .filter(Boolean)
+          .join('\n\n');
+        for (const i of earlier.slice().reverse()) {
+          if (!chatAttachedImageUrlsPrior.includes(i.url)) chatAttachedImageUrlsPrior.push(i.url);
+        }
+      }
+    } catch (refErr) {
+      console.error('[chat.js] reference image list failed:', refErr?.message);
+    }
+
     // If Bart pastes a full post directly, save it to the database right now --
     // do not wait on Auto's reply to echo it back inside a tag first. Runs on
     // every message; the function itself is conservative about what counts as
