@@ -1,4 +1,4 @@
-# November 2026 devotional plan: Thankfulness (PROPOSED, not yet approved)
+# November 2026 devotional plan: Thankfulness (APPROVED by Bart 2026-10-27)
 
 Checked 2026-10-27 against all 304 posts in `notes/DEVOTIONAL_INDEX.md` (Jan 1 to Oct 31), with real ESV text pulled for every passage. Rules applied: no repeat passage; no repeat of the same chapter, story or paragraph; single verses only when a complete thought; no passage that repeats another passage's words; the passage itself must speak of thanks.
 
