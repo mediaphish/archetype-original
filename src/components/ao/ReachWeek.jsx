@@ -54,7 +54,7 @@ export default function ReachWeek({ onNavigate }) {
   }, [which, load]);
 
   const talk = (text) => {
-    const url = discussUrl({ agent: 'reach', text });
+    const url = discussUrl({ agent: 'reach', text, topic: 'Schedule: this week' });
     if (onNavigate) onNavigate(url);
     else window.location.href = url;
   };

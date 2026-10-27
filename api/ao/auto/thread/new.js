@@ -36,11 +36,16 @@ export default async function handler(req, res) {
       thread.state = { ...(thread.state || {}), channel: channel.key };
       await supabaseAdmin.from('ao_auto_threads').update({ state: thread.state }).eq('id', thread.id);
     }
+    // A conversation about one thing gets that thing's name (2026-10-27: a Queue
+    // item opened from "Talk it over" gets its own conversation).
+    const title = String(req.body?.title || '').trim().slice(0, 120);
+
+    if (title && agent === 'auto') await supabaseAdmin.from('ao_auto_threads').update({ title }).eq('id', thread.id);
 
     if (agent !== 'auto') {
       await supabaseAdmin
         .from('ao_auto_threads')
-        .update({ title: channel ? `#${channel.name}` : AGENTS[agent].name, state: { ...(thread.state || {}), agent } })
+        .update({ title: title || (channel ? `#${channel.name}` : AGENTS[agent].name), state: { ...(thread.state || {}), agent } })
         .eq('id', thread.id);
       await addAutoMessage({
         threadId: thread.id,

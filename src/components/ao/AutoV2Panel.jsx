@@ -3071,6 +3071,28 @@ export default function AutoV2Panel({ onNavigate, className,
       const seedThreadId = params.get('thread');
       // "Talk it over" from the Queue opens Auto with Bart's note already started.
       const compose = params.get('compose');
+      // A Queue item talked over opens in a conversation of its own (2026-10-27).
+      const freshChannel = compose ? params.get('new') : null;
+      if (freshChannel && !seedThreadId) {
+        try {
+          const res = await fetch('/api/ao/auto/thread/new', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ channel: freshChannel, title: params.get('topic') || '' }),
+          });
+          const json = await res.json().catch(() => ({}));
+          if (res.ok && json.ok && json.thread?.id) {
+            setActiveThreadId(json.thread.id);
+            setMessages(Array.isArray(json.messages) ? json.messages : []);
+            syncArtifactFromMessages(json.messages || []);
+            await loadThreadList();
+          }
+        } catch (_) {
+          // The note still starts in the open conversation.
+        }
+        params.delete('new');
+        params.delete('topic');
+      }
       if (compose) {
         setInput(compose.endsWith(' ') ? compose : `${compose} `);
         setTimeout(() => {
