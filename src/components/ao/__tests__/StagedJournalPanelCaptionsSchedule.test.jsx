@@ -1,5 +1,5 @@
 /**
- * The Captions and Schedule & Publish tabs, rendered.
+ * The Captions and Publish tabs, rendered (Schedule & Publish split 2026-10-27).
  *
  * They shipped as placeholders and read as broken on the Cain post: a check
  * mark on Captions over "will show here", while five captions were scheduled
@@ -34,7 +34,7 @@ function schedule(manualPosts = {}) {
   };
 }
 
-function mockServer({ stageTab = 'schedule_publish' } = {}) {
+function mockServer({ stageTab = 'publish' } = {}) {
   let posted = {};
   global.fetch = jest.fn(async (url, opts) => {
     if (String(url).includes('/api/ao/auto/manual-post')) {
@@ -49,9 +49,9 @@ function mockServer({ stageTab = 'schedule_publish' } = {}) {
         ok: true,
         draft: { slug: 'the-cain-archetype', kind: 'journal', image_url: 'https://example.com/cain.png' },
         stage: {
-          stage: stageTab === 'captions' ? 'captions' : 'schedule',
+          stage: stageTab === 'captions' ? 'captions' : 'ready',
           tab: stageTab,
-          approvals: { brief: true, post: true, image: true, captions: true, schedule: stageTab !== 'captions' },
+          approvals: { brief: true, post: true, image: true, schedule: true, captions: stageTab !== 'captions' },
         },
         panel: { captions, schedule: schedule(posted) },
       }),
@@ -78,7 +78,7 @@ describe('Captions tab', () => {
   });
 });
 
-describe('Schedule & Publish tab', () => {
+describe('Publish tab', () => {
   it('shows the scheduled posts and the two posted by hand', async () => {
     mockServer();
     renderPanel();
@@ -106,5 +106,54 @@ describe('Schedule & Publish tab', () => {
     // The panel refetches and reflects what the server saved.
     await waitFor(() => expect(screen.getByTestId('manual-linkedin_business')).toHaveTextContent('Posted'));
     expect(screen.getByTestId('mark-posted-facebook_personal')).toBeInTheDocument();
+  });
+});
+
+describe('Schedule tab and caption times (2026-10-27)', () => {
+  const plan = {
+    ok: true,
+    approved: false,
+    plan: {
+      publishAt: '2026-11-04T11:00:00.000Z',
+      rows: [
+        { key: 'twitter', label: 'X', manual: false, at: '2026-11-04T14:30:00.000Z' },
+        { key: 'linkedin_business', label: 'LinkedIn Business', manual: true, at: '2026-11-04T15:30:00.000Z' },
+      ],
+    },
+  };
+  const serve = (stage, approvals) => {
+    global.fetch = jest.fn(async (url) => {
+      if (String(url).includes('approve-stage')) return { ok: true, status: 200, json: async () => ({ ok: true }) };
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          ok: true,
+          draft: { slug: 'the-cain-archetype', kind: 'journal', image_url: 'https://example.com/cain.png' },
+          stage: { stage, tab: stage, approvals },
+          panel: { captions, schedule: schedule({}), plan },
+        }),
+      };
+    });
+  };
+
+  it('shows the plan with the hand-posted channels marked, and approves it', async () => {
+    serve('schedule', { brief: true, post: true, image: true, schedule: false, captions: false });
+    renderPanel();
+    await screen.findByTestId('plan-tab');
+    expect(screen.getByTestId('plan-row-linkedin_business')).toHaveTextContent('you post it');
+    fireEvent.click(screen.getByTestId('approve-schedule'));
+    await waitFor(() => {
+      const call = global.fetch.mock.calls.find(([u]) => String(u).includes('approve-stage'));
+      expect(JSON.parse(call[1].body)).toMatchObject({ stage: 'schedule' });
+    });
+  });
+
+  it('every caption shows its time from the plan', async () => {
+    serve('captions', { brief: true, post: true, image: true, schedule: true, captions: false });
+    renderPanel();
+    await screen.findByTestId('captions-tab');
+    expect(screen.getByTestId('caption-time-linkedin_business')).toHaveTextContent('You post it');
+    expect(screen.getByTestId('caption-time-twitter')).toHaveTextContent('Goes out');
   });
 });

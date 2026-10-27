@@ -18,7 +18,7 @@ function stageResponse(stage, approvals) {
     json: async () => ({
       ok: true,
       draft: { slug: 'your-tuesday', kind: 'journal', image_url: IMAGE },
-      stage: { stage, tab: stage === 'image' ? 'image' : stage === 'captions' ? 'captions' : 'schedule_publish', approvals },
+      stage: { stage, tab: stage === 'image' ? 'image' : stage === 'captions' ? 'captions' : stage === 'schedule' ? 'schedule' : 'publish', approvals },
       panel: null,
     }),
   };
@@ -118,7 +118,7 @@ describe('Approve captions', () => {
   it('sends exactly the captions shown and tells Auto', async () => {
     global.fetch = jest.fn(async (url) => {
       if (String(url).includes('approve-stage')) return { ok: true, status: 200, json: async () => ({ ok: true }) };
-      return stageResponse('captions', { brief: true, post: true, image: true, captions: false, schedule: false });
+      return stageResponse('captions', { brief: true, post: true, image: true, schedule: true, captions: false });
     });
     const onStageApproved = jest.fn();
     render(
@@ -140,10 +140,10 @@ describe('Approve captions', () => {
 
   it('shows captions as approved and offers no button once approved', async () => {
     global.fetch = jest.fn(async () =>
-      stageResponse('schedule', { brief: true, post: true, image: true, captions: true, schedule: false })
+      stageResponse('ready', { brief: true, post: true, image: true, schedule: true, captions: true })
     );
     render(<StagedJournalPanel slug="your-tuesday" chatCaptionsText={CHAT} renderPost={() => <p>post</p>} />);
-    await waitFor(() => expect(screen.getByTestId('stage-tab-schedule_publish')).toHaveAttribute('aria-selected', 'true'));
+    await waitFor(() => expect(screen.getByTestId('stage-tab-publish')).toHaveAttribute('aria-selected', 'true'));
     fireEvent.click(screen.getByTestId('stage-tab-captions'));
     expect(await screen.findByTestId('captions-approved')).toBeInTheDocument();
     expect(screen.queryByTestId('approve-captions')).toBeNull();

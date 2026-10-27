@@ -14,17 +14,18 @@ describe('buildTabs', () => {
       ['research_brief', 'done'],
       ['post', 'done'],
       ['image', 'current'],
+      ['schedule', 'ahead'],
       ['captions', 'ahead'],
-      ['schedule_publish', 'ahead'],
+      ['publish', 'ahead'],
     ]);
   });
 
   it('marks everything done once published', () => {
-    const tabs = buildTabs({ stage: 'published', tab: 'schedule_publish', approvals: {} });
+    const tabs = buildTabs({ stage: 'published', tab: 'publish', approvals: {} });
     expect(tabs.every((t) => t.state === 'done')).toBe(true);
   });
 
-  it('still returns all five tabs with no stage information', () => {
+  it('still returns every tab with no stage information', () => {
     expect(buildTabs(null)).toHaveLength(TABS.length);
   });
 });

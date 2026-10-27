@@ -113,12 +113,22 @@ export default async function handler(req, res) {
         captions: captionsPanel,
       });
 
+      // The schedule comes before the captions (2026-10-27): the approved plan,
+      // or a proposal from the publish day when there is none yet.
+      let plan = null;
+      try {
+        const { planForDraft } = await import('../../../lib/ao/schedulePlan.js');
+        plan = await planForDraft(draft);
+      } catch (planErr) {
+        console.warn('[content-draft] schedule plan failed:', planErr?.message || planErr);
+      }
+
       return res.status(200).json({
         ok: true,
         draft: draftOut,
         // draft still carries metadata here, which is where approvals live.
         stage: deriveDraftStage({ draft }),
-        panel: { captions: captionsPanel, schedule: schedulePanel },
+        panel: { captions: captionsPanel, schedule: schedulePanel, plan },
       });
     }
 

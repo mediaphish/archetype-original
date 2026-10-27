@@ -9,13 +9,18 @@
 
 import { orderDesignImagesNewestFirst } from './designImageOrder.js';
 
-/** The five tabs, in workflow order. Keys match STAGE_TABS in lib/ao/draftStage.js. */
+/**
+ * The tabs, in workflow order. Keys match STAGE_TABS in lib/ao/draftStage.js.
+ * 2026-10-27: Schedule comes before Captions, and Publish is its own step
+ * (Bart: "Let's swap captions and schedule, and separate schedule from publish").
+ */
 export const TABS = Object.freeze([
   { key: 'research_brief', label: 'Research & Brief', approval: 'brief' },
   { key: 'post', label: 'Post', approval: 'post' },
   { key: 'image', label: 'Image', approval: 'image' },
+  { key: 'schedule', label: 'Schedule', approval: 'schedule' },
   { key: 'captions', label: 'Captions', approval: 'captions' },
-  { key: 'schedule_publish', label: 'Schedule & Publish', approval: 'schedule' },
+  { key: 'publish', label: 'Publish', approval: 'published' },
 ]);
 
 const TAB_KEYS = TABS.map((t) => t.key);

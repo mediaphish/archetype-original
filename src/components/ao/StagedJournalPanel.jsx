@@ -1,8 +1,9 @@
 /**
  * The artifact panel for a journal draft, organised by workflow stage.
  *
- * Build step 2 of notes/AUTO_STAGED_WORKSPACE_SPEC.md. Five tabs, one thing per
- * tab, and the open tab follows the draft's real stage forward.
+ * Build step 2 of notes/AUTO_STAGED_WORKSPACE_SPEC.md. One thing per tab, and
+ * the open tab follows the draft's real stage forward. Since 2026-10-27 the
+ * order is Research & Brief, Post, Image, Schedule, Captions, Publish.
  *
  * Why it exists: the Cain header image was generated, saved to the draft, and
  * present in the old panel, and Bart could not tell. That panel stacked the
@@ -237,8 +238,10 @@ function CopyButton({ text, label = 'Copy' }) {
   );
 }
 
-function CaptionsTab({ captions, stage = null, captionsApproved = false, approving = false, approveError = null, onApprove = null }) {
+function CaptionsTab({ captions, plan = null, stage = null, captionsApproved = false, approving = false, approveError = null, onApprove = null }) {
   const list = Array.isArray(captions) ? captions : [];
+  // Each caption shows when it goes out, from the approved schedule (2026-10-27).
+  const timeFor = Object.fromEntries((plan?.rows || []).map((r) => [r.key, r.at]));
   if (!list.some((c) => c.text)) {
     return (
       <EmptyTab
@@ -254,7 +257,7 @@ function CaptionsTab({ captions, stage = null, captionsApproved = false, approvi
           {captionsApproved ? (
             <p data-testid="captions-approved" className="text-xs font-medium text-green-700">✓ Captions approved</p>
           ) : (
-            <p className="text-xs text-gray-500">Talk through changes in the chat, then approve to move on. Nothing is scheduled by approving.</p>
+            <p className="text-xs text-gray-500">Talk through changes in the chat, then approve to move on. Nothing goes out by approving.</p>
           )}
           {!captionsApproved && stage === 'captions' ? (
             <button
@@ -281,6 +284,12 @@ function CaptionsTab({ captions, stage = null, captionsApproved = false, approvi
               {c.source === 'chat' ? (
                 <span data-testid={`caption-chat-${c.key}`} className="ml-2 rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-800">in chat, not scheduled</span>
               ) : null}
+              {timeFor[c.key] ? (
+                <span data-testid={`caption-time-${c.key}`} className="ml-2 text-[11px] font-normal text-gray-500">
+                  {c.manual ? 'You post it ' : 'Goes out '}
+                  {formatWhen(new Date(timeFor[c.key]).getTime())}
+                </span>
+              ) : null}
             </p>
             <div className="flex items-center gap-3">
               {c.text ? <span className="text-[11px] text-gray-400">{c.chars} chars</span> : null}
@@ -298,7 +307,61 @@ function CaptionsTab({ captions, stage = null, captionsApproved = false, approvi
   );
 }
 
-function ScheduleTab({ schedule, slug, onChanged }) {
+/**
+ * The schedule, before the captions: the publish day and a time for every
+ * channel, including the two Bart posts by hand (2026-10-27: "I want our plan
+ * that's developed inside Auto to be the schedule").
+ */
+function PlanTab({ plan, stage = null, approved = false, approving = false, approveError = null, onApprove = null }) {
+  if (!plan?.ok) {
+    return (
+      <EmptyTab
+        title="No publish day yet"
+        detail={plan?.error || 'Vox picks the day in the chat. Then a time for every channel shows here for you to approve.'}
+      />
+    );
+  }
+  const p = plan.plan || {};
+  return (
+    <div data-testid="plan-tab" className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Post goes live</p>
+          <p className="text-sm text-gray-900">{formatWhen(new Date(p.publishAt).getTime()) || 'Not set'}</p>
+        </div>
+        {approved ? (
+          <p data-testid="schedule-approved" className="text-xs font-medium text-green-700">✓ Schedule approved</p>
+        ) : stage === 'schedule' ? (
+          <button
+            type="button"
+            data-testid="approve-schedule"
+            disabled={approving}
+            onClick={() => onApprove?.()}
+            className="shrink-0 rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-700 disabled:opacity-50"
+          >
+            {approving ? 'Approving…' : 'Approve schedule'}
+          </button>
+        ) : null}
+      </div>
+      {!approved ? <p className="text-xs text-gray-500">Vox's plan. Change any time in the chat, then approve. Nothing goes out by approving.</p> : null}
+      {approveError ? <p className="text-xs text-red-700">{approveError}</p> : null}
+      <ul className="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white">
+        {(p.rows || []).map((r) => (
+          <li key={r.key} data-testid={`plan-row-${r.key}`} className="flex items-center justify-between gap-2 px-3 py-2 text-sm">
+            <span className="text-gray-800">
+              {r.label}
+              {r.manual ? <span className="ml-2 rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-800">you post it</span> : null}
+            </span>
+            <span className="text-xs text-gray-600">{r.at ? formatWhen(new Date(r.at).getTime()) : 'No time yet'}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function PublishTab({ schedule, plan = null, slug, onChanged }) {
+  const planned = Object.fromEntries((plan?.plan?.rows || []).map((r) => [r.key, r.at]));
   const [busy, setBusy] = useState(null);
   const [error, setError] = useState(null);
   const rows = schedule?.rows || [];
@@ -307,8 +370,8 @@ function ScheduleTab({ schedule, slug, onChanged }) {
   if (!schedule || (!rows.length && !schedule.publishAt)) {
     return (
       <EmptyTab
-        title="Nothing scheduled yet"
-        detail="Once captions are approved and scheduled, what goes out when shows here, with anything you still post by hand."
+        title="Not published yet"
+        detail="Once the schedule and captions are approved and the post is published, what went out when shows here, with what you still post by hand and when."
       />
     );
   }
@@ -367,7 +430,12 @@ function ScheduleTab({ schedule, slug, onChanged }) {
           {manual.map((m) => (
             <li key={m.key} data-testid={`manual-${m.key}`} className="rounded-xl border border-gray-200 bg-white px-3 py-2">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-sm font-medium text-gray-900">{m.label}</span>
+                <span className="text-sm font-medium text-gray-900">
+                  {m.label}
+                  {planned[m.key] && !m.postedAt ? (
+                    <span data-testid={`manual-time-${m.key}`} className="ml-2 text-xs font-normal text-gray-500">post {formatWhen(new Date(planned[m.key]).getTime())}</span>
+                  ) : null}
+                </span>
                 {m.postedAt ? (
                   <span className="flex items-center gap-3 text-xs">
                     <span className="text-green-700">Posted {formatWhen(new Date(m.postedAt).getTime())}</span>
@@ -593,9 +661,19 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
           />
         ) : activeTab === 'research_brief' ? (
           <EmptyTab title="Research & Brief" detail="The research and brief for this post will live here. Until then they are in the conversation." />
+        ) : activeTab === 'schedule' ? (
+          <PlanTab
+            plan={panel?.plan}
+            stage={stageInfo?.stage}
+            approved={Boolean(stageInfo?.approvals?.schedule)}
+            approving={approving === 'schedule'}
+            approveError={approving === null ? approveError : null}
+            onApprove={() => approveStage('schedule')}
+          />
         ) : activeTab === 'captions' ? (
           <CaptionsTab
             captions={captionsForTab}
+            plan={panel?.plan?.plan}
             stage={stageInfo?.stage}
             captionsApproved={Boolean(stageInfo?.approvals?.captions)}
             approving={approving === 'captions'}
@@ -603,7 +681,7 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
             onApprove={() => approveStage('captions')}
           />
         ) : (
-          <ScheduleTab schedule={scheduleForTab} slug={slug} onChanged={() => setRefreshNonce((n) => n + 1)} />
+          <PublishTab schedule={scheduleForTab} plan={panel?.plan} slug={slug} onChanged={() => setRefreshNonce((n) => n + 1)} />
         )}
       </div>
     </div>
