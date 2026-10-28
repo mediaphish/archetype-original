@@ -55,6 +55,15 @@ Source: notes/HANDOFF-DEVOTIONALS-2026-10.md section 5 and that session. The rew
 - **Lev must keep:** Bart's review format (title, summary line, CAPS sections, full ESV text with verse numbers and the esv.org link, then FIRST COMMENT), approval per date by name, nothing added to a passage that is not in it, no "this week" or other dates inside a reflection, a suggested first comment for every Facebook post kept out of the markdown, never regenerating a date without asking Bart first, and checking live status against the site, never local files.
 - The 2026 writing continues in that session: November approved as a plan, Nov 1-7 drafted and with Bart, Advent (Nov 29 to Dec 31) not yet planned.
 
+## Where the devotional work lives (from the Devotional session, 2026-10-27)
+
+- Published: ao-knowledge-hq-kit/journal/devotionals/ (Jan 1 to Oct 31, one file per day).
+- On Bart's Mac only, never published: devotionals-2027/ (november-drafts, october-drafts, posts = the Jan to Sep copies for the rework, REWORK_AUDIT.md).
+- Planning notes in the repo: notes/DEVOTIONAL_NOVEMBER_2026_PLAN.md, notes/DEVOTIONAL_INDEX.md, notes/HANDOFF-DEVOTIONALS-2026-10.md.
+- Guide documents in ~/Downloads: DEVOTIONAL_MASTER_CONTEXT.md, DEVOTIONAL_PROCESS_RULES.md, DEVOTIONAL_SESSION_LOG.md, DEVOTIONAL_HANDOFF.md. Backups on the ArchetypeHD drive in 01-Keep/Archetype-Original/From-Downloads.
+
+For Lev to use them, the rework copies and the guide documents have to move somewhere the live site can read and that stays private: the database or private storage, not the repository (the repository is public, so drafts must never go there). That also gives them a backup beyond the Mac and the drive. Do it when Lev is built, with Bart's OK.
+
 ## Open questions for Bart (asked one at a time, when he is ready)
 
 - What "reworking" means for the year: light edits, new reflections, or both?
