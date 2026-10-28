@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { parseTalkCommand, TEAM_LABELS } from '../../lib/talkCommands.js';
+import { parseTalkCommand, TEAM_LABELS, TEAM_ORDER } from '../../lib/talkCommands.js';
 import { avatarFor } from '../../components/ao/teamAvatars.js';
 
 /**
@@ -87,6 +87,11 @@ export default function Talk() {
   const audioRef = useRef(null);
   const speech = useSpeech();
   const holdRef = useRef(null);
+  // Rehearsal unless the page is opened with ?live=1: a rehearsal never posts.
+  const live = new URLSearchParams(window.location.search).get('live') === '1';
+  const [photo, setPhoto] = useState(null);
+  const [demo, setDemo] = useState({ phase: 'idle' });
+  const seqRef = useRef(null);
 
   useEffect(() => {
     fetch(`/api/ao/talk?slug=${encodeURIComponent(slug)}`)
@@ -99,11 +104,43 @@ export default function Talk() {
       .catch((e) => setError(e.message));
   }, [slug]);
 
+  // The phone remote: next, back, and the room photo (lib/ao/talkDemo.js).
+  const remoteRef = useRef(null);
+  useEffect(() => {
+    let stop = false;
+    const poll = async () => {
+      try {
+        const r = await fetch(`/api/ao/talk/remote?slug=${encodeURIComponent(slug)}`);
+        const j = await r.json().catch(() => ({}));
+        const st = j?.state || {};
+        if (stop) return;
+        if (seqRef.current === null) {
+          seqRef.current = Number(st.seq) || 0;
+          if (st.photo_url && Date.now() - Date.parse(st.at || 0) < 3 * 3600 * 1000) setPhoto(st.photo_url);
+          return;
+        }
+        if ((Number(st.seq) || 0) > seqRef.current) {
+          seqRef.current = Number(st.seq);
+          remoteRef.current?.(st);
+        }
+      } catch (_) {
+        /* the clicker still works */
+      }
+    };
+    poll();
+    const t = setInterval(poll, 1500);
+    return () => {
+      stop = true;
+      clearInterval(t);
+    };
+  }, [slug]);
+
   const sections = talk?.sections || [];
   const total = sections.length;
   const go = useCallback((i) => setIndex(Math.max(0, Math.min(total - 1, i))), [total]);
   const section = sections[index];
 
+  // Shows the line and speaks it; resolves when the line has finished playing.
   const say = useCallback(
     async (agent, text) => {
       setReply({ agent, text });
@@ -118,13 +155,39 @@ export default function Talk() {
         audioRef.current?.pause();
         const audio = new Audio(url);
         audioRef.current = audio;
-        audio.onended = () => URL.revokeObjectURL(url);
-        await audio.play().catch(() => {});
+        await new Promise((resolve) => {
+          audio.onended = () => {
+            URL.revokeObjectURL(url);
+            resolve();
+          };
+          audio.onerror = resolve;
+          audio.play().catch(resolve);
+        });
       } catch (_) {
         /* the words are on screen either way */
       }
     },
     []
+  );
+
+  const ask = useCallback(
+    async (agent, text) => {
+      setThinking(agent);
+      try {
+        const r = await fetch('/api/ao/talk/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ agent, text, slug, section_id: section?.id }),
+        });
+        const j = await r.json().catch(() => ({}));
+        setThinking(null);
+        return j.ok ? j : null;
+      } catch (_) {
+        setThinking(null);
+        return null;
+      }
+    },
+    [slug, section]
   );
 
   const act = useCallback(
@@ -137,28 +200,74 @@ export default function Talk() {
       if (cmd.type === 'demo') {
         const d = sections.findIndex((s) => s.kind === 'demo');
         if (d >= 0) go(d);
+        if (!photo) return say('auto', 'Snap a photo of the room on your phone first, Bart, and we will take it from there.');
+        setDemo({ phase: 'working' });
+        try {
+          const r = await fetch('/api/ao/talk/demo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slug, photo_url: photo }),
+          });
+          const j = await r.json().catch(() => ({}));
+          if (!j.ok) {
+            setDemo({ phase: 'idle' });
+            return say('auto', 'We hit a snag putting that together, Bart. Give me one more try.');
+          }
+          setDemo({ phase: 'talking', pkg: j.package });
+          for (const l of j.lines || []) await say(l.agent, l.line);
+          setDemo({ phase: 'ready', pkg: j.package });
+        } catch (_) {
+          setDemo({ phase: 'idle' });
+        }
+        return;
+      }
+      if (cmd.type === 'post') {
+        if (demo.phase !== 'ready') return;
+        setDemo((d) => ({ ...d, phase: 'posting' }));
+        try {
+          const r = await fetch('/api/ao/talk/demo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ post: true, package: demo.pkg, live }),
+          });
+          const j = await r.json().catch(() => ({}));
+          setDemo((d) => ({ ...d, phase: 'posted', result: j }));
+          if (j.rehearsal) await say('auto', 'Rehearsal run, Bart. Nothing went out, but that is exactly how it would have gone.');
+          else if (j.ok) {
+            const n = (j.results || []).filter((x) => x.ok).length;
+            await say('auto', `It's live, Bart. Out on ${n} of ${(j.results || []).length} channels.`);
+          } else await say('it', 'Dude, it did not go out. I will check what broke right after the talk.');
+        } catch (_) {
+          setDemo((d) => ({ ...d, phase: 'ready' }));
+        }
         return;
       }
       if (cmd.type === 'ask') {
-        setThinking(cmd.agent);
         setReply(null);
-        try {
-          const r = await fetch('/api/ao/talk/ask', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ agent: cmd.agent, text: cmd.text, slug, section_id: section?.id }),
-          });
-          const j = await r.json().catch(() => ({}));
-          setThinking(null);
-          if (j.ok) await say(j.agent, j.reply);
-          else setReply({ agent: cmd.agent, text: "Sorry, I didn't catch that. Say it once more?" });
-        } catch (_) {
-          setThinking(null);
+        const j = await ask(cmd.agent, cmd.text);
+        if (j) await say(j.agent, j.reply);
+        else setReply({ agent: cmd.agent, text: "Sorry, I didn't catch that. Say it once more?" });
+      }
+      if (cmd.type === 'team') {
+        // Each teammate in turn: the next one's line is asked for while the current one speaks.
+        setReply(null);
+        const prompt = `${cmd.text}\n\n(Bart asked the whole team to say hi to the room. Introduce yourself in one short line: your name and what you do on the team, in your own way.)`;
+        let pending = ask(TEAM_ORDER[0], prompt);
+        for (let i = 0; i < TEAM_ORDER.length; i++) {
+          const j = await pending;
+          if (i + 1 < TEAM_ORDER.length) pending = ask(TEAM_ORDER[i + 1], prompt);
+          if (j) await say(j.agent, j.reply);
         }
       }
     },
-    [go, index, total, sections, slug, section, say]
+    [go, index, total, sections, say, ask, photo, slug, demo, live]
   );
+
+  remoteRef.current = (st) => {
+    if (st.action === 'next') go(index + 1);
+    else if (st.action === 'back') go(index - 1);
+    else if (st.action === 'photo' && st.photo_url) setPhoto(st.photo_url);
+  };
 
   const beginListening = useCallback(() => {
     if (!speech.supported) return;
@@ -230,7 +339,31 @@ export default function Talk() {
                 </p>
               ))}
             </div>
-            {section.image ? <img src={section.image} alt="" className="max-h-[70vh] max-w-[38vw] rounded-lg object-contain" /> : null}
+            {section.kind === 'demo' && photo ? (
+              <div className="flex max-w-[44vw] flex-col gap-3">
+                <img src={photo} alt="The room" className="max-h-[46vh] rounded-lg object-contain" />
+                {demo.pkg ? (
+                  <p className="max-h-[22vh] overflow-hidden whitespace-pre-line rounded-lg bg-white/10 p-4 text-gray-200" style={{ fontSize: '1.15vw' }}>
+                    {demo.pkg.captions.linkedin_personal}
+                  </p>
+                ) : null}
+                <p className="text-gray-400" style={{ fontSize: '1.2vw' }}>
+                  {demo.phase === 'working'
+                    ? 'The team is on it…'
+                    : demo.phase === 'ready'
+                      ? 'Ready for your call.'
+                      : demo.phase === 'posting'
+                        ? 'Posting…'
+                        : demo.phase === 'posted'
+                          ? demo.result?.rehearsal
+                            ? 'Rehearsal: nothing was posted.'
+                            : `Posted: ${(demo.result?.results || []).filter((x) => x.ok).map((x) => x.platform).join(', ') || 'none'}`
+                          : 'Photo is in.'}
+                </p>
+              </div>
+            ) : section.image ? (
+              <img src={section.image} alt="" className="max-h-[70vh] max-w-[38vw] rounded-lg object-contain" />
+            ) : null}
           </div>
         ) : null}
       </main>
@@ -261,6 +394,7 @@ export default function Talk() {
         <img src="/brand/archetype-original-lockup.svg" alt="Archetype Original" className="h-[5vh] w-auto" style={{ filter: 'brightness(0) invert(1)' }} />
       </footer>
       {!speech.supported ? <p className="absolute left-4 top-3 text-xs text-gray-500">Voice needs Chrome.</p> : null}
+      {!live ? <p className="absolute right-4 top-3 rounded bg-white/10 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-gray-400">Rehearsal</p> : null}
     </div>
   );
 }

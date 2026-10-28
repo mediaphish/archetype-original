@@ -10,3 +10,7 @@ create table if not exists public.ao_talks (
   updated_at timestamptz not null default now()
 );
 alter table public.ao_talks enable row level security;
+
+-- Live state shared by the phone remote and the big screen (migration talks_state):
+-- { seq, action: 'next'|'back'|'photo', at, photo_url }
+alter table public.ao_talks add column if not exists state jsonb not null default '{}'::jsonb;

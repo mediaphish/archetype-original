@@ -591,6 +591,21 @@
       }
     },
     {
+      "src": "api/ao/talk/demo.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 120,
+        "memory": 1024,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**"
+        ]
+      }
+    },
+    {
       "src": "api/**/*.js",
       "use": "@vercel/node",
       "config": {
@@ -1615,6 +1630,14 @@
     {
       "src": "/api/ao/talk/ask",
       "dest": "/api/ao/talk/ask.js"
+    },
+    {
+      "src": "/api/ao/talk/demo",
+      "dest": "/api/ao/talk/demo.js"
+    },
+    {
+      "src": "/api/ao/talk/remote",
+      "dest": "/api/ao/talk/remote.js"
     },
     {
       "src": "/api/ao/talk",

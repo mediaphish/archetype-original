@@ -23,3 +23,13 @@ test('talk to the room is left alone', () => {
   expect(parseTalkCommand('so what does that mean for your business').type).toBe('none');
   expect(parseTalkCommand('').type).toBe('none');
 });
+
+test('the whole team says hi on cue', () => {
+  expect(parseTalkCommand('Team, say hi to Neosho.').type).toBe('team');
+  expect(parseTalkCommand('Okay everybody, introduce yourselves').type).toBe('team');
+});
+
+test('the call on stage posts the demo', () => {
+  expect(parseTalkCommand('Looks good, post it.').type).toBe('post');
+  expect(parseTalkCommand('Ada, ship it').type).toBe('post');
+});

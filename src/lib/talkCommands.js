@@ -21,6 +21,9 @@ export function parseTalkCommand(said) {
   const agent = who ? AGENT_WORDS[who[1]] : null;
 
   if (/\b(start|run|open|begin)\b.*\bdemo\b/.test(t)) return { type: 'demo', agent };
+  if (/\b(post it|send it|ship it|publish it|let'?s post|go ahead and post)\b/.test(t)) return { type: 'post', agent };
+  // "Team, say hi to Neosho": every teammate introduces themselves, in order.
+  if (/\b(team|everybody|everyone|y'?all)\b/.test(t) && /\b(say hi|say hello|introduce|meet)\b/.test(t)) return { type: 'team', agent: null, text: raw };
   if (/\b(next|forward)\b(\s+(slide|one|section))?/.test(t) && !/\bwhat'?s next\b/.test(t) && t.split(' ').length <= 8) return { type: 'next', agent };
   if (/\b(go back|back up|previous|last one|back a slide)\b/.test(t)) return { type: 'back', agent };
   if (/\b(last|final) slide\b/.test(t)) return { type: 'last', agent };
@@ -33,5 +36,8 @@ export function parseTalkCommand(said) {
   if (agent) return { type: 'ask', agent, text: raw };
   return { type: 'none' };
 }
+
+/** The order the team introduces itself. */
+export const TEAM_ORDER = ['auto', 'jot', 'reach', 'producer', 'editor', 'designer', 'it'];
 
 export const TEAM_LABELS = { auto: 'Ada', jot: 'Jot', reach: 'Vox', producer: 'Cam', editor: 'Red', designer: 'Des', it: 'Bit' };
