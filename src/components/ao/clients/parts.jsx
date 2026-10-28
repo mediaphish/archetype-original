@@ -423,6 +423,7 @@ export const EVENT_LABELS = {
   archy_link_sent: 'Private Archy link sent',
   archy_answer_sent: 'You answered their Archy question',
   email_out: 'You wrote to them',
+  conversation: 'You talked',
 };
 
 export function Timeline({ email }) {
@@ -447,9 +448,10 @@ export function Timeline({ email }) {
           <p className="text-sm font-medium text-gray-900">
             {EVENT_LABELS[e.kind] || e.kind}
             {e.kind === 'stage' && e.subject ? `: ${e.subject.replace('_', ' ')}` : ''}
-            {(e.kind === 'reply' || e.kind === 'email_out') && e.subject ? `: ${e.subject}` : ''}
+            {(e.kind === 'reply' || e.kind === 'email_out' || e.kind === 'conversation') && e.subject ? `: ${e.subject}` : ''}
           </p>
-          {e.body && e.kind !== 'stage' ? (
+          {e.body && e.kind === 'conversation' ? <p className="mt-1 whitespace-pre-wrap text-sm text-gray-700">{e.body}</p> : null}
+          {e.body && e.kind !== 'stage' && e.kind !== 'conversation' ? (
             <details className="text-sm text-gray-700">
               <summary className="cursor-pointer text-xs text-blue-700">Show</summary>
               <p className="mt-1 whitespace-pre-wrap">{e.body}</p>
@@ -461,3 +463,55 @@ export function Timeline({ email }) {
   );
 }
 
+
+const CHANNEL_CHOICES = [
+  ['messenger', 'Facebook Messenger'],
+  ['text', 'Text'],
+  ['phone', 'Phone call'],
+  ['in_person', 'In person'],
+  ['linkedin', 'LinkedIn message'],
+  ['instagram', 'Instagram message'],
+  ['email', 'Email'],
+  ['other', 'Other'],
+];
+
+/**
+ * Log a conversation the CRM could not see (2026-10-28): Messenger, a text,
+ * a call. It lands in the person's history and counts as being in touch.
+ */
+export function LogConversation({ onSave, busy }) {
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+  const [channel, setChannel] = useState('messenger');
+  const [when, setWhen] = useState(today);
+  const [note, setNote] = useState('');
+  const [saved, setSaved] = useState('');
+  const save = async () => {
+    if (!note.trim()) return;
+    const ok = await onSave({ channel, when, note });
+    if (ok !== false) {
+      setNote('');
+      setSaved('Saved.');
+      setTimeout(() => setSaved(''), 2500);
+    }
+  };
+  return (
+    <div className="mb-4 rounded-xl border border-gray-200 bg-gray-50 p-3">
+      <p className="mb-2 text-sm font-semibold text-gray-900">Log a conversation</p>
+      <div className="mb-2 flex flex-wrap gap-2">
+        <select value={channel} onChange={(e) => setChannel(e.target.value)} className="min-h-[40px] rounded-lg border border-gray-300 bg-white px-2 text-sm" aria-label="Where">
+          {CHANNEL_CHOICES.map(([k, l]) => (
+            <option key={k} value={k}>{l}</option>
+          ))}
+        </select>
+        <input type="date" value={when} max={today} onChange={(e) => setWhen(e.target.value)} className="min-h-[40px] rounded-lg border border-gray-300 bg-white px-2 text-sm" aria-label="When" />
+      </div>
+      <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} placeholder="What was said, in a sentence or two" className="w-full rounded-lg border border-gray-300 bg-white p-2 text-sm" />
+      <div className="mt-2 flex items-center gap-3">
+        <button type="button" onClick={save} disabled={busy || !note.trim()} className="min-h-[40px] rounded-lg bg-gray-900 px-4 text-sm font-medium text-white disabled:opacity-40">
+          Save
+        </button>
+        {saved ? <span className="text-sm text-green-700">{saved}</span> : null}
+      </div>
+    </div>
+  );
+}

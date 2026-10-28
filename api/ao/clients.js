@@ -253,6 +253,12 @@ async function personAction(body, res) {
       await save({ notes: String(body.notes || '').slice(0, 20000) });
       break;
     }
+    case 'log': {
+      const { logConversation } = await import('../../lib/calendly/clientRecords.js');
+      const out = await logConversation({ email, channel: body.channel, note: body.note, when: body.when || null });
+      if (!out.ok) return res.status(400).json(out);
+      break;
+    }
     case 'detail_add': {
       const d = cleanDetail(body.detail);
       if (!d.label) return res.status(400).json({ ok: false, error: 'Add a few words about it.' });

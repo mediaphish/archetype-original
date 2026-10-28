@@ -36,6 +36,7 @@ import {
   CheckinPlan,
   Research,
   Timeline,
+  LogConversation,
 } from '../../components/ao/clients/parts';
 import { go, personPath, TodayView, PeopleView, PipelineView, AskView, PersonCrmBox } from '../../components/ao/crm/CrmViews.jsx';
 
@@ -816,6 +817,7 @@ function Person({ email }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [tab, setTab] = useState('now');
+  const [timelineKey, setTimelineKey] = useState(0);
   const [busy, setBusy] = useState(false);
   const [showHealth, setShowHealth] = useState(false);
 
@@ -910,7 +912,13 @@ function Person({ email }) {
 
       {tab === 'now' ? <NowTab person={p} onSession={onSession} onPerson={onPerson} busy={busy} /> : null}
       {tab === 'conversations' ? <ConversationsTab person={p} onSession={onSession} busy={busy} /> : null}
-      {tab === 'messages' ? <Card><Heading>Everything so far</Heading><Timeline email={p.email} /></Card> : null}
+      {tab === 'messages' ? (
+        <Card>
+          <Heading>Everything so far</Heading>
+          <LogConversation busy={busy} onSave={async (entry) => { await onPerson('log', entry); setTimelineKey((k) => k + 1); }} />
+          <Timeline key={timelineKey} email={p.email} />
+        </Card>
+      ) : null}
       {tab === 'profile' ? <ProfileTab person={p} tiers={data.tiers} onPerson={onPerson} busy={busy} /> : null}
       {tab === 'research' ? <ResearchTab person={p} onSession={onSession} onPerson={onPerson} busy={busy} /> : null}
       {tab === 'notes' ? <NotesTab person={p} onPerson={onPerson} busy={busy} /> : null}
