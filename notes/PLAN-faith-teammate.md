@@ -10,6 +10,8 @@ Name chosen by Bart, 2026-10-27: "Lev it is." Hebrew for heart, with an echo of 
 
 Who he is, in Bart's words: "He is a former youth pastor that got passed over. So he decided to dive deep into theology. He started writing a blog about the lack of leadership in the modern church. He is currently the foremost leader on the subject. We are fortunate to have him." 
 
+His picture is ready: public/images/team/lev.png, cropped from Bart's art like the rest of the team. It goes into src/components/ao/teamAvatars.js when Lev is built.
+
 ## What the teammate owns
 
 1. **The devotional year.** Reworking the full year Bart has written, one month at a time, with him reviewing every day before it is scheduled.
