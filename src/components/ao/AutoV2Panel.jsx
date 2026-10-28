@@ -1673,11 +1673,13 @@ function ArtifactPanel({
               </div>
             )}
             <div className="flex-shrink-0 rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs leading-relaxed text-blue-700">
-              Approve these captions to send the full package to Design.
+              {showPackages
+                ? 'A spot check. These run on their own once the checks pass. Use Revise if something is off.'
+                : 'Approve these captions to move them on.'}
             </div>
             <div className="flex shrink-0 flex-col gap-2">
               <button type="button" onClick={onApprove} className="w-full py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
-                Approve captions — ready for Design
+                {showPackages && packages.every((p) => p.image) ? 'Looks good, schedule them' : 'Approve captions'}
               </button>
               <button type="button" onClick={onRevise} className="w-full py-2 px-3 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
                 Revise captions
@@ -4227,17 +4229,26 @@ export default function AutoV2Panel({ onNavigate, className,
         // Single card review
         sendMessage('Approved. Move to the next card.');
         break;
-      case 'captions':
-        // Caption review — next stage is image generation
-        sendMessage(`All captions approved. Generate the card images now.`);
+      case 'captions': {
+        // Cards are made before captions now, so the next step is scheduling,
+        // not making images (Bart, 2026-10-28).
+        const pk = cardPackages(artifact.content, generatedDesignImages);
+        if (pk.length && pk.every((p) => p.image)) {
+          sendMessage('The cards and captions look good. Schedule them as they are.');
+        } else if (pk.length) {
+          sendMessage('The captions look good. Make the card for any that has none, then schedule them.');
+        } else {
+          sendMessage('All captions approved.');
+        }
         break;
+      }
       case 'draft':
         sendMessage('Approved.');
         break;
       default:
         sendMessage('Approved.');
     }
-  }, [sendMessage, artifact]);
+  }, [sendMessage, artifact, generatedDesignImages]);
 
   const handlePublishJournal = useCallback(async () => {
     if (!journalPendingPublish) return;
