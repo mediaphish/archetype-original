@@ -43,6 +43,18 @@ The faith side of the corpus only: every devotional, the Biblical Archetype seri
 - 2026-10-27: there is no devotional Facebook Page yet. Bart creates it (creating accounts and pages is his to do), then it is connected to the same Meta app the company Page uses.
 - 2026-10-27: the daily devotional email to subscribers stays, alongside the Page.
 
+## From the Devotional session (2026-10-27)
+
+Source: notes/HANDOFF-DEVOTIONALS-2026-10.md section 5 and that session. The rework has not started: 0 days reworked, reviewed or approved.
+
+- **Audit only, not a plan.** A 2026-09-19 audit of Jan 1 to Sep 30 (273 posts) suggests 38 new passages, 63 new reflections on the same passage (mostly Jan to Apr, to reach May to July depth), 44 light edits, 2 date-only changes, 126 kept. It also found exact duplicate passages, hidden duplicates, title collisions, and 15 Aug to Sep posts with "this week"/"yesterday" wording. Oct to Dec 2026 are not in the audit.
+- **Bart's decisions:** work only on copies, never live posts; monthly intros and summaries written separately (for the book); /faith flushed and restarted on the reworked schedule; a running record of what is written, for a fresh 365 in 2028; publishing must be able to edit posts already scheduled or published, on /faith and the Page; the Page replaces the Group with auto-posting live at midnight Jan 1, 2027; the finished manuscript goes to Crossway.
+- **Proposed, not approved:** ending the passion sequence on Easter Day (Mar 28, 2027) by moving April into March and scheduling by distance from Easter, with Feb 14 and Jul 4 fixed. This sets the whole 2027 calendar.
+- **Possible conflict, for Bart:** on 2026-09-19 he said Auto's job should be limited to scheduling and publishing to /faith and the Page. This plan has Lev reworking the year.
+- **Corrections to this plan:** step 2 must not load drafts into ao-knowledge-hq-kit/journal/devotionals/ (live, approved posts only; never drafts there). The rework workspace devotionals-2027/ exists only on Bart's Mac (gitignored), so a server-side Lev cannot see it. The standing rules docs live in ~/Downloads (DEVOTIONAL_MASTER_CONTEXT, PROCESS_RULES, SESSION_LOG, HANDOFF); whether they move into the repo is Bart's call. Those docs still carry a 4-verse limit and verse skipping that Bart overruled on 2026-09-29.
+- **Lev must keep:** Bart's review format (title, summary line, CAPS sections, full ESV text with verse numbers and the esv.org link, then FIRST COMMENT), approval per date by name, nothing added to a passage that is not in it, no "this week" or other dates inside a reflection, a suggested first comment for every Facebook post kept out of the markdown, never regenerating a date without asking Bart first, and checking live status against the site, never local files.
+- The 2026 writing continues in that session: November approved as a plan, Nov 1-7 drafted and with Bart, Advent (Nov 29 to Dec 31) not yet planned.
+
 ## Open questions for Bart (asked one at a time, when he is ready)
 
 - What "reworking" means for the year: light edits, new reflections, or both?
