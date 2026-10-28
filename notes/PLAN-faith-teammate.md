@@ -2,7 +2,13 @@
 
 Bart, 2026-10-27: "One thing I will be moving to Auto in the next 30 days is my Devotionals. I will have written a full year and plan on reworking them and then scheduling them to auto post to a Facebook Page instead of a Group ... There is an over faith component to what I am doing ... I see massive opportunities to create content and tools for leadership in the faith space beyond what I am doing. So a Faith Agent that was fully trained on that part of my corpus that could help me navigate that space." And: "Let's plan this out. I'm not ready to jump in yet, but I can see where I will easily fall behind on this."
 
-Status: planning only. Nothing built. Name not chosen (options offered: Asa, Lev, Ira, Noa, Ari, Sol).
+Status: planning only. Nothing built.
+
+## Lev
+
+Name chosen by Bart, 2026-10-27: "Lev it is." Hebrew for heart, with an echo of Levi, the tribe set apart to serve.
+
+Who he is, in Bart's words: "He is a former youth pastor that got passed over. So he decided to dive deep into theology. He started writing a blog about the lack of leadership in the modern church. He is currently the foremost leader on the subject. We are fortunate to have him." 
 
 ## What the teammate owns
 
@@ -34,7 +40,6 @@ The faith side of the corpus only: every devotional, the Biblical Archetype seri
 
 ## Open questions for Bart (asked one at a time, when he is ready)
 
-- The teammate's name.
 - Is there already a devotional Facebook Page, or do we create one?
 - Does the email to subscribers continue alongside the Page?
 - What "reworking" means for the year: light edits, new reflections, or both?
