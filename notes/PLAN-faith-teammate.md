@@ -38,8 +38,11 @@ The faith side of the corpus only: every devotional, the Biblical Archetype seri
 5. **Retire the Group.** Once the Page carries a full month, the Group posts stop.
 6. **Then the bigger opportunity.** Content and tools for faith leaders, one idea at a time.
 
+## Answers so far
+
+- 2026-10-27: there is no devotional Facebook Page yet. Bart creates it (creating accounts and pages is his to do), then it is connected to the same Meta app the company Page uses.
+
 ## Open questions for Bart (asked one at a time, when he is ready)
 
-- Is there already a devotional Facebook Page, or do we create one?
 - Does the email to subscribers continue alongside the Page?
 - What "reworking" means for the year: light edits, new reflections, or both?
