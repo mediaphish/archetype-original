@@ -16,13 +16,14 @@
  *   node --env-file=.env.local scripts/bit-repair.mjs done <id> <file>
  *     Mark a request picked up, then done with the report in <file>.
  *
- *   node --env-file=.env.local scripts/bit-repair.mjs tell <subject> <file>
+ *   node --env-file=.env.local scripts/bit-repair.mjs tell <subject> <file> [threadId]
  *     Emails Bart the report in <file> (plain text, one paragraph per blank
- *     line) and posts it in Auto's #team channel as Bit, so it is in chat too.
+ *     line) and posts it in chat as Bit: in the chat Bart asked from when a
+ *     request's thread_id is given, otherwise in his newest #team chat.
  */
 import { readFileSync } from 'node:fs';
 
-const [, , cmd, subject, file] = process.argv;
+const [, , cmd, subject, file, threadArg] = process.argv;
 
 if (cmd === 'open') {
   const { openReports } = await import('../lib/ao/team/bit.js');
@@ -56,16 +57,22 @@ if (cmd === 'open') {
     const { supabaseAdmin } = await import('../lib/supabase-admin.js');
     const { addAutoMessage } = await import('../lib/ao/autoHub.js');
     const owner = (process.env.AO_OWNER_EMAIL || 'bart@archetypeoriginal.com').toLowerCase();
-    const { data: thread } = await supabaseAdmin
-      .from('ao_auto_threads')
-      .select('id')
-      .eq('created_by_email', owner)
-      .eq('state->>channel', 'team')
-      .order('created_at', { ascending: true })
-      .limit(1)
-      .maybeSingle();
-    if (thread?.id) {
-      await addAutoMessage({ threadId: thread.id, role: 'assistant', mode: 'plan', content: `Bit: ${text}`, meta: { auto_v2: true, agent: 'it', daily_repair: true } });
+    const { channelOfThread } = await import('../lib/ao/team/channels.js');
+    // #team is not one stored chat; it is every chat whose channel works out
+    // to team (2026-10-28: looking for a stored "team" channel found none, so
+    // reports went by email only).
+    let threadId = threadArg || null;
+    if (!threadId) {
+      const { data: rows } = await supabaseAdmin
+        .from('ao_auto_threads')
+        .select('id, state')
+        .eq('created_by_email', owner)
+        .order('updated_at', { ascending: false })
+        .limit(200);
+      threadId = (rows || []).find((t) => channelOfThread(t) === 'team' && !t.state?.user_archived)?.id || null;
+    }
+    if (threadId) {
+      await addAutoMessage({ threadId, role: 'assistant', mode: 'plan', content: `Bit: ${text}`, meta: { auto_v2: true, agent: 'it', daily_repair: true } });
       posted = true;
     }
   } catch (err) {
