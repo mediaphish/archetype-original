@@ -1,6 +1,7 @@
 {
   "installCommand": "npm ci --include=dev",
   "buildCommand": "npm run build:prerender",
+  "ignoreCommand": "bash scripts/vercel-ignore-build.sh",
   "redirects": [
     {
       "source": "/:path*",

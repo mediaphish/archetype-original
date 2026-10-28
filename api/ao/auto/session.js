@@ -88,9 +88,19 @@ export default async function handler(req, res) {
       }
     }
 
+    // Anthropic's spending limit paused the team (2026-10-28).
+    let aiPause = { paused: false };
+    try {
+      const { limitPause } = await import('../../../lib/ao/team/aiLimit.js');
+      aiPause = await limitPause();
+    } catch (_) {
+      /* never block session load */
+    }
+
     return res.status(200).json({
       ok: true,
       team_working: teamWorking,
+      ai_pause: aiPause,
       thread: state.thread,
       messages: state.messages,
       attachments: state.attachments,

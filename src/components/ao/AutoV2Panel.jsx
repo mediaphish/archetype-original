@@ -2402,6 +2402,8 @@ export default function AutoV2Panel({ onNavigate, className,
   // The server's word that a huddle or a teammate's task is running here,
   // kept apart from teamBusy (the follow-ups this screen itself is running).
   const [serverWorking, setServerWorking] = useState(false);
+  // Anthropic's spending limit paused the team (2026-10-28); shown above the chat.
+  const [aiPause, setAiPause] = useState(null);
   const [queued, setQueued] = useState([]);
   const queueRef = useRef([]);
   const bgGenRef = useRef(0);
@@ -4159,6 +4161,7 @@ export default function AutoV2Panel({ onNavigate, className,
         seen = msgs.length;
         working = Boolean(st.team_working);
         setServerWorking(working);
+        setAiPause(st.ai_pause?.paused ? st.ai_pause : null);
       }
     })();
     return () => {
@@ -4749,6 +4752,14 @@ export default function AutoV2Panel({ onNavigate, className,
               </button>
             ) : null}
             <QueueFeed onOpenThread={openThreadFromQueue} onCount={setQueueCount} />
+          </div>
+        ) : null}
+        {aiPause ? (
+          <div className="flex-shrink-0 flex items-center justify-between gap-3 px-4 py-2 text-xs bg-red-50 border-b border-red-200 text-red-800">
+            <span>The team is paused: the monthly AI spending limit was reached. Raise or lift it in Anthropic and the team picks up again.</span>
+            <a href={aiPause.url} target="_blank" rel="noopener noreferrer" className="font-medium underline flex-shrink-0 text-red-700">
+              Open the limit
+            </a>
           </div>
         ) : null}
         {linkedinTokenWarning && (

@@ -30,3 +30,12 @@ create table if not exists public.ao_bit_requests (
 );
 create index if not exists ao_bit_requests_status_idx on public.ao_bit_requests (status, requested_at);
 alter table public.ao_bit_requests enable row level security;
+
+-- Bit's settings (2026-10-28), for example the monthly AI spending limit Bart
+-- set in Anthropic, so Bit can warn at 80%. Applied as migration bit_settings.
+create table if not exists public.ao_bit_settings (
+  key text primary key,
+  value jsonb not null,
+  updated_at timestamptz not null default now()
+);
+alter table public.ao_bit_settings enable row level security;
