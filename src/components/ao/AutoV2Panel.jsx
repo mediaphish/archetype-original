@@ -46,6 +46,7 @@ import { metricsAlertKeyFor } from '../../lib/metricsAlertKey';
 import { orderDesignImagesNewestFirst } from '../../lib/designImageOrder.js';
 import { markdownTeamImages } from '../../lib/teamShownImages.js';
 import { cardPackages } from '../../lib/cardPackages.js';
+import { videoClipTag, splitVideoClips } from '../../lib/videoClips.js';
 import CardPackages from './CardPackages.jsx';
 import { KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import QueueFeed from './QueueFeed.jsx';
@@ -717,7 +718,18 @@ export function MessageBubble({ message, onNavigate }) {
                 className="rounded-lg mb-2 max-w-full max-h-48 object-contain"
               />
             )}
-            {isUser ? seg.text : <div className="whitespace-normal">{<ChatMarkdown text={seg.text} />}</div>}
+            {(() => {
+              // An uploaded video clip shows as a player (2026-10-28).
+              const { clips, text: rest } = splitVideoClips(seg.text);
+              return (
+                <>
+                  {clips.map((url) => (
+                    <video key={url} src={url} controls playsInline preload="metadata" className="mb-2 max-h-80 max-w-full rounded-lg bg-black" />
+                  ))}
+                  {isUser ? rest : <div className="whitespace-normal">{<ChatMarkdown text={rest} />}</div>}
+                </>
+              );
+            })()}
             {i === segments.length - 1 && reshareImageUrl ? (
               <a
                 href={reshareImageUrl}
@@ -3474,9 +3486,46 @@ export default function AutoV2Panel({ onNavigate, className,
     }
   }, [startingNew, sending, loading, loadThreadList, syncArtifactFromMessages]);
 
+  // A video clip goes straight to storage, not into the message: clips are far
+  // too large to send through the chat (2026-10-28, notes/PLAN-video-moments.md).
+  const [videoUpload, setVideoUpload] = useState('');
+  const uploadVideoClip = useCallback(async (file) => {
+    // Storage takes files up to 50 MB (measured 2026-10-28).
+    if (file.size > 50 * 1024 * 1024) {
+      setError(`${file.name} is ${Math.round(file.size / 1048576)} MB, and clips can be up to 50 MB. Export it from Riverside at 1080p instead of 4K and try again.`);
+      return;
+    }
+    setVideoUpload(`Uploading ${file.name}…`);
+    try {
+      const mint = await fetch('/api/ao/auto/episode-clip-upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file_name: file.name, mime_type: file.type || 'video/mp4', episode_slug: 'moments' }),
+      });
+      const target = await mint.json().catch(() => ({}));
+      if (!mint.ok || !target.ok || !target.upload_url || !target.public_url) {
+        throw new Error(target.error || 'Could not start the video upload');
+      }
+      const put = await fetch(target.upload_url, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type || 'video/mp4', 'x-upsert': 'false' },
+        body: file,
+      });
+      if (!put.ok) throw new Error(`The video upload stopped (${put.status})`);
+      setVideoUpload('');
+      sendMessageRef.current?.(`${videoClipTag(target.public_url)}${input.trim() ? `\n\n${input.trim()}` : ''}`);
+    } catch (err) {
+      setVideoUpload('');
+      setError(err?.message || 'The video did not upload');
+    }
+  }, [input]);
+
   const handleFileSelect = useCallback(async (e) => {
-    const files = Array.from(e.target.files || []);
+    const all = Array.from(e.target.files || []);
     e.target.value = '';
+    const videos = all.filter((f) => String(f.type || '').startsWith('video/'));
+    for (const v of videos) await uploadVideoClip(v);
+    const files = all.filter((f) => !String(f.type || '').startsWith('video/'));
     if (files.length === 0) return;
 
     setError('');
@@ -3502,7 +3551,7 @@ export default function AutoV2Panel({ onNavigate, className,
     } catch (err) {
       setError(err?.message || 'Could not read the selected file');
     }
-  }, [pendingFiles]);
+  }, [pendingFiles, uploadVideoClip]);
 
   async function buildOutgoingMessage(text, fileSnaps) {
     let body = String(text || '').trim();
@@ -4980,6 +5029,8 @@ export default function AutoV2Panel({ onNavigate, className,
             <TypingIndicator label="Generating your image — this may take a moment…" />
           )}
 
+          {videoUpload ? <TypingIndicator label={videoUpload} /> : null}
+
           {error && (
             <div className="flex flex-col gap-2 px-4 py-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-700">
               <div className="flex items-start gap-3">
@@ -5118,7 +5169,7 @@ export default function AutoV2Panel({ onNavigate, className,
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/*,.pdf,.txt,.md,.csv"
+              accept="image/*,video/*,.pdf,.txt,.md,.csv"
               multiple
               className="hidden"
               onChange={handleFileSelect}

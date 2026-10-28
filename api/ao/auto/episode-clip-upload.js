@@ -5,8 +5,8 @@
  * Body: { file_name, mime_type, episode_slug? }
  */
 
-import { requireAoSession } from '../../../../lib/ao/requireAoSession.js';
-import { createEpisodeClipUploadTarget } from '../../../../lib/ao/episodeClipStorage.js';
+import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { createEpisodeClipUploadTarget } from '../../../lib/ao/episodeClipStorage.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
