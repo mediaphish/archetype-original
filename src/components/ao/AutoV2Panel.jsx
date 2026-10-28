@@ -45,6 +45,8 @@ import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 import { metricsAlertKeyFor } from '../../lib/metricsAlertKey';
 import { orderDesignImagesNewestFirst } from '../../lib/designImageOrder.js';
 import { markdownTeamImages } from '../../lib/teamShownImages.js';
+import { cardPackages } from '../../lib/cardPackages.js';
+import CardPackages from './CardPackages.jsx';
 import { KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import QueueFeed from './QueueFeed.jsx';
 import { idleStatus } from '../../lib/teamStatus.js';
@@ -1277,6 +1279,9 @@ function ArtifactPanel({
   // silently never engaged. See draftArtifactSlug.js.
   const stagedJournalSlug = resolveDraftArtifactSlug(artifact);
   const stagedJournal = Boolean(stagedJournalSlug);
+  // A caption set for cards shows one card at a time with its picture (2026-10-28).
+  const packages = !hasCards && artifact?.type === 'captions' ? cardPackages(artifact.content, generatedDesignImages) : [];
+  const showPackages = packages.length > 0;
   // Tap any image in the panel to open it full screen and pinch to zoom (2026-10-27).
   const [zoomImage, setZoomImage] = useState(null);
   const openZoom = (e) => {
@@ -1499,7 +1504,7 @@ function ArtifactPanel({
         )}
 
         {/* In the staged panel, images live in the Image tab and nowhere else. */}
-        {hasDesign && !stagedJournal && (
+        {hasDesign && !stagedJournal && !showPackages && (
           <div className={hasCards ? 'min-h-0 flex-1 overflow-y-auto' : 'min-h-0 flex-1 overflow-y-auto'}>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Generated Images</p>
             <div className="space-y-3">
@@ -1657,12 +1662,16 @@ function ArtifactPanel({
 
         {artifact?.type === 'captions' && (
           <div className="flex flex-col flex-1 min-h-0 gap-3">
-            <div className="flex flex-col flex-1 min-h-0 space-y-3">
-              <p className="flex-shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500">{artifact.label}</p>
-              <div className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-gray-200 bg-white p-4 text-sm leading-relaxed text-gray-800">
-                {artifact.content}
+            {showPackages ? (
+              <CardPackages packages={packages} onImageError={onGeneratedDesignImageError} />
+            ) : (
+              <div className="flex flex-col flex-1 min-h-0 space-y-3">
+                <p className="flex-shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500">{artifact.label}</p>
+                <div className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-gray-200 bg-white p-4 text-sm leading-relaxed text-gray-800">
+                  {artifact.content}
+                </div>
               </div>
-            </div>
+            )}
             <div className="flex-shrink-0 rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs leading-relaxed text-blue-700">
               Approve these captions to send the full package to Design.
             </div>
