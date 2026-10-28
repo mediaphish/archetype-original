@@ -2730,8 +2730,9 @@ ${retrievedBlock}
           }
           fullReply = '';
           const synthesisClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-          const synthesisModel =
-            process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5-5';
+          // Follows the teammate speaking (2026-10-28).
+          const { teamModelFor } = await import('../../../lib/ao/teamModels.js');
+          const synthesisModel = teamModelFor(agent);
 
           try {
             await Promise.race([
