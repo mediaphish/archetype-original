@@ -100,12 +100,35 @@ export function resolveArtifactPanelState(msgs = []) {
 export function keepPostTabs(artifact, msgs = []) {
   if (!artifact || artifact.type !== 'captions') return artifact;
   const all = Array.isArray(msgs) ? msgs : [];
+  let post = null;
   for (const m of [...all].reverse()) {
     if (String(m?.role || '') !== 'assistant') continue;
     const { artifact: a } = parseArtifact(String(m.content || ''));
-    if (a && a.type === 'draft') return a;
+    if (a && a.type === 'draft') {
+      post = a;
+      break;
+    }
   }
-  return findDraftWorkedByTools(all) || artifact;
+  post = post || findDraftWorkedByTools(all);
+  if (!post || !captionsAreForOtherPosts(artifact, post)) return post || artifact;
+  return artifact;
+}
+
+/**
+ * True when a caption set links to other posts and never names this one.
+ * 2026-10-28: in the Automated posts chat the Nov 5, 10 and 12 quote card
+ * captions were swapped for The Josiah Archetype, a post worked on earlier in
+ * the same chat, so Bart was asked to approve 21 captions he could not see.
+ */
+export function captionsAreForOtherPosts(captions, post) {
+  const text = `${captions?.label || ''}\n${captions?.title || ''}\n${captions?.content || ''}`.toLowerCase();
+  const linked = [...text.matchAll(/(?:\/journal\/|[?&]slug=)([a-z0-9-]+)/g)].map((x) => x[1]);
+  if (linked.length === 0) return false;
+  const slug = String(post?.slug || '').toLowerCase();
+  const title = String(post?.label || post?.title || '').toLowerCase().trim();
+  if (slug && (linked.includes(slug) || text.includes(slug))) return false;
+  if (title && text.includes(title)) return false;
+  return true;
 }
 
 const DRAFT_TOOLS = new Set([

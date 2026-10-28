@@ -2654,18 +2654,22 @@ export default function AutoV2Panel({ onNavigate, className,
   // it was tied to Josiah. It re-opened on its own.").
   const artifactKey = artifact ? `${artifact.type}|${artifact.slug || resolveDraftArtifactSlug(artifact) || artifact.label || ''}` : null;
   const latestImageKey = [...generatedImages.map((g) => g?.url || g?.card), ...generatedDesignImages.map((g) => g?.url)].filter(Boolean).slice(-1)[0] || null;
-  const dismissedPanelRef = useRef({ artifact: null, image: null });
+  // Every item closed this visit is remembered, not just the last one: the
+  // panel flips between two items while a reply loads, and remembering one
+  // key let The Josiah Archetype reopen after every message (2026-10-28).
+  const dismissedPanelRef = useRef({ artifacts: new Set(), images: new Set() });
   const closeArtifactPanel = useCallback(() => {
-    dismissedPanelRef.current = { artifact: artifactKey, image: latestImageKey };
+    if (artifactKey) dismissedPanelRef.current.artifacts.add(artifactKey);
+    if (latestImageKey) dismissedPanelRef.current.images.add(latestImageKey);
     setArtifactOpen(false);
   }, [artifactKey, latestImageKey]);
 
   useEffect(() => {
-    if (artifactKey && artifactKey !== dismissedPanelRef.current.artifact) signalNewArtifact();
+    if (artifactKey && !dismissedPanelRef.current.artifacts.has(artifactKey)) signalNewArtifact();
   }, [artifactKey, signalNewArtifact]);
 
   useEffect(() => {
-    if ((generatedImages.length > 0 || generatedDesignImages.length > 0) && latestImageKey !== dismissedPanelRef.current.image) {
+    if ((generatedImages.length > 0 || generatedDesignImages.length > 0) && !dismissedPanelRef.current.images.has(latestImageKey)) {
       signalNewArtifact();
       // Auto-advance to the newest card when new images arrive
       if (generatedImages.length > 0) {
