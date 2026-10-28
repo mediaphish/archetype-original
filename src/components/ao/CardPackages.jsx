@@ -5,7 +5,10 @@ import React, { useEffect, useState } from 'react';
  * Bart, 2026-10-28: "it needs to be a single image with all the captions ...
  * Not this hunt-and-peck." See src/lib/cardPackages.js.
  */
-export default function CardPackages({ packages, onImageError }) {
+const when = (iso) =>
+  new Date(iso).toLocaleString('en-US', { timeZone: 'America/Chicago', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+
+export default function CardPackages({ packages, statuses = {}, onImageError }) {
   const [index, setIndex] = useState(0);
   const total = packages.length;
   useEffect(() => {
@@ -57,6 +60,12 @@ export default function CardPackages({ packages, onImageError }) {
             No card picture for {card.title} in this chat yet.
           </div>
         )}
+
+        {card.image && statuses[card.image.url] ? (
+          <p className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-xs font-medium text-green-800">
+            {statuses[card.image.url].status === 'posted' ? 'Posted' : statuses[card.image.url].status === 'failed' ? 'Did not post' : 'Scheduled'} · {when(statuses[card.image.url].scheduled_at)} Central
+          </p>
+        ) : null}
 
         {card.quote ? (
           <p className="text-sm italic leading-relaxed text-gray-700">"{card.quote}"</p>

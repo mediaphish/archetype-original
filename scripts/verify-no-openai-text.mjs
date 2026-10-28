@@ -35,6 +35,9 @@ const ALLOWED = new Map([
   ['lib/ao/rapidWriteImage.js', 'image generation'],
   ['lib/ao/recentApprovedHeader.js', 'image generation'],
   ['lib/ao/corpusEmbeddings.js', 'embeddings: no Claude equivalent exists'],
+  // 2026-10-28: a teammate's line read aloud in a live talk. Claude writes every
+  // word; Anthropic sells no voices.
+  ['lib/ao/talkVoice.js', 'speech: reads Claude\'s words aloud, no Claude equivalent exists'],
   ['lib/openaiKey.js', 'the key helper itself'],
   ['scripts/verify-no-openai-text.mjs', 'this check'],
   ['lib/ao/textModel.js', 'names the old model in its comment and its error guidance'],

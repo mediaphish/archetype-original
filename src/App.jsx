@@ -76,6 +76,7 @@ import PodcastGuestAdminCombined from "./pages/ao/PodcastGuestAdminCombined";
 import PodcastEpisodeAdmin from "./pages/ao/PodcastEpisodeAdmin";
 import PodcastDashboard from "./pages/ao/PodcastDashboard";
 import AOClients from "./pages/ao/Clients";
+import AOTalk from "./pages/ao/Talk";
 // Operators pages - Lazy loaded for better performance
 const OperatorsLanding = lazy(() => import("./pages/operators/Landing"));
 const OperatorsLogin = lazy(() => import("./pages/operators/Login"));
@@ -254,6 +255,7 @@ export default function App() {
       if (path === '/ao/settings') return 'ao-settings';
       if (path === '/ao/podcast') return 'ao-podcast';
       if (path === '/ao/clients' || path === '/ao/crm') return 'ao-clients';
+      if (path === '/ao/talk') return 'ao-talk';
       if (/^\/ao\/podcast\/episode\/[^/]+$/.test(path)) return 'ao-podcast-episode';
       if (/^\/ao\/podcast\/guest-combined\/[^/]+$/.test(path)) return 'ao-podcast-guest-combined';
       if (/^\/ao\/podcast\/guest\/[^/]+$/.test(path)) return 'ao-podcast-guest';
@@ -490,6 +492,7 @@ export default function App() {
         else if (path === '/ao/settings') setCurrentPage('ao-settings');
         else if (path === '/ao/podcast') setCurrentPage('ao-podcast');
         else if (path === '/ao/clients' || path === '/ao/crm') setCurrentPage('ao-clients');
+        else if (path === '/ao/talk') setCurrentPage('ao-talk');
         else if (/^\/ao\/podcast\/episode\/[^/]+$/.test(path)) setCurrentPage('ao-podcast-episode');
         else if (/^\/ao\/podcast\/guest-combined\/[^/]+$/.test(path)) setCurrentPage('ao-podcast-guest-combined');
         else if (/^\/ao\/podcast\/guest\/[^/]+$/.test(path)) setCurrentPage('ao-podcast-guest');
@@ -1165,6 +1168,9 @@ export default function App() {
   }
   if (currentPage === 'ao-clients') {
     return <AOClients />;
+  }
+  if (currentPage === 'ao-talk') {
+    return <AOTalk />;
   }
 
   // Render Operators pages with lazy loading (protected routes)

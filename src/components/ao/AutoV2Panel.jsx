@@ -1294,6 +1294,49 @@ function ArtifactPanel({
   // A caption set for cards shows one card at a time with its picture (2026-10-28).
   const packages = !hasCards && artifact?.type === 'captions' ? cardPackages(artifact.content, generatedDesignImages) : [];
   const showPackages = packages.length > 0;
+  // Bart, 2026-10-28: "I have approved the cards and captions, but it's still
+  // showing ... that I need to schedule them. ... the system needs to be aware
+  // that I click the button and confirm it." The panel remembers the click and
+  // shows each card's posting time once it is queued.
+  const packageKey = packages.map((p) => p.image?.url || p.title).join('|');
+  const [cardStatus, setCardStatus] = useState({});
+  const [approvedKey, setApprovedKey] = useState(() => {
+    try {
+      return window.localStorage.getItem('ao.cardsApproved') || '';
+    } catch {
+      return '';
+    }
+  });
+  useEffect(() => {
+    const urls = packages.map((p) => p.image?.url).filter(Boolean);
+    if (!showPackages || !urls.length) return undefined;
+    let stop = false;
+    const load = () =>
+      fetch('/api/ao/auto/card-status', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ urls }) })
+        .then((r) => r.json())
+        .then((j) => {
+          if (!stop && j?.ok) setCardStatus(j.statuses || {});
+        })
+        .catch(() => {});
+    load();
+    const t = setInterval(load, 20000);
+    return () => {
+      stop = true;
+      clearInterval(t);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [packageKey, showPackages]);
+  const allQueued = showPackages && packages.every((p) => p.image && cardStatus[p.image.url]);
+  const approvedNow = showPackages && approvedKey === packageKey;
+  const approvePackages = () => {
+    setApprovedKey(packageKey);
+    try {
+      window.localStorage.setItem('ao.cardsApproved', packageKey);
+    } catch {
+      /* the click still goes through */
+    }
+    onApprove?.();
+  };
   // Tap any image in the panel to open it full screen and pinch to zoom (2026-10-27).
   const [zoomImage, setZoomImage] = useState(null);
   const openZoom = (e) => {
@@ -1675,7 +1718,7 @@ function ArtifactPanel({
         {artifact?.type === 'captions' && (
           <div className="flex flex-col flex-1 min-h-0 gap-3">
             {showPackages ? (
-              <CardPackages packages={packages} onImageError={onGeneratedDesignImageError} />
+              <CardPackages packages={packages} statuses={cardStatus} onImageError={onGeneratedDesignImageError} />
             ) : (
               <div className="flex flex-col flex-1 min-h-0 space-y-3">
                 <p className="flex-shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500">{artifact.label}</p>
@@ -1684,15 +1727,21 @@ function ArtifactPanel({
                 </div>
               </div>
             )}
-            <div className="flex-shrink-0 rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs leading-relaxed text-blue-700">
-              {showPackages
-                ? 'A spot check. These run on their own once the checks pass. Use Revise if something is off.'
-                : 'Approve these captions to move them on.'}
+            <div className={`flex-shrink-0 rounded-lg border p-3 text-xs leading-relaxed ${allQueued ? 'border-green-200 bg-green-50 text-green-800' : 'border-blue-100 bg-blue-50 text-blue-700'}`}>
+              {allQueued
+                ? `All ${packages.length} cards are scheduled. Each card shows when it goes out.`
+                : approvedNow
+                  ? 'You approved these. The team is scheduling them now, and each card shows its time here once it is queued.'
+                  : showPackages
+                    ? 'A spot check. These run on their own once the checks pass. Use Revise if something is off.'
+                    : 'Approve these captions to move them on.'}
             </div>
             <div className="flex shrink-0 flex-col gap-2">
-              <button type="button" onClick={onApprove} className="w-full py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
-                {showPackages && packages.every((p) => p.image) ? 'Looks good, schedule them' : 'Approve captions'}
-              </button>
+              {allQueued || approvedNow ? null : (
+                <button type="button" onClick={showPackages ? approvePackages : onApprove} className="w-full py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
+                  {showPackages && packages.every((p) => p.image) ? 'Looks good, schedule them' : 'Approve captions'}
+                </button>
+              )}
               <button type="button" onClick={onRevise} className="w-full py-2 px-3 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
                 Revise captions
               </button>

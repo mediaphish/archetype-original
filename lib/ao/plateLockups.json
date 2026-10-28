@@ -1,11 +1,4 @@
 {
-  "variation_01": {
-    "side": "left",
-    "x": 60,
-    "y": 932,
-    "w": 114,
-    "h": 91
-  },
   "variation_03": {
     "side": "left",
     "x": 56,
@@ -33,13 +26,6 @@
     "y": 839,
     "w": 217,
     "h": 171
-  },
-  "variation_09": {
-    "side": "left",
-    "x": 73,
-    "y": 846,
-    "w": 191,
-    "h": 156
   },
   "variation_10": {
     "side": "right",

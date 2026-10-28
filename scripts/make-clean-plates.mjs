@@ -10,7 +10,9 @@
  * (public/brand/archetype-original-lockup.svg) in that spot on every card.
  *
  * Each result was checked by eye. variation_04 is left out: its lockup sits on
- * textured stone and every removal left a visible patch.
+ * textured stone and every removal left a visible patch. variation_01 and
+ * variation_09 are left out because his tattooed forearms show (Bart,
+ * 2026-10-28: "I've requested in these situations that my arms be covered").
  *
  *   node scripts/make-clean-plates.mjs
  */
@@ -21,7 +23,7 @@ import sharp from 'sharp';
 const SRC = path.join(process.cwd(), 'public', 'images', 'cards');
 const OUT = path.join(process.cwd(), 'public', 'images', 'cards-clean');
 const BOXES = path.join(process.cwd(), 'lib', 'ao', 'plateLockups.json');
-const SKIP = new Set(['variation_04']);
+const SKIP = new Set(['variation_04', 'variation_01', 'variation_09']);
 // The white shirt on 03 outweighs its small lockup, so its side is given.
 const SIDE = { variation_03: 'left' };
 

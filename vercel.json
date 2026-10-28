@@ -1609,6 +1609,22 @@
       "dest": "/api/ao/auto/episode-clip-drafts/index.js"
     },
     {
+      "src": "/api/ao/talk/speak",
+      "dest": "/api/ao/talk/speak.js"
+    },
+    {
+      "src": "/api/ao/talk/ask",
+      "dest": "/api/ao/talk/ask.js"
+    },
+    {
+      "src": "/api/ao/talk",
+      "dest": "/api/ao/talk/index.js"
+    },
+    {
+      "src": "/api/ao/auto/card-status",
+      "dest": "/api/ao/auto/card-status.js"
+    },
+    {
       "src": "/api/ao/auto/episode-drafts/([^/]+)",
       "dest": "/api/ao/auto/episode-drafts/[id].js?id=$1"
     },
