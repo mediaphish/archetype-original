@@ -44,6 +44,7 @@ The faith side of the corpus only: every devotional, the Biblical Archetype seri
 
 - 2026-10-27: there is no devotional Facebook Page yet. Bart creates it (creating accounts and pages is his to do), then it is connected to the same Meta app the company Page uses.
 - 2026-10-27: the daily devotional email to subscribers stays, alongside the Page.
+- 2026-10-27: what "reworking" means is settled. Bart approved the September audit ("Yes, the audit is approved."), so its sorting is the 2027 rework plan: 38 posts get a new passage, 63 a new reflection on the same passage, 44 light edits, 2 a new date, 126 stay as they are.
 
 ## From the Devotional session (2026-10-27)
 
@@ -59,7 +60,7 @@ Source: notes/HANDOFF-DEVOTIONALS-2026-10.md section 5 and that session. The rew
 
 ## Who does what (Bart, 2026-10-27)
 
-"Devotional will write through the end of the year and will help Lev with the rework." The Devotional Claude Code session writes November and Advent 2026 to Dec 31, then works with Lev on the 2027 rework. What "reworking" means (the audit's mix of new passages, new reflections and light edits, or something else) is settled with Bart as that work starts.
+"Devotional will write through the end of the year and will help Lev with the rework." The Devotional Claude Code session writes November and Advent 2026 to Dec 31, then works with Lev on the 2027 rework. What "reworking" means is now settled: the approved September audit.
 
 ## Where the devotional work lives (from the Devotional session, 2026-10-27)
 
@@ -72,4 +73,6 @@ For Lev to use them, the rework copies and the guide documents have to move some
 
 ## Open questions for Bart (asked one at a time, when he is ready)
 
-- What "reworking" means for the year: light edits, new reflections, or both?
+- The audit items marked "Bart decides" (for example Feb 14).
+- The Easter rescheduling (a recommendation only).
+- Auditing Oct to Dec 2026, which the September audit does not cover.
