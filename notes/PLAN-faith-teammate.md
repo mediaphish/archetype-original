@@ -55,6 +55,10 @@ Source: notes/HANDOFF-DEVOTIONALS-2026-10.md section 5 and that session. The rew
 - **Lev must keep:** Bart's review format (title, summary line, CAPS sections, full ESV text with verse numbers and the esv.org link, then FIRST COMMENT), approval per date by name, nothing added to a passage that is not in it, no "this week" or other dates inside a reflection, a suggested first comment for every Facebook post kept out of the markdown, never regenerating a date without asking Bart first, and checking live status against the site, never local files.
 - The 2026 writing continues in that session: November approved as a plan, Nov 1-7 drafted and with Bart, Advent (Nov 29 to Dec 31) not yet planned.
 
+## Who does what (Bart, 2026-10-27)
+
+"Devotional will write through the end of the year and will help Lev with the rework." The Devotional Claude Code session writes November and Advent 2026 to Dec 31, then works with Lev on the 2027 rework. What "reworking" means (the audit's mix of new passages, new reflections and light edits, or something else) is settled with Bart as that work starts.
+
 ## Where the devotional work lives (from the Devotional session, 2026-10-27)
 
 - Published: ao-knowledge-hq-kit/journal/devotionals/ (Jan 1 to Oct 31, one file per day).
