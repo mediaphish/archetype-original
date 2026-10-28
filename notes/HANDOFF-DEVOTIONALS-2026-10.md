@@ -85,7 +85,11 @@ These are not all in the standing docs yet. The why matters as much as the rule.
 
 ## 5. The 2027 rework audit, summarized
 
-Bart's instructions: work only on copies in a separate folder, never on the live posts. The audit ran on 2026-09-19 against all 273 posts. Headline findings:
+Bart's instructions: work only on copies in a separate folder, never on the live posts. The audit ran on 2026-09-19 against all 273 posts.
+
+**Approved by Bart 2026-10-27: "Yes, the audit is approved."** The audit's sorting is the rework plan: each post gets the treatment the audit assigned it (new passage, new reflection on the same passage, light edit, reschedule, or keep). The items the audit marks "Bart decides" are still his individual calls, and the Easter rescheduling below is still a recommendation. October through December 2026 were not in the audit and still need the same pass.
+
+Headline findings:
 
 - **38 posts need a different passage.** Nine in January, eleven in February.
 - **63 need rewriting on the same passage,** mostly to reach the May through July depth.
