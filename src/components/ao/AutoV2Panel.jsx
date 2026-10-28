@@ -44,6 +44,7 @@ import {
 import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 import { metricsAlertKeyFor } from '../../lib/metricsAlertKey';
 import { orderDesignImagesNewestFirst } from '../../lib/designImageOrder.js';
+import { markdownTeamImages } from '../../lib/teamShownImages.js';
 import { KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import QueueFeed from './QueueFeed.jsx';
 import { idleStatus } from '../../lib/teamStatus.js';
@@ -96,6 +97,11 @@ function extractDesignImagesFromAssistantContent(content) {
         size: attrs.size || '',
       });
     }
+  }
+  // Cards a teammate showed in chat as a picture belong in the panel too.
+  const seen = new Set(results.map((r) => r.url));
+  for (const img of markdownTeamImages(text)) {
+    if (!seen.has(img.url)) results.push(img);
   }
   return results;
 }
