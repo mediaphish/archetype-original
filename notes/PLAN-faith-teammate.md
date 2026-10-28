@@ -41,8 +41,8 @@ The faith side of the corpus only: every devotional, the Biblical Archetype seri
 ## Answers so far
 
 - 2026-10-27: there is no devotional Facebook Page yet. Bart creates it (creating accounts and pages is his to do), then it is connected to the same Meta app the company Page uses.
+- 2026-10-27: the daily devotional email to subscribers stays, alongside the Page.
 
 ## Open questions for Bart (asked one at a time, when he is ready)
 
-- Does the email to subscribers continue alongside the Page?
 - What "reworking" means for the year: light edits, new reflections, or both?
