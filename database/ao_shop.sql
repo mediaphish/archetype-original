@@ -37,3 +37,9 @@ create table if not exists ao_shop_orders (
 alter table ao_shop_products enable row level security;
 alter table ao_shop_orders enable row level security;
 insert into storage.buckets (id, name, public) values ('ao-shop-files','ao-shop-files', false) on conflict (id) do nothing;
+
+-- Books (2026-10-29): sold where they already sell (Lulu, SamCart). The shop
+-- lists them and sends the buyer to that store. Applied as migration "ao_shop_books".
+alter table ao_shop_products add column if not exists buy_url text, add column if not exists page_path text, add column if not exists sort_order integer not null default 100;
+alter table ao_shop_products drop constraint if exists ao_shop_products_kind_check;
+alter table ao_shop_products add constraint ao_shop_products_kind_check check (kind in ('guide','apparel','book'));

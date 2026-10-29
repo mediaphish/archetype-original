@@ -2,6 +2,7 @@
  * Guides and drops (2026-10-28): /guides, /guides/:slug, /guides/thanks.
  * Guides are downloads delivered by email the moment they are paid for; a
  * drop is one design, ordered while the window is open, then printed.
+ * Books (2026-10-29) are bought at the store that already sells them.
  */
 import React, { useEffect, useState } from 'react';
 
@@ -50,7 +51,7 @@ function Product({ slug }) {
     setState('ready');
   };
   if (state === 'loading') return <Shell><p className="text-[#6B6B6B]">Loading…</p></Shell>;
-  if (state === 'missing') return <Shell><p className="text-[#6B6B6B]">This one is not available.</p><a href="/guides" onClick={(e) => goTo(e, '/guides')} className="underline">See all guides</a></Shell>;
+  if (state === 'missing') return <Shell><p className="text-[#6B6B6B]">This one is not available.</p><a href="/guides" onClick={(e) => goTo(e, '/guides')} className="underline">See everything</a></Shell>;
   return (
     <Shell>
       <div className="grid gap-10 md:grid-cols-2">
@@ -68,7 +69,11 @@ function Product({ slug }) {
             </div>
           ) : null}
           {closesLine(p) ? <p className="mt-4 text-sm text-[#6B6B6B]">{closesLine(p)}</p> : null}
-          {p.buyable ? (
+          {p.buyable && p.kind === 'book' ? (
+            <a href={p.buy_url} target="_blank" rel="noopener noreferrer" className="mt-8 inline-block rounded bg-[#1A1A1A] px-8 py-3 font-semibold text-white">
+              Buy the book
+            </a>
+          ) : p.buyable ? (
             <button type="button" onClick={buy} disabled={state === 'going'} className="mt-8 rounded bg-[#1A1A1A] px-8 py-3 font-semibold text-white disabled:opacity-60">
               {state === 'going' ? 'Opening checkout…' : p.kind === 'guide' ? 'Buy and download' : 'Order yours'}
             </button>
@@ -77,6 +82,11 @@ function Product({ slug }) {
           )}
           {error ? <p className="mt-3 text-sm text-red-700">{error}</p> : null}
           {p.kind === 'guide' ? <p className="mt-4 text-sm text-[#6B6B6B]">Your download arrives by email as soon as you pay.</p> : null}
+          {p.kind === 'book' && p.page_path ? (
+            <p className="mt-4 text-sm">
+              <a href={p.page_path} onClick={(e) => goTo(e, p.page_path)} className="underline">More about the book</a>
+            </p>
+          ) : null}
         </div>
       </div>
     </Shell>
@@ -104,10 +114,10 @@ function List() {
   }, []);
   return (
     <Shell>
-      <h1 className="font-serif text-5xl font-bold tracking-tight text-[#1A1A1A]">Guides</h1>
-      <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#6B6B6B]">Practical guides for leaders, drawn from years of writing on servant leadership.</p>
+      <h1 className="font-serif text-5xl font-bold tracking-tight text-[#1A1A1A]">Books and Guides</h1>
+      <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#6B6B6B]">Books and practical guides for leaders, drawn from years of writing on servant leadership.</p>
       {items === null ? <p className="mt-10 text-[#6B6B6B]">Loading…</p> : null}
-      {items && !items.length ? <p className="mt-10 text-[#6B6B6B]">The first guide is on the way.</p> : null}
+      {items && !items.length ? <p className="mt-10 text-[#6B6B6B]">Nothing here yet.</p> : null}
       <div className="mt-10 grid gap-8 sm:grid-cols-2">
         {(items || []).map((p) => (
           <a key={p.slug} href={`/guides/${p.slug}`} onClick={(e) => goTo(e, `/guides/${p.slug}`)} className="block rounded-lg bg-white p-6 shadow-sm hover:shadow">
