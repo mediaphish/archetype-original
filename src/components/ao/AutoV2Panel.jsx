@@ -5024,7 +5024,8 @@ export default function AutoV2Panel({ onNavigate, className,
 
           {visibleChatMessages.length === 0 && !sending && (
             <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
-              <AOMark className="w-10 h-10 text-gray-200 mb-4" />
+              {/* The teammate who leads this chat, in place of the empty mark (Bart, 2026-10-29). */}
+              <img src={avatarFor(activeChannel?.lead || activeAgent)} alt="" aria-hidden="true" className="w-14 h-14 rounded-full object-cover bg-orange-50 mb-4" draggable={false} />
               <h2 className="text-base font-semibold text-gray-800 mb-2">Good to go.</h2>
               <p className="text-sm text-gray-400 max-w-xs leading-relaxed">
                 Talk to Auto the same way you&apos;d talk to your CMO. No commands. No trigger phrases.
