@@ -2088,6 +2088,22 @@
       "dest": "/api/ao/auto/scheduled-posts-status.js"
     },
     {
+      "src": "/api/shop/webhook",
+      "dest": "/api/shop/webhook.js"
+    },
+    {
+      "src": "/api/shop/download",
+      "dest": "/api/shop/download.js"
+    },
+    {
+      "src": "/api/shop/setup",
+      "dest": "/api/shop/setup.js"
+    },
+    {
+      "src": "/api/shop",
+      "dest": "/api/shop/index.js"
+    },
+    {
       "handle": "filesystem"
     },
     {

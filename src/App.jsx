@@ -117,6 +117,7 @@ import AdvisoryPage from "./pages/Advisory";
 import WorkWithBartPage from "./pages/WorkWithBart";
 import TheRoomPage from "./pages/TheRoom";
 import BooksPage from "./pages/Books";
+import GuidesPage from "./pages/Guides";
 import { trackMetaPixelPageView } from "./lib/metaPixel";
 
 export default function App() {
@@ -191,6 +192,7 @@ export default function App() {
     if (path === '/accidental-ceo') return 'accidental-ceo';
     if (path === '/the-room') return 'the-room';
     if (path === '/books') return 'books';
+    if (path === '/guides' || path.startsWith('/guides/')) return 'guides';
     if (path === '/advisory') return 'advisory';
     if (path === '/work-with-bart') return 'work-with-bart';
     if (path === '/remaining-human') return 'remaining-human';
@@ -662,6 +664,8 @@ export default function App() {
         setCurrentPage('the-room');
       } else if (path === '/books') {
         setCurrentPage('books');
+      } else if (path === '/guides' || path.startsWith('/guides/')) {
+        setCurrentPage('guides');
       } else if (path === '/advisory') {
         setCurrentPage('advisory');
       } else if (path === '/work-with-bart') {
@@ -820,6 +824,16 @@ export default function App() {
       <main className="bg-stone-50 text-stone-900">
         <Header />
         <TheRoomPage />
+        <Footer />
+      </main>
+    );
+  }
+
+  if (currentPage === 'guides') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <GuidesPage key={window.location.pathname} />
         <Footer />
       </main>
     );
