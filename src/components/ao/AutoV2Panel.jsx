@@ -4135,18 +4135,21 @@ export default function AutoV2Panel({ onNavigate, className,
                 for (let k = list.length - 1; k >= 0; k -= 1) if (list[k].role === 'assistant') return list[k].meta?.agent || 'auto';
                 return 'auto';
               })();
+              // One hand-off at most (2026-10-28, spend): a reply naming three
+              // teammates set off three more paid replies.
               const handedTo = mentionedAgents(String(json.assistant_message || '').replace(/^\s*\w+:\s*/, ' ')).filter(
                 (k) => k !== answeredBy && !named.includes(k)
-              );
+              ).slice(0, 1);
               for (const teammate of handedTo) {
                 if (!live()) return;
                 const name = TEAM_NAMES[teammate] || 'Ada';
                 await teammateTurn(teammate, `[TEAM] ${name}, ${TEAM_NAMES[answeredBy] || 'Ada'} brought you in above. Do your part of what was asked, as yourself, and do not speak for anyone else.`);
               }
 
-              // The whole team is in every thread: when nobody was named, anyone
-              // with something real to add speaks up (Phase 1, 2026-10-26).
-              if ((!named.length || teamCall) && !handedTo.length && replyThreadId) {
+              // Only when Bart calls the whole team with @team does anyone else
+              // speak up (2026-10-28, approved, to cut spend: "only the teammate
+              // you're talking to answers, plus anyone you @mention").
+              if (teamCall && !handedTo.length && replyThreadId) {
                 try {
                   const r = await fetch('/api/ao/team/speak-up', {
                     method: 'POST',
