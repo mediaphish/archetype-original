@@ -310,6 +310,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-10-29 | A Tomb for Yourself | Isaiah 22:15–19 (ESV) | `a-tomb-for-yourself` | `2026-10-29-a-tomb-for-yourself.md` |
 | 2026-10-30 | No Ground for Complaint | Daniel 6:3–4 (ESV) | `no-ground-for-complaint` | `2026-10-30-no-ground-for-complaint.md` |
 | 2026-10-31 | For Such a Time as This | Esther 4:13–14 (ESV) | `for-such-a-time-as-this` | `2026-10-31-for-such-a-time-as-this.md` |
+| 2026-11-01 | Enter His Gates with Thanksgiving | Psalm 100:4–5 (ESV) | `enter-his-gates-with-thanksgiving` | `2026-11-01-enter-his-gates-with-thanksgiving.md` |
+| 2026-11-02 | Abounding in Thanksgiving | Colossians 2:6–7 (ESV) | `abounding-in-thanksgiving` | `2026-11-02-abounding-in-thanksgiving.md` |
+| 2026-11-03 | In the Morning and by Night | Psalm 92:1–4 (ESV) | `in-the-morning-and-by-night` | `2026-11-03-in-the-morning-and-by-night.md` |
+| 2026-11-04 | Where Are the Nine? | Luke 17:12–19 (ESV) | `where-are-the-nine` | `2026-11-04-where-are-the-nine.md` |
+| 2026-11-05 | What Shall I Render? | Psalm 116:12–14 (ESV) | `what-shall-i-render` | `2026-11-05-what-shall-i-render.md` |
+| 2026-11-06 | What We Asked of You | Daniel 2:17–23 (ESV) | `what-we-asked-of-you` | `2026-11-06-what-we-asked-of-you.md` |
+| 2026-11-07 | To Invoke, to Thank, and to Praise | 1 Chronicles 16:1–4 (ESV) | `to-invoke-to-thank-and-to-praise` | `2026-11-07-to-invoke-to-thank-and-to-praise.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 

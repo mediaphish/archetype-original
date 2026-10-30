@@ -5,8 +5,15 @@
     <link>https://www.archetypeoriginal.com/journal</link>
     <description>Essays on leadership, culture, and accountability by Bart Paden.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 26 Oct 2026 13:00:35 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 28 Oct 2026 11:00:35 GMT</lastBuildDate>
     <atom:link href="https://www.archetypeoriginal.com/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The Decision You Cannot Hand Off</title>
+      <link>https://www.archetypeoriginal.com/journal/the-decision-you-cannot-hand-off</link>
+      <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/the-decision-you-cannot-hand-off</guid>
+      <pubDate>Wed, 28 Oct 2026 11:00:35 GMT</pubDate>
+      <description>A leader sits down with a report an AI system generated overnight. It ranks the workforce by output, attendance, tenure, cost. At the bottom of the list are the names the system recommends cutting first. This is not one leader.</description>
+    </item>
     <item>
       <title>The Rehoboam Archetype</title>
       <link>https://www.archetypeoriginal.com/journal/the-rehoboam-archetype</link>
@@ -349,13 +356,6 @@
       <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/accountability-is-a-design-problem</guid>
       <pubDate>Thu, 26 Feb 2026 00:00:00 GMT</pubDate>
       <description>Post 8 of the Unaccountable series examines why goodwill and culture alone cannot sustain accountability, and why healthy leadership systems must design structural correction into authority itself.</description>
-    </item>
-    <item>
-      <title>Why Servant Leadership Disrupts Unaccountable Power</title>
-      <link>https://www.archetypeoriginal.com/journal/why-servant-leadership-disrupts-unaccountable-power</link>
-      <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/why-servant-leadership-disrupts-unaccountable-power</guid>
-      <pubDate>Thu, 19 Feb 2026 00:00:00 GMT</pubDate>
-      <description>Post 7 of the Unaccountable series marks the pivot from diagnosis to disruption, examining how Servant Leadership restores consequence to insulated systems and exposes authority that cannot survive accountability.</description>
     </item>
   </channel>
 </rss>

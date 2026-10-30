@@ -1,7 +1,131 @@
 {
-  "generated_at": "2026-10-27T18:04:05.461Z",
-  "count": 676,
+  "generated_at": "2026-10-30T20:55:45.072Z",
+  "count": 680,
   "docs": [
+    {
+      "title": "No Ground for Complaint",
+      "slug": "no-ground-for-complaint",
+      "type": "devotional",
+      "tags": [],
+      "categories": [
+        "servant-leadership",
+        "devotional"
+      ],
+      "status": "published",
+      "created_at": "2026-10-30T06:48:20.594Z",
+      "updated_at": "2026-10-30T06:48:20.594Z",
+      "publish_date": "2026-10-30",
+      "date": "2026-10-30",
+      "summary": "Stewardship done well is boring under inspection, with no side arrangement to explain and no number that needs context.",
+      "email_summary": "Stewardship done well is boring under inspection, with no side arrangement to explain and no number that needs context.",
+      "image": null,
+      "scripture_reference": "Daniel 6:3–4 (ESV)",
+      "source": {
+        "kind": "devotional",
+        "original_source": null,
+        "original_url": null
+      },
+      "takeaways": [],
+      "applications": [],
+      "related": [],
+      "series": null,
+      "series_name": null,
+      "series_part": null,
+      "body": "## Scripture\n\n**Daniel 6:3–4 (ESV)**\n\n## Reflection\n\nDaniel is distinguished above the other officials and about to be set over the whole kingdom. That also makes him the most examined man in the administration, which is how it usually works when someone is about to be promoted past their peers.\n\nThe search against him is hostile and specific. They are looking for a ground for complaint with regard to the kingdom, which means his actual work. The records, the decisions, the handling of what was entrusted to him. They find nothing, and the text gives the reason plainly. He was faithful.\n\nMost leaders are never audited by enemies. They get audited by circumstance. A bad quarter. A lawsuit. An unexpected departure. Someone finally looking closely at a process nobody had examined in years. Faithfulness over the long stretch is what determines whether that look turns up anything.\n\nStewardship done well is boring under inspection. No side arrangement that needs explaining. No number that only makes sense with context. No favor that reads differently in writing than it sounded in the room.\n\nAn excellent spirit was in him sits alongside the faithfulness rather than substituting for it. Daniel was both capable and clean, and that combination is what made him impossible to remove through ordinary means.\n\n## Practical Application\n\n- Pick the part of your work least likely to be examined and examine it yourself.\n- Find anything that would need explaining if someone read it cold, and fix the thing rather than the explanation.\n- Ask whether your competence has been covering for a practice you would not want examined.\n\n## Takeaways\n\n- Most leaders are audited by circumstance rather than by enemies, and the result depends on what was built beforehand.\n- Capability does not substitute for faithfulness, and leaders who have both are hard to dislodge.\n\n## Closing Thought\n\nThey went looking for something and the search came back empty."
+    },
+    {
+      "title": "A Tomb for Yourself",
+      "slug": "a-tomb-for-yourself",
+      "type": "devotional",
+      "tags": [],
+      "categories": [
+        "servant-leadership",
+        "devotional"
+      ],
+      "status": "published",
+      "created_at": "2026-10-29T08:01:16.268Z",
+      "updated_at": "2026-10-29T08:01:16.268Z",
+      "publish_date": "2026-10-29",
+      "date": "2026-10-29",
+      "summary": "Every leader leaves a mark. A steward who carves a monument for himself has decided the position exists for him rather than for the household.",
+      "email_summary": "Every leader leaves a mark. A steward who carves a monument for himself has decided the position exists for him rather than for the household.",
+      "image": null,
+      "scripture_reference": "Isaiah 22:15–19 (ESV)",
+      "source": {
+        "kind": "devotional",
+        "original_source": null,
+        "original_url": null
+      },
+      "takeaways": [],
+      "applications": [],
+      "related": [],
+      "series": null,
+      "series_name": null,
+      "series_part": null,
+      "body": "## Scripture\n\n**Isaiah 22:15–19 (ESV)**\n\n## Reflection\n\nThe man in question has a title and a house to run. He is named as a steward, the one over the household, which means the resources, the staff and the authority all pass through his hands. What he has done with that is cut himself a tomb in the rock.\n\nThe question God sends him is about standing. What have you to do here, and whom have you here, that you have cut out here a tomb for yourself. Twice in one verse the text says for yourself. He was given a position to run someone else's house and used it to carve his own monument into the rock.\n\nLeaving something behind is not the problem. Every leader leaves a mark. One who builds a culture of service leaves something that outlasts them, and the household is better for it. That mark belongs to the people who stay. The tomb served no one in the house.\n\nStewardship is the difference. A steward asks what the position can leave for the household. Shebna asked what it could leave for him. The same access and authority can build either one.\n\nThe answer comes in the next breath, and it is not gentle. The LORD will hurl him away and thrust him from his office. He will die in a wide land, far from the tomb he carved, and the text calls him the shame of his master's house. He built something for himself, lost the household and never used what he built.\n\n## Practical Application\n\n- Name the marks you are leaving on your organization, and ask who each one is for.\n- Ask what your title has produced for the people it was given to serve.\n- Name anything you have built with your position that will leave with you rather than stay.\n\n## Takeaways\n\n- Every leader leaves a mark. The question is whether it was left for the household or for themselves.\n- A steward can misuse a position without ever mishandling money, which is why this goes unexamined.\n\n## Closing Thought\n\nHe carved a tomb on the height and never got to lie in it."
+    },
+    {
+      "title": "The Decision You Cannot Hand Off",
+      "slug": "the-decision-you-cannot-hand-off",
+      "type": "journal-post",
+      "tags": [],
+      "categories": [
+        "Leadership",
+        "Servant Leadership"
+      ],
+      "status": "published",
+      "created_at": "2026-10-28",
+      "updated_at": "2026-10-28",
+      "publish_date": "2026-10-28T11:00:35.815Z",
+      "date": "2026-10-28T11:00:35.815Z",
+      "summary": "A leader sits down with a report an AI system generated overnight. It ranks the workforce by output, attendance, tenure, cost. At the bottom of the list are the names the system recommends cutting first. This is not one leader.",
+      "email_summary": "A leader sits down with a report an AI system generated overnight. It ranks the workforce by output, attendance, tenure, cost. At the bottom of the list are the names the system recommends cutting first. This is not one leader.",
+      "image": "/images/the-decision-you-cannot-hand-off.jpg",
+      "scripture_reference": null,
+      "source": {
+        "kind": "journal",
+        "original_source": "AO Auto",
+        "original_url": null
+      },
+      "takeaways": [],
+      "applications": [],
+      "related": [],
+      "series": null,
+      "series_name": null,
+      "series_part": null,
+      "body": "A leader sits down with a report an AI system generated overnight. It ranks the workforce by output, attendance, tenure, cost. At the bottom of the list are the names the system recommends cutting first.\n\nThis is not one leader. I have watched leaders accept a finished recommendation like this for years. The tool doing the sorting is new. The moment is not.\n\nThe list is clean. The reasoning is laid out in plain language. The math behind it is sound, as far as the math goes. And there is a specific kind of relief that comes with a hard call already looking handled. The leader did not have to carry the discomfort of building the list themselves, staring at each name, feeling the weight of what it means for a real person's mortgage or marriage or kid in braces. The system built it. The leader just has to say yes.\n\nThat moment, not the technology itself, is what this series is actually about.\n\nA title gives a leader the power to say yes to that list. It does not give them the right to be correct. And it never transferred the weight of what happens to the person whose name is on it. That weight was never the system's to carry in the first place. It was always the leader's, and it still is, whether or not a machine did the sorting.\n\nI wrote in [RemAIning Human](https://www.archetypeoriginal.com/remaining-human) that artificial intelligence does not multiply moral authority. It multiplies positional authority. The distinction matters more now than it did when I wrote it, because the tools have gotten faster and more confident since then, not slower and more humble. A system can hand a leader a finished answer about a human life in less time than it takes to pour a cup of coffee, and it hands that answer over with the same even, certain tone whether it is right or catastrophically wrong. Nothing in how the answer arrives tells you which one you are holding.\n\nThis is not a hypothetical risk. It is already in court. Twenty-six current and former employees sued Meta in 2026, alleging the company used an internal web of AI systems to score and rank employees ahead of a round of layoffs, and that the scoring disproportionately hit people who were on medical, parental, or other protected leave at the time. Meta disputes the claim and says the final calls were made by people, not AI. The lawsuit has not been decided, and I am not telling you who is right. I am telling you what the allegation describes, because it describes the exact failure this piece is about. A system that scored people on activity and output had no way of knowing who was out on leave for reasons that had nothing to do with how well they were doing their job. Whether a human signed off on the list afterward does not change what the list was built on in the first place.\n\nThe same blindness shows up at a much smaller scale, and it does not take a lawsuit to find it. A supermarket cashier in Australia with thirty years of experience received a final written warning after an AI monitoring system flagged errors on a sliver of the items she scanned, somewhere near one mistake in every five hundred transactions. The system was accurate about the count. It had no way of knowing what thirty years of reliable work was worth, or whether one error in five hundred is actually a problem worth a warning. It counted. Counting is not the same thing as judging, no matter how clean the output looks when it lands on a screen.\n\nThat is the trap in both cases, and it is the trap waiting in your company whether your business ever makes the news or not. Confidence in the output has nothing to do with whether the output accounted for what actually matters. A productivity score does not know that the person at the bottom of the list spent six weeks this year caring for a parent in hospice and still hit most of their targets. A tenure algorithm does not know that the newest hire on the list is outperforming people twice her tenure because nobody adjusted the model for ramp time. The data is not lying. It is just incomplete in a way that looks complete, because it arrived formatted, labeled, and sorted like something a careful person built by hand.\n\nNone of this happens because leaders are careless. It happens because the system offers something genuinely hard to turn down: a finished answer that removes the discomfort of having to build the hard call yourself. A leader who has sat across the table from someone they are about to let go knows exactly how much that moment costs. A report that arrives already scored, already ranked, already reasoned out in confident language, offers a way to skip the part that costs something. That offer is not evil. It is just dangerous, because the thing it is removing is the exact thing the job requires.\n\nI have watched leaders accept recommendations like this for thirty-four years, long before anyone called it AI. A spreadsheet ranked by last quarter's numbers can do the same damage a model does now, just slower and with worse formatting. What is different today is the speed and the confidence. A decision that used to take a week of uncomfortable conversations with department heads now takes an afternoon, and the system that produced it never once had to look anyone in the eye. The leader still does. That has not changed, and it is not going to.\n\nSo here is the move, and it is not a tool setting or a prompt. Before an AI-assisted decision affecting a person's job, pay, or standing goes forward, the leader reviews it against one question: what does this output not know about this specific person's situation. Not the team. Not the department. This person. The thing happening in their life right now that never made it into any data set, because most of what makes a person's situation what it actually is was never going to show up in a report.\n\nIn practice, this is slower than approving the list, and it should be. It means reading every name, not scanning a summary. For a ranking tied to layoffs or restructuring, it means asking whoever is closest to each person on the bottom half of that list, a direct manager, a team lead, someone who actually knows them, one question before any name is finalized: is there anything happening with this person that the numbers would not show. For a performance flag tied to monitoring or output data, it means asking what circumstance produced the number before accepting what the number claims it proves. Sometimes the answer is nothing, and the system's read stands. Sometimes the answer changes everything, and the leader just caught something a model was never in a position to know, because nobody was ever going to tell it.\n\nIf the leader cannot answer that question, the decision is not ready to move. Not because the system got it wrong. Because the leader has not yet done the part of the job that was never going to belong to the system. Finding out what the data could not see was always a human responsibility, back when the data came from a spreadsheet and now that it comes from something that sounds a great deal more sure of itself.\n\nThis is not a call for slowing everything down out of caution. Some decisions genuinely are as simple as the data makes them look. The discipline is knowing the difference, and that discipline does not come from the tool. It comes from a leader who has decided in advance that speed is not going to be allowed to answer for them on anything that costs another person something real.\n\nWhat a leader lets speed decide, and what a leader insists on deciding slowly, in full possession of what a model could never know, is the clearest answer available to who that leader actually is. Not what they say in a values statement. What they do the first time a finished answer about a human being lands on their desk looking done.\n\nIf you are facing a decision like this in your own company right now, I would like to hear about it. Reach out and let's talk it through."
+    },
+    {
+      "title": "Not What Is Yours, but You",
+      "slug": "not-what-is-yours-but-you",
+      "type": "devotional",
+      "tags": [],
+      "categories": [
+        "servant-leadership",
+        "devotional"
+      ],
+      "status": "published",
+      "created_at": "2026-10-28T10:31:47.480Z",
+      "updated_at": "2026-10-28T10:31:47.480Z",
+      "publish_date": "2026-10-28",
+      "date": "2026-10-28",
+      "summary": "A leader entrusted with people is expected to be spent on them rather than the other way around.",
+      "email_summary": "A leader entrusted with people is expected to be spent on them rather than the other way around.",
+      "image": null,
+      "scripture_reference": "2 Corinthians 12:14–15 (ESV)",
+      "source": {
+        "kind": "devotional",
+        "original_source": null,
+        "original_url": null
+      },
+      "takeaways": [],
+      "applications": [],
+      "related": [],
+      "series": null,
+      "series_name": null,
+      "series_part": null,
+      "body": "## Scripture\n\n**2 Corinthians 12:14–15 (ESV)**\n\n## Reflection\n\nI seek not what is yours but you is a sentence very few leaders could say honestly about the people they lead. Most working relationships are built the other way around, and everyone involved knows it.\n\nPaul separates the person from what the person produces. He is not coming for their money, their output, or their usefulness to his mission. He wants them. The distinction is clean, and it is rare enough that he has to say it out loud.\n\nThe comparison he uses puts the direction of obligation where leaders often resist it. Children are not obligated to save up for their parents. Parents do that for children. The one carrying more responsibility spends on the one carrying less, not the reverse.\n\nI will most gladly spend and be spent for your souls is stewardship pushed all the way to its end. A leader is entrusted with people and expected to be spent on them, which is the opposite of the arrangement where people get spent on the leader's goals.\n\nThen the honest question. If I love you more, am I to be loved less. Care given to people does not always come back in proportion, and a leader who needs it to will eventually start rationing the care. Paul asks the question plainly and keeps spending anyway.\n\n## Practical Application\n\n- Ask whether you are after your people or after what they produce, and answer honestly.\n- Spend something on one person this month with no expectation of return.\n- Notice whether you ration care according to how well it has been reciprocated.\n\n## Takeaways\n\n- A leader entrusted with people is expected to be spent on them, not the other way around.\n- Care is not always returned in proportion, and leaders who need the return begin to ration it.\n\n## Closing Thought\n\nHe asked the question out loud and kept spending anyway."
+    },
     {
       "title": "Genuinely Concerned for Your Welfare",
       "slug": "genuinely-concerned-for-your-welfare",
@@ -13198,8 +13322,8 @@
         "leadership-patterns"
       ],
       "status": "draft",
-      "created_at": "2026-10-27T18:04:05.338Z",
-      "updated_at": "2026-10-27T18:04:05.338Z",
+      "created_at": "2026-10-30T20:55:44.987Z",
+      "updated_at": "2026-10-30T20:55:44.987Z",
       "summary": "How independent cultural distortion patterns—The Anti-Projects—interact with ALI, Archy, and the entire Culture Science corpus without ever becoming diagnostic labels.",
       "source": {
         "kind": "internal"
@@ -13223,8 +13347,8 @@
         "diagnostics"
       ],
       "status": "draft",
-      "created_at": "2026-10-27T18:04:05.336Z",
-      "updated_at": "2026-10-27T18:04:05.336Z",
+      "created_at": "2026-10-30T20:55:44.985Z",
+      "updated_at": "2026-10-30T20:55:44.985Z",
       "summary": "How ALI’s 10-question quarterly rhythm creates the clearest, most stable picture of leadership reality in small and mid-sized businesses.",
       "source": {
         "kind": "internal"

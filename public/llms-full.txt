@@ -1518,6 +1518,10 @@ The Data Caught Up
 https://www.archetypeoriginal.com/journal/the-data-caught-up
 New research confirms what Holding the Line already argued: unenforced standards don't stay neutral, they quietly become the culture.
 
+The Decision You Cannot Hand Off
+https://www.archetypeoriginal.com/journal/the-decision-you-cannot-hand-off
+A leader sits down with a report an AI system generated overnight. It ranks the workforce by output, attendance, tenure, cost. At the bottom of the list are the names the system recommends cutting first. This is not one leader.
+
 The Distraction Play
 https://www.archetypeoriginal.com/journal/the-distraction-play
 Narcissistic leaders keep teams busy with noise to avoid accountability. Servant leaders resist constant pivots and focus attention on what truly matters.
@@ -1715,10 +1719,10 @@ Devotional series
 
 The Servant Leadership Devotional Series publishes one entry per day, connecting Scripture to the real pressures of leadership. Formation for leaders who want clarity, restraint, and genuine care for people.
 
-Published devotional entries: 300.
+Published devotional entries: 303.
 Browse the series at https://www.archetypeoriginal.com/faith.
 Individual devotional URLs are listed in https://www.archetypeoriginal.com/sitemap.xml.
 
 
 
-Generated at: 2026-10-27T18:04:07.103Z
+Generated at: 2026-10-30T20:55:46.786Z
