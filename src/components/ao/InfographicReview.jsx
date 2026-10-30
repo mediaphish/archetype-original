@@ -3,7 +3,7 @@
  *
  * Bart, 2026-10-24: "These I will want to approve." Each one shows the graphic
  * and both captions (editable). Approve schedules it on every channel at the
- * next Tuesday, Wednesday or Thursday slot; Redo writes another take on the
+ * next Tuesday or Thursday slot; Redo writes another take on the
  * same piece with his note; Set aside drops it. Server: api/ao/infographics.js.
  */
 import React, { useCallback, useEffect, useState } from 'react';
@@ -124,7 +124,7 @@ export default function InfographicReview() {
           ))}
         </div>
       ) : (
-        <p className="text-sm text-gray-600">Nothing waiting. New ones arrive on weekday mornings, up to three at a time.</p>
+        <p className="text-sm text-gray-600">Nothing waiting. New ones arrive on weekday mornings, up to two at a time.</p>
       )}
       {data.upcoming.length ? (
         <p className="mt-3 text-sm text-gray-600">Coming up: {data.upcoming.map((u) => `${u.source_title} (${day(u.scheduled_at)})`).join('; ')}</p>

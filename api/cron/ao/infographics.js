@@ -1,5 +1,5 @@
 /**
- * Vercel cron (weekdays): keep up to three infographics waiting for Bart's
+ * Vercel cron (weekdays): keep up to two infographics waiting for Bart's
  * review in the Queue. Makes at most one per run. Nothing posts from here.
  * See lib/ao/infographics.js. Secured by CRON_SECRET if set.
  */
