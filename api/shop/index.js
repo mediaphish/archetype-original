@@ -6,6 +6,7 @@
  */
 import { listProducts, getProduct, isBuyable } from '../../lib/shop/shop.js';
 import { stripeRequest, stripeReady, checkoutParams } from '../../lib/shop/stripe.js';
+import { ensureWebhook } from '../../lib/shop/connectWebhook.js';
 
 const ORIGIN = 'https://www.archetypeoriginal.com';
 
@@ -14,6 +15,8 @@ const canBuy = (p) => isBuyable(p) && (p.kind === 'book' ? Boolean(p.buy_url) : 
 
 export default async function handler(req, res) {
   try {
+    // First use after the Stripe key goes in connects purchase notifications.
+    await ensureWebhook();
     if (req.method === 'GET') {
       const slug = String(req.query?.slug || '');
       if (slug) {
