@@ -1432,6 +1432,10 @@
       "dest": "/api/cron/ao/infographics.js"
     },
     {
+      "src": "/api/cron/ao/recording-links",
+      "dest": "/api/cron/ao/recording-links.js"
+    },
+    {
       "src": "/api/zoom/webhook",
       "dest": "/api/zoom/webhook.js"
     },
@@ -2135,6 +2139,10 @@
     {
       "path": "/api/cron/ao/infographics",
       "schedule": "30 14 * * 1-5"
+    },
+    {
+      "path": "/api/cron/ao/recording-links",
+      "schedule": "0 15 * * *"
     },
     {
       "path": "/api/cron/retry-failed-emails",
