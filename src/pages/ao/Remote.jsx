@@ -75,7 +75,7 @@ export default function Remote() {
           Next
         </button>
       </div>
-      <label className="flex min-h-[22vh] cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl bg-[#D42B1E] text-2xl font-bold">
+      <label className="flex min-h-[22vh] cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl bg-[#DB0812] text-2xl font-bold">
         Photo for the demo
         <input type="file" accept="image/*" capture="environment" className="hidden" onChange={takePhoto} />
       </label>

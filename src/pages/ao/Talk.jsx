@@ -328,7 +328,7 @@ export default function Talk() {
           <div className="flex w-full items-center gap-[5vw]">
             <div className="min-w-0 flex-1">
               {section.kind === 'demo' ? (
-                <p className="mb-[3vh] font-semibold uppercase tracking-[0.3em] text-[#D42B1E]" style={{ fontSize: '1.6vw' }}>Live</p>
+                <p className="mb-[3vh] font-semibold uppercase tracking-[0.3em] text-[#DB0812]" style={{ fontSize: '1.6vw' }}>Live</p>
               ) : null}
               <h1 className="font-bold uppercase leading-[0.95]" style={{ fontFamily: "'AO Display', Impact, sans-serif", fontSize: '6.5vw' }}>
                 {section.title}
@@ -380,7 +380,7 @@ export default function Talk() {
 
       {speech.listening ? (
         <div className="absolute inset-x-0 bottom-[4vh] text-center text-gray-400" style={{ fontSize: '1.4vw' }}>
-          <span className="mr-2 inline-block h-3 w-3 animate-pulse rounded-full bg-[#D42B1E] align-middle" />
+          <span className="mr-2 inline-block h-3 w-3 animate-pulse rounded-full bg-[#DB0812] align-middle" />
           {speech.heard || 'Listening…'}
         </div>
       ) : null}
