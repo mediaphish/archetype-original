@@ -268,6 +268,8 @@ const html = `<!doctype html>
   h3 { font: 500 12pt/1.25 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .03em; margin: 1.1em 0 .45em; break-after: avoid; color: #1f2323; }
   .pull { font: italic 500 13pt/1.35 'EB Garamond', serif; color: var(--teal); margin: 1em 0 1.1em; padding: .1in 0 .1in .16in; border-left: 2px solid var(--teal); break-inside: avoid; }
   .band { column-span: all; break-inside: avoid; height: 2.1in; margin: .15in 0 .25in; background-size: cover; background-position: center; }
+  /* A heading under a band starts flush, so it lines up with a heading at the top of the next column. */
+  .band + h3 { margin-top: 0; }
 
   .matter { max-width: 5.4in; }
   .matter p { font-size: 10pt; }
