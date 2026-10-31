@@ -117,3 +117,5 @@ Servant leadership refuses both outcomes. It requires a leader to step into conv
 That is the difference.
 
 Toxic empathy protects people from discomfort and calls it care, while servant leadership helps people move through discomfort because it is focused on the outcome, not just the moment. One avoids the conversation. The other has it, and when it is avoided, the cost does not disappear. It is absorbed by the team.
+
+I turned this series into a short guide, *Holding the Line*, with a worksheet for each part, built to work through with a real person and a real conversation in mind. [Holding the Line](/guides/holding-the-line)

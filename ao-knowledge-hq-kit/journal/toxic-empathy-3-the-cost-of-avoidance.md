@@ -151,3 +151,5 @@ But if avoiding discomfort produces this outcome, it raises a harder question ab
 It is neither.
 
 It is toxic empathy, playing out over time.
+
+I turned this series into a short guide, *Holding the Line*, with a worksheet for each part, built to work through with a real person and a real conversation in mind. [Holding the Line](/guides/holding-the-line)

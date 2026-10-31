@@ -143,3 +143,5 @@ That is the outcome this series pointed toward, not comfort for its own sake, bu
 This is the difference between knowing what needs to be done and actually doing it.
 
 This is what it means to lead someone forward.
+
+I turned this series into a short guide, *Holding the Line*, with a worksheet for each part, built to work through with a real person and a real conversation in mind. [Holding the Line](/guides/holding-the-line)

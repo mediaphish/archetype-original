@@ -188,3 +188,5 @@ It was never fully addressed. It was softened, delayed, or reshaped into somethi
 
 It stays in place, not because it could not be fixed,
 but because the decision to fix it was never fully made.
+
+I turned this series into a short guide, *Holding the Line*, with a worksheet for each part, built to work through with a real person and a real conversation in mind. [Holding the Line](/guides/holding-the-line)

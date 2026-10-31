@@ -186,3 +186,5 @@ They can point to the conversations they avoided and the patterns that followed.
 Very few step into that moment while they are still in it.
 
 That is where this moves next.
+
+I turned this series into a short guide, *Holding the Line*, with a worksheet for each part, built to work through with a real person and a real conversation in mind. [Holding the Line](/guides/holding-the-line)
