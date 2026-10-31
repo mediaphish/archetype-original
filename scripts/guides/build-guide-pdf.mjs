@@ -164,7 +164,8 @@ const html = `<!doctype html>
 
   .cover, .full { page: bleed; height: 11in; position: relative; overflow: hidden; }
   .cover-photo, .full-photo { position: absolute; inset: 0; background-size: cover; background-position: center; }
-  .cover-text { position: absolute; left: 0; right: 0; top: 1.1in; text-align: center; color: #fff; }
+  .cover-text { position: absolute; left: 0; right: 0; top: 1.1in; text-align: center; color: #1f2323; }
+  /* Cover prompts leave pale fog at the top, so the title sits in dark ink. */
   .cover h1 { font: 500 46pt/1 'EB Garamond', serif; margin: 0 0 .18in; letter-spacing: .01em; }
   .cover-sub { font: italic 500 17pt 'EB Garamond', serif; margin: 0 0 .5in; }
   .cover-author { font: 600 9pt 'Open Sans', sans-serif; letter-spacing: .32em; text-transform: uppercase; }
