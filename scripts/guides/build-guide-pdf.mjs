@@ -70,9 +70,10 @@ function renderBlock(text, { chapter } = {}) {
     if ((m = /^\[lines:\s*(\d+)\]$/.exec(p))) { out.push(lines(m[1])); continue; }
     if ((m = /^>\s*PULL:\s*(.+)$/s.exec(p))) { out.push(`<blockquote class="pull">${inline(m[1].trim())}</blockquote>`); continue; }
     if ((m = /^###\s+(.+)$/.exec(p))) {
-      out.push(`<h3>${inline(m[1])}</h3>`);
+      // The band photo sits just above its subhead, so the heading never strands at a page bottom.
       const band = BANDS[chapter];
       if (band && m[1].trim() === band.after) out.push(photo(band.name, 'band'));
+      out.push(`<h3>${inline(m[1])}</h3>`);
       continue;
     }
     if (p.startsWith('|')) { out.push(marked.parse(p)); continue; }
@@ -247,7 +248,7 @@ const html = `<!doctype html>
   .cols p { orphans: 3; widows: 3; }
   h3 { font: 500 12pt/1.25 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .03em; margin: 1.1em 0 .45em; break-after: avoid; color: #1f2323; }
   .pull { font: italic 500 13pt/1.35 'EB Garamond', serif; color: var(--teal); margin: 1em 0 1.1em; padding: .1in 0 .1in .16in; border-left: 2px solid var(--teal); break-inside: avoid; }
-  .band { column-span: all; break-inside: avoid; height: 2.5in; margin: .2in 0 .3in; background-size: cover; background-position: center; }
+  .band { column-span: all; break-inside: avoid; height: 2.1in; margin: .15in 0 .25in; background-size: cover; background-position: center; }
 
   .matter { max-width: 5.4in; }
   .matter p { font-size: 10pt; }
