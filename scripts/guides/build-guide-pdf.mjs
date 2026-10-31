@@ -34,6 +34,19 @@ if (!draftPath || !imagesDir || !outPath) {
 
 const md = fs.readFileSync(draftPath, 'utf8');
 
+// Bart, 2026-10-31: the AO logo on every page, "[AO logo] Archetype Original"
+// in a faded green, with the page number moved to the bottom right.
+// The mark is the real file from public/brand, only its fill color changes.
+const MARK_SVG = fs.readFileSync(new URL('../../public/brand/ao-logo.svg', import.meta.url), 'utf8');
+function markUri(color, size) {
+  let svg = MARK_SVG.replace(/<\?xml[^>]*>\s*/, '').replace(/fill:\s*#[0-9a-f]{3,6}/i, `fill: ${color}`);
+  // The page footer shows images at their own size, so the footer copy carries one.
+  if (size) svg = svg.replace('<svg ', `<svg width="${(size * 440.3 / 480.05).toFixed(2)}pt" height="${size}pt" `);
+  return 'data:image/svg+xml;base64,' + Buffer.from(svg).toString('base64');
+}
+const BRAND_GREEN = '#8fa8a4';
+const brandMark = (color, cls) => `<div class="${cls}"><img src="${markUri(color)}" alt=""><span>Archetype Original</span></div>`;
+
 // Where each band photo sits: after the named subhead in that chapter.
 const BANDS = { 3: { after: 'Strong people recalibrate', name: 'band1' }, 5: { after: 'Stay in it', name: 'band2' } };
 
@@ -161,6 +174,7 @@ const subtitle = (/^##\s+(.+)$/m.exec(parts[titleIdx]?.body || '') || [])[1] || 
 pages.push(`
 <section class="cover">
   ${photo('cover', 'cover-photo')}
+  ${brandMark('#ffffff', 'photo-brand')}
   <div class="cover-text">
     <h1>${title}</h1>
     <p class="cover-sub">${subtitle}</p>
@@ -177,7 +191,7 @@ for (const part of parts) {
     const t = (/^##\s+(.+)$/m.exec(part.body) || [])[1] || '';
     const rest = part.body.replace(/^##\s+.+$/m, '');
     const [prose, ...sheets] = rest.split(/^### WORKSHEET:\s*/m);
-    pages.push(`<section class="full">${photo(`ch${n}`, 'full-photo')}</section>`);
+    pages.push(`<section class="full">${photo(`ch${n}`, 'full-photo')}${brandMark('#ffffff', 'photo-brand')}</section>`);
     pages.push(`
 <section class="chapter">
   <h2 class="chapter-title">Chapter ${n}: ${inline(t)}</h2>
@@ -220,8 +234,12 @@ const html = `<!doctype html>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;1,500&family=Oswald:wght@300;500;600&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
   @page { size: 8.5in 11in; margin: 0.8in 0.75in 0.85in;
-    @bottom-center { content: counter(page); font: 8pt 'Open Sans', sans-serif; color: #8a8f8f; } }
-  @page bleed { margin: 0; @bottom-center { content: none; } }
+    @bottom-left { content: url('${markUri(BRAND_GREEN, 10)}') "\\00a0\\00a0 ARCHETYPE ORIGINAL"; font: 500 7.5pt 'Oswald', sans-serif; letter-spacing: .14em; color: ${BRAND_GREEN}; vertical-align: middle; }
+    @bottom-right { content: counter(page); font: 8pt 'Open Sans', sans-serif; color: #8a8f8f; vertical-align: middle; } }
+  @page bleed { margin: 0; @bottom-left { content: none; } @bottom-right { content: none; } }
+  .photo-brand { position: absolute; left: .75in; bottom: .38in; display: flex; align-items: center; gap: 6pt; opacity: .75; }
+  .photo-brand img { height: 11pt; }
+  .photo-brand span { font: 500 7.5pt 'Oswald', sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #fff; }
   :root { --paper: #ffffff; --ink: #2b2e2e; --muted: #6d7474; --rule: #c9cfcd; --teal: #5f7f7c; }
   html, body { margin: 0; background: var(--paper); color: var(--ink); }
   body { font: 9.4pt/1.62 'Open Sans', sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
