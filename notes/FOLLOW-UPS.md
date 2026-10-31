@@ -5,6 +5,9 @@ When something here gets built, move it to "Done" with the date.
 
 ## Open
 
+### Guide idea: servant leadership as strong leadership (Bart, 2026-10-31, not started)
+While reviewing chapter 4 of the Toxic Empathy guide: "Chapter 4 tells me we need to consider a new guidebook just on defining Servant Leadership as a strong and powerful way to lead. Definitely not soft." A candidate for the guides list, built the same way as the first guide.
+
 ### Three more roles Bart is considering (Bart, 2026-10-27, not started)
 "I'm not expecting all of these to be created now, but I do see some value in them."
 - **Bit (IT):** "would only monitor setup and functionality. Anytime something is broken or disconnected it would create a report and either share it directly with you or with me to share with you." Fits the Settings page he wants to show each account's health, and the silent failures found 2026-10-27 (seven quick checks failing for weeks, the caption check reading shortened copies).
