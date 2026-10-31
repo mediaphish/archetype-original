@@ -82,6 +82,11 @@ function Product({ slug }) {
           )}
           {error ? <p className="mt-3 text-sm text-red-700">{error}</p> : null}
           {p.kind === 'guide' ? <p className="mt-4 text-sm text-[#6B6B6B]">Your download arrives by email as soon as you pay.</p> : null}
+          {p.free_url ? (
+            <p className="mt-6 text-sm">
+              <a href={p.free_url} target="_blank" rel="noopener noreferrer" className="underline">{p.free_label || 'Try one worksheet free'}</a>
+            </p>
+          ) : null}
           {p.kind === 'book' && p.page_path ? (
             <p className="mt-4 text-sm">
               <a href={p.page_path} onClick={(e) => goTo(e, p.page_path)} className="underline">More about the book</a>
@@ -89,6 +94,18 @@ function Product({ slug }) {
           ) : null}
         </div>
       </div>
+      {(p.sample_urls || []).length ? (
+        <div className="mt-16">
+          <h2 className="font-serif text-2xl font-bold text-[#1A1A1A]">A look inside</h2>
+          <div className="mt-6 grid gap-6 sm:grid-cols-3">
+            {p.sample_urls.map((u) => (
+              <a key={u} href={u} target="_blank" rel="noopener noreferrer" className="block">
+                <img src={u} alt="" loading="lazy" className="w-full rounded border border-[#1A1A1A]/10 shadow-sm" />
+              </a>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </Shell>
   );
 }

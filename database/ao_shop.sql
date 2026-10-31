@@ -43,3 +43,8 @@ insert into storage.buckets (id, name, public) values ('ao-shop-files','ao-shop-
 alter table ao_shop_products add column if not exists buy_url text, add column if not exists page_path text, add column if not exists sort_order integer not null default 100;
 alter table ao_shop_products drop constraint if exists ao_shop_products_kind_check;
 alter table ao_shop_products add constraint ao_shop_products_kind_check check (kind in ('guide','apparel','book'));
+
+-- 2026-10-31: guide pages show sample pages and a free worksheet link.
+alter table ao_shop_products add column if not exists sample_urls text[];
+alter table ao_shop_products add column if not exists free_url text;
+alter table ao_shop_products add column if not exists free_label text;
