@@ -45,6 +45,19 @@ const BOOKS = [
   },
 ];
 
+const GUIDES = [
+  {
+    title: 'Holding the Line',
+    subtitle: "A Leader's Guide to Toxic Empathy",
+    image: '/images/guides/holding-the-line/cover.jpg',
+    alt: 'Holding the Line by Bart Paden, guide cover',
+    blurb:
+      'For leaders who care about their people and still feel something slipping. Seven short chapters, each ending with a worksheet, from the moment you hesitate to the thirty days after the conversation.',
+    details: '$29 · 40-page printable PDF, delivered by email',
+    href: '/guides/holding-the-line',
+  },
+];
+
 export default function Books() {
   return (
     <>
@@ -87,6 +100,36 @@ export default function Books() {
                 </article>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Bart, 2026-10-31: guides live here until there are enough for their own menu item. */}
+        <section className="border-t border-[#1A1A1A]/10 bg-white py-14 sm:py-18 md:py-24">
+          <div className="container mx-auto max-w-5xl px-4 sm:px-6 md:px-12">
+            <h2 className="font-serif text-3xl font-bold text-[#1A1A1A] sm:text-4xl">Guides</h2>
+            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#6B6B6B]">
+              Short, practical guides with worksheets, built to use with a real person and a real situation in mind.
+            </p>
+            {GUIDES.map((guide) => (
+              <article key={guide.href} className="mt-10 grid items-center gap-8 border border-[#1A1A1A]/10 bg-[#FAFAF9] p-6 sm:grid-cols-3 md:p-8">
+                <a href={guide.href} onClick={(e) => goToPath(e, guide.href)} className="mx-auto block w-full max-w-[220px] sm:col-span-1">
+                  <img src={guide.image} alt={guide.alt} loading="lazy" className="w-full shadow" />
+                </a>
+                <div className="sm:col-span-2">
+                  <h3 className="font-serif text-2xl font-bold text-[#1A1A1A] sm:text-3xl">{guide.title}</h3>
+                  <p className="mt-1 text-[#6B6B6B]">{guide.subtitle}</p>
+                  <p className="mt-4 text-base leading-relaxed text-[#1A1A1A]">{guide.blurb}</p>
+                  <p className="mt-4 text-sm text-[#6B6B6B]">{guide.details}</p>
+                  <a
+                    href={guide.href}
+                    onClick={(e) => goToPath(e, guide.href)}
+                    className="mt-6 inline-flex min-h-[44px] items-center justify-center bg-[#1A1A1A] px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-[#1A1A1A]/90"
+                  >
+                    See the guide
+                  </a>
+                </div>
+              </article>
+            ))}
           </div>
         </section>
 
