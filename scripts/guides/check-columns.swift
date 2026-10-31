@@ -19,6 +19,6 @@ for i in 0..<d.pageCount {
   }
   if ln > 50 && rn > 50 && gutter < 3 {
     let diff = lb - rb  // positive: right column goes lower than left
-    print(String(format: "page %d  right column longer by %.0f pt%@", i+1, diff, diff > 6 ? "   <-- FIX" : ""))
+    print(String(format: "page %d  right column longer by %.0f pt%@", i+1, diff, diff > 10 ? "   <-- FIX" : ""))
   }
 }

@@ -261,7 +261,7 @@ const html = `<!doctype html>
   .placeholder span { font: 600 8pt 'Open Sans', sans-serif; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.85); padding: .25in; }
   .cover .placeholder span { display: none; }
 
-  .chapter-title { font: 600 26pt/1.1 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .02em; margin: 0 0 .32in; color: #1f2323; max-width: 5.6in; }
+  .chapter-title { font: 600 26pt/1.1 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .02em; margin: 0 0 .32in; color: #1f2323; }
   .cols { column-count: 2; column-gap: .32in; }
   /* Paragraphs may continue into the next column so the left column always fills;
      a split leaves at least two lines on each side. */
