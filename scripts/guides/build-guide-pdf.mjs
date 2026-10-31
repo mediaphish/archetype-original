@@ -263,7 +263,8 @@ const html = `<!doctype html>
 
   .chapter-title { font: 600 26pt/1.1 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .02em; margin: 0 0 .32in; color: #1f2323; max-width: 5.6in; }
   .cols { column-count: 2; column-gap: .32in; }
-  .cols p { orphans: 3; widows: 3; }
+  /* Bart, 2026-10-31: a paragraph never splits between columns or pages. */
+  .cols p, .cols li { break-inside: avoid; }
   h3 { font: 500 12pt/1.25 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .03em; margin: 1.1em 0 .45em; break-after: avoid; color: #1f2323; }
   .pull { font: italic 500 13pt/1.35 'EB Garamond', serif; color: var(--teal); margin: 1em 0 1.1em; padding: .1in 0 .1in .16in; border-left: 2px solid var(--teal); break-inside: avoid; }
   .band { column-span: all; break-inside: avoid; height: 2.1in; margin: .15in 0 .25in; background-size: cover; background-position: center; }
