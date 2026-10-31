@@ -150,7 +150,7 @@ for (const part of parts) {
 
 const html = `<!doctype html>
 <html><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;1,500&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;1,500&family=Oswald:wght@300;500;600&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
   @page { size: 8.5in 11in; margin: 0.8in 0.75in 0.85in;
     @bottom-center { content: counter(page); font: 8pt 'Open Sans', sans-serif; color: #8a8f8f; } }
@@ -166,18 +166,20 @@ const html = `<!doctype html>
   .cover-photo, .full-photo { position: absolute; inset: 0; background-size: cover; background-position: center; }
   .cover-text { position: absolute; left: 0; right: 0; top: 1.1in; text-align: center; color: #1f2323; }
   /* Cover prompts leave pale fog at the top, so the title sits in dark ink. */
-  .cover h1 { font: 500 46pt/1 'EB Garamond', serif; margin: 0 0 .18in; letter-spacing: .01em; }
-  .cover-sub { font: italic 500 17pt 'EB Garamond', serif; margin: 0 0 .5in; }
-  .cover-author { font: 600 9pt 'Open Sans', sans-serif; letter-spacing: .32em; text-transform: uppercase; }
+  /* Bart, 2026-10-30: titles in Oswald (tall, bold capitals), cover title large. */
+  .cover-text { left: .45in; right: .45in; top: .85in; }
+  .cover h1 { font: 600 84pt/1 'Oswald', sans-serif; margin: 0 0 .2in; letter-spacing: .04em; text-transform: uppercase; }
+  .cover-sub { font: 300 22pt 'Oswald', sans-serif; margin: 0 0 .35in; }
+  .cover-author { font: 600 12pt 'Open Sans', sans-serif; letter-spacing: .32em; text-transform: uppercase; }
 
   .placeholder { background: linear-gradient(160deg, #cfd9d6 0%, #9fb3b0 45%, #6f8784 100%); display: flex; align-items: flex-end; justify-content: flex-end; }
   .placeholder span { font: 600 8pt 'Open Sans', sans-serif; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.85); padding: .25in; }
   .cover .placeholder span { display: none; }
 
-  .chapter-title { font: 600 21pt/1.15 'EB Garamond', serif; margin: 0 0 .32in; color: #1f2323; max-width: 5.6in; }
+  .chapter-title { font: 600 26pt/1.1 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .02em; margin: 0 0 .32in; color: #1f2323; max-width: 5.6in; }
   .cols { column-count: 2; column-gap: .32in; }
   .cols p { orphans: 3; widows: 3; }
-  h3 { font: 600 12.5pt/1.25 'EB Garamond', serif; margin: 1.1em 0 .45em; break-after: avoid; color: #1f2323; }
+  h3 { font: 500 12pt/1.25 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .03em; margin: 1.1em 0 .45em; break-after: avoid; color: #1f2323; }
   .pull { font: italic 500 13pt/1.35 'EB Garamond', serif; color: var(--teal); margin: 1em 0 1.1em; padding: .1in 0 .1in .16in; border-left: 2px solid var(--teal); break-inside: avoid; }
   .band { column-span: all; break-inside: avoid; height: 2.5in; margin: .2in 0 .3in; background-size: cover; background-position: center; }
 
@@ -186,7 +188,7 @@ const html = `<!doctype html>
 
   .worksheet { }
   .ws-eyebrow { font: 600 7.5pt 'Open Sans', sans-serif; letter-spacing: .28em; text-transform: uppercase; color: var(--teal); margin: 0 0 .08in; }
-  .ws-title { font: 600 20pt/1.15 'EB Garamond', serif; margin: 0 0 .22in; color: #1f2323; }
+  .ws-title { font: 600 24pt/1.1 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .02em; margin: 0 0 .22in; color: #1f2323; }
   .worksheet p { font-size: 9.6pt; max-width: 6.4in; }
   .worksheet h3 { margin-top: .9em; }
   .lines { margin: .06in 0 .26in; }
