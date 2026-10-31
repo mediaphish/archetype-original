@@ -48,7 +48,7 @@ const BRAND_GREEN = '#8fa8a4';
 const brandMark = (color, cls) => `<div class="${cls}"><img src="${markUri(color)}" alt=""><span>Archetype Original</span></div>`;
 
 // Where each band photo sits: after the named subhead in that chapter.
-const BANDS = { 3: { after: 'Strong people recalibrate', name: 'band1' }, 5: { after: 'It does not have to feel perfect', name: 'band2' } };
+const BANDS = { 3: { after: 'The work moves', name: 'band1' }, 5: { after: 'It does not have to feel perfect', name: 'band2' } };
 
 function imageUrl(name) {
   for (const ext of ['png', 'jpg', 'jpeg', 'webp']) {
