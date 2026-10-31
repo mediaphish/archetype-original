@@ -32,8 +32,10 @@ Who it's for: owners and leaders with no board, mentor or peer to think it throu
 
 ## Price
 
-- **$350** suggested for strangers (the $300 to $500 range discussed).
-- **Friends price** for the first few, to test the process and collect their words about it.
+Decided by Bart 2026-10-30:
+
+- **$150 for the first five reviews only**, offered to people he knows. In return, each one gives a sentence or two he can quote.
+- **$350 for everyone after that.**
 
 ## What gets built
 
@@ -44,6 +46,6 @@ Who it's for: owners and leaders with no board, mentor or peer to think it throu
 
 ## Open questions for Bart (one at a time)
 
-1. The price for friends, and the price for everyone else.
+1. ~~The price for friends, and the price for everyone else.~~ Decided: $150 for the first five, then $350.
 2. Whether the summary always comes in writing, or only when the client asks.
 3. Whether to cap how many reviews he takes each month.
