@@ -81,6 +81,70 @@ function renderBlock(text, { chapter } = {}) {
   return out.join('\n');
 }
 
+/**
+ * Worksheets print as fixed pages (Bart, 2026-10-31: a form that runs onto
+ * a second page needs structure there too). "[page]" in the draft starts a
+ * new printed page with a "continued" header. Each prompt and its writing
+ * space is one field that never splits; writing spaces stretch to fill the
+ * page, so every page ends in ruled lines instead of blank paper.
+ */
+const BOX_COLS = /^(check|yes|partly|no)$/i;
+
+function sheetTable(p) {
+  const rows = p.split('\n').filter((r) => !/^\|[\s|:-]*-[\s|:-]*\|$/.test(r.trim()))
+    .map((r) => r.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim()));
+  const [head, ...body] = rows;
+  const boxes = head.map((h) => BOX_COLS.test(h));
+  const labelled = body.some((r) => r[0]);
+  const cls = labelled ? 'labelled' : 'empty';
+  const th = head.map((h, i) => `<th${boxes[i] ? ' class="boxcol"' : ''}>${inline(h)}</th>`).join('');
+  const tr = body.map((r) => `<tr>${head.map((_, i) => boxes[i] ? '<td class="boxcol"><span class="box"></span></td>' : `<td>${inline(r[i] || '')}</td>`).join('')}</tr>`).join('');
+  return `<table class="${cls}"><thead><tr>${th}</tr></thead><tbody>${tr}</tbody></table>`;
+}
+
+function blanks(html) {
+  return html.replace(/_{4,}/g, '<span class="blank"></span>');
+}
+
+function renderSheetPage(text, first) {
+  const blocks = text.split(/\n{2,}/).map((b) => b.trim()).filter((b) => b && b !== '---');
+  const fields = [];
+  let cur = null;
+  const open = (head) => {
+    // A lead-in paragraph joins the prompt that follows it, unless it holds fill-in blanks.
+    if (cur && !cur.body.length && !cur.head.includes('class="blank"')) { cur.head += head; return; }
+    cur = { head, body: [], grow: 0 };
+    fields.push(cur);
+  };
+  blocks.forEach((b, i) => {
+    let m;
+    if ((m = /^\[lines:\s*(\d+)\]$/.exec(b))) {
+      if (!cur) open('');
+      const n = Number(m[1]);
+      cur.body.push(`<div class="write" style="min-height:${(n * 0.3).toFixed(2)}in"></div>`);
+      cur.grow += n;
+      cur = null;
+      return;
+    }
+    if (b.startsWith('|')) {
+      if (!cur) open('');
+      cur.body.push(sheetTable(b));
+      cur = null;
+      return;
+    }
+    if (first && i === 0 && !b.startsWith('**')) { fields.push({ intro: marked.parse(b) }); return; }
+    open(blanks(marked.parse(b)));
+  });
+  return fields.map((f) => {
+    if (f.intro) return `<div class="ws-intro">${f.intro}</div>`;
+    if (!f.body.length) return `<div class="${f.head.includes('class="blank"') ? 'field fill-in' : 'ws-note'}">${f.head}</div>`;
+    // One-line answers stay one line; bigger writing spaces share the leftover page.
+    const grow = f.grow > 1 ? f.grow : 0;
+    const style = grow ? ` style="flex:${grow} 1 auto"` : '';
+    return `<div class="field${grow ? ' grows' : ''}"${style}>${f.head}${f.body.join('')}</div>`;
+  }).join('\n');
+}
+
 // Split the draft at top-level headings.
 const parts = md.split(/^# /m).filter(Boolean).map((s) => {
   const nl = s.indexOf('\n');
@@ -129,12 +193,14 @@ for (const part of parts) {
         body = tail[0];
         coda = tail.slice(1).join('\n').trim();
       }
-      pages.push(`
+      body.split(/^\[page\]\s*$/m).forEach((chunk, i) => {
+        pages.push(`
 <section class="worksheet">
-  <p class="ws-eyebrow">Worksheet · Chapter ${n}</p>
-  <h2 class="ws-title">${inline(sheetTitle)}</h2>
-  ${renderBlock(body)}
+  <p class="ws-eyebrow">Worksheet · Chapter ${n}${i ? ' · continued' : ''}</p>
+  <h2 class="ws-title${i ? ' cont' : ''}">${inline(sheetTitle)}</h2>
+  ${renderSheetPage(chunk, i === 0)}
 </section>`);
+      });
       if (coda) pages.push(`<section class="coda"><p>${inline(coda.replace(/\n+/g, ' '))}</p></section>`);
     }
     continue;
@@ -186,16 +252,32 @@ const html = `<!doctype html>
   .matter { max-width: 5.4in; }
   .matter p { font-size: 10pt; }
 
-  .worksheet { }
-  .ws-eyebrow { font: 600 7.5pt 'Open Sans', sans-serif; letter-spacing: .28em; text-transform: uppercase; color: var(--teal); margin: 0 0 .08in; }
-  .ws-title { font: 600 24pt/1.1 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .02em; margin: 0 0 .22in; color: #1f2323; }
-  .worksheet p { font-size: 9.6pt; max-width: 6.4in; }
+  /* Worksheets: one fixed page each, fields never split, writing space fills the page. */
+  .worksheet { height: 9.3in; display: flex; flex-direction: column; overflow: hidden; }
+  .ws-eyebrow { font: 600 7.5pt 'Open Sans', sans-serif; letter-spacing: .28em; text-transform: uppercase; color: var(--teal); margin: 0 0 .06in; flex: none; }
+  .ws-title { font: 600 24pt/1.1 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .02em; margin: 0 0 .16in; color: #1f2323; flex: none; padding-bottom: .1in; border-bottom: 2px solid var(--teal); }
+  .ws-title.cont { font-size: 15pt; color: var(--muted); }
+  .ws-intro { flex: none; background: #eef3f2; padding: .12in .16in; margin: 0 0 .14in; }
+  .ws-intro p { font-size: 9.4pt; margin: 0; }
+  .ws-note { flex: none; margin-top: .12in; }
+  .ws-note p { font: italic 500 11pt/1.4 'EB Garamond', serif; color: var(--teal); margin: 0; }
+  .field { flex: none; margin: 0 0 .16in; display: flex; flex-direction: column; }
+  .field > p { font-size: 9.4pt; margin: 0 0 .04in; }
+  .fill-in > p { font-size: 10pt; margin: .04in 0 .06in; }
+  .field.grows { min-height: 0; }
+  .write { flex: 1 1 auto; background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(.3in - 1px), var(--rule) calc(.3in - 1px), var(--rule) .3in); }
+  .blank { display: inline-block; width: 1.5in; border-bottom: 1px solid var(--ink); margin: 0 .12in 0 .04in; vertical-align: -2px; }
   .worksheet h3 { margin-top: .9em; }
   .lines { margin: .06in 0 .26in; }
   .line { height: .34in; border-bottom: 1px solid var(--rule); }
-  table { width: 100%; border-collapse: collapse; margin: .1in 0 .3in; font-size: 8.4pt; break-inside: avoid; }
-  th { text-align: left; font-weight: 600; color: var(--muted); border-bottom: 1.5px solid var(--teal); padding: 4pt 5pt; vertical-align: bottom; }
-  td { border-bottom: 1px solid var(--rule); height: .42in; padding: 3pt 5pt; vertical-align: top; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; margin: .04in 0 0; font-size: 8.4pt; break-inside: avoid; table-layout: fixed; }
+  th { text-align: left; font-weight: 600; color: var(--muted); border-bottom: 1.5px solid var(--teal); padding: 4pt 5pt; vertical-align: bottom; line-height: 1.3; }
+  td { border-bottom: 1px solid var(--rule); padding: 3pt 5pt; vertical-align: middle; color: var(--ink); }
+  td + td, th + th { border-left: 1px solid var(--rule); }
+  table.empty td { height: .48in; }
+  table.labelled td { height: .36in; }
+  .boxcol { width: .65in; text-align: center; }
+  .box { display: inline-block; width: 11pt; height: 11pt; border: 1.2px solid var(--muted); border-radius: 2px; }
 
   .coda { display: flex; align-items: center; justify-content: center; height: 8.5in; }
   .coda p { font: italic 500 18pt/1.45 'EB Garamond', serif; text-align: center; max-width: 4.8in; color: #1f2323; }
@@ -210,6 +292,9 @@ fs.writeFileSync(htmlPath, html);
 const browser = await puppeteer.launch({ headless: true });
 const page = await browser.newPage();
 await page.goto('file://' + path.resolve(htmlPath), { waitUntil: 'networkidle0' });
+await page.emulateMediaType('print');
+const over = await page.$$eval('.worksheet', (els) => els.map((e, i) => [i, e.scrollHeight - e.clientHeight, e.querySelector('.ws-title')?.textContent]).filter(([, d]) => d > 2));
+if (over.length) console.warn('worksheet pages that overflow:', JSON.stringify(over));
 await page.pdf({ path: outPath, preferCSSPageSize: true, printBackground: true });
 await browser.close();
 console.log('wrote', outPath, 'and', htmlPath);
