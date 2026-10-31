@@ -23,6 +23,9 @@ function spaNavigate(path) {
   };
 }
 
+// The "New guide" line shows through December 11, 2026 (six weeks from launch).
+const NEW_GUIDE_UNTIL = Date.parse('2026-12-12T06:00:00Z');
+
 const OPTIONS = [
   // Bart, 2026-10-23: first conversation free; no per-conversation prices.
   { name: 'First conversation', price: 'Free', unit: '', line: 'Up to ninety minutes, on whatever you are carrying.' },
@@ -202,6 +205,23 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* New guide (Bart, 2026-10-31): a quiet line under the numbers for six weeks, then it drops off on its own. */}
+      {Date.now() < NEW_GUIDE_UNTIL ? (
+        <section className="border-b border-[#E0DBD4] bg-white px-6 py-5 md:px-12">
+          <a
+            href="/guides/holding-the-line"
+            onClick={nav('/guides/holding-the-line')}
+            className="group mx-auto flex max-w-[1000px] flex-col items-center gap-2 text-center sm:flex-row sm:justify-center sm:gap-4"
+          >
+            <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-ao-red">New guide</span>
+            <span className="font-sans text-[15px] text-[#1a1a1a]">
+              <em className="font-serif not-italic">Holding the Line</em>: A Leader&apos;s Guide to Toxic Empathy. Seven short chapters, a worksheet for each.
+            </span>
+            <span className="font-sans text-[13px] font-medium text-[#1a1a1a] underline underline-offset-4 group-hover:text-ao-red">See the guide</span>
+          </a>
+        </section>
+      ) : null}
 
       {/* Work with Bart */}
       <section className="bg-ao-dark px-6 py-16 md:px-12 md:py-24">
