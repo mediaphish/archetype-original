@@ -35,3 +35,9 @@ in his Toxic Empathy posts, so it passes the source check.
 
 Week 4's card moves to Wednesday because of Thanksgiving.
 Post wording is in the conversation of 2026-10-31 and goes into the schedule once Bart approves it.
+
+## Scheduled (2026-10-31, all wording approved by Bart)
+- Weekly text posts, LinkedIn personal and Facebook page: Nov 3, 10, 17, 24 (link in first comment).
+- Quote cards on his series photos, all five card channels: Nov 19, Nov 23, Nov 30, Dec 3 (November card slots were already full).
+- Cover posts, Facebook and Instagram business: Wednesdays Nov 4, 11, 18, 25 at 4:30 pm Central.
+- Homepage "New guide" line through Dec 11; Guides section on the Books page.
