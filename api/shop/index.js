@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     }
     if (req.method === 'POST') {
       const { slug, size = null, quantity = 1 } = req.body || {};
-      const p = await getProduct(slug);
+      const p = await getProduct(slug, { withFile: true });
       if (!isBuyable(p)) return res.status(400).json({ ok: false, error: 'This is not on sale right now.' });
       // Books are bought at their own store, never through this checkout.
       if (p.kind === 'book') return res.status(400).json({ ok: false, error: 'This one is bought at its store.' });

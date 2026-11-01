@@ -2104,6 +2104,10 @@
       "dest": "/api/shop/setup.js"
     },
     {
+      "src": "/api/shop/codes",
+      "dest": "/api/shop/codes.js"
+    },
+    {
       "src": "/api/shop",
       "dest": "/api/shop/index.js"
     },

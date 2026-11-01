@@ -48,3 +48,7 @@ alter table ao_shop_products add constraint ao_shop_products_kind_check check (k
 alter table ao_shop_products add column if not exists sample_urls text[];
 alter table ao_shop_products add column if not exists free_url text;
 alter table ao_shop_products add column if not exists free_label text;
+
+-- 2026-11-01: free codes. Each product keeps its Stripe product and a 100% off coupon limited to it.
+alter table ao_shop_products add column if not exists stripe_product_id text;
+alter table ao_shop_products add column if not exists stripe_free_coupon_id text;
