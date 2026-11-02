@@ -4,6 +4,7 @@ Running list of work Bart has asked for that is not started yet. Newest first.
 When something here gets built, move it to "Done" with the date.
 
 ## Open
+- 2026-11-02 Site updates take about 13 minutes because every update rebuilds all 414 journal and devotional pages even when none changed. Bart asked why. Look at reusing unchanged pages so small changes build faster.
 
 ### Guide idea: servant leadership as strong leadership (Bart, 2026-10-31, not started)
 While reviewing chapter 4 of the Toxic Empathy guide: "Chapter 4 tells me we need to consider a new guidebook just on defining Servant Leadership as a strong and powerful way to lead. Definitely not soft." A candidate for the guides list, built the same way as the first guide.
@@ -106,4 +107,3 @@ wait with this. (Private Archy per client was built 2026-10-24 as a web page.)
 - 2026-10-23 Auto > Clients phase 1: Waiting on you, Upcoming, Everyone by stage.
 - 2026-10-23 Research brief on each person who books.
 - 2026-10-23 Work with Bart offer: free first conversation, softer presentation.
-- 2026-11-02 Site updates take about 13 minutes because every update rebuilds all 414 journal and devotional pages even when none changed. Bart asked why. Look at reusing unchanged pages so small changes build faster.

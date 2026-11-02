@@ -1,10 +1,10 @@
 # Guide 2: Servant leadership as strong leadership (outline, waiting on Bart)
 
-Status: outline only. Nothing gets written until Bart approves this outline.
+Status: drafted and renamed Earned Authority (2026-11-02). Bart is reading the preview; shop listing and launch posts come after his notes. Text stays outside this repo.
 Idea: Bart, 2026-10-31, reviewing chapter 4 of Holding the Line: "defining Servant Leadership as a strong and powerful way to lead. Definitely not soft."
 Source: The Case for Servant Leadership (parts 1 to 5), Psychology of Servant Leadership (parts 1 to 6), Why Servant Leadership Disrupts Unaccountable Power. The worksheets are new.
 
-Working title: **Power Under Control: A Leader's Guide to Servant Leadership** (his phrase, Psychology part 1)
+Title: **Earned Authority: A Leader's Guide to Servant Leadership**. Power Under Control was dropped because it argued against his Power vs. Authority series.
 Format: same as Holding the Line, about 40 pages, seven chapters, a worksheet after each. Price $29 to match.
 Bart builds guides with Claude directly, not through Auto. The text and PDF stay outside this public repo.
 
