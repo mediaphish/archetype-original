@@ -61,6 +61,8 @@ export default function Settings() {
   const [linkedinTestLoading, setLinkedinTestLoading] = useState(false);
   const [linkedinTestResult, setLinkedinTestResult] = useState(null); // 'success' | 'error' | null
   const [linkedinTestError, setLinkedinTestError] = useState('');
+  const [linkedinPage, setLinkedinPage] = useState(null);
+  const [linkedinPageCheck, setLinkedinPageCheck] = useState(null); // 'running' | 'passed' | error text
   const [metaLoading, setMetaLoading] = useState(true);
   const [metaStatus, setMetaStatus] = useState(null);
   const [metaError, setMetaError] = useState('');
@@ -135,6 +137,9 @@ export default function Settings() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    if (params.get('provider') === 'linkedin_page') {
+      setLinkedinPageCheck(params.get('status') === 'error' ? (params.get('message') || 'The connection failed.') : null);
+    }
     if (params.get('provider') === 'linkedin') {
       setLinkedinStatus(params.get('status') || null);
       setLinkedinMessage(params.get('message') || '');
@@ -199,6 +204,10 @@ export default function Settings() {
     let cancelled = false;
     (async () => {
       try {
+        fetch('/api/ao/linkedin/page-status')
+          .then((r) => r.json())
+          .then((json) => { if (!cancelled && json.ok) setLinkedinPage(json); })
+          .catch(() => {});
         const res = await fetch(`/api/ao/linkedin/status`);
         if (cancelled) return;
         const json = await res.json().catch(() => ({}));
@@ -627,6 +636,17 @@ export default function Settings() {
       setBrandUploadError(e.message || 'Delete failed');
     }
   }, [authChecked]);
+
+  async function handleLinkedInPageCheck() {
+    setLinkedinPageCheck('running');
+    try {
+      const res = await fetch('/api/ao/linkedin/page-status', { method: 'POST' });
+      const data = await res.json().catch(() => ({}));
+      setLinkedinPageCheck(data.ok ? 'passed' : (data.error || 'The check failed.'));
+    } catch (e) {
+      setLinkedinPageCheck(e.message || 'The check failed.');
+    }
+  }
 
   async function handleLinkedInTestPost() {
     if (!authChecked) return;
@@ -1356,6 +1376,52 @@ export default function Settings() {
                 setLinkedinReason('');
               }}
             />
+          )}
+        </section>
+        )}
+
+        {tab === 'connections' && (
+        <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">LinkedIn company page</h2>
+          <p className="text-gray-600 text-sm mb-4">
+            Connects the Archetype Original page through the AO Page Publisher app. It does not change your personal
+            LinkedIn connection above.
+          </p>
+          {!linkedinPage ? (
+            <p className="text-gray-500 text-sm">Checking connection…</p>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <StatusPill state={linkedinPage.state} />
+                {linkedinPage.app_ready ? (
+                  <a
+                    href="/api/auth/linkedin/page-start"
+                    className="inline-block px-4 py-2 text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#0A66C2]"
+                    style={linkedinPage.connected ? { border: '1px solid #d1d5db', backgroundColor: '#fff', color: '#374151' } : { backgroundColor: '#0A66C2', color: '#fff' }}
+                  >
+                    {linkedinPage.state === 'not_connected' ? 'Connect company page' : 'Reconnect'}
+                  </a>
+                ) : (
+                  <span className="text-sm text-gray-600">Waiting on the app keys to be added to the site.</span>
+                )}
+                {linkedinPage.connected && (
+                  <button
+                    type="button"
+                    onClick={handleLinkedInPageCheck}
+                    disabled={linkedinPageCheck === 'running'}
+                    className="px-4 py-2 text-sm font-medium rounded border border-gray-300 bg-white text-gray-700 disabled:opacity-50"
+                  >
+                    {linkedinPageCheck === 'running' ? 'Checking…' : 'Check it can post (nothing appears publicly)'}
+                  </button>
+                )}
+              </div>
+              {linkedinPageCheck === 'passed' && (
+                <div className="p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm">The company page can post. The test draft was removed and nothing appeared publicly.</div>
+              )}
+              {linkedinPageCheck && linkedinPageCheck !== 'passed' && linkedinPageCheck !== 'running' && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">{linkedinPageCheck}</div>
+              )}
+            </div>
           )}
         </section>
         )}

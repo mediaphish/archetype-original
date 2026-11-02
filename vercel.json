@@ -1994,6 +1994,18 @@
       "dest": "/api/auth/linkedin/start.js"
     },
     {
+      "src": "/api/auth/linkedin/page-start",
+      "dest": "/api/auth/linkedin/page-start.js"
+    },
+    {
+      "src": "/api/auth/linkedin/page-callback",
+      "dest": "/api/auth/linkedin/page-callback.js"
+    },
+    {
+      "src": "/api/ao/linkedin/page-status",
+      "dest": "/api/ao/linkedin/page-status.js"
+    },
+    {
       "src": "/api/auth/meta/start",
       "dest": "/api/auth/meta/start.js"
     },
