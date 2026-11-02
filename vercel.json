@@ -457,7 +457,13 @@
       "use": "@vercel/node",
       "config": {
         "memory": 1024,
-        "maxDuration": 300
+        "maxDuration": 300,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "public/devotional-schedule.json",
+          "data/knowledge-full.json"
+        ]
       }
     },
     {
