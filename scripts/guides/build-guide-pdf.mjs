@@ -82,6 +82,8 @@ function renderBlock(text, { chapter } = {}) {
     let m;
     if ((m = /^\[lines:\s*(\d+)\]$/.exec(p))) { out.push(lines(m[1])); continue; }
     if ((m = /^>\s*PULL:\s*(.+)$/s.exec(p))) { out.push(`<blockquote class="pull">${inline(m[1].trim())}</blockquote>`); continue; }
+    // "[band: name]" places a band photo right there; Holding the Line uses the BANDS table instead.
+    if ((m = /^\[band:\s*([\w-]+)\]$/.exec(p))) { out.push(photo(m[1], 'band')); continue; }
     if ((m = /^###\s+(.+)$/.exec(p))) {
       // The band photo sits just above its subhead, so the heading never strands at a page bottom.
       const band = BANDS[chapter];
@@ -168,8 +170,9 @@ const parts = md.split(/^# /m).filter(Boolean).map((s) => {
 const pages = [];
 
 // Cover.
-const titleIdx = parts.findIndex((p) => p.head === 'Holding the Line');
-const title = 'Holding the Line';
+// The guide's title is the heading right after "# TITLE PAGE".
+const titleIdx = parts.findIndex((p) => p.head === 'TITLE PAGE') + 1;
+const title = parts[titleIdx]?.head || '';
 const subtitle = (/^##\s+(.+)$/m.exec(parts[titleIdx]?.body || '') || [])[1] || '';
 pages.push(`
 <section class="cover">
@@ -182,19 +185,22 @@ pages.push(`
   </div>
 </section>`);
 
+// The closing line belongs to whichever section comes last, chapter 7 or a "# Closing".
+const lastSection = parts.filter((p) => /^(Section\s+\d+|Closing)$/.test(p.head)).pop();
+
 for (const part of parts) {
-  if (part.head === 'TITLE PAGE' || part.head === 'Holding the Line') continue;
+  if (part.head === 'TITLE PAGE' || part.head === title) continue;
 
   const sec = /^Section\s+(\d+)$/.exec(part.head);
-  if (sec) {
-    const n = Number(sec[1]);
+  if (sec || part.head === 'Closing') {
+    const n = sec ? Number(sec[1]) : null;
     const t = (/^##\s+(.+)$/m.exec(part.body) || [])[1] || '';
     const rest = part.body.replace(/^##\s+.+$/m, '');
     const [prose, ...sheets] = rest.split(/^### WORKSHEET:\s*/m);
-    pages.push(`<section class="full">${photo(`ch${n}`, 'full-photo')}${brandMark('#ffffff', 'photo-brand')}</section>`);
+    pages.push(`<section class="full">${photo(sec ? `ch${n}` : 'closing', 'full-photo')}${brandMark('#ffffff', 'photo-brand')}</section>`);
     pages.push(`
 <section class="chapter">
-  <h2 class="chapter-title">Chapter ${n}: ${inline(t)}</h2>
+  <h2 class="chapter-title">${sec ? `Chapter ${n}: ` : ''}${inline(t)}</h2>
   <div class="cols">${renderBlock(prose, { chapter: n })}</div>
 </section>`);
     for (const sheet of sheets) {
@@ -204,14 +210,14 @@ for (const part of parts) {
       // The closing line after the last worksheet is the book's last word.
       let coda = '';
       const tail = body.split(/\n---\n/);
-      if (n === 7 && tail.length > 1) {
+      if (part === lastSection && tail.length > 1) {
         body = tail[0];
         coda = tail.slice(1).join('\n').trim();
       }
       body.split(/^\[page\]\s*$/m).forEach((chunk, i) => {
         pages.push(`
 <section class="worksheet">
-  <p class="ws-eyebrow">Worksheet · Chapter ${n}${i ? ' · continued' : ''}</p>
+  <p class="ws-eyebrow">Worksheet · ${sec ? `Chapter ${n}` : 'Closing'}${i ? ' · continued' : ''}</p>
   <h2 class="ws-title${i ? ' cont' : ''}">${inline(sheetTitle)}</h2>
   ${renderSheetPage(chunk, i === 0)}
 </section>`);
