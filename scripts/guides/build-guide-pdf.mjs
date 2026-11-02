@@ -83,7 +83,8 @@ function renderBlock(text, { chapter } = {}) {
     if ((m = /^\[lines:\s*(\d+)\]$/.exec(p))) { out.push(lines(m[1])); continue; }
     if ((m = /^>\s*PULL:\s*(.+)$/s.exec(p))) { out.push(`<blockquote class="pull">${inline(m[1].trim())}</blockquote>`); continue; }
     // "[band: name]" places a band photo right there; Holding the Line uses the BANDS table instead.
-    if ((m = /^\[band:\s*([\w-]+)\]$/.exec(p))) { out.push(photo(m[1], 'band')); continue; }
+    // "[band: name 28%]" also slides the photo when the middle crop would cut off a head.
+    if ((m = /^\[band:\s*([\w-]+)(?:\s+([\w%]+))?\]$/.exec(p))) { out.push(photo(m[1], 'band', m[2] ? `center ${m[2]}` : undefined)); continue; }
     if ((m = /^###\s+(.+)$/.exec(p))) {
       // The band photo sits just above its subhead, so the heading never strands at a page bottom.
       const band = BANDS[chapter];
