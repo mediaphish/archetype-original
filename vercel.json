@@ -1564,6 +1564,10 @@
       "dest": "/api/cron/ao/bit.js"
     },
     {
+      "src": "/api/cron/ao/post-guard",
+      "dest": "/api/cron/ao/post-guard.js"
+    },
+    {
       "src": "/api/ao/auto/generate-card-image",
       "dest": "/api/ao/auto/generate-card-image.js"
     },
@@ -2239,6 +2243,10 @@
     {
       "path": "/api/cron/ao/bit",
       "schedule": "40 */6 * * *"
+    },
+    {
+      "path": "/api/cron/ao/post-guard",
+      "schedule": "8,23,38,53 * * * *"
     }
   ]
 }
