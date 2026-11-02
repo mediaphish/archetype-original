@@ -58,9 +58,9 @@ function imageUrl(name) {
   return null;
 }
 
-function photo(name, cls) {
+function photo(name, cls, position) {
   const url = imageUrl(name);
-  if (url) return `<div class="${cls}" style="background-image:url('${url}')"></div>`;
+  if (url) return `<div class="${cls}" style="background-image:url('${url}')${position ? `;background-position:${position}` : ''}"></div>`;
   return `<div class="${cls} placeholder"><span>Photo: ${name}</span></div>`;
 }
 
@@ -174,9 +174,11 @@ const pages = [];
 const titleIdx = parts.findIndex((p) => p.head === 'TITLE PAGE') + 1;
 const title = parts[titleIdx]?.head || '';
 const subtitle = (/^##\s+(.+)$/m.exec(parts[titleIdx]?.body || '') || [])[1] || '';
+// "[cover-position: top]" under the title slides the cover photo when its subject would sit under the text.
+const coverPosition = (/^\[cover-position:\s*([\w ]+)\]$/m.exec(parts[titleIdx]?.body || '') || [])[1];
 pages.push(`
 <section class="cover">
-  ${photo('cover', 'cover-photo')}
+  ${photo('cover', 'cover-photo', coverPosition)}
   ${brandMark('#ffffff', 'photo-brand')}
   <div class="cover-text">
     <h1>${title}</h1>
