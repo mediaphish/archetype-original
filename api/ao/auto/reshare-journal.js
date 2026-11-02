@@ -621,8 +621,10 @@ async function resolveScheduleDayIfAutoApprove() {
     // Default to review mode
   }
 
+  // A reshare waiting for review gets its Friday too (2026-11-02). It used to
+  // carry the time it was made, which read as a Tuesday post to everyone looking
+  // at the calendar, even though approving moved it to Friday.
   let scheduleDay = null;
-  if (!autoApprove) return { autoApprove: false, scheduleDay: null };
 
   try {
     const today = new Date();
@@ -668,7 +670,8 @@ async function resolveScheduleDayIfAutoApprove() {
       }
     }
 
-    for (let attempt = 0; attempt < 7; attempt++) {
+    // Four weeks, so a taken Friday moves to the next open one instead of doubling up.
+    for (let attempt = 0; attempt < 28; attempt++) {
       const candidate = new Date(today);
       candidate.setDate(today.getDate() + bestDayOffset + attempt);
       const ymd = candidate.toISOString().split('T')[0];
@@ -694,7 +697,7 @@ async function resolveScheduleDayIfAutoApprove() {
     scheduleDay = nextReshareDay(new Date());
   }
 
-  return { autoApprove: true, scheduleDay };
+  return { autoApprove, scheduleDay };
 }
 
 /**
@@ -870,11 +873,9 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
 
   let autoApprove = false;
   let scheduleDay = null;
-  if (!forcePendingReview) {
-    const schedule = await resolveScheduleDayIfAutoApprove();
-    autoApprove = schedule.autoApprove;
-    scheduleDay = schedule.scheduleDay;
-  }
+  const schedule = await resolveScheduleDayIfAutoApprove();
+  autoApprove = !forcePendingReview && schedule.autoApprove;
+  scheduleDay = schedule.scheduleDay;
 
   const rows = [];
   const now = new Date().toISOString();
@@ -889,7 +890,7 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
     }
 
     let scheduledAt = now;
-    if (autoApprove && scheduleDay) {
+    if (scheduleDay) {
       try {
         scheduledAt = await toScheduledAt(scheduleDay, ch.platform);
       } catch (err) {
