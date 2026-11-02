@@ -4,7 +4,8 @@
  * See lib/social/linkedinPage.js.
  */
 import { readAoSession } from '../../../lib/ao/requireAoSession.js';
-import { newPageState, pageAppMissing, pageAuthUrl, pageStateCookieHeader } from '../../../lib/social/linkedinPage.js';
+import { pageAppMissing, pageAuthUrl, pageStateCookieHeader } from '../../../lib/social/linkedinPage.js';
+import { newPageState } from '../../../lib/social/linkedinPageState.js';
 
 const SITE_URL = process.env.SITE_URL || 'https://www.archetypeoriginal.com';
 

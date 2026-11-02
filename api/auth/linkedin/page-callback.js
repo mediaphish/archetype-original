@@ -11,9 +11,9 @@ import {
   exchangePageCode,
   findAdministeredPages,
   pageStateCookieHeader,
-  pageStateMatches,
   savePageConnection,
 } from '../../../lib/social/linkedinPage.js';
+import { pageStateMatches } from '../../../lib/social/linkedinPageState.js';
 
 const SITE_URL = process.env.SITE_URL || 'https://www.archetypeoriginal.com';
 
