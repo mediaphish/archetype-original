@@ -19,12 +19,7 @@ import { findNextQueueDate, addWeekdays, toScheduledAt } from '../../../lib/ao/u
 import { resolveQuoteCardScheduleCopy } from '../../../lib/ao/scheduledPostCopy.js';
 import { insertScheduledPostsSafely } from '../../../lib/db/scheduledPosts.js';
 
-// LINKEDIN BUSINESS — EXCLUDED FROM AUTOMATED QUEUE
-// Requires Community Management API via second LinkedIn developer app ("AO Page Publisher").
-// App is pending LinkedIn review as of July 2026.
-// Do not re-enable until: (1) LinkedIn approves the app, (2) cursor-prompt-linkedin-business-enable.md is executed.
-// When re-enabled: account_id must be set to 'page', token path must use ao_linkedin_tokens.page_urn.
-// Auto still generates LinkedIn Business captions in chat for manual paste. Only the queue row is excluded.
+// LinkedIn Business (the company page) is added by insertScheduledPostsSafely (2026-11-02).
 // All 4 approved automated channels — X included
 const APPROVED_CHANNELS = [
   { platform: 'linkedin',  account_id: 'personal', label: 'linkedin_personal' },

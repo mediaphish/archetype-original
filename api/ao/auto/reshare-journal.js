@@ -43,9 +43,7 @@ function answerText(response) {
   return (response?.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('');
 }
 
-// LINKEDIN BUSINESS — EXCLUDED FROM AUTOMATED QUEUE
-// Pending second LinkedIn developer app approval. Do not re-enable until
-// cursor-prompt-linkedin-business-enable.md is executed after approval.
+// LinkedIn Business (the company page) is added by insertScheduledPostsSafely (2026-11-02).
 const RESHARE_CHANNELS = [
   { key: 'linkedin_personal', platform: 'linkedin', account_id: 'personal' },
   { key: 'instagram_business', platform: 'instagram', account_id: 'meta' },

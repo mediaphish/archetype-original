@@ -9,9 +9,13 @@
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 import { getXAccessToken } from '../../../lib/social/xConnection.js';
+import { loadPageConnection } from '../../../lib/social/linkedinPage.js';
+import { getInstagramLoginConnection } from '../../../lib/social/instagramLoginConnection.js';
 
 const GRAPH_VERSION = 'v25.0';
 const GRAPH_BASE = `https://graph.facebook.com/${GRAPH_VERSION}`;
+// His personal Instagram posts through Instagram Login, so its posts only answer here.
+const INSTAGRAM_LOGIN_BASE = `https://graph.instagram.com/${GRAPH_VERSION}`;
 const LINKEDIN_API_BASE = 'https://api.linkedin.com/rest';
 const TWITTER_API_BASE = 'https://api.twitter.com/2';
 
@@ -115,15 +119,15 @@ export async function fetchFacebookPostMetrics(postId, pageToken) {
   }
 }
 
-export async function fetchInstagramMediaMetrics(mediaId, userToken) {
+export async function fetchInstagramMediaMetrics(mediaId, userToken, base = GRAPH_BASE) {
   try {
     const metrics = 'total_interactions,reach,likes,comments,shares,saved';
-    const url = `${GRAPH_BASE}/${mediaId}/insights?metric=${metrics}&access_token=${userToken}`;
+    const url = `${base}/${mediaId}/insights?metric=${metrics}&access_token=${userToken}`;
     const res = await fetch(url);
     const json = await res.json().catch(() => ({}));
 
     if (json.error || !res.ok) {
-      const basicUrl = `${GRAPH_BASE}/${mediaId}?fields=like_count,comments_count&access_token=${userToken}`;
+      const basicUrl = `${base}/${mediaId}?fields=like_count,comments_count&access_token=${userToken}`;
       const basicRes = await fetch(basicUrl);
       const basicJson = await basicRes.json().catch(() => ({}));
       if (!basicRes.ok || basicJson.error) {
@@ -209,6 +213,42 @@ export async function fetchLinkedInPostMetrics(postUrn, accessToken) {
     const msg = err?.message || String(err);
     console.warn(`[sync-metrics] LinkedIn fetch error for ${postUrn}:`, msg);
     return { ok: false, error: `LinkedIn: ${msg}` };
+  }
+}
+
+/**
+ * A company page post, with the permission LinkedIn approved on 2026-11-02.
+ * Totals only, and unlike personal posts this includes views and clicks.
+ */
+export async function fetchLinkedInPagePostMetrics(postUrn, connection) {
+  try {
+    const shareOrPost = postUrn.includes(':ugcPost:') ? 'ugcPosts' : 'shares';
+    const url =
+      `${LINKEDIN_API_BASE}/organizationalEntityShareStatistics?q=organizationalEntity` +
+      `&organizationalEntity=${encodeURIComponent(connection.page_urn)}&${shareOrPost}=List(${encodeURIComponent(postUrn)})`;
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${connection.access_token}`,
+        'X-Restli-Protocol-Version': '2.0.0',
+        'LinkedIn-Version': '202607',
+      },
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) return { ok: false, error: `LinkedIn page: ${json.message || `HTTP ${res.status}`}` };
+    const totals = json.elements?.[0]?.totalShareStatistics || {};
+    return {
+      ok: true,
+      metrics: {
+        impressions: totals.impressionCount || 0,
+        clicks: totals.clickCount || 0,
+        reactions: totals.likeCount || 0,
+        comments: totals.commentCount || 0,
+        shares: totals.shareCount || 0,
+        raw: json,
+      },
+    };
+  } catch (err) {
+    return { ok: false, error: `LinkedIn page: ${err?.message || err}` };
   }
 }
 
@@ -321,6 +361,8 @@ export default async function handler(req, res) {
 
   const metaCreds = await getMetaToken();
   const linkedinToken = await getLinkedInToken();
+  const linkedinPage = await loadPageConnection().catch(() => null);
+  const instagramPersonal = await getInstagramLoginConnection('ig_mediaphish');
   let twitterToken = null;
   try {
     const xTok = await getXAccessToken();
@@ -343,6 +385,14 @@ export default async function handler(req, res) {
         } else {
           result = await fetchFacebookPostMetrics(post.external_id, metaCreds.page_access_token);
         }
+      } else if (post.platform === 'instagram' && post.account_id === 'ig_mediaphish') {
+        result = instagramPersonal?.token
+          ? await fetchInstagramMediaMetrics(post.external_id, instagramPersonal.token, INSTAGRAM_LOGIN_BASE)
+          : { ok: false, error: 'Instagram: personal account not connected' };
+      } else if (post.platform === 'linkedin' && post.account_id === 'page_1') {
+        result = linkedinPage
+          ? await fetchLinkedInPagePostMetrics(post.external_id, linkedinPage)
+          : { ok: false, error: 'LinkedIn page: not connected' };
       } else if (post.platform === 'instagram') {
         if (!metaCreds?.user_access_token) {
           result = { ok: false, error: 'Instagram: no user_access_token configured' };
