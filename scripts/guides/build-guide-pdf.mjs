@@ -245,7 +245,9 @@ const html = `<!doctype html>
     @bottom-left { content: url('${markUri(BRAND_GREEN, 10)}') "\\00a0\\00a0 ARCHETYPE ORIGINAL"; font: 500 7.5pt 'Oswald', sans-serif; letter-spacing: .14em; color: ${BRAND_GREEN}; vertical-align: middle; }
     @bottom-right { content: counter(page); font: 8pt 'Open Sans', sans-serif; color: #8a8f8f; vertical-align: middle; } }
   @page bleed { margin: 0; @bottom-left { content: none; } @bottom-right { content: none; } }
-  .photo-brand { position: absolute; left: .75in; bottom: .38in; display: flex; align-items: center; gap: 6pt; opacity: .75; }
+  .photo-brand { position: absolute; left: .75in; bottom: .38in; display: flex; align-items: center; gap: 6pt; opacity: .9; z-index: 2; }
+  /* A soft shade along the bottom edge keeps the white logo readable on bright photos. */
+  .cover::after, .full::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1.3in; background: linear-gradient(to bottom, rgba(40,28,18,0), rgba(40,28,18,.5)); z-index: 1; }
   .photo-brand img { height: 11pt; }
   .photo-brand span { font: 500 7.5pt 'Oswald', sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #fff; }
   :root { --paper: #ffffff; --ink: #2b2e2e; --muted: #6d7474; --rule: #c9cfcd; --teal: #5f7f7c; }
