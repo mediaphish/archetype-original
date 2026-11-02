@@ -453,6 +453,14 @@
       }
     },
     {
+      "src": "api/cron/ao/post-guard.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 1024,
+        "maxDuration": 300
+      }
+    },
+    {
       "src": "api/cron/ao/backfill-corpus-embeddings.js",
       "use": "@vercel/node",
       "config": {
