@@ -158,7 +158,7 @@ function renderSheetPage(text, first) {
     if (!f.body.length) return `<div class="${f.head.includes('class="blank"') ? 'field fill-in' : 'ws-note'}">${f.head}</div>`;
     // One-line answers stay one line; bigger writing spaces share the leftover page.
     const grow = f.grow > 1 ? f.grow : 0;
-    const style = grow ? ` style="flex:${grow} 1 auto"` : '';
+    const style = grow ? ` style="flex:${grow} 0 auto"` : '';
     return `<div class="field${grow ? ' grows' : ''}"${style}>${f.head}${f.body.join('')}</div>`;
   }).join('\n');
 }
