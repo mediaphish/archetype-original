@@ -35,7 +35,7 @@ if (!draftPath || !imagesDir || !outPath) {
 const md = fs.readFileSync(draftPath, 'utf8');
 
 // Bart, 2026-10-31: the AO logo on every page, "[AO logo] Archetype Original"
-// in a faded orange (warmer than the first green, his call 2026-11-02), with the page number moved to the bottom right.
+// in a faded green, with the page number moved to the bottom right.
 // The mark is the real file from public/brand, only its fill color changes.
 const MARK_SVG = fs.readFileSync(new URL('../../public/brand/ao-logo.svg', import.meta.url), 'utf8');
 function markUri(color, size) {
@@ -44,7 +44,8 @@ function markUri(color, size) {
   if (size) svg = svg.replace('<svg ', `<svg width="${(size * 440.3 / 480.05).toFixed(2)}pt" height="${size}pt" `);
   return 'data:image/svg+xml;base64,' + Buffer.from(svg).toString('base64');
 }
-const BRAND_FOOTER = '#c9925f';
+// Each guide can set its own color under its title: "[brand-color: #c9925f]".
+const BRAND_FOOTER = (/^\[brand-color:\s*(#[0-9a-f]{3,6})\]$/im.exec(md) || [])[1] || '#8fa8a4';
 const brandMark = (color, cls) => `<div class="${cls}"><img src="${markUri(color)}" alt=""><span>Archetype Original</span></div>`;
 
 // Where each band photo sits: after the named subhead in that chapter.
@@ -298,6 +299,7 @@ const html = `<!doctype html>
   .ws-note p { font: italic 500 11pt/1.4 'EB Garamond', serif; color: var(--teal); margin: 0; }
   .field { flex: none; margin: 0 0 .16in; display: flex; flex-direction: column; }
   .field > p { font-size: 9.4pt; margin: 0 0 .04in; }
+  .field > ul { font-size: 9.4pt; margin: 0 0 .14in; padding-left: .2in; }
   .fill-in > p { font-size: 10pt; margin: .04in 0 .06in; }
   .field.grows { min-height: 0; }
   .write { flex: 1 1 auto; background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(.3in - 1px), var(--rule) calc(.3in - 1px), var(--rule) .3in); }
