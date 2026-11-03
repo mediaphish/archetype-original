@@ -35,7 +35,7 @@ if (!draftPath || !imagesDir || !outPath) {
 const md = fs.readFileSync(draftPath, 'utf8');
 
 // Bart, 2026-10-31: the AO logo on every page, "[AO logo] Archetype Original"
-// in a faded green, with the page number moved to the bottom right.
+// in a faded orange (warmer than the first green, his call 2026-11-02), with the page number moved to the bottom right.
 // The mark is the real file from public/brand, only its fill color changes.
 const MARK_SVG = fs.readFileSync(new URL('../../public/brand/ao-logo.svg', import.meta.url), 'utf8');
 function markUri(color, size) {
@@ -44,7 +44,7 @@ function markUri(color, size) {
   if (size) svg = svg.replace('<svg ', `<svg width="${(size * 440.3 / 480.05).toFixed(2)}pt" height="${size}pt" `);
   return 'data:image/svg+xml;base64,' + Buffer.from(svg).toString('base64');
 }
-const BRAND_GREEN = '#8fa8a4';
+const BRAND_FOOTER = '#c9925f';
 const brandMark = (color, cls) => `<div class="${cls}"><img src="${markUri(color)}" alt=""><span>Archetype Original</span></div>`;
 
 // Where each band photo sits: after the named subhead in that chapter.
@@ -243,7 +243,7 @@ const html = `<!doctype html>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;1,500&family=Oswald:wght@300;500;600&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
   @page { size: 8.5in 11in; margin: 0.8in 0.75in 0.85in;
-    @bottom-left { content: url('${markUri(BRAND_GREEN, 10)}') "\\00a0\\00a0 ARCHETYPE ORIGINAL"; font: 500 7.5pt 'Oswald', sans-serif; letter-spacing: .14em; color: ${BRAND_GREEN}; vertical-align: middle; }
+    @bottom-left { content: url('${markUri(BRAND_FOOTER, 10)}') "\\00a0\\00a0 ARCHETYPE ORIGINAL"; font: 500 7.5pt 'Oswald', sans-serif; letter-spacing: .14em; color: ${BRAND_FOOTER}; vertical-align: middle; }
     @bottom-right { content: counter(page); font: 8pt 'Open Sans', sans-serif; color: #8a8f8f; vertical-align: middle; } }
   @page bleed { margin: 0; @bottom-left { content: none; } @bottom-right { content: none; } }
   .photo-brand { position: absolute; left: .75in; bottom: .38in; display: flex; align-items: center; gap: 6pt; opacity: .9; z-index: 2; }
