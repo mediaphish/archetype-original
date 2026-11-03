@@ -302,7 +302,8 @@ const html = `<!doctype html>
   .field > ul { font-size: 9.4pt; margin: 0 0 .14in; padding-left: .2in; }
   .fill-in > p { font-size: 10pt; margin: .04in 0 .06in; }
   .field.grows { min-height: 0; }
-  .write { flex: 1 1 auto; background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(.3in - 1px), var(--rule) calc(.3in - 1px), var(--rule) .3in); }
+  .write { flex: 1 1 auto; display: flex; flex-direction: column; }
+  .write-line { flex: 1 1 0; border-bottom: .75pt solid var(--rule); }
   .blank { display: inline-block; width: 1.5in; border-bottom: 1px solid var(--ink); margin: 0 .12in 0 .04in; vertical-align: -2px; }
   .worksheet h3 { margin-top: .9em; }
   .lines { margin: .06in 0 .26in; }
@@ -332,6 +333,11 @@ await page.goto('file://' + path.resolve(htmlPath), { waitUntil: 'networkidle0' 
 await page.emulateMediaType('print');
 const over = await page.$$eval('.worksheet', (els) => els.map((e, i) => [i, e.scrollHeight - e.clientHeight, e.querySelector('.ws-title')?.textContent]).filter(([, d]) => d > 2));
 if (over.length) console.warn('worksheet pages that overflow:', JSON.stringify(over));
+// Writing lines are drawn once each space has its final size, so they are real, evenly spaced lines.
+await page.$$eval('.write', (els) => els.forEach((e) => {
+  const count = Math.max(1, Math.floor(e.getBoundingClientRect().height / (0.3 * 96)));
+  e.innerHTML = '<div class="write-line"></div>'.repeat(count);
+}));
 await page.pdf({ path: outPath, preferCSSPageSize: true, printBackground: true });
 await browser.close();
 console.log('wrote', outPath, 'and', htmlPath);
