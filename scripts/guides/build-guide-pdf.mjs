@@ -329,15 +329,34 @@ fs.writeFileSync(htmlPath, html);
 
 const browser = await puppeteer.launch({ headless: true });
 const page = await browser.newPage();
+// The same text width as the printed page, so the worksheet checks below measure what actually prints.
+await page.setViewport({ width: 672, height: 1000 });
 await page.goto('file://' + path.resolve(htmlPath), { waitUntil: 'networkidle0' });
 await page.emulateMediaType('print');
 const over = await page.$$eval('.worksheet', (els) => els.map((e, i) => [i, e.scrollHeight - e.clientHeight, e.querySelector('.ws-title')?.textContent]).filter(([, d]) => d > 2));
 if (over.length) console.warn('worksheet pages that overflow:', JSON.stringify(over));
-// Writing lines are drawn once each space has its final size, so they are real, evenly spaced lines.
-await page.$$eval('.write', (els) => els.forEach((e) => {
-  const count = Math.max(1, Math.floor(e.getBoundingClientRect().height / (0.3 * 96)));
-  e.innerHTML = '<div class="write-line"></div>'.repeat(count);
+// Bart, 2026-11-02: every writing line in a guide sits the same distance apart.
+// Once the page has its final layout, each worksheet page shares out as many
+// whole lines as fit, in proportion to the room each question was given.
+await page.$$eval('.worksheet', (sheets) => sheets.forEach((sheet) => {
+  const LINE = 0.32 * 96;
+  const writes = [...sheet.querySelectorAll('.write')];
+  if (!writes.length) return;
+  const ideal = writes.map((e) => e.getBoundingClientRect().height / LINE);
+  const counts = ideal.map((n) => Math.max(1, Math.floor(n)));
+  const total = Math.floor(ideal.reduce((sum, n) => sum + n, 0));
+  const byLeftover = ideal.map((n, i) => [n - Math.floor(n), i]).sort((x, y) => y[0] - x[0]);
+  for (let k = 0; counts.reduce((sum, n) => sum + n, 0) < total; k++) counts[byLeftover[k % byLeftover.length][1]]++;
+  while (counts.reduce((sum, n) => sum + n, 0) > total && counts.some((n) => n > 1)) counts[counts.indexOf(Math.max(...counts))]--;
+  // Fix every height first, so the page cannot shift while the lines go in.
+  writes.forEach((e) => { e.parentElement.style.flex = 'none'; });
+  writes.forEach((e, i) => {
+    e.style.cssText = `flex:none;min-height:0;height:${counts[i] * LINE}px`;
+    e.innerHTML = '<div class="write-line"></div>'.repeat(counts[i]);
+  });
 }));
+const uneven = await page.$$eval('.write-line', (els) => [...new Set(els.map((e) => e.getBoundingClientRect().height.toFixed(1)))]);
+if (uneven.length > 1) console.warn('writing lines are not evenly spaced:', uneven.join(', '));
 await page.pdf({ path: outPath, preferCSSPageSize: true, printBackground: true });
 await browser.close();
 console.log('wrote', outPath, 'and', htmlPath);
