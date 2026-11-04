@@ -2,6 +2,7 @@
  * Artifact panel sync helpers (#131).
  * Pure — used by AutoV2Panel and selftests.
  */
+import { resolveDraftArtifactSlug } from './draftArtifactSlug.js';
 
 /**
  * @param {string} text
@@ -73,6 +74,8 @@ export function resolveArtifactPanelState(msgs = []) {
 
   const fallback = findLatestArtifactInMessages(all);
   if (fallback) {
+    const moved = findNewerDraftWork(all, fallback);
+    if (moved) return { artifact: moved, clear: false, source: 'tools' };
     return { artifact: keepPostTabs(fallback, all), clear: false, source: 'fallback' };
   }
 
@@ -131,6 +134,25 @@ export function captionsAreForOtherPosts(captions, post) {
   return true;
 }
 
+/**
+ * The chat moved on to another post since the last one it handed over. 2026-11-04:
+ * the Next Biblical Archetype chat was on the Eli outline while the panel kept
+ * showing the finished Josiah post, the last one sent as a panel item. Asking
+ * about a post's schedule is not working on it, so that does not count.
+ */
+function findNewerDraftWork(msgs, shown) {
+  let start = 0;
+  for (let i = msgs.length - 1; i >= 0; i -= 1) {
+    if (String(msgs[i]?.role || '') === 'assistant' && parseArtifact(String(msgs[i].content || '')).artifact) {
+      start = i + 1;
+      break;
+    }
+  }
+  const worked = findDraftWorkedByTools(msgs.slice(start), new Set(['get_schedule_status']));
+  if (!worked || worked.slug === resolveDraftArtifactSlug(shown)) return null;
+  return worked;
+}
+
 const DRAFT_TOOLS = new Set([
   'save_draft',
   'present_outline',
@@ -144,7 +166,7 @@ const DRAFT_TOOLS = new Set([
 ]);
 
 /** The newest journal draft a reply's tools touched, as a panel artifact to load by slug. */
-export function findDraftWorkedByTools(msgs = []) {
+export function findDraftWorkedByTools(msgs = [], skipTools = null) {
   const all = Array.isArray(msgs) ? msgs : [];
   for (let i = all.length - 1; i >= 0; i -= 1) {
     const m = all[i];
@@ -152,7 +174,7 @@ export function findDraftWorkedByTools(msgs = []) {
     const rows = Array.isArray(m?.meta?.tool_results) ? m.meta.tool_results : [];
     for (let j = rows.length - 1; j >= 0; j -= 1) {
       const row = rows[j];
-      if (!row || !DRAFT_TOOLS.has(row.name)) continue;
+      if (!row || !DRAFT_TOOLS.has(row.name) || skipTools?.has(row.name)) continue;
       const r = row.result && typeof row.result === 'object' ? row.result : {};
       const slug = String(r.slug || r.draft?.slug || '').trim();
       if (!slug || r.ok === false) continue;

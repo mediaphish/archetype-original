@@ -107,7 +107,7 @@ export default async function handler(req, res) {
       bundles: bundleList,
       guardrails: guardrails.slice(0, 12),
       linkedin_token_status: linkedinTokenStatus,
-      metrics_sync_alerts: metricsSync.alerts || [],
+      metrics_sync_alerts: metricsSync.banner_alerts || [],
       metrics_sync: metricsSync,
     });
   } catch (e) {

@@ -10,14 +10,16 @@
  *
  * Sorted before joining so the same alerts in a different order stay the same
  * key: the server has no ordering guarantee, and a reshuffle should not
- * resurrect a banner the owner already dealt with.
+ * resurrect a banner the owner already dealt with. Numbers are left out too: the
+ * text carries post counts and post ids, so one new post made the same failure
+ * look new and brought back a closed banner (2026-11-04).
  *
  * @param {string[]} alerts
  * @returns {string|null} null when there is nothing to show
  */
 export function metricsAlertKeyFor(alerts) {
   if (!Array.isArray(alerts) || alerts.length === 0) return null;
-  const cleaned = alerts.map((a) => String(a ?? '').trim()).filter(Boolean);
+  const cleaned = alerts.map((a) => String(a ?? '').replace(/\d+/g, '#').trim()).filter(Boolean);
   if (cleaned.length === 0) return null;
   return [...cleaned].sort().join('|');
 }

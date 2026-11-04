@@ -2738,11 +2738,45 @@ export default function AutoV2Panel({ onNavigate, className,
   // panel flips between two items while a reply loads, and remembering one
   // key let The Josiah Archetype reopen after every message (2026-10-28).
   const dismissedPanelRef = useRef({ artifacts: new Set(), images: new Set() });
+  // What a chat already held when it was opened never opens the panel by
+  // itself, and the page reloads between visits, so "closed this visit" was not
+  // enough. 2026-11-04: "The Josiah Archetype completed artifact is still
+  // opening with every message." View artifact still shows it on request.
+  const panelHistoryPendingRef = useRef(false);
+  const panelFirstLoadRef = useRef(true);
+  const panelFromHistoryRef = useRef(new Set());
+  const panelLastReplyRef = useRef(null);
   const closeArtifactPanel = useCallback(() => {
-    if (artifactKey) dismissedPanelRef.current.artifacts.add(artifactKey);
+    if (artifactKey) {
+      dismissedPanelRef.current.artifacts.add(artifactKey);
+      panelFromHistoryRef.current.delete(artifactKey);
+    }
     if (latestImageKey) dismissedPanelRef.current.images.add(latestImageKey);
     setArtifactOpen(false);
   }, [artifactKey, latestImageKey]);
+
+  useEffect(() => {
+    const lastReply = [...messages].reverse().find((m) => m?.role === 'assistant');
+    const replyId = lastReply?.id || null;
+    if (panelHistoryPendingRef.current) {
+      panelHistoryPendingRef.current = false;
+      panelLastReplyRef.current = replyId;
+      if (artifactKey) {
+        dismissedPanelRef.current.artifacts.add(artifactKey);
+        panelFromHistoryRef.current.add(artifactKey);
+      }
+      if (latestImageKey) dismissedPanelRef.current.images.add(latestImageKey);
+      return;
+    }
+    if (replyId === panelLastReplyRef.current) return;
+    panelLastReplyRef.current = replyId;
+    // A new reply that hands over this same post again is news, unless Bart closed it.
+    if (artifactKey && panelFromHistoryRef.current.has(artifactKey) && parseArtifact(String(lastReply?.content || '')).artifact) {
+      panelFromHistoryRef.current.delete(artifactKey);
+      dismissedPanelRef.current.artifacts.delete(artifactKey);
+      signalNewArtifact();
+    }
+  }, [messages, artifactKey, latestImageKey, signalNewArtifact]);
 
   useEffect(() => {
     if (artifactKey && !dismissedPanelRef.current.artifacts.has(artifactKey)) signalNewArtifact();
@@ -3304,6 +3338,8 @@ export default function AutoV2Panel({ onNavigate, className,
         const persistedClearedAt = sessionJson.thread?.state?.design_images_cleared_at;
         clearedAt.current = persistedClearedAt ? new Date(persistedClearedAt).getTime() : null;
         const msgs = Array.isArray(sessionJson.messages) ? sessionJson.messages : [];
+        if (panelFirstLoadRef.current) panelHistoryPendingRef.current = true;
+        panelFirstLoadRef.current = false;
         setMessages(msgs);
         syncArtifactFromMessages(msgs);
       } else {
@@ -3350,6 +3386,7 @@ export default function AutoV2Panel({ onNavigate, className,
         const persistedClearedAt = json.thread?.state?.design_images_cleared_at;
         clearedAt.current = persistedClearedAt ? new Date(persistedClearedAt).getTime() : null;
         const msgs = Array.isArray(json.messages) ? json.messages : [];
+        panelHistoryPendingRef.current = true;
         setMessages(msgs);
         syncArtifactFromMessages(msgs);
         await loadThreadList();

@@ -37,6 +37,12 @@ describe('metricsAlertKeyFor', () => {
     expect(a).not.toBe(b);
   });
 
+  it('stays the same when only the counts change', () => {
+    expect(metricsAlertKeyFor(['X failed on the last 5 posts (5 of 60 total). Latest error: post 123'])).toBe(
+      metricsAlertKeyFor(['X failed on the last 6 posts (6 of 61 total). Latest error: post 456'])
+    );
+  });
+
   it('ignores surrounding whitespace so trivial formatting does not resurrect the banner', () => {
     expect(metricsAlertKeyFor(['  LinkedIn: no permission  '])).toBe(
       metricsAlertKeyFor(['LinkedIn: no permission'])
