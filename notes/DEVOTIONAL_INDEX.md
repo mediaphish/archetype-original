@@ -317,6 +317,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-11-05 | What Shall I Render? | Psalm 116:12–14 (ESV) | `what-shall-i-render` | `2026-11-05-what-shall-i-render.md` |
 | 2026-11-06 | What We Asked of You | Daniel 2:17–23 (ESV) | `what-we-asked-of-you` | `2026-11-06-what-we-asked-of-you.md` |
 | 2026-11-07 | To Invoke, to Thank, and to Praise | 1 Chronicles 16:1–4 (ESV) | `to-invoke-to-thank-and-to-praise` | `2026-11-07-to-invoke-to-thank-and-to-praise.md` |
+| 2026-11-08 | Proclaimed in All the World | Romans 1:8 (ESV) | `proclaimed-in-all-the-world` | `2026-11-08-proclaimed-in-all-the-world.md` |
+| 2026-11-09 | Sustained to the End | 1 Corinthians 1:4–9 (ESV) | `sustained-to-the-end` | `2026-11-09-sustained-to-the-end.md` |
+| 2026-11-10 | Work of Faith, Labor of Love | 1 Thessalonians 1:2–3 (ESV) | `work-of-faith-labor-of-love` | `2026-11-10-work-of-faith-labor-of-love.md` |
+| 2026-11-11 | And Took Courage | Acts 28:14–15 (ESV) | `and-took-courage` | `2026-11-11-and-took-courage.md` |
+| 2026-11-12 | Blessed Be Your Discretion | 1 Samuel 25:32–35 (ESV) | `blessed-be-your-discretion` | `2026-11-12-blessed-be-your-discretion.md` |
+| 2026-11-13 | No Greater Joy | 3 John 1:1–4 (ESV) | `no-greater-joy` | `2026-11-13-no-greater-joy.md` |
+| 2026-11-14 | Who Risked Their Necks | Romans 16:3–4 (ESV) | `who-risked-their-necks` | `2026-11-14-who-risked-their-necks.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
