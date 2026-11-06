@@ -3417,7 +3417,7 @@ export default function AutoV2Panel({ onNavigate, className,
           const res = await fetch('/api/ao/auto/thread/new', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ channel: freshChannel, title: params.get('topic') || '' }),
+            body: JSON.stringify({ channel: freshChannel, title: params.get('topic') || '', ref: params.get('ref') || '' }),
           });
           const json = await res.json().catch(() => ({}));
           if (res.ok && json.ok && json.thread?.id) {
@@ -3431,6 +3431,7 @@ export default function AutoV2Panel({ onNavigate, className,
         }
         params.delete('new');
         params.delete('topic');
+        params.delete('ref');
       }
       if (compose) {
         setInput(compose.endsWith(' ') ? compose : `${compose} `);

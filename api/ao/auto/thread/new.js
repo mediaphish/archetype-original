@@ -9,6 +9,34 @@ import { getScheduleContext } from '../../../../lib/ao/getScheduleContext.js';
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
 import { AGENTS, normalizeAgent } from '../../../../lib/ao/team/agents.js';
 import { getChannel } from '../../../../lib/ao/team/channels.js';
+import { loadQueueContext } from '../../../../lib/ao/queueContext.js';
+
+/**
+ * The Queue item's picture and words, as the chat's first message (2026-11-06).
+ * Added again only when the image changed since the last card, so a redrawn
+ * graphic shows up and an unchanged one is not repeated.
+ */
+async function addQueueContext(threadId, ref) {
+  const card = await loadQueueContext(ref).catch(() => null);
+  if (!card) return;
+  const { data: last } = await supabaseAdmin
+    .from('ao_auto_messages')
+    .select('meta')
+    .eq('thread_id', threadId)
+    .eq('role', 'assistant')
+    .not('meta->queue_context', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (last?.meta?.queue_context && (last.meta.image_url || null) === (card.imageUrl || null)) return;
+  await addAutoMessage({
+    threadId,
+    role: 'assistant',
+    mode: 'plan',
+    content: card.text,
+    meta: { auto_v2: true, agent: 'producer', queue_context: String(ref), ...(card.imageUrl ? { image_url: card.imageUrl } : {}) },
+  });
+}
 
 // A conversation opened directly with a teammate starts with them, in their
 // own voice, instead of Auto's orientation.
@@ -27,6 +55,27 @@ export default async function handler(req, res) {
   }
 
   try {
+    const title0 = String(req.body?.title || '').trim().slice(0, 120);
+    const ref = req.body?.ref ? String(req.body.ref) : '';
+    // One conversation per Queue item: opening it again goes back to the same
+    // chat instead of starting a second one (two Hunger chats, 2026-11-06).
+    if (title0 && ref) {
+      const { data: existing } = await supabaseAdmin
+        .from('ao_auto_threads')
+        .select('id')
+        .eq('created_by_email', String(auth.email).toLowerCase())
+        .eq('title', title0)
+        .neq('status', 'archived')
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (existing?.id) {
+        await addQueueContext(existing.id, ref);
+        const opened = await getAutoThreadState(auth.email, existing.id);
+        return res.status(200).json({ ok: true, thread: opened.thread, messages: opened.messages, attachments: opened.attachments });
+      }
+    }
+
     const thread = await startNewAutoThread(auth.email);
     // A thread started in a channel belongs to it, and the channel's lead
     // answers by default (notes/PLAN-auto-chat-first.md, Phase 1).
@@ -54,6 +103,7 @@ export default async function handler(req, res) {
         content: TEAM_OPENERS[agent],
         meta: { auto_v2: true, orientation: true, agent },
       });
+      if (ref) await addQueueContext(thread.id, ref);
       const opened = await getAutoThreadState(auth.email, thread.id);
       return res.status(200).json({ ok: true, thread: opened.thread, messages: opened.messages, attachments: opened.attachments });
     }
@@ -98,6 +148,7 @@ export default async function handler(req, res) {
       );
     }
 
+    if (ref) await addQueueContext(thread.id, ref);
     const state = await getAutoThreadState(auth.email, thread.id);
     return res.status(200).json({
       ok: true,

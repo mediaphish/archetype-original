@@ -62,7 +62,7 @@ function Item({ item, onDone }) {
             Set aside
           </button>
           <a
-            href={discussUrl({ text: `about the infographic "${item.source_title}" waiting in the Queue: `, topic: `Infographic: ${item.source_title}` })}
+            href={discussUrl({ text: `about the infographic "${item.source_title}" waiting in the Queue: `, topic: `Infographic: ${item.source_title}`, ref: `infographic:${item.id}` })}
             className="min-h-[44px] inline-flex items-center px-3 text-sm font-semibold text-gray-700 hover:underline"
           >
             Change
