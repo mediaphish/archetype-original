@@ -107,7 +107,7 @@ export default async function handler(req, res) {
       await resend.emails.send({
         from: "Archy <noreply@archetypeoriginal.com>",
         to: bartEmail,
-        replyTo: hasContactInfo ? email : undefined,
+        ...(hasContactInfo && email ? { reply_to: email } : {}),
         subject: emailSubject,
         html: emailBody,
       });

@@ -75,7 +75,9 @@ export default async function handler(req, res) {
       from,
       to,
       subject,
-      html
+      html,
+      // Hitting Reply goes to the person who wrote in, not the sending address.
+      reply_to: email.trim(),
     });
 
     if (result?.error) {

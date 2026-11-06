@@ -153,7 +153,8 @@ Submitted: ${new Date().toLocaleString()}
         from: 'Archetype Original <noreply@archetypeoriginal.com>',
         to: HANDOFF_TO_EMAIL,
         subject: internalSubject,
-        text: internalText
+        text: internalText,
+        reply_to: email.trim(),
       });
     } catch (emailError) {
       console.error('Failed to send internal notification:', emailError);

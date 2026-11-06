@@ -105,7 +105,8 @@ export default async function handler(req, res) {
       from: 'Archetype Original <handoff@archetypeoriginal.com>',
       to: HANDOFF_TO_EMAIL,
       subject: `${subjectStatus} Handoff: ${name || email || sessionId || 'Prospect'}`,
-      text: lines.join('\n')
+      text: lines.join('\n'),
+      ...(email ? { reply_to: String(email).trim() } : {}),
     });
   } catch (e) {
     console.error('Resend email failed:', e);

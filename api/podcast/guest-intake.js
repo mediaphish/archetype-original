@@ -276,6 +276,7 @@ export default async function handler(req, res) {
       to,
       subject: `${sessionType === 'mentor' ? 'Mentor Session Request' : 'Podcast Guest Intake'}: ${name}`,
       html: buildSubmissionHtml(payload, stored.guest?.id),
+      reply_to: email,
     });
 
     if (bartResult?.error) {
@@ -291,6 +292,8 @@ export default async function handler(req, res) {
           ? 'Your Archetype Original mentor session request'
           : 'Your Archetype Original Podcast guest intake',
       html: buildGuestConfirmationHtml(payload),
+      // The note says "Reply to this email any time", so replies must reach Bart.
+      reply_to: to,
     });
 
     if (guestResult?.error) {
