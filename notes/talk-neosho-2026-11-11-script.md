@@ -159,9 +159,7 @@ And the team knows it. *(Hold Back.)* "Team, tell them about a time you got it w
 - **Des:** couldn't find an infographic you were reviewing and asked you to send it again. It was in your Queue the whole time. Now the team can see the Queue.
 - **Bit:** the afternoon the team spent about fifty dollars reviewing each other's reviews. Now there's a hard daily spending line, and Bit stops the work when it's hit.
 
-Here's mine. My logo, the actual Archetype Original logo, was redrawn slightly wrong on every quote card for about two months. The top of the A was cut off. Nobody flagged it. Not the system, not the team. I caught it because I looked.
-
-*[Optional, your story: the tattoos. It can't draw them right, so every picture of me has my sleeves down.]*
+Here's mine. *[your story: the tattoos. It can't draw them right, so in every picture it makes of me, my sleeves are down. Tell it your way: what it got wrong and how you found out.]*
 
 Every one of those got caught because a human was paying attention.
 
