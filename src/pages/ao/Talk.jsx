@@ -296,6 +296,13 @@ export default function Talk() {
     [go, index, total, sections, say, ask, photo, slug, demo, live]
   );
 
+  // A teammate's answer belongs to the slide it was given on (Bart, 2026-11-08:
+  // Ada's reply was still on screen after he moved to slide 2).
+  useEffect(() => {
+    setReply(null);
+    audioRef.current?.pause();
+  }, [index]);
+
   // Tell the iPad which slide is up, so it shows that slide's script (2026-11-08).
   useEffect(() => {
     if (!total) return;
