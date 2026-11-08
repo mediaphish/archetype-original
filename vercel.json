@@ -95,11 +95,7 @@
           "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
-          "public/brand/**",
-          "public/images/cards-clean/**",
-          "public/images/ao-logo.svg",
-          "public/images/ao-logo-offwhite.png",
-          "public/images/ao-logo-black.png"
+          "public/brand/**"
         ]
       }
     },
@@ -126,11 +122,7 @@
           "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
-          "public/brand/**",
-          "public/images/cards-clean/**",
-          "public/images/ao-logo.svg",
-          "public/images/ao-logo-offwhite.png",
-          "public/images/ao-logo-black.png"
+          "public/brand/**"
         ]
       }
     },
@@ -146,11 +138,7 @@
           "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
-          "public/brand/**",
-          "public/images/cards-clean/**",
-          "public/images/ao-logo.svg",
-          "public/images/ao-logo-offwhite.png",
-          "public/images/ao-logo-black.png"
+          "public/brand/**"
         ]
       }
     },
@@ -166,11 +154,7 @@
           "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
-          "public/brand/**",
-          "public/images/cards-clean/**",
-          "public/images/ao-logo.svg",
-          "public/images/ao-logo-offwhite.png",
-          "public/images/ao-logo-black.png"
+          "public/brand/**"
         ]
       }
     },
@@ -186,11 +170,7 @@
           "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
-          "public/brand/**",
-          "public/images/cards-clean/**",
-          "public/images/ao-logo.svg",
-          "public/images/ao-logo-offwhite.png",
-          "public/images/ao-logo-black.png"
+          "public/brand/**"
         ]
       }
     },
@@ -272,11 +252,7 @@
           "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
-          "public/brand/**",
-          "public/images/cards-clean/**",
-          "public/images/ao-logo.svg",
-          "public/images/ao-logo-offwhite.png",
-          "public/images/ao-logo-black.png"
+          "public/brand/**"
         ]
       }
     },
@@ -292,11 +268,7 @@
           "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
-          "public/brand/**",
-          "public/images/cards-clean/**",
-          "public/images/ao-logo.svg",
-          "public/images/ao-logo-offwhite.png",
-          "public/images/ao-logo-black.png"
+          "public/brand/**"
         ]
       }
     },
@@ -313,12 +285,6 @@
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
-          "public/images/reshare-backgrounds/**",
-          "public/images/cards-clean/**",
-          "public/images/team/**",
-          "public/images/Bart-*",
-          "public/images/bart-*",
-          "public/images/ao-logo*",
           "ao-knowledge-hq-kit/**"
         ]
       }
@@ -336,12 +302,6 @@
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
-          "public/images/reshare-backgrounds/**",
-          "public/images/cards-clean/**",
-          "public/images/team/**",
-          "public/images/Bart-*",
-          "public/images/bart-*",
-          "public/images/ao-logo*",
           "ao-knowledge-hq-kit/**"
         ]
       }
@@ -359,12 +319,6 @@
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
-          "public/images/reshare-backgrounds/**",
-          "public/images/cards-clean/**",
-          "public/images/team/**",
-          "public/images/Bart-*",
-          "public/images/bart-*",
-          "public/images/ao-logo*",
           "ao-knowledge-hq-kit/**"
         ]
       }
@@ -381,11 +335,7 @@
           "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
-          "public/brand/**",
-          "public/images/cards-clean/**",
-          "public/images/ao-logo.svg",
-          "public/images/ao-logo-offwhite.png",
-          "public/images/ao-logo-black.png"
+          "public/brand/**"
         ]
       }
     },
@@ -398,12 +348,6 @@
         "includeFiles": [
           "lib/**",
           "ao-knowledge-hq-kit/journal/**",
-          "public/images/reshare-backgrounds/**",
-          "public/images/cards-clean/**",
-          "public/images/team/**",
-          "public/images/Bart-*",
-          "public/images/bart-*",
-          "public/images/ao-logo*",
           "public/fonts/**",
           "public/brand/archetype-original-lockup.svg"
         ]
@@ -567,11 +511,7 @@
           "public/knowledge.json",
           "data/knowledge-full.json",
           "public/fonts/**",
-          "public/brand/**",
-          "public/images/cards-clean/**",
-          "public/images/ao-logo.svg",
-          "public/images/ao-logo-offwhite.png",
-          "public/images/ao-logo-black.png"
+          "public/brand/**"
         ]
       }
     },
@@ -586,11 +526,7 @@
           "public/knowledge.json",
           "data/knowledge-full.json",
           "public/fonts/**",
-          "public/brand/**",
-          "public/images/cards-clean/**",
-          "public/images/ao-logo.svg",
-          "public/images/ao-logo-offwhite.png",
-          "public/images/ao-logo-black.png"
+          "public/brand/**"
         ]
       }
     },
@@ -603,9 +539,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
-          "data/knowledge-full.json",
-          "public/images/ao-logo-black.png",
-          "public/images/ao-logo-offwhite.png"
+          "data/knowledge-full.json"
         ]
       }
     },
@@ -618,9 +552,7 @@
         "includeFiles": [
           "lib/**",
           "public/knowledge.json",
-          "data/knowledge-full.json",
-          "public/images/ao-logo-black.png",
-          "public/images/ao-logo-offwhite.png"
+          "data/knowledge-full.json"
         ]
       }
     },
@@ -649,11 +581,7 @@
           "public/devotional-schedule.json",
           "data/knowledge-full.json",
           "public/fonts/**",
-          "public/brand/**",
-          "public/images/cards-clean/**",
-          "public/images/ao-logo.svg",
-          "public/images/ao-logo-offwhite.png",
-          "public/images/ao-logo-black.png"
+          "public/brand/**"
         ]
       }
     },

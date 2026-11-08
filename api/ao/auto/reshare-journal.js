@@ -235,10 +235,6 @@ async function generateReshareImage(title, pullQuote, mood, attribution) {
   // The photo whose mood fits the quote, at random among those not used lately.
   const background = await chooseBackgroundFor({ title, quote: pullQuote, recentIds: await recentBackgroundIds() });
   const backgroundPath = path.join(process.cwd(), backgroundFile(background.id));
-  if (!fs.existsSync(backgroundPath)) {
-    console.error(`[reshare-journal] Background not found on disk: ${backgroundPath}`);
-    return null;
-  }
   const composited = await composeReshareInBartStyle({
     backgroundPath,
     textSide: background.text,
