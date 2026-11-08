@@ -50,3 +50,42 @@ test('holding Back does not go back', async () => {
   fireEvent.keyUp(window, { key: 'PageUp' });
   expect(screen.getByText('Live from the room')).toBeInTheDocument();
 });
+
+// 2026-11-08: on Bart's first run Chrome stopped listening on its own while he
+// held Back. Letting go must still send what it heard to the team.
+test('letting go acts on what was heard even when listening already ended', async () => {
+  jest.useFakeTimers();
+  let rec;
+  window.webkitSpeechRecognition = function Rec() {
+    rec = this;
+    this.start = () => {};
+    this.stop = () => {}; // an ended recognizer never fires onend again
+  };
+  const calls = [];
+  global.fetch = jest.fn(async (url, opts) => {
+    calls.push(String(url));
+    if (String(url).includes('/api/ao/talk/ask')) return { ok: true, status: 200, json: async () => ({ ok: true, agent: 'auto', reply: 'Ready when you are.' }) };
+    if (String(url).includes('/api/ao/talk/speak')) return { ok: false, status: 500 };
+    return { ok: true, status: 200, json: async () => ({ ok: true, talk }) };
+  });
+  render(<Talk />);
+  await act(async () => {
+    await Promise.resolve();
+  });
+  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  fireEvent.keyDown(window, { key: 'PageUp' });
+  act(() => {
+    jest.advanceTimersByTime(600);
+  });
+  act(() => {
+    rec.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: 'hey Ada are you ready' }], { isFinal: true })] });
+    rec.onend(); // Chrome ends it while the button is still held
+  });
+  fireEvent.keyUp(window, { key: 'PageUp' });
+  await act(async () => {
+    jest.advanceTimersByTime(2500);
+    await Promise.resolve();
+  });
+  await waitFor(() => expect(calls.some((u) => u.includes('/api/ao/talk/ask'))).toBe(true));
+  delete window.webkitSpeechRecognition;
+});

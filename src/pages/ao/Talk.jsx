@@ -40,6 +40,14 @@ function useSpeech() {
       setHeard(`${finalRef.current}${interim}`.trim());
     };
     rec.onerror = () => {};
+    // Chrome can end listening on its own (a pause, a network blip) while the
+    // button is still held. Then rec.stop() never fires onend again, and the
+    // page sat on what it heard with nothing happening (2026-11-08, Bart's
+    // first run with the clicker). Remember it ended so letting go still acts.
+    rec.ended = false;
+    rec.onend = () => {
+      rec.ended = true;
+    };
     recRef.current = rec;
     setHeard('');
     setListening(true);
@@ -56,18 +64,25 @@ function useSpeech() {
       new Promise((resolve) => {
         const rec = recRef.current;
         if (!rec) return resolve('');
-        rec.onend = () => {
+        let done = false;
+        const finish = () => {
+          if (done) return;
+          done = true;
           recRef.current = null;
           setListening(false);
           resolve(finalRef.current.trim() || heardRef.current);
         };
+        if (rec.ended) return finish();
+        rec.onend = finish;
         setTimeout(() => {
           try {
             rec.stop();
           } catch (_) {
-            rec.onend?.();
+            finish();
           }
         }, 350);
+        // Never wait on Chrome forever: act on what was heard.
+        setTimeout(finish, 2000);
       }),
     []
   );
