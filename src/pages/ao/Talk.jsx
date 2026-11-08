@@ -324,6 +324,35 @@ export default function Talk() {
     [go, index, total, sections, say, ask, photo, slug, demo, live]
   );
 
+  // A teammate cuts in on their own, once per talk, some seconds into a slide
+  // (Bart, 2026-11-08: the Wildcats' win, and Veterans Day). If someone is
+  // talking or listening, it waits for a quiet moment.
+  const interruptedRef = useRef(new Set());
+  const busyRef = useRef(false);
+  busyRef.current = Boolean(speech.listening || thinking || (reply && !reply.fading));
+  useEffect(() => {
+    const plan = section?.interrupt;
+    if (!plan?.lines?.length || interruptedRef.current.has(section.id)) return undefined;
+    let cancelled = false;
+    let timer = setTimeout(async function go() {
+      if (cancelled) return;
+      if (busyRef.current) {
+        timer = setTimeout(go, 1500);
+        return;
+      }
+      interruptedRef.current.add(section.id);
+      for (const l of plan.lines) {
+        if (cancelled) return;
+        if (l.pause) await new Promise((r) => setTimeout(r, l.pause));
+        else await say(l.agent, l.text);
+      }
+    }, (plan.after_seconds || 20) * 1000);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [section, say]);
+
   // A teammate's answer belongs to the slide it was given on (Bart, 2026-11-08:
   // Ada's reply was still on screen after he moved to slide 2).
   useEffect(() => {

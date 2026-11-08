@@ -41,6 +41,8 @@ Here's what I want to do today. I'm going to talk to you about AI the way I'd ta
 - It is not going to end the world.
 - It is not magic either.
 
+*(About 20 seconds into this slide, Vox cuts in on her own to congratulate the Wildcats on beating Branson 34 to 31. Let her, react, then carry on.)*
+
 Raise your hand if you've seen a headline this year that made AI sound like the end of the world.
 
 *(Hands.)*
@@ -220,6 +222,8 @@ Anybody who tells you it's easy is selling you something. *(Click.)*
 - Set the goal.
 - Check the work.
 - Keep the human in it.
+
+*(About 20 seconds into this slide, Ada cuts in: it's Veterans Day, asks the veterans to raise their hands, pauses, then thanks them. Give it room.)*
 
 So here's where I'll land.
 

@@ -148,3 +148,28 @@ test("a teammate's message fades a few seconds after it is spoken (2026-11-08)",
   expect(screen.queryByText('Ready when you are.')).not.toBeInTheDocument();
   delete window.webkitSpeechRecognition;
 });
+
+test('a teammate cuts in once, on their own, some seconds into a slide (2026-11-08)', async () => {
+  jest.useFakeTimers();
+  const withCut = {
+    ...talk,
+    sections: [{ ...talk.sections[0], interrupt: { after_seconds: 20, lines: [{ agent: 'reach', text: 'Go Wildcats!' }] } }, ...talk.sections.slice(1)],
+  };
+  global.fetch = jest.fn(async (url) => {
+    if (String(url).includes('/api/ao/talk/speak')) return { ok: false, status: 500 };
+    return { ok: true, status: 200, json: async () => ({ ok: true, talk: withCut }) };
+  });
+  render(<Talk />);
+  await act(async () => {
+    await Promise.resolve();
+  });
+  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  expect(screen.queryByText('Go Wildcats!')).not.toBeInTheDocument();
+  for (let i = 0; i < 5; i++) {
+    await act(async () => {
+      jest.advanceTimersByTime(5000);
+      await Promise.resolve();
+    });
+  }
+  expect(screen.getByText('Go Wildcats!')).toBeInTheDocument();
+});
