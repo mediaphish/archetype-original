@@ -17,7 +17,6 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { minimatch } from 'minimatch';
 
 const root = process.cwd();
 const WRITING = ['public/knowledge.json', 'public/devotional-schedule.json', 'data/knowledge-full.json'];
@@ -93,7 +92,17 @@ export function entryFor(src) {
 // the check below proves every program is matched exactly once. The host also
 // allows at most 128 entries, so programs that need the same files share one.
 const safe = (p) => p.replace(/[[\]]/g, '?');
-const matches = (file, src) => minimatch(file, src);
+// The patterns written here are only literal paths, "?" for one character,
+// and one {a,b,c} list, so matching needs no library (the host build has none).
+const patternRe = (src) =>
+  new RegExp(`^(?:${(src.startsWith('{') && src.endsWith('}') ? src.slice(1, -1).split(',') : [src])
+    .map((p) => p.replace(/[.+^$()|\\]/g, '\\$&').replace(/\*\*\//g, '(?:.*/)?').replace(/\*/g, '[^/]*').replace(/\?/g, '[^/]'))
+    .join('|')})$`);
+const reCache = new Map();
+const matches = (file, src) => {
+  if (!reCache.has(src)) reCache.set(src, patternRe(src));
+  return reCache.get(src).test(file);
+};
 const isApi = (b) => b.src.startsWith('api/') || b.src.startsWith('{api/');
 
 function plan(config) {
