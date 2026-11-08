@@ -103,6 +103,14 @@ export default function Talk() {
   const speech = useSpeech();
   const holdRef = useRef(null);
   const lastToggleRef = useRef(0);
+  // Rehearsal only: which key each clicker button sends, so a remote that sends
+  // something unexpected can be matched (2026-11-08, Bart's Logitech Back).
+  const [lastKey, setLastKey] = useState('');
+  useEffect(() => {
+    const note = (e) => setLastKey(`${e.key}${e.code && e.code !== e.key ? ` (${e.code})` : ''}`);
+    window.addEventListener('keydown', note, true);
+    return () => window.removeEventListener('keydown', note, true);
+  }, []);
   // Rehearsal unless the page is opened with ?live=1: a rehearsal never posts.
   const live = new URLSearchParams(window.location.search).get('live') === '1';
   const [photo, setPhoto] = useState(null);
@@ -451,6 +459,7 @@ export default function Talk() {
       </footer>
       {!speech.supported ? <p className="absolute left-4 top-3 text-xs text-gray-500">Voice needs Chrome.</p> : null}
       {!live ? <p className="absolute right-4 top-3 rounded bg-white/10 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-gray-400">Rehearsal</p> : null}
+      {!live && lastKey ? <p className="absolute left-4 top-3 rounded bg-white/10 px-2 py-1 text-xs text-gray-400">Last button: {lastKey}</p> : null}
     </div>
   );
 }
