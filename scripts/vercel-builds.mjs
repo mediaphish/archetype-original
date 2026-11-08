@@ -1,0 +1,121 @@
+/**
+ * One build entry per server program, each packed with only the files it reads
+ * (2026-11-08).
+ *
+ * The site build ran out of memory packing 351 programs because one catch-all
+ * rule ("api/**") gave every program the writing files, fonts and brand files,
+ * 12 MB each, and built the 38 programs with their own entry a second time.
+ * Bart: "a push should not have to push what is already there." Now each
+ * program carries the writing files only if its code can reach a reader of
+ * them, and fonts and brand files only if it can reach a card or graphic maker.
+ *
+ *   node scripts/vercel-builds.mjs          check vercel.json is current (build fails if not)
+ *   node scripts/vercel-builds.mjs --write  rewrite the generated entries in vercel.json
+ *
+ * Entries written by hand (memory, time limit, extra files) are kept exactly as
+ * they are. Only programs without one get a generated entry.
+ */
+import fs from 'fs';
+import path from 'path';
+
+const root = process.cwd();
+const WRITING = ['public/knowledge.json', 'public/devotional-schedule.json', 'data/knowledge-full.json'];
+const ART = ['public/fonts/**', 'public/brand/**'];
+const READS_WRITING = /knowledge-full\.json|knowledge\.json|devotional-schedule\.json/;
+const READS_ART = /public['"]?,\s*['"](?:fonts|brand)|public\/(?:fonts|brand)/;
+// Imports built from a variable, which a text scan cannot follow.
+const HIDDEN_IMPORTS = { 'lib/db/scheduledPosts.js': ['lib/ao/quoteSource.js'] };
+
+const cache = new Map();
+function deps(file) {
+  if (cache.has(file)) return cache.get(file);
+  const out = new Set();
+  cache.set(file, out);
+  let src = '';
+  try {
+    src = fs.readFileSync(file, 'utf8');
+  } catch {
+    return out;
+  }
+  const re = /(?:import\s[^'"`;]*?from\s*|import\s*\(\s*(?:\/\*[^*]*\*\/\s*)?|require\s*\(\s*|export\s[^'"`;]*?from\s*)['"`](\.{1,2}\/[^'"`$]+)['"`]/g;
+  let m;
+  while ((m = re.exec(src))) {
+    const p = path.resolve(path.dirname(file), m[1]);
+    for (const c of [p, `${p}.js`, `${p}.mjs`, path.join(p, 'index.js')]) {
+      if (fs.existsSync(c) && fs.statSync(c).isFile()) {
+        out.add(c);
+        break;
+      }
+    }
+  }
+  for (const extra of HIDDEN_IMPORTS[path.relative(root, file)] || []) out.add(path.join(root, extra));
+  return out;
+}
+
+function reaches(file, test) {
+  const seen = new Set([file]);
+  const stack = [file];
+  while (stack.length) {
+    const f = stack.pop();
+    let s = '';
+    try {
+      s = fs.readFileSync(f, 'utf8');
+    } catch {}
+    if (test.test(s)) return true;
+    for (const d of deps(f)) if (!seen.has(d)) seen.add(d) && stack.push(d);
+  }
+  return false;
+}
+
+export function serverPrograms(dir = path.join(root, 'api')) {
+  const out = [];
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) {
+      if (e.name !== '__tests__') out.push(...serverPrograms(p));
+    } else if (/\.js$/.test(e.name) && !/\.test\.js$/.test(e.name)) out.push(path.relative(root, p));
+  }
+  return out.sort();
+}
+
+/** The generated entry for one program. */
+export function entryFor(src) {
+  const abs = path.join(root, src);
+  const includeFiles = ['lib/**'];
+  if (reaches(abs, READS_WRITING)) includeFiles.push(...WRITING);
+  if (reaches(abs, READS_ART)) includeFiles.push(...ART);
+  return { src, use: '@vercel/node', config: { includeFiles } };
+}
+
+function plan(config) {
+  const builds = config.builds || [];
+  const handWritten = builds.filter((b) => !b.src.startsWith('api/') || (!b.src.includes('*') && !b.config?.generatedBy));
+  const own = new Set(handWritten.map((b) => b.src));
+  const generated = serverPrograms()
+    .filter((src) => !own.has(src))
+    .map((src) => {
+      const e = entryFor(src);
+      return { src: e.src, use: e.use, config: { ...e.config, generatedBy: 'scripts/vercel-builds.mjs' } };
+    });
+  return [...handWritten, ...generated];
+}
+
+const vercelPath = path.join(root, 'vercel.json');
+const config = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
+const next = plan(config);
+
+if (process.argv.includes('--write')) {
+  config.builds = next;
+  fs.writeFileSync(vercelPath, `${JSON.stringify(config, null, 2)}\n`);
+  const gen = next.filter((b) => b.config?.generatedBy);
+  console.log(`vercel-builds: wrote ${gen.length} generated entries (${gen.filter((b) => b.config.includeFiles.includes(WRITING[0])).length} with writing files, ${gen.filter((b) => b.config.includeFiles.includes(ART[0])).length} with fonts).`);
+} else {
+  const want = JSON.stringify(next);
+  const have = JSON.stringify(config.builds);
+  const catchAll = (config.builds || []).some((b) => b.src.startsWith('api/') && b.src.includes('*'));
+  if (catchAll || want !== have) {
+    console.error('vercel-builds: vercel.json is out of date (a server program was added or now reads different files). Run: node scripts/vercel-builds.mjs --write');
+    process.exit(1);
+  }
+  console.log(`vercel-builds: OK (${next.length} build entries, each server program packed once)`);
+}
