@@ -289,6 +289,16 @@ export default function Talk() {
     [go, index, total, sections, say, ask, photo, slug, demo, live]
   );
 
+  // Tell the iPad which slide is up, so it shows that slide's script (2026-11-08).
+  useEffect(() => {
+    if (!total) return;
+    fetch('/api/ao/talk/remote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug, action: 'at', index }),
+    }).catch(() => {});
+  }, [index, total, slug]);
+
   remoteRef.current = (st) => {
     if (st.action === 'next') go(index + 1);
     else if (st.action === 'back') go(index - 1);

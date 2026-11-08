@@ -89,3 +89,12 @@ test('letting go acts on what was heard even when listening already ended', asyn
   await waitFor(() => expect(calls.some((u) => u.includes('/api/ao/talk/ask'))).toBe(true));
   delete window.webkitSpeechRecognition;
 });
+
+describe('the iPad script screen (2026-11-08)', () => {
+  test('script markdown becomes things to say, stage cues and his own story spots', () => {
+    const { scriptBlocks } = require('../Remote.jsx');
+    const b = scriptBlocks('I don\'t trust it.\n\n*(Hold Back.)*\n\n- **Jot:** the false alarm\n- **Des:** the graphic\n\n*[your story: the tattoos]*\n\n---');
+    expect(b.map((x) => x.kind)).toEqual(['say', 'cue', 'list', 'yours']);
+    expect(b[2].items).toHaveLength(2);
+  });
+});
