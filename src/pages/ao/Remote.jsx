@@ -147,7 +147,7 @@ export default function Remote() {
   };
 
   const move = async (action) => {
-    setStatus(action === 'next' ? 'Next' : 'Back');
+    setStatus(action === 'next' ? 'Next' : action === 'first' ? 'Back to the start' : 'Back');
     const j = await send({ action });
     setStatus(j.ok ? '' : 'Did not reach the screen. Try again.');
   };
@@ -185,6 +185,9 @@ export default function Remote() {
           </p>
           <p className="truncate text-xl font-bold">{section?.title || 'Waiting for the big screen…'}</p>
         </div>
+        <button type="button" className="h-11 rounded-lg bg-white/10 px-3 text-sm font-semibold" onClick={() => move('first')}>
+          Start over
+        </button>
         <button type="button" aria-label="Smaller text" className="h-11 w-11 rounded-lg bg-white/10 text-lg" onClick={() => setFont(size - 2)}>
           A-
         </button>

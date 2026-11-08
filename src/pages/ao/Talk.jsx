@@ -13,7 +13,7 @@ import { avatarFor } from '../../components/ao/teamAvatars.js';
  * See notes/PLAN-talk-mode.md.
  */
 
-const TOGGLE_GAP_MS = 700;
+const DOUBLE_PRESS_MS = 450;
 const REPLY_HOLD_MS = 6000;
 const DEFAULT_SLUG = 'neosho-chamber-2026';
 
@@ -90,7 +90,23 @@ function useSpeech() {
   const heardRef = useRef('');
   heardRef.current = heard;
 
-  return { supported: Boolean(Rec), start, stop, heard, listening };
+  // Stop without sending anything (a double-press of Back means "go back").
+  const cancel = useCallback(() => {
+    const rec = recRef.current;
+    recRef.current = null;
+    setListening(false);
+    setHeard('');
+    if (rec) {
+      rec.onend = null;
+      try {
+        rec.abort ? rec.abort() : rec.stop();
+      } catch (_) {
+        /* already stopped */
+      }
+    }
+  }, []);
+
+  return { supported: Boolean(Rec), start, stop, cancel, heard, listening };
 }
 
 export default function Talk() {
@@ -103,7 +119,7 @@ export default function Talk() {
   const audioRef = useRef(null);
   const speech = useSpeech();
   const holdRef = useRef(null);
-  const lastToggleRef = useRef(0);
+  const backTimerRef = useRef(null);
   const fadeRef = useRef(null);
   // Rehearsal only: which key each clicker button sends, so a remote that sends
   // something unexpected can be matched (2026-11-08, Bart's Logitech Back).
@@ -372,6 +388,7 @@ export default function Talk() {
 
   remoteRef.current = (st) => {
     if (st.action === 'next') go(index + 1);
+    else if (st.action === 'first') go(0);
     else if (st.action === 'back') go(index - 1);
     else if (st.action === 'photo' && st.photo_url) setPhoto(st.photo_url);
   };
@@ -394,24 +411,32 @@ export default function Talk() {
         e.preventDefault();
         if (!e.repeat) go(index + 1);
       } else if (e.key === 'PageUp' || e.key === 'ArrowLeft') {
-        // The clicker's Back button talks to the team (2026-11-08). Bart's
-        // Logitech sends one quick press even while held, so hold-to-talk never
-        // worked: press once to start, press again to send. Presses closer than
-        // TOGGLE_GAP_MS apart are one press. Going back a slide is on the iPad.
+        // The clicker's Back button (2026-11-08). Bart's Logitech sends one
+        // quick press even while held, so: one press starts talking to the
+        // team, the next one sends. Two presses in quick succession go back a
+        // slide instead (Bart: "I tried to use the back button to go back and
+        // start the presentation over and it won't work").
         e.preventDefault();
         if (e.repeat) return;
-        const t = Date.now();
-        if (t - lastToggleRef.current < TOGGLE_GAP_MS) return;
-        lastToggleRef.current = t;
-        if (speech.listening) endListening();
-        else beginListening();
+        if (backTimerRef.current) {
+          clearTimeout(backTimerRef.current);
+          backTimerRef.current = null;
+          speech.cancel();
+          go(index - 1);
+          return;
+        }
+        backTimerRef.current = setTimeout(() => {
+          backTimerRef.current = null;
+          if (speech.listening) endListening();
+          else beginListening();
+        }, DOUBLE_PRESS_MS);
       } else if (e.key === 'v' || e.key === 'V') {
         e.preventDefault();
         if (e.repeat || holdRef.current) return;
         // The V key on the laptop still listens while held.
         holdRef.current = { key: e.key, listening: true, timer: null };
         beginListening();
-      } else if (e.key === 'Home') go(0);
+      } else if (e.key === 'Home' || e.key === 'Escape') go(0);
       else if (e.key === 'End') go(total - 1);
       else if (e.key === 'f' || e.key === 'F') document.documentElement.requestFullscreen?.().catch(() => {});
     };
@@ -427,7 +452,7 @@ export default function Talk() {
       window.removeEventListener('keydown', down);
       window.removeEventListener('keyup', up);
     };
-  }, [go, index, total, beginListening, endListening, speech.listening]);
+  }, [go, index, total, beginListening, endListening, speech.listening, speech.cancel]);
 
   if (error) return <div className="flex min-h-screen items-center justify-center bg-black p-8 text-lg text-gray-300">{error}</div>;
   if (!talk) return <div className="min-h-screen bg-black" />;

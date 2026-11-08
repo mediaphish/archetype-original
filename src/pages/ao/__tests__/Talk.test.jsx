@@ -84,30 +84,6 @@ describe('the iPad script screen (2026-11-08)', () => {
   });
 });
 
-test('a clicker that repeats its press while held does not flip listening on and off', async () => {
-  jest.useFakeTimers();
-  const started = [];
-  window.webkitSpeechRecognition = function Rec() {
-    this.start = () => started.push(1);
-    this.stop = () => {};
-  };
-  render(<Talk />);
-  await act(async () => {
-    await Promise.resolve();
-  });
-  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
-  for (let i = 0; i < 3; i++) {
-    fireEvent.keyDown(window, { key: 'PageUp' });
-    fireEvent.keyUp(window, { key: 'PageUp' });
-    act(() => {
-      jest.advanceTimersByTime(100);
-    });
-  }
-  expect(started).toHaveLength(1);
-  expect(screen.getByText(/press Back again to send/)).toBeInTheDocument();
-  delete window.webkitSpeechRecognition;
-});
-
 test("a teammate's message fades a few seconds after it is spoken (2026-11-08)", async () => {
   jest.useFakeTimers();
   window.webkitSpeechRecognition = function Rec() {
@@ -129,11 +105,17 @@ test("a teammate's message fades a few seconds after it is spoken (2026-11-08)",
   await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
   fireEvent.keyDown(window, { key: 'PageUp' });
   act(() => {
+    jest.advanceTimersByTime(500);
+  });
+  act(() => {
     rec.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: 'hey Ada are you ready' }], { isFinal: true })] });
     rec.onend();
     jest.advanceTimersByTime(800);
   });
   fireEvent.keyDown(window, { key: 'PageUp' });
+  act(() => {
+    jest.advanceTimersByTime(500);
+  });
   for (let i = 0; i < 10; i++) {
     await act(async () => {
       jest.advanceTimersByTime(100);
@@ -172,4 +154,32 @@ test('a teammate cuts in once, on their own, some seconds into a slide (2026-11-
     });
   }
   expect(screen.getByText('Go Wildcats!')).toBeInTheDocument();
+});
+
+test('two quick presses of Back go back a slide instead of talking (2026-11-08)', async () => {
+  jest.useFakeTimers();
+  const started = [];
+  window.webkitSpeechRecognition = function Rec() {
+    this.start = () => started.push(1);
+    this.stop = () => {};
+    this.abort = () => {};
+  };
+  render(<Talk />);
+  await act(async () => {
+    await Promise.resolve();
+  });
+  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  fireEvent.keyDown(window, { key: 'PageDown' });
+  expect(screen.getByText('Live from the room')).toBeInTheDocument();
+  fireEvent.keyDown(window, { key: 'PageUp' });
+  act(() => {
+    jest.advanceTimersByTime(200);
+  });
+  fireEvent.keyDown(window, { key: 'PageUp' });
+  act(() => {
+    jest.advanceTimersByTime(1000);
+  });
+  expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument();
+  expect(started).toHaveLength(0);
+  delete window.webkitSpeechRecognition;
 });
