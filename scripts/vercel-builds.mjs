@@ -110,11 +110,25 @@ function plan(config) {
     if (!groups.has(key)) groups.set(key, { includeFiles, files: [] });
     groups.get(key).files.push(src);
   }
-  const generated = [...groups.values()].map(({ includeFiles, files }) => ({
-    src: files.length === 1 ? safe(files[0]) : `{${files.map(safe).join(',')}}`,
-    use: '@vercel/node',
-    config: { includeFiles, generatedBy: 'scripts/vercel-builds.mjs' },
-  }));
+  // The host also caps each src at 4096 characters, so a long list is split.
+  const generated = [];
+  for (const { includeFiles, files } of groups.values()) {
+    let chunk = [];
+    const flush = () => {
+      if (!chunk.length) return;
+      generated.push({
+        src: chunk.length === 1 ? safe(chunk[0]) : `{${chunk.map(safe).join(',')}}`,
+        use: '@vercel/node',
+        config: { includeFiles, generatedBy: 'scripts/vercel-builds.mjs' },
+      });
+      chunk = [];
+    };
+    for (const f of files) {
+      if (chunk.length && `{${[...chunk, f].map(safe).join(',')}}`.length > 3800) flush();
+      chunk.push(f);
+    }
+    flush();
+  }
   return [...handWritten, ...generated];
 }
 
@@ -122,6 +136,7 @@ function plan(config) {
 function problems(builds) {
   const out = [];
   if (builds.length > 128) out.push(`${builds.length} build entries; the host allows 128`);
+  for (const b of builds) if (b.src.length > 4096) out.push(`an entry is ${b.src.length} characters long; the host allows 4096`);
   const api = builds.filter(isApi);
   for (const f of serverPrograms()) {
     const n = api.filter((b) => matches(f, b.src)).length;
