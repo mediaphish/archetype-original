@@ -326,7 +326,7 @@ export default function Talk() {
 
   // A teammate cuts in on their own, once per talk, some seconds into a slide
   // (Bart, 2026-11-08: the Wildcats' win, and Veterans Day). If someone is
-  // talking or listening, it waits for a quiet moment.
+  // talking or listening, it waits for a quiet moment. Moving on cancels the rest.
   const interruptedRef = useRef(new Set());
   const busyRef = useRef(false);
   busyRef.current = Boolean(speech.listening || thinking || (reply && !reply.fading));
