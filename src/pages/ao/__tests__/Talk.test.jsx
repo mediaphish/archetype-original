@@ -107,3 +107,44 @@ test('a clicker that repeats its press while held does not flip listening on and
   expect(screen.getByText(/press Back again to send/)).toBeInTheDocument();
   delete window.webkitSpeechRecognition;
 });
+
+test("a teammate's message fades a few seconds after it is spoken (2026-11-08)", async () => {
+  jest.useFakeTimers();
+  window.webkitSpeechRecognition = function Rec() {
+    this.start = () => {};
+    this.stop = () => {};
+  };
+  let rec;
+  const Orig = window.webkitSpeechRecognition;
+  window.webkitSpeechRecognition = function R() { Orig.call(this); rec = this; };
+  global.fetch = jest.fn(async (url) => {
+    if (String(url).includes('/api/ao/talk/ask')) return { ok: true, status: 200, json: async () => ({ ok: true, agent: 'auto', reply: 'Ready when you are.' }) };
+    if (String(url).includes('/api/ao/talk/speak')) return { ok: false, status: 500 };
+    return { ok: true, status: 200, json: async () => ({ ok: true, talk }) };
+  });
+  render(<Talk />);
+  await act(async () => {
+    await Promise.resolve();
+  });
+  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  fireEvent.keyDown(window, { key: 'PageUp' });
+  act(() => {
+    rec.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: 'hey Ada are you ready' }], { isFinal: true })] });
+    rec.onend();
+    jest.advanceTimersByTime(800);
+  });
+  fireEvent.keyDown(window, { key: 'PageUp' });
+  for (let i = 0; i < 10; i++) {
+    await act(async () => {
+      jest.advanceTimersByTime(100);
+      await Promise.resolve();
+    });
+  }
+  expect(screen.getByText('Ready when you are.')).toBeInTheDocument();
+  await act(async () => {
+    jest.advanceTimersByTime(8000);
+    await Promise.resolve();
+  });
+  expect(screen.queryByText('Ready when you are.')).not.toBeInTheDocument();
+  delete window.webkitSpeechRecognition;
+});

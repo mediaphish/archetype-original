@@ -14,6 +14,7 @@ import { avatarFor } from '../../components/ao/teamAvatars.js';
  */
 
 const TOGGLE_GAP_MS = 700;
+const REPLY_HOLD_MS = 6000;
 const DEFAULT_SLUG = 'neosho-chamber-2026';
 
 function useSpeech() {
@@ -103,6 +104,7 @@ export default function Talk() {
   const speech = useSpeech();
   const holdRef = useRef(null);
   const lastToggleRef = useRef(0);
+  const fadeRef = useRef(null);
   // Rehearsal only: which key each clicker button sends, so a remote that sends
   // something unexpected can be matched (2026-11-08, Bart's Logitech Back).
   const [lastKey, setLastKey] = useState('');
@@ -167,14 +169,24 @@ export default function Talk() {
   // Shows the line and speaks it; resolves when the line has finished playing.
   const say = useCallback(
     async (agent, text) => {
-      setReply({ agent, text });
+      // A message fades a few seconds after it is spoken (Bart, 2026-11-08: Ada's
+      // line was still up minutes later).
+      const id = Date.now() + Math.random();
+      clearTimeout(fadeRef.current);
+      setReply({ agent, text, id });
+      const fadeLater = () => {
+        fadeRef.current = setTimeout(() => {
+          setReply((r) => (r && r.id === id ? { ...r, fading: true } : r));
+          fadeRef.current = setTimeout(() => setReply((r) => (r && r.id === id ? null : r)), 900);
+        }, REPLY_HOLD_MS);
+      };
       try {
         const r = await fetch('/api/ao/talk/speak', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ agent, text }),
         });
-        if (!r.ok) return;
+        if (!r.ok) return fadeLater();
         const url = URL.createObjectURL(await r.blob());
         audioRef.current?.pause();
         const audio = new Audio(url);
@@ -187,8 +199,10 @@ export default function Talk() {
           audio.onerror = resolve;
           audio.play().catch(resolve);
         });
+        fadeLater();
       } catch (_) {
         /* the words are on screen either way */
+        fadeLater();
       }
     },
     []
@@ -224,7 +238,7 @@ export default function Talk() {
       if (cmd.type === 'demo') {
         const d = sections.findIndex((s) => s.kind === 'demo');
         if (d >= 0) go(d);
-        if (!photo) return say('auto', 'Snap a photo of the room on your phone first, Bart, and we will take it from there.');
+        if (!photo) return say('auto', 'Snap a photo of the room on your phone first, and we will take it from there.');
         setDemo({ phase: 'working' });
         try {
           const r = await fetch('/api/ao/talk/demo', {
@@ -235,7 +249,7 @@ export default function Talk() {
           const j = await r.json().catch(() => ({}));
           if (!j.ok) {
             setDemo({ phase: 'idle' });
-            return say('auto', 'We hit a snag putting that together, Bart. Give me one more try.');
+            return say('auto', 'We hit a snag putting that together. Give me one more try.');
           }
           setDemo({ phase: 'talking', pkg: j.package });
           for (const l of j.lines || []) await say(l.agent, l.line);
@@ -256,10 +270,10 @@ export default function Talk() {
           });
           const j = await r.json().catch(() => ({}));
           setDemo((d) => ({ ...d, phase: 'posted', result: j }));
-          if (j.rehearsal) await say('auto', 'Rehearsal run, Bart. Nothing went out, but that is exactly how it would have gone.');
+          if (j.rehearsal) await say('auto', 'Rehearsal run. Nothing went out, but that is exactly how it would have gone.');
           else if (j.ok) {
             const n = (j.results || []).filter((x) => x.ok).length;
-            await say('auto', `It's live, Bart. Out on ${n} of ${(j.results || []).length} channels.`);
+            await say('auto', `It's live. Out on ${n} of ${(j.results || []).length} channels.`);
           } else await say('it', 'Dude, it did not go out. I will check what broke right after the talk.');
         } catch (_) {
           setDemo((d) => ({ ...d, phase: 'ready' }));
@@ -269,14 +283,17 @@ export default function Talk() {
       if (cmd.type === 'ask') {
         setReply(null);
         const j = await ask(cmd.agent, cmd.text, cmd.topic || '');
-        if (j) await say(j.agent, j.reply);
+        if (!j) {
+          setReply({ agent: cmd.agent, text: "Sorry, I didn't catch that. Say it once more?" });
+          return;
+        }
+        await say(j.agent, j.reply);
         // "That's Bit's world, let me hand it over" (2026-11-08): the teammate it
         // belongs to answers right after, on their own.
-        if (j?.handoff) {
+        if (j.handoff) {
           const h = await ask(j.handoff, cmd.text, '', j.agent);
           if (h) await say(h.agent, h.reply);
         }
-        else setReply({ agent: cmd.agent, text: "Sorry, I didn't catch that. Say it once more?" });
       }
       if (cmd.type === 'mistakes') {
         // Section 6: each one owns a real mistake in turn; the next is asked for while the current one speaks.
@@ -287,6 +304,9 @@ export default function Talk() {
           if (i + 1 < MISTAKE_ORDER.length) pending = ask(MISTAKE_ORDER[i + 1], cmd.text, 'mistake');
           if (j) await say(j.agent, j.reply);
         }
+        // Bart, 2026-11-08: after Bit, one of them says "Hey Bart, tell them
+        // about the tattoos." Des, since images are hers.
+        await say('designer', 'Hey Bart, tell them about the tattoos.');
         return;
       }
       if (cmd.type === 'team') {
@@ -385,9 +405,9 @@ export default function Talk() {
 
   const speaker = reply?.agent || thinking;
   return (
-    <div className="relative flex min-h-screen select-none flex-col overflow-hidden bg-black text-white" onDoubleClick={() => document.documentElement.requestFullscreen?.().catch(() => {})}>
+    <div className="relative flex h-screen select-none flex-col overflow-hidden bg-black text-white" onDoubleClick={() => document.documentElement.requestFullscreen?.().catch(() => {})}>
       <style>{"@font-face{font-family:'AO Display';src:url('/fonts/BebasNeue-Regular.ttf') format('truetype');font-display:block}"}</style>
-      <main className="flex flex-1 items-center px-[8vw] py-[8vh]">
+      <main className="flex min-h-0 flex-1 items-center px-[8vw] pt-[7vh] pb-[2vh]">
         {section ? (
           <div className="flex w-full items-center gap-[5vw]">
             <div className="min-w-0 flex-1">
@@ -405,9 +425,9 @@ export default function Talk() {
             </div>
             {section.kind === 'demo' && photo ? (
               <div className="flex max-w-[44vw] flex-col gap-3">
-                <img src={photo} alt="The room" className="max-h-[46vh] rounded-lg object-contain" />
+                <img src={photo} alt="The room" className="max-h-[38vh] rounded-lg object-contain" />
                 {demo.pkg ? (
-                  <p className="max-h-[22vh] overflow-hidden whitespace-pre-line rounded-lg bg-white/10 p-4 text-gray-200" style={{ fontSize: '1.15vw' }}>
+                  <p className="max-h-[24vh] overflow-y-auto whitespace-pre-line rounded-lg bg-white/10 p-4 text-gray-200" style={{ fontSize: '1.05vw' }}>
                     {demo.pkg.captions.linkedin_personal}
                   </p>
                 ) : null}
@@ -432,22 +452,24 @@ export default function Talk() {
         ) : null}
       </main>
 
-      {speaker ? (
-        <div className="absolute inset-x-[8vw] bottom-[12vh] flex items-start gap-4 rounded-2xl bg-white/10 px-6 py-5 backdrop-blur">
-          <img src={avatarFor(speaker)} alt="" className="h-14 w-14 flex-shrink-0 rounded-full object-cover" />
-          <div>
-            <p className="font-semibold text-gray-300" style={{ fontSize: '1.3vw' }}>{TEAM_LABELS[speaker] || 'Ada'}</p>
-            <p className="text-white" style={{ fontSize: '2vw' }}>{thinking ? '…' : reply?.text}</p>
+      {/* The team's bar (Bart, 2026-11-08): its own space at the bottom, so it
+          never covers the slide or the demo caption. */}
+      <section className="flex h-[17vh] flex-shrink-0 items-center px-[8vw]">
+        {speech.listening ? (
+          <p className="w-full text-center text-gray-400" style={{ fontSize: '1.4vw' }}>
+            <span className="mr-2 inline-block h-3 w-3 animate-pulse rounded-full bg-[#DB0812] align-middle" />
+            {speech.heard || 'Listening… press Back again to send'}
+          </p>
+        ) : speaker ? (
+          <div className={`flex w-full items-center gap-4 rounded-2xl bg-white/10 px-6 py-4 transition-opacity duration-700 ${reply?.fading ? 'opacity-0' : 'opacity-100'}`}>
+            <img src={avatarFor(speaker)} alt="" className="h-14 w-14 flex-shrink-0 rounded-full object-cover" />
+            <div className="min-w-0">
+              <p className="font-semibold text-gray-300" style={{ fontSize: '1.2vw' }}>{TEAM_LABELS[speaker] || 'Ada'}</p>
+              <p className="text-white" style={{ fontSize: '1.8vw', lineHeight: 1.3 }}>{thinking ? '…' : reply?.text}</p>
+            </div>
           </div>
-        </div>
-      ) : null}
-
-      {speech.listening ? (
-        <div className="absolute inset-x-0 bottom-[4vh] text-center text-gray-400" style={{ fontSize: '1.4vw' }}>
-          <span className="mr-2 inline-block h-3 w-3 animate-pulse rounded-full bg-[#DB0812] align-middle" />
-          {speech.heard || 'Listening… press Back again to send'}
-        </div>
-      ) : null}
+        ) : null}
+      </section>
 
       <footer className="flex items-center justify-between px-[4vw] pb-[3vh]">
         <div className="flex gap-1.5">

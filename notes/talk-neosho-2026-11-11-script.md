@@ -166,6 +166,8 @@ And the team knows it. *(Press Back.)* "Team, tell them about a time you got it 
 - **Des:** couldn't find an infographic you were reviewing and asked you to send it again. It was in your Queue the whole time. Now the team can see the Queue.
 - **Bit:** the afternoon the team spent about fifty dollars reviewing each other's reviews. Now there's a hard daily spending line, and Bit stops the work when it's hit.
 
+*(Then Des speaks up: "Hey Bart, tell them about the tattoos.")*
+
 Here's mine. *[your story: the tattoos. It can't draw them right, so in every picture it makes of me, my sleeves are down. Tell it your way: what it got wrong and how you found out.]*
 
 Every one of those got caught because a human was paying attention.
