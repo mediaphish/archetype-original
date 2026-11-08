@@ -313,7 +313,12 @@
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
-          "public/images/**",
+          "public/images/reshare-backgrounds/**",
+          "public/images/cards-clean/**",
+          "public/images/team/**",
+          "public/images/Bart-*",
+          "public/images/bart-*",
+          "public/images/ao-logo*",
           "ao-knowledge-hq-kit/**"
         ]
       }
@@ -331,7 +336,12 @@
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
-          "public/images/**",
+          "public/images/reshare-backgrounds/**",
+          "public/images/cards-clean/**",
+          "public/images/team/**",
+          "public/images/Bart-*",
+          "public/images/bart-*",
+          "public/images/ao-logo*",
           "ao-knowledge-hq-kit/**"
         ]
       }
@@ -349,7 +359,12 @@
           "data/knowledge-full.json",
           "public/fonts/**",
           "public/brand/**",
-          "public/images/**",
+          "public/images/reshare-backgrounds/**",
+          "public/images/cards-clean/**",
+          "public/images/team/**",
+          "public/images/Bart-*",
+          "public/images/bart-*",
+          "public/images/ao-logo*",
           "ao-knowledge-hq-kit/**"
         ]
       }
@@ -383,7 +398,12 @@
         "includeFiles": [
           "lib/**",
           "ao-knowledge-hq-kit/journal/**",
-          "public/images/**",
+          "public/images/reshare-backgrounds/**",
+          "public/images/cards-clean/**",
+          "public/images/team/**",
+          "public/images/Bart-*",
+          "public/images/bart-*",
+          "public/images/ao-logo*",
           "public/fonts/**",
           "public/brand/archetype-original-lockup.svg"
         ]
