@@ -143,7 +143,7 @@ That's real, and it's on my LinkedIn right now. You can go look.
 
 **SCREEN: I don't trust it.**
 - It is wrong with total confidence.
-- My logo was wrong on every card for two months.
+- It still can't draw my tattoos.
 - One day it spent fifty dollars talking to itself.
 
 Now that you've seen it work, I need to tell you the most important thing in this whole talk.
