@@ -96,11 +96,16 @@ export default async function handler(req, res) {
         .from('ao_auto_threads')
         .update({ title: title || (channel ? `#${channel.name}` : AGENTS[agent].name), state: { ...(thread.state || {}), agent } })
         .eq('id', thread.id);
+      // A post opened from the Queue is already written (2026-11-08: Jot opened
+      // The Eli Archetype with "What are we writing?").
+      const postTitle = ref.startsWith('post:') ? title : '';
       await addAutoMessage({
         threadId: thread.id,
         role: 'assistant',
         mode: 'plan',
-        content: TEAM_OPENERS[agent],
+        content: postTitle && agent === 'jot'
+          ? `Jot: Here's "${postTitle}", hot off the press and ready for your read. It's open on the right. Tell me what to change, or approve it when it's right.`
+          : TEAM_OPENERS[agent],
         meta: { auto_v2: true, orientation: true, agent },
       });
       if (ref) await addQueueContext(thread.id, ref);
