@@ -8,12 +8,12 @@ import { avatarFor } from '../../components/ao/teamAvatars.js';
  * whole talk built out in Auto?" and "Let's explore voice."
  *
  * Clicker (Logitech R500s): Page Down / Page Up, or the arrow keys and space.
- * Hold the Back button, or hold V, to talk; let go and it acts on what it heard.
+ * Press Back once to talk and again to send (2026-11-08), or hold V on the laptop.
  * Slide moves happen here; anything said to a teammate gets a spoken reply.
  * See notes/PLAN-talk-mode.md.
  */
 
-const HOLD_MS = 450;
+const TOGGLE_GAP_MS = 700;
 const DEFAULT_SLUG = 'neosho-chamber-2026';
 
 function useSpeech() {
@@ -102,6 +102,7 @@ export default function Talk() {
   const audioRef = useRef(null);
   const speech = useSpeech();
   const holdRef = useRef(null);
+  const lastToggleRef = useRef(0);
   // Rehearsal unless the page is opened with ?live=1: a rehearsal never posts.
   const live = new URLSearchParams(window.location.search).get('live') === '1';
   const [photo, setPhoto] = useState(null);
@@ -186,13 +187,13 @@ export default function Talk() {
   );
 
   const ask = useCallback(
-    async (agent, text, topic = '') => {
+    async (agent, text, topic = '', handedBy = null) => {
       setThinking(agent);
       try {
         const r = await fetch('/api/ao/talk/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ agent, text, slug, section_id: section?.id, topic }),
+          body: JSON.stringify({ agent, text, slug, section_id: section?.id, topic, handed_by: handedBy }),
         });
         const j = await r.json().catch(() => ({}));
         setThinking(null);
@@ -243,7 +244,7 @@ export default function Talk() {
           const r = await fetch('/api/ao/talk/demo', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ post: true, package: demo.pkg, live }),
+            body: JSON.stringify({ post: true, package: demo.pkg, live, slug }),
           });
           const j = await r.json().catch(() => ({}));
           setDemo((d) => ({ ...d, phase: 'posted', result: j }));
@@ -261,6 +262,12 @@ export default function Talk() {
         setReply(null);
         const j = await ask(cmd.agent, cmd.text);
         if (j) await say(j.agent, j.reply);
+        // "That's Bit's world, let me hand it over" (2026-11-08): the teammate it
+        // belongs to answers right after, on their own.
+        if (j?.handoff) {
+          const h = await ask(j.handoff, cmd.text, '', j.agent);
+          if (h) await say(h.agent, h.reply);
+        }
         else setReply({ agent: cmd.agent, text: "Sorry, I didn't catch that. Say it once more?" });
       }
       if (cmd.type === 'mistakes') {
@@ -322,16 +329,24 @@ export default function Talk() {
       if (e.key === 'PageDown' || e.key === 'ArrowRight' || e.key === ' ') {
         e.preventDefault();
         if (!e.repeat) go(index + 1);
-      } else if (e.key === 'PageUp' || e.key === 'ArrowLeft' || e.key === 'v' || e.key === 'V') {
+      } else if (e.key === 'PageUp' || e.key === 'ArrowLeft') {
+        // The clicker's Back button talks to the team (2026-11-08). Bart's
+        // Logitech sends one quick press even while held, so hold-to-talk never
+        // worked: press once to start, press again to send. Presses closer than
+        // TOGGLE_GAP_MS apart are one press. Going back a slide is on the iPad.
+        e.preventDefault();
+        if (e.repeat) return;
+        const t = Date.now();
+        if (t - lastToggleRef.current < TOGGLE_GAP_MS) return;
+        lastToggleRef.current = t;
+        if (speech.listening) endListening();
+        else beginListening();
+      } else if (e.key === 'v' || e.key === 'V') {
         e.preventDefault();
         if (e.repeat || holdRef.current) return;
-        // Back on a tap, listening on a hold.
-        holdRef.current = { key: e.key, listening: false, timer: setTimeout(() => {
-          if (holdRef.current) {
-            holdRef.current.listening = true;
-            beginListening();
-          }
-        }, e.key.toLowerCase() === 'v' ? 0 : HOLD_MS) };
+        // The V key on the laptop still listens while held.
+        holdRef.current = { key: e.key, listening: true, timer: null };
+        beginListening();
       } else if (e.key === 'Home') go(0);
       else if (e.key === 'End') go(total - 1);
       else if (e.key === 'f' || e.key === 'F') document.documentElement.requestFullscreen?.().catch(() => {});
@@ -339,10 +354,8 @@ export default function Talk() {
     const up = (e) => {
       const h = holdRef.current;
       if (!h || h.key !== e.key) return;
-      clearTimeout(h.timer);
       holdRef.current = null;
       if (h.listening) endListening();
-      else if (e.key === 'PageUp' || e.key === 'ArrowLeft') go(index - 1);
     };
     window.addEventListener('keydown', down);
     window.addEventListener('keyup', up);
@@ -350,7 +363,7 @@ export default function Talk() {
       window.removeEventListener('keydown', down);
       window.removeEventListener('keyup', up);
     };
-  }, [go, index, total, beginListening, endListening]);
+  }, [go, index, total, beginListening, endListening, speech.listening]);
 
   if (error) return <div className="flex min-h-screen items-center justify-center bg-black p-8 text-lg text-gray-300">{error}</div>;
   if (!talk) return <div className="min-h-screen bg-black" />;
@@ -417,7 +430,7 @@ export default function Talk() {
       {speech.listening ? (
         <div className="absolute inset-x-0 bottom-[4vh] text-center text-gray-400" style={{ fontSize: '1.4vw' }}>
           <span className="mr-2 inline-block h-3 w-3 animate-pulse rounded-full bg-[#DB0812] align-middle" />
-          {speech.heard || 'Listening…'}
+          {speech.heard || 'Listening… press Back again to send'}
         </div>
       ) : null}
 

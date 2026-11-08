@@ -24,7 +24,7 @@ afterEach(() => {
   jest.useRealTimers();
 });
 
-test('Page Down and Page Up move between screens', async () => {
+test('Page Down moves forward; Back no longer moves back (it talks)', async () => {
   render(<Talk />);
   await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
   fireEvent.keyDown(window, { key: 'PageDown' });
@@ -32,28 +32,12 @@ test('Page Down and Page Up move between screens', async () => {
   expect(screen.getByText('Live')).toBeInTheDocument();
   fireEvent.keyDown(window, { key: 'PageUp' });
   fireEvent.keyUp(window, { key: 'PageUp' });
-  expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument();
-});
-
-test('holding Back does not go back', async () => {
-  jest.useFakeTimers();
-  render(<Talk />);
-  await act(async () => {
-    await Promise.resolve();
-  });
-  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
-  fireEvent.keyDown(window, { key: 'PageDown' });
-  fireEvent.keyDown(window, { key: 'PageUp' });
-  act(() => {
-    jest.advanceTimersByTime(600);
-  });
-  fireEvent.keyUp(window, { key: 'PageUp' });
   expect(screen.getByText('Live from the room')).toBeInTheDocument();
 });
 
 // 2026-11-08: on Bart's first run Chrome stopped listening on its own while he
 // held Back. Letting go must still send what it heard to the team.
-test('letting go acts on what was heard even when listening already ended', async () => {
+test('the second press sends what was heard even when listening already ended', async () => {
   jest.useFakeTimers();
   let rec;
   window.webkitSpeechRecognition = function Rec() {
@@ -74,14 +58,15 @@ test('letting go acts on what was heard even when listening already ended', asyn
   });
   await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
   fireEvent.keyDown(window, { key: 'PageUp' });
+  fireEvent.keyUp(window, { key: 'PageUp' });
   act(() => {
-    jest.advanceTimersByTime(600);
+    jest.advanceTimersByTime(800);
   });
   act(() => {
     rec.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: 'hey Ada are you ready' }], { isFinal: true })] });
-    rec.onend(); // Chrome ends it while the button is still held
+    rec.onend(); // Chrome ends it before the second press
   });
-  fireEvent.keyUp(window, { key: 'PageUp' });
+  fireEvent.keyDown(window, { key: 'PageUp' });
   await act(async () => {
     jest.advanceTimersByTime(2500);
     await Promise.resolve();
@@ -97,4 +82,28 @@ describe('the iPad script screen (2026-11-08)', () => {
     expect(b.map((x) => x.kind)).toEqual(['say', 'cue', 'list', 'yours']);
     expect(b[2].items).toHaveLength(2);
   });
+});
+
+test('a clicker that repeats its press while held does not flip listening on and off', async () => {
+  jest.useFakeTimers();
+  const started = [];
+  window.webkitSpeechRecognition = function Rec() {
+    this.start = () => started.push(1);
+    this.stop = () => {};
+  };
+  render(<Talk />);
+  await act(async () => {
+    await Promise.resolve();
+  });
+  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  for (let i = 0; i < 3; i++) {
+    fireEvent.keyDown(window, { key: 'PageUp' });
+    fireEvent.keyUp(window, { key: 'PageUp' });
+    act(() => {
+      jest.advanceTimersByTime(100);
+    });
+  }
+  expect(started).toHaveLength(1);
+  expect(screen.getByText(/press Back again to send/)).toBeInTheDocument();
+  delete window.webkitSpeechRecognition;
 });

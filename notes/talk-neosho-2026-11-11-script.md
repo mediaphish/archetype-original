@@ -8,7 +8,8 @@
 
 **Controls:**
 - **Clicker:** forward and back.
-- **Talk to the team:** hold Back, speak, then let go.
+- **Talk to the team:** press Back, speak, then press Back again to send.
+- **Going back a slide:** the Back button on the iPad.
 - **Phone:** the room photo.
 
 ---
@@ -17,7 +18,7 @@
 
 **SCREEN: AI and Leadership · Neosho Chamber of Commerce · Bart Paden, Archetype Original**
 
-*(Hold Back.)* "Hey Ada, are you ready to start our talk with the Neosho Chamber?"
+*(Press Back.)* "Hey Ada, are you ready to start our talk with the Neosho Chamber?"
 
 *(Ada answers out loud. Let it land. Smile.)*
 
@@ -90,7 +91,7 @@ I wanted to know how far into that house a small business could actually get. So
 
 I didn't hire seven people. I built seven roles, the same way I'd build a team if I were starting a company tomorrow. Each one knows my writing, my voice and my rules. Let me introduce them.
 
-*(Hold Back.)* "Team, say hi to Neosho."
+*(Press Back.)* "Team, say hi to Neosho."
 
 *(All seven introduce themselves, one at a time. Let the laughs happen. Bit and Red usually get one.)*
 
@@ -119,7 +120,7 @@ Let's do one for real.
 
 *(Take the photo with the phone page. It shows up on screen.)*
 
-Okay. *(Hold Back.)* "Okay Ada, start the demo."
+Okay. *(Press Back.)* "Okay Ada, start the demo."
 
 *(About 20 seconds while the team works. Fill it:)* Right now they're writing a post about being here with you today. No template. Nobody's typed anything.
 
@@ -129,7 +130,7 @@ Okay. *(Hold Back.)* "Okay Ada, start the demo."
 
 Now here's the part that matters. It's ready. It's good. And it doesn't go anywhere until I say so.
 
-*(Beat.)* *(Hold Back.)* "Looks good. Post it."
+*(Beat.)* *(Press Back.)* "Looks good. Post it."
 
 *(Ada confirms it's live. Open LinkedIn on the screen and show it.)*
 
@@ -152,7 +153,7 @@ I don't trust it.
 
 That's not a knock. It's the job. AI tells you something wrong in exactly the same voice it tells you something right. Same confidence. Same polish. No tells.
 
-And the team knows it. *(Hold Back.)* "Team, tell them about a time you got it wrong."
+And the team knows it. *(Press Back.)* "Team, tell them about a time you got it wrong."
 
 *(Jot, Des and Bit each own a real mistake, then say what changed. Let them land.)*
 - **Jot:** told the team four of your quote cards put words in your mouth. Wrong. It mixed up a caption with a quote. Now every card is checked word for word against what you wrote.
@@ -231,7 +232,7 @@ Thank you. *(Click.)*
 
 What've you got?
 
-*(If a question is about the team, you can ask them out loud. Hold Back: "Cam, how long did that post take?")*
+*(If a question is about the team, you can ask them out loud. Press Back, say their name and the question, press Back again. If it belongs to someone else, they'll hand it over.)*
 
 ---
 
