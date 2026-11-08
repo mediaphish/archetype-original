@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { parseTalkCommand, TEAM_LABELS, TEAM_ORDER } from '../../lib/talkCommands.js';
+import { parseTalkCommand, TEAM_LABELS, TEAM_ORDER, MISTAKE_ORDER } from '../../lib/talkCommands.js';
 import { avatarFor } from '../../components/ao/teamAvatars.js';
 
 /**
@@ -171,13 +171,13 @@ export default function Talk() {
   );
 
   const ask = useCallback(
-    async (agent, text) => {
+    async (agent, text, topic = '') => {
       setThinking(agent);
       try {
         const r = await fetch('/api/ao/talk/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ agent, text, slug, section_id: section?.id }),
+          body: JSON.stringify({ agent, text, slug, section_id: section?.id, topic }),
         });
         const j = await r.json().catch(() => ({}));
         setThinking(null);
@@ -247,6 +247,17 @@ export default function Talk() {
         const j = await ask(cmd.agent, cmd.text);
         if (j) await say(j.agent, j.reply);
         else setReply({ agent: cmd.agent, text: "Sorry, I didn't catch that. Say it once more?" });
+      }
+      if (cmd.type === 'mistakes') {
+        // Section 6: each one owns a real mistake in turn; the next is asked for while the current one speaks.
+        setReply(null);
+        let pending = ask(MISTAKE_ORDER[0], cmd.text, 'mistake');
+        for (let i = 0; i < MISTAKE_ORDER.length; i++) {
+          const j = await pending;
+          if (i + 1 < MISTAKE_ORDER.length) pending = ask(MISTAKE_ORDER[i + 1], cmd.text, 'mistake');
+          if (j) await say(j.agent, j.reply);
+        }
+        return;
       }
       if (cmd.type === 'team') {
         // Each teammate in turn: the next one's line is asked for while the current one speaks.

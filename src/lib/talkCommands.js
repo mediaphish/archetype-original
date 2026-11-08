@@ -22,6 +22,9 @@ export function parseTalkCommand(said) {
 
   if (/\b(start|run|open|begin)\b.*\bdemo\b/.test(t)) return { type: 'demo', agent };
   if (/\b(post it|send it|ship it|publish it|let'?s post|go ahead and post)\b/.test(t)) return { type: 'post', agent };
+  // "Team, tell them about a time you got it wrong": Jot, Des and Bit each own a
+  // real mistake (section 6, approved by Bart 2026-11-08).
+  if (/\b(team|everybody|everyone|y'?all)\b/.test(t) && /\b(got it wrong|get it wrong|mistakes?|messed up|screwed up|went wrong)\b/.test(t)) return { type: 'mistakes', agent: null, text: raw };
   // "Team, say hi to Neosho": every teammate introduces themselves, in order.
   if (/\b(team|everybody|everyone|y'?all)\b/.test(t) && /\b(say hi|say hello|introduce|meet)\b/.test(t)) return { type: 'team', agent: null, text: raw };
   if (/\b(next|forward)\b(\s+(slide|one|section))?/.test(t) && !/\bwhat'?s next\b/.test(t) && t.split(' ').length <= 8) return { type: 'next', agent };
@@ -36,6 +39,9 @@ export function parseTalkCommand(said) {
   if (agent) return { type: 'ask', agent, text: raw };
   return { type: 'none' };
 }
+
+/** Who owns a mistake in section 6, in order. Matches MISTAKE_ORDER in lib/ao/talkAsk.js. */
+export const MISTAKE_ORDER = ['jot', 'designer', 'it'];
 
 /** The order the team introduces itself. */
 export const TEAM_ORDER = ['auto', 'jot', 'reach', 'producer', 'editor', 'designer', 'it'];

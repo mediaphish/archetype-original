@@ -152,13 +152,14 @@ I don't trust it.
 
 That's not a knock. It's the job. AI tells you something wrong in exactly the same voice it tells you something right. Same confidence. Same polish. No tells.
 
-Three real examples, all from the last few weeks:
+And the team knows it. *(Hold Back.)* "Team, tell them about a time you got it wrong."
 
-**One.** My logo, the actual Archetype Original logo, was redrawn slightly wrong on every quote card for about two months. The top of the A was cut off. Nobody flagged it. Not the system, not the team. I caught it because I looked.
+*(Jot, Des and Bit each own a real mistake, then say what changed. Let them land.)*
+- **Jot:** told the team four of your quote cards put words in your mouth. Wrong. It mixed up a caption with a quote. Now every card is checked word for word against what you wrote.
+- **Des:** couldn't find an infographic you were reviewing and asked you to send it again. It was in your Queue the whole time. Now the team can see the Queue.
+- **Bit:** the afternoon the team spent about fifty dollars reviewing each other's reviews. Now there's a hard daily spending line, and Bit stops the work when it's hit.
 
-**Two.** My team raised an alarm that my quote cards were putting words in my mouth, quoting me saying things I never wrote. It was convincing. It was also wrong. The cards were fine. They'd confused a caption with a quote. If I'd just believed them, I'd have pulled good work for no reason.
-
-**Three.** One afternoon the team spent about fifty dollars handing work back and forth to each other. Reviewing each other's reviews. Nobody asked them to. I found it, fixed it, and now there's a hard stop.
+Here's mine. My logo, the actual Archetype Original logo, was redrawn slightly wrong on every quote card for about two months. The top of the A was cut off. Nobody flagged it. Not the system, not the team. I caught it because I looked.
 
 *[Optional, your story: the tattoos. It can't draw them right, so every picture of me has my sleeves down.]*
 

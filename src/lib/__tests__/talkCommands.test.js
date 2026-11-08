@@ -33,3 +33,11 @@ test('the call on stage posts the demo', () => {
   expect(parseTalkCommand('Looks good, post it.').type).toBe('post');
   expect(parseTalkCommand('Ada, ship it').type).toBe('post');
 });
+
+describe('section 6: the team owns its mistakes (2026-11-08)', () => {
+  test('asking the team about getting it wrong starts the mistakes round', () => {
+    expect(parseTalkCommand('Team, tell them about a time you got it wrong').type).toBe('mistakes');
+    expect(parseTalkCommand('Okay everybody, what mistakes have you made?').type).toBe('mistakes');
+    expect(parseTalkCommand('Team, say hi to Neosho').type).toBe('team');
+  });
+});
