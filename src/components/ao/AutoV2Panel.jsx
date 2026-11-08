@@ -3520,6 +3520,48 @@ export default function AutoV2Panel({ onNavigate, className,
     [handleSelectThread]
   );
 
+  // A journal post from the Queue opens in its own writing chat with the post
+  // itself in the panel, whatever the chat history says (2026-11-08).
+  const openPostFromQueue = useCallback(
+    async (post) => {
+      if (!post?.slug) return;
+      setQueueOpen(false);
+      setMobileTab('chat');
+      if (post.thread_id) {
+        await handleSelectThread({ id: post.thread_id });
+      } else {
+        try {
+          const res = await fetch('/api/ao/auto/thread/new', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            // ref makes a second click reopen this same chat instead of starting another.
+            body: JSON.stringify({ channel: 'writing', agent: 'jot', title: post.title || post.slug, ref: `post:${post.slug}` }),
+          });
+          const json = await res.json().catch(() => ({}));
+          if (res.ok && json.ok && json.thread?.id) {
+            setActiveThreadId(json.thread.id);
+            setMessages(Array.isArray(json.messages) ? json.messages : []);
+            await loadThreadList();
+          }
+        } catch (_) {
+          // The post still opens in the panel below.
+        }
+      }
+      try {
+        const res = await fetch(`/api/ao/auto/content-draft?slug=${encodeURIComponent(post.slug)}&kind=journal&include_published=1`);
+        const json = await res.json().catch(() => ({}));
+        if (res.ok && json?.ok && json?.draft) {
+          setArtifact({ type: 'draft', slug: post.slug, label: json.draft.title || post.title || post.slug, content: String(json.draft.content || '') });
+          setArtifactOpen(true);
+          setMobileArtifactOpen(true);
+        }
+      } catch (_) {
+        // The chat is open; the panel can be opened from it.
+      }
+    },
+    [handleSelectThread, loadThreadList]
+  );
+
   const startNewThread = useCallback(async (agentArg, channelKey = null) => {
     if (startingNew || sending || loading) return;
     setQueueOpen(false);
@@ -4916,7 +4958,7 @@ export default function AutoV2Panel({ onNavigate, className,
                 ‹ Channels
               </button>
             ) : null}
-            <QueueFeed onOpenThread={openThreadFromQueue} onCount={setQueueCount} />
+            <QueueFeed onOpenThread={openThreadFromQueue} onOpenPost={openPostFromQueue} onCount={setQueueCount} />
           </div>
         ) : null}
         {aiPause ? (

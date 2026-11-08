@@ -52,8 +52,12 @@ export function QuestionCard({ q, onOpenThread }) {
   );
 }
 
-export function PostCard({ post, onOpenThread }) {
+export function PostCard({ post, onOpenThread, onOpenPost }) {
+  // "Open the post" opens the post (2026-11-08). It used to open whichever chat
+  // last mentioned the title, which for The Eli Archetype was Vox's weekly
+  // notes. Bart: "a button labeled 'Open the post' should open the post."
   const open = () => {
+    if (onOpenPost) return onOpenPost(post);
     if (post.thread_id) return onOpenThread(post.thread_id);
     window.location.href = discussUrl({ text: `about "${post.title}": `, agent: 'jot', topic: post.title, channel: 'writing' });
   };
@@ -68,7 +72,7 @@ export function PostCard({ post, onOpenThread }) {
   );
 }
 
-export default function QueueFeed({ onOpenThread, onCount, className = '' }) {
+export default function QueueFeed({ onOpenThread, onOpenPost, onCount, className = '' }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
 
@@ -134,7 +138,7 @@ export default function QueueFeed({ onOpenThread, onCount, className = '' }) {
 
           {(data?.posts || []).map((p) => (
             <QueuePost key={`p-${p.slug}`} agent="jot" what={p.step === 'brief' ? 'journal brief' : 'journal post'}>
-              <PostCard post={p} onOpenThread={onOpenThread} />
+              <PostCard post={p} onOpenThread={onOpenThread} onOpenPost={onOpenPost} />
             </QueuePost>
           ))}
 

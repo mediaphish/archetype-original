@@ -49,3 +49,14 @@ test('nothing waiting says so', async () => {
   render(<QueueFeed onOpenThread={() => {}} />);
   await waitFor(() => expect(screen.getByText(/Nothing is waiting on you/)).toBeInTheDocument());
 });
+
+test('"Open the post" opens the post, not whatever chat mentioned it (2026-11-08)', () => {
+  const { PostCard } = require('../QueueFeed.jsx');
+  const openPost = jest.fn();
+  const openThread = jest.fn();
+  const post = { slug: 'the-eli-archetype', title: 'The Eli Archetype', label: 'The post is ready for your read', step: 'read', thread_id: 'vox-look-ahead' };
+  render(<PostCard post={post} onOpenThread={openThread} onOpenPost={openPost} />);
+  fireEvent.click(screen.getByText('Open the post'));
+  expect(openPost).toHaveBeenCalledWith(post);
+  expect(openThread).not.toHaveBeenCalled();
+});
