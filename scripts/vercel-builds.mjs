@@ -17,6 +17,7 @@
  */
 import fs from 'fs';
 import path from 'path';
+import { minimatch } from 'minimatch';
 
 const root = process.cwd();
 const WRITING = ['public/knowledge.json', 'public/devotional-schedule.json', 'data/knowledge-full.json'];
@@ -87,33 +88,65 @@ export function entryFor(src) {
   return { src, use: '@vercel/node', config: { includeFiles } };
 }
 
+// The host matches each entry's src as a pattern. Square brackets ([id].js)
+// read as a pattern of their own and match nothing, so each becomes "?", and
+// the check below proves every program is matched exactly once. The host also
+// allows at most 128 entries, so programs that need the same files share one.
+const safe = (p) => p.replace(/[[\]]/g, '?');
+const matches = (file, src) => minimatch(file, src);
+const isApi = (b) => b.src.startsWith('api/') || b.src.startsWith('{api/');
+
 function plan(config) {
   const builds = config.builds || [];
-  const handWritten = builds.filter((b) => !b.src.startsWith('api/') || (!b.src.includes('*') && !b.config?.generatedBy));
-  const own = new Set(handWritten.map((b) => b.src));
-  const generated = serverPrograms()
-    .filter((src) => !own.has(src))
-    .map((src) => {
-      const e = entryFor(src);
-      return { src: e.src, use: e.use, config: { ...e.config, generatedBy: 'scripts/vercel-builds.mjs' } };
-    });
+  const handWritten = builds
+    .filter((b) => !isApi(b) || (!b.src.includes('*') && !b.config?.generatedBy))
+    .map((b) => (isApi(b) ? { ...b, src: safe(b.src) } : b));
+  const programs = serverPrograms();
+  const own = new Set(programs.filter((f) => handWritten.some((b) => isApi(b) && matches(f, b.src))));
+  const groups = new Map();
+  for (const src of programs.filter((f) => !own.has(f))) {
+    const { includeFiles } = entryFor(src).config;
+    const key = JSON.stringify(includeFiles);
+    if (!groups.has(key)) groups.set(key, { includeFiles, files: [] });
+    groups.get(key).files.push(src);
+  }
+  const generated = [...groups.values()].map(({ includeFiles, files }) => ({
+    src: files.length === 1 ? safe(files[0]) : `{${files.map(safe).join(',')}}`,
+    use: '@vercel/node',
+    config: { includeFiles, generatedBy: 'scripts/vercel-builds.mjs' },
+  }));
   return [...handWritten, ...generated];
+}
+
+/** Every program matched by exactly one entry, every entry matching something, and under the host's limit. */
+function problems(builds) {
+  const out = [];
+  if (builds.length > 128) out.push(`${builds.length} build entries; the host allows 128`);
+  const api = builds.filter(isApi);
+  for (const f of serverPrograms()) {
+    const n = api.filter((b) => matches(f, b.src)).length;
+    if (n !== 1) out.push(`${f} is matched by ${n} entries`);
+  }
+  for (const b of api) if (!serverPrograms().some((f) => matches(f, b.src))) out.push(`${b.src.slice(0, 80)} matches no program`);
+  return out;
 }
 
 const vercelPath = path.join(root, 'vercel.json');
 const config = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
 const next = plan(config);
+const issues = problems(next);
+if (issues.length) {
+  console.error(`vercel-builds: ${issues.slice(0, 10).join('; ')}`);
+  process.exit(1);
+}
 
 if (process.argv.includes('--write')) {
   config.builds = next;
   fs.writeFileSync(vercelPath, `${JSON.stringify(config, null, 2)}\n`);
   const gen = next.filter((b) => b.config?.generatedBy);
-  console.log(`vercel-builds: wrote ${gen.length} generated entries (${gen.filter((b) => b.config.includeFiles.includes(WRITING[0])).length} with writing files, ${gen.filter((b) => b.config.includeFiles.includes(ART[0])).length} with fonts).`);
+  console.log(`vercel-builds: wrote ${next.length} entries; ${gen.length} shared entries cover ${serverPrograms().length - next.filter((b) => isApi(b) && !b.config?.generatedBy).length} programs.`);
 } else {
-  const want = JSON.stringify(next);
-  const have = JSON.stringify(config.builds);
-  const catchAll = (config.builds || []).some((b) => b.src.startsWith('api/') && b.src.includes('*'));
-  if (catchAll || want !== have) {
+  if (JSON.stringify(next) !== JSON.stringify(config.builds)) {
     console.error('vercel-builds: vercel.json is out of date (a server program was added or now reads different files). Run: node scripts/vercel-builds.mjs --write');
     process.exit(1);
   }
