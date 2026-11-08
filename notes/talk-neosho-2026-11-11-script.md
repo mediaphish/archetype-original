@@ -79,7 +79,13 @@ Most of us stop at the front door. "Write me an email." "Fix this paragraph." "G
 
 The house behind it is work that keeps going when you're not there. Research that's done before you ask. Posts that go out on schedule, in your voice, about your real work. Follow-ups that don't fall through the cracks. Somebody who notices something's broken before your customer does.
 
-I wanted to know how far into that house a small business could actually get. So I built it for myself. *(Click.)*
+I wanted to know how far into that house a small business could actually get. So I built it for myself.
+
+*(Press Back.)* "Hey Bit, give them a run down on what it took to get here today."
+
+*(Bit tells the room what it was built with, that you just told Claude what you wanted, that it's an oversimplification (two years, started on ChatGPT in 2024, now on Claude), and how many tokens the team has used. Let it land.)*
+
+*(Click.)*
 
 ---
 

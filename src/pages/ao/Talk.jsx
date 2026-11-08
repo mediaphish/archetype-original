@@ -260,7 +260,7 @@ export default function Talk() {
       }
       if (cmd.type === 'ask') {
         setReply(null);
-        const j = await ask(cmd.agent, cmd.text);
+        const j = await ask(cmd.agent, cmd.text, cmd.topic || '');
         if (j) await say(j.agent, j.reply);
         // "That's Bit's world, let me hand it over" (2026-11-08): the teammate it
         // belongs to answers right after, on their own.

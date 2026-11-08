@@ -41,3 +41,9 @@ describe('section 6: the team owns its mistakes (2026-11-08)', () => {
     expect(parseTalkCommand('Team, say hi to Neosho').type).toBe('team');
   });
 });
+
+test("Bart's cue sends Bit his how-it-was-built rundown (2026-11-08)", () => {
+  expect(parseTalkCommand('Hey Bit, give them a run down on what it took to get here today.')).toMatchObject({ type: 'ask', agent: 'it', topic: 'built' });
+  expect(parseTalkCommand('Hey Bit, give them a rundown on what it took to get here today')).toMatchObject({ topic: 'built' });
+  expect(parseTalkCommand('Bit, is everything connected?').topic).toBeUndefined();
+});

@@ -36,6 +36,9 @@ export function parseTalkCommand(said) {
   const num = /\bslide\s+(?:number\s+)?(\d{1,2}|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b/.exec(t);
   if (num) return { type: 'goto', index: (NUMBER_WORDS[num[1]] || Number(num[1])) - 1, agent };
 
+  // "Bit, tell them how all this was built" (2026-11-08): Bit's scripted moment.
+  // Bart's cue: "Hey Bit, give them a run down on what it took to get here today."
+  if (agent === 'it' && (/\b(run ?down|what it took|get here|got here)\b/.test(t) || (/\b(built|build|made)\b/.test(t) && /\b(how|what)\b/.test(t)))) return { type: 'ask', agent, text: raw, topic: 'built' };
   if (agent) return { type: 'ask', agent, text: raw };
   return { type: 'none' };
 }
