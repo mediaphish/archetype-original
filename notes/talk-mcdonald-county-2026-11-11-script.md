@@ -81,7 +81,7 @@ Some will tell you customer service is next. Companies will try. I think we end 
 
 Then add robots. A year ago most of us would have said a manufacturing floor or some of the trades were safe. That isn't as certain as it used to be.
 
-I'm not saying this to scare you. I'm saying it because the people in this room employ people, and you're going to make decisions about this whether you choose to or not.
+I'm not saying this to scare you. I'm saying it because some of the people in this room employ people, and you're going to make decisions about this whether you choose to or not.
 
 Here's what I believe. The work changes before the people have to. The person who learns to use it, who becomes the one directing it, becomes more valuable, not less. The business that waits is the one that gets caught off guard. *(Click.)*
 
