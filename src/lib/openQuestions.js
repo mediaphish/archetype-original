@@ -69,8 +69,14 @@ export function openQuestions(messages) {
     if (!m || isTeamNote(m)) return;
     if (m.role === 'assistant') {
       const question = questionOf(m.content);
-      if (!question) return;
       const agent = m.meta?.agent || 'auto';
+      // A teammate who speaks again without asking has moved on: their earlier
+      // question is answered by the work (2026-11-08: Jot's "Should the full Eli
+      // draft replace your approved outline?" stayed pinned after Jot saved it).
+      if (!question) {
+        open = open.filter((q) => q.agent !== agent);
+        return;
+      }
       open = open.filter((q) => q.agent !== agent); // a teammate's newer question replaces their older one
       open.push({ id: String(m.id || i), agent, name: TEAM_NAMES[agent] || 'Ada', question, yesNo: YES_NO.test(question) });
     } else if (m.role === 'user') {

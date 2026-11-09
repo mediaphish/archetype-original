@@ -41,3 +41,12 @@ test('a status note that ends in a title is not a question to Bart', () => {
   expect(questionOf('Bart, which day works?')).toBe('Bart, which day works?');
   expect(questionOf('Here it is. Want me to move it to Friday?')).toBe('Want me to move it to Friday?');
 });
+
+test('a teammate who moves on without asking again closes their earlier question (2026-11-08)', () => {
+  const msgs = [
+    { id: '1', role: 'assistant', meta: { agent: 'jot' }, content: 'Jot: The full draft is below.\n\nShould the full Eli draft replace your approved outline?' },
+    { id: '2', role: 'assistant', meta: { agent: 'jot' }, content: 'Jot: The Eli Archetype is now saved on the Eli post.' },
+  ];
+  expect(openQuestions(msgs)).toEqual([]);
+  expect(openQuestions(msgs.slice(0, 1))).toHaveLength(1);
+});
