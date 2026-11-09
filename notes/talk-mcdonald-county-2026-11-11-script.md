@@ -186,6 +186,8 @@ So here's the rule: you don't hand AI the keys and walk away. You lead it. You c
 - The human factor is always missing.
 - The room, the relationship, the judgment call. Those stay yours.
 
+*(About 20 seconds into this slide, Jot cuts in with local news: McDonald County R-1 Schools and Walmart filled a bus with winter clothes for students. React, then use it: that's exactly the kind of thing no report shows you.)*
+
 Here's the other limit, and this one doesn't go away with better technology.
 
 It only knows what it's been given. And what it's been given is always incomplete.
