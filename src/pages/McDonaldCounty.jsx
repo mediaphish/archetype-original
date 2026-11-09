@@ -73,9 +73,13 @@ export default function McDonaldCounty() {
           <p className={`${eyebrow} mb-4 text-[#A8A9AD]`}>The talk in short</p>
           <div className="space-y-4 text-lg leading-relaxed">
             <p>
-              Forget the headlines. AI isn’t coming for your job, it won’t replace your people, and it isn’t magic. Set up
-              well, it helps people with real work. It reads fast, writes fast, and is sometimes wrong with total confidence.
-              If the plan is to replace employees with it, that’s the wrong plan.
+              Forget the headlines. AI isn’t coming for every job, and it isn’t magic. Set up well, it helps people with real
+              work. It reads fast, writes fast, and is sometimes wrong with total confidence.
+            </p>
+            <p>
+              But be honest about it: some jobs will change and some will go away. Work built on the same steps every day
+              goes first. The people who learn to direct AI become more valuable, not less, and the business that waits is
+              the one that gets caught off guard.
             </p>
             <p>
               Most of us use about 5% of it. The rest is work that keeps going when you’re not in the room, but only if

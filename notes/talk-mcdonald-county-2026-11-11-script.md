@@ -40,7 +40,7 @@ So I'm going to talk to you about AI the way I'd talk to you about a new hire. N
 ## 2. Forget the headlines (5 min)
 
 **SCREEN: Forget the headlines.**
-- It is not coming for your job.
+- It is not coming for every job.
 - It is not going to end the world.
 - It is not magic either.
 
@@ -56,7 +56,7 @@ Now keep it up if you've seen one that made it sound like it's going to do your 
 
 Both of those headlines are selling something. Fear gets clicks. Hype gets clicks. Neither one helps you run a business on Monday morning.
 
-Here's what it actually is. It's a tool. A really strong one. It reads fast, writes fast, finds patterns, and never gets tired. It's also imperfect, and it changes every few months. That's it. Not a monster, not a miracle.
+Here's what it actually is. It's a tool. A really strong one. It reads fast, writes fast, finds patterns, and never gets tired. It's also imperfect, and it changes every few months. That's it. Not a monster, not a miracle. It's not coming for every job, and the people who learn to use it well become more valuable, not less.
 
 The fear keeps people from trying it. The hype keeps people from using it well, because they expect magic, they get something that needs managing, and they quit.
 
@@ -64,7 +64,28 @@ Both cost you. *(Click.)*
 
 ---
 
-## 3. You're using about 5% of it (5 min)
+## 3. The elephant in the room (4 min)
+
+**SCREEN: The elephant in the room**
+- Some jobs will change. Some will go away.
+- Repetitive, button-pushing work goes first.
+- Even work we called safe a year ago.
+
+Now I owe you the honest part. I just told you not to panic. That's not the same as telling you nothing is changing.
+
+Some jobs are at risk. If most of a job is pushing the same buttons, moving information from one screen to another, or answering the same questions the same way, AI is going to do that work. It's already starting. And it isn't only entry-level work. Some higher-level jobs that follow a pattern are in the same spot.
+
+This isn't just my opinion. The World Economic Forum surveyed employers around the world, and the jobs they expect to shrink fastest are the ones built on the same steps every day: data entry, bookkeeping and payroll, bank tellers, cashiers, administrative work, a lot of customer service.
+
+Then add robots. A year ago most of us would have said a manufacturing floor or some of the trades were safe. That isn't as certain as it used to be.
+
+I'm not saying this to scare you. I'm saying it because the people in this room employ people, and you're going to make decisions about this whether you choose to or not.
+
+Here's what I believe. The work changes before the people have to. The person who learns to use it, who becomes the one directing it, becomes more valuable, not less. The business that waits is the one that gets caught off guard. *(Click.)*
+
+---
+
+## 4. You're using about 5% of it (5 min)
 
 **SCREEN: You're using about 5% of it.**
 - Asking a chatbot a question is the front door.
@@ -94,7 +115,7 @@ I wanted to know how far into that house a small business could actually get. So
 
 ---
 
-## 4. Meet my team (5 min)
+## 5. Meet my team (5 min)
 
 **SCREEN: Meet my team.**
 - Seven teammates. One job each.
@@ -121,7 +142,7 @@ That's not a tech decision. That's a leadership decision. *(Click.)*
 
 ---
 
-## 5. Live from the room (8 min)
+## 6. Live from the room (8 min)
 
 **SCREEN: LIVE · Live from the room · One photo. One request. A real post.**
 
@@ -151,7 +172,7 @@ That's real, and it's on my LinkedIn right now. You can go look.
 
 ---
 
-## 6. I don't trust it (7 min)
+## 7. I don't trust it (7 min)
 
 **SCREEN: I don't trust it.**
 - It is wrong with total confidence.
@@ -181,7 +202,7 @@ So here's the rule: you don't hand AI the keys and walk away. You lead it. You c
 
 ---
 
-## 7. It never has the whole picture (5 min)
+## 8. It never has the whole picture (5 min)
 
 **SCREEN: It never has the whole picture.**
 - The data is always incomplete.
@@ -204,7 +225,7 @@ Those stay yours. Don't hand them off. *(Click.)*
 
 ---
 
-## 8. There is no easy button (4 min)
+## 9. There is no easy button (4 min)
 
 **SCREEN: There is no easy button.**
 - It costs real money.
@@ -221,7 +242,7 @@ Anybody who tells you it's easy is selling you something. *(Click.)*
 
 ---
 
-## 9. Lead it like you lead people (2 min)
+## 10. Lead it like you lead people (2 min)
 
 **SCREEN: Lead it like you lead people.**
 - Set the goal.
@@ -243,7 +264,7 @@ Thank you. *(Click.)*
 
 ---
 
-## 10. Questions (15 min)
+## 11. Questions (15 min)
 
 **SCREEN: Questions**
 - Want help with AI in your business? Let's talk.
@@ -264,6 +285,7 @@ What've you got?
 |---|---|
 | Opening | 4 |
 | Headlines | 5 |
+| Elephant in the room | 4 |
 | 5% | 5 |
 | Team | 5 |
 | Demo | 8 |
@@ -271,5 +293,5 @@ What've you got?
 | Whole picture | 5 |
 | Easy button | 4 |
 | Close | 2 |
-| **Talk total** | **45** |
+| **Talk total** | **49** |
 | Questions | 15 |
