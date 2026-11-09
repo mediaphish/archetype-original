@@ -70,7 +70,8 @@ Both cost you. *(Click.)*
 - Some jobs will change. Some will go away.
 - Repetitive, button-pushing work goes first.
 - Even work we called safe a year ago.
-- RemAIning Human: free for McDonald County Chamber members, with the QR code
+- RemAIning Human is free with code MCCFREE.
+- The QR code to the RemAIning Human page
 
 Now I owe you the honest part. I just told you not to panic. That's not the same as telling you nothing is changing.
 
@@ -88,7 +89,7 @@ Here's what I believe. The work changes before the people have to. The person wh
 
 That's exactly why I wrote a book called *RemAIning Human*. It's a field guide for leaders working through all of this, the speed, the pressure and AI, without losing clarity, trust or responsibility.
 
-And I want every one of you to have it. It's free for everyone in this room today. Scan the code on the screen, and the free copy is right there. *(Click.)*
+And I want every one of you to have it. It's free for everyone in this room today. Scan the code on the screen, and when you check out, type MCCFREE. That's M, C, C, free. *(Click.)*
 
 ---
 

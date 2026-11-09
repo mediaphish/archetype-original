@@ -76,7 +76,7 @@ export default function RemainingHuman() {
           imagePath: '/images/remaining-human/cover-front.png',
           bookFormat: 'EBook',
           offer: {
-            price: '27',
+            price: '35',
             url:
               import.meta.env.VITE_REMAINING_HUMAN_SAMCART_URL ||
               'https://aobooks.mysamcart.com/archetype-original/',
@@ -153,7 +153,7 @@ export default function RemainingHuman() {
                 </p>
 
                 <div className="mt-8">
-                  <CheckoutButton className={heroCtaClasses}>Get the eBook — $27</CheckoutButton>
+                  <CheckoutButton className={heroCtaClasses}>Get the eBook — $35</CheckoutButton>
                   <p className="mt-3 text-sm text-[#C3DFD8]">Digital download · One-time purchase.</p>
                 </div>
 
@@ -267,7 +267,7 @@ export default function RemainingHuman() {
                 tactics. A way to think clearly when everything else speeds up.
               </p>
               <div className="mt-8">
-                <CheckoutButton className={midCtaClasses}>Get the eBook — $27</CheckoutButton>
+                <CheckoutButton className={midCtaClasses}>Get the eBook — $35</CheckoutButton>
                 <p className="mt-3 text-sm text-[#B8DDD4]">Digital download · One-time purchase.</p>
               </div>
             </div>
@@ -415,7 +415,7 @@ export default function RemainingHuman() {
                 organization—this book will help you see it and respond with intention.
               </p>
               <div className="mt-10">
-                <CheckoutButton className={finalCtaClasses}>Get the eBook — $27</CheckoutButton>
+                <CheckoutButton className={finalCtaClasses}>Get the eBook — $35</CheckoutButton>
                 <p className="mt-3 text-sm text-[#3D625C]">Digital download · One-time purchase.</p>
               </div>
               {!isCheckoutReady && (
