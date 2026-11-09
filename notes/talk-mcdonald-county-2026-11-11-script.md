@@ -1,6 +1,6 @@
 # AI and Leadership: full script, draft 1
 
-**Event:** Neosho Chamber of Commerce lunch and learn, Wednesday, November 11, 2026.
+**Event:** McDonald County Chamber lunch and learn, Wednesday, November 11, 2026.
 
 **Length:** about 45 minutes, then 15 minutes of questions.
 
@@ -17,9 +17,9 @@
 
 ## 1. Opening (4 min)
 
-**SCREEN: AI and Leadership · Neosho Chamber of Commerce · Bart Paden, Archetype Original**
+**SCREEN: AI and Leadership · McDonald County Chamber · Bart Paden, Archetype Original**
 
-*(Press Back.)* "Hey Ada, are you ready to start our talk with the Neosho Chamber?"
+*(Press Back.)* "Hey Ada, are you ready to start our talk with the McDonald County Chamber?"
 
 *(Ada answers out loud. Let it land. Smile.)*
 
@@ -43,8 +43,6 @@ So I'm going to talk to you about AI the way I'd talk to you about a new hire. N
 - It is not coming for your job.
 - It is not going to end the world.
 - It is not magic either.
-
-*(About 20 seconds into this slide, Vox cuts in on her own to congratulate the Wildcats on beating Branson 34 to 31. Let her, react, then carry on.)*
 
 Raise your hand if you've seen a headline this year that made AI sound like the end of the world.
 
@@ -102,7 +100,7 @@ I wanted to know how far into that house a small business could actually get. So
 
 I didn't hire seven people. I built seven roles, the same way I'd build a team if I were starting a company tomorrow. Each one knows my writing, my voice and my rules. Let me introduce them.
 
-*(Press Back.)* "Team, say hi to Neosho."
+*(Press Back.)* "Team, say hi to McDonald County."
 
 *(All seven introduce themselves, one at a time. Let the laughs happen. Bit and Red usually get one.)*
 
@@ -246,7 +244,7 @@ Thank you. *(Click.)*
 **SCREEN: Questions**
 - Want help with AI in your business? Let's talk.
 - bart@archetypeoriginal.com
-- The QR code to archetypeoriginal.com/neosho
+- The QR code to archetypeoriginal.com/mcdonald-county
 
 *(About 5 seconds in, Ada cuts in: if anyone wants to talk with you about AI in their own business, you do that. A plan and help putting it to work, not a custom app. Grab you after, or scan the code.)*
 

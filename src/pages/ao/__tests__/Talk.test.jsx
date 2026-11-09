@@ -1,5 +1,5 @@
 /**
- * The talk view for the Neosho Chamber (2026-10-28): the clicker moves the
+ * The talk view for the McDonald County Chamber (2026-10-28): the clicker moves the
  * screens, and holding Back listens instead of going back.
  */
 import React from 'react';
@@ -7,10 +7,10 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import Talk from '../Talk.jsx';
 
 const talk = {
-  slug: 'neosho-chamber-2026',
+  slug: 'mcdonald-county-chamber-2026',
   title: 'AI and Leadership',
   sections: [
-    { id: 'open', kind: 'slide', title: 'AI and Leadership', lines: ['Neosho Chamber of Commerce'] },
+    { id: 'open', kind: 'slide', title: 'AI and Leadership', lines: ['McDonald County Chamber'] },
     { id: 'demo', kind: 'demo', title: 'Live from the room', lines: ['One photo. One request. A real post.'] },
     { id: 'trust', kind: 'slide', title: "I don't trust it", lines: ['You have to own it.'] },
   ],
@@ -26,7 +26,7 @@ afterEach(() => {
 
 test('Page Down moves forward; Back no longer moves back (it talks)', async () => {
   render(<Talk />);
-  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
   fireEvent.keyDown(window, { key: 'PageDown' });
   expect(screen.getByText('Live from the room')).toBeInTheDocument();
   expect(screen.getByText('Live')).toBeInTheDocument();
@@ -56,7 +56,7 @@ test('the second press sends what was heard even when listening already ended', 
   await act(async () => {
     await Promise.resolve();
   });
-  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
   fireEvent.keyDown(window, { key: 'PageUp' });
   fireEvent.keyUp(window, { key: 'PageUp' });
   act(() => {
@@ -102,7 +102,7 @@ test("a teammate's message fades a few seconds after it is spoken (2026-11-08)",
   await act(async () => {
     await Promise.resolve();
   });
-  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
   fireEvent.keyDown(window, { key: 'PageUp' });
   act(() => {
     jest.advanceTimersByTime(500);
@@ -145,7 +145,7 @@ test('a teammate cuts in once, on their own, some seconds into a slide (2026-11-
   await act(async () => {
     await Promise.resolve();
   });
-  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
   expect(screen.queryByText('Go Wildcats!')).not.toBeInTheDocument();
   for (let i = 0; i < 5; i++) {
     await act(async () => {
@@ -168,7 +168,7 @@ test('two quick presses of Back go back a slide instead of talking (2026-11-08)'
   await act(async () => {
     await Promise.resolve();
   });
-  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
   fireEvent.keyDown(window, { key: 'PageDown' });
   expect(screen.getByText('Live from the room')).toBeInTheDocument();
   fireEvent.keyDown(window, { key: 'PageUp' });
@@ -179,7 +179,7 @@ test('two quick presses of Back go back a slide instead of talking (2026-11-08)'
   act(() => {
     jest.advanceTimersByTime(1000);
   });
-  expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument();
+  expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument();
   expect(started).toHaveLength(0);
   delete window.webkitSpeechRecognition;
 });
@@ -194,7 +194,7 @@ test('while listening, Next stops it instead of moving on (2026-11-08)', async (
   await act(async () => {
     await Promise.resolve();
   });
-  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
   fireEvent.keyDown(window, { key: 'PageUp' });
   act(() => {
     jest.advanceTimersByTime(500);
@@ -206,7 +206,7 @@ test('while listening, Next stops it instead of moving on (2026-11-08)', async (
     await Promise.resolve();
   });
   expect(screen.queryByText(/press Back or Next to send/)).not.toBeInTheDocument();
-  expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument();
+  expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument();
   delete window.webkitSpeechRecognition;
 });
 
@@ -217,10 +217,10 @@ test('starting over goes to the title slide and tells the server to forget the r
     return { ok: true, status: 200, json: async () => ({ ok: true, talk }) };
   });
   render(<Talk />);
-  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
   fireEvent.keyDown(window, { key: 'PageDown' });
   expect(screen.getByText('Live from the room')).toBeInTheDocument();
   fireEvent.keyDown(window, { key: 'Escape' });
-  expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument();
+  expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument();
   await waitFor(() => expect(calls.some(([u, b]) => u.includes('/api/ao/talk/remote') && b.includes('"reset"'))).toBe(true));
 });

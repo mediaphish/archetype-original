@@ -3,7 +3,7 @@
  * per slide, so the iPad presenter screen (/ao/remote) shows what Bart says
  * on each slide (2026-11-08).
  *
- *   node --env-file=.env.local scripts/talk-script-to-db.mjs notes/talk-neosho-2026-11-11-script.md neosho-chamber-2026
+ *   node --env-file=.env.local scripts/talk-script-to-db.mjs notes/talk-mcdonald-county-2026-11-11-script.md mcdonald-county-chamber-2026
  *
  * The script's "## 1. ..." headings map to the talk's slides in order. The
  * SCREEN block is left out, since the iPad shows the slide's own lines.

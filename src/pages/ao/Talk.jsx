@@ -4,7 +4,7 @@ import { avatarFor } from '../../components/ao/teamAvatars.js';
 
 /**
  * A talk given from inside Auto, on the big screen (2026-10-28, first: the
- * Neosho Chamber, Nov 11). Bart: "Maybe instead of a slide deck. We have the
+ * McDonald County Chamber, Nov 11). Bart: "Maybe instead of a slide deck. We have the
  * whole talk built out in Auto?" and "Let's explore voice."
  *
  * Clicker (Logitech R500s): Page Down / Page Up, or the arrow keys and space.
@@ -16,7 +16,7 @@ import { avatarFor } from '../../components/ao/teamAvatars.js';
 const DOUBLE_PRESS_MS = 450;
 const LISTEN_MAX_MS = 20000;
 const REPLY_HOLD_MS = 6000;
-const DEFAULT_SLUG = 'neosho-chamber-2026';
+const DEFAULT_SLUG = 'mcdonald-county-chamber-2026';
 
 function useSpeech() {
   const recRef = useRef(null);

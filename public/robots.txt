@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /occ
-Disallow: /neosho
+Disallow: /mcdonald-county
 
 Sitemap: https://www.archetypeoriginal.com/sitemap.xml

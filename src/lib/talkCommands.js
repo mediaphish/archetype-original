@@ -28,7 +28,7 @@ export function parseTalkCommand(said) {
   // another way was silently dropped).
   const everyone = /\b(team|everybody|everyone|y'?all|you all|you guys|guys|folks|crew|all of you)\b/.test(t);
   if (everyone && /\b(got it wrong|get it wrong|mistakes?|messed up|screwed up|went wrong)\b/.test(t)) return { type: 'mistakes', agent: null, text: raw };
-  // "Team, say hi to Neosho": every teammate introduces themselves, in order.
+  // "Team, say hi to McDonald County": every teammate introduces themselves, in order.
   if (everyone && /\b(say hi|say hello|introduce|introductions?|intros?|meet|who you are|who they are)\b/.test(t)) return { type: 'team', agent: null, text: raw };
   if (/\bintroduce (yourselves|themselves)\b/.test(t)) return { type: 'team', agent: null, text: raw };
   if (/\b(next|forward)\b(\s+(slide|one|section))?/.test(t) && !/\bwhat'?s next\b/.test(t) && t.split(' ').length <= 8) return { type: 'next', agent };

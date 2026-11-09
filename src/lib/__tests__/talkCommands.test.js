@@ -1,6 +1,6 @@
 import { parseTalkCommand } from '../talkCommands.js';
 
-// 2026-10-28: Bart's examples for the Neosho talk.
+// 2026-10-28: Bart's examples for the chamber talk.
 test('slide moves are understood without asking anyone', () => {
   expect(parseTalkCommand('Great, @ada, give me the first slide...')).toEqual({ type: 'goto', index: 0, agent: 'auto' });
   expect(parseTalkCommand('Next slide').type).toBe('next');
@@ -11,10 +11,10 @@ test('slide moves are understood without asking anyone', () => {
 });
 
 test('anything else said to a teammate goes to that teammate', () => {
-  expect(parseTalkCommand('Hey @ada, are you ready to start our talk with the Neosho Chamber?')).toEqual({
+  expect(parseTalkCommand('Hey @ada, are you ready to start our talk with the McDonald County Chamber?')).toEqual({
     type: 'ask',
     agent: 'auto',
-    text: 'Hey @ada, are you ready to start our talk with the Neosho Chamber?',
+    text: 'Hey @ada, are you ready to start our talk with the McDonald County Chamber?',
   });
   expect(parseTalkCommand('Bit, is everything connected?')).toMatchObject({ type: 'ask', agent: 'it' });
 });
@@ -25,7 +25,7 @@ test('talk to the room is left alone', () => {
 });
 
 test('the whole team says hi on cue', () => {
-  expect(parseTalkCommand('Team, say hi to Neosho.').type).toBe('team');
+  expect(parseTalkCommand('Team, say hi to McDonald County.').type).toBe('team');
   expect(parseTalkCommand('Okay everybody, introduce yourselves').type).toBe('team');
 });
 
@@ -38,7 +38,7 @@ describe('section 6: the team owns its mistakes (2026-11-08)', () => {
   test('asking the team about getting it wrong starts the mistakes round', () => {
     expect(parseTalkCommand('Team, tell them about a time you got it wrong').type).toBe('mistakes');
     expect(parseTalkCommand('Okay everybody, what mistakes have you made?').type).toBe('mistakes');
-    expect(parseTalkCommand('Team, say hi to Neosho').type).toBe('team');
+    expect(parseTalkCommand('Team, say hi to McDonald County').type).toBe('team');
   });
 });
 
@@ -49,7 +49,7 @@ test("Bart's cue sends Bit his how-it-was-built rundown (2026-11-08)", () => {
 });
 
 test('an intro request said any common way reaches the whole team (2026-11-08)', () => {
-  for (const said of ['Team, say hi to Neosho', 'Can you all introduce yourselves', 'Guys, introduce yourselves to the room', 'Everybody, tell them who you are', 'Crew, quick intros please']) {
+  for (const said of ['Team, say hi to McDonald County', 'Can you all introduce yourselves', 'Guys, introduce yourselves to the room', 'Everybody, tell them who you are', 'Crew, quick intros please']) {
     expect(parseTalkCommand(said).type).toBe('team');
   }
 });

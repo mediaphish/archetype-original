@@ -1,4 +1,4 @@
--- A talk Bart gives from inside Auto (2026-10-28, first: Neosho Chamber,
+-- A talk Bart gives from inside Auto (2026-10-28, first: McDonald County Chamber,
 -- Nov 11). Applied as migration talks. Server-only (RLS on, no policies).
 -- sections: [{ id, kind: 'slide' | 'demo', title, lines: [text], image, notes, minutes }]
 -- See notes/PLAN-talk-mode.md.

@@ -1,8 +1,8 @@
 /**
- * /neosho: the landing page for one talk. Bart Paden, "AI and Leadership,"
- * Neosho Chamber of Commerce lunch and learn, Wednesday, November 11, 2026.
- * Chamber members reach it from the QR code on the last slide
- * (public/neosho/neosho-qr.svg and .png). Built like /occ (Bart, 2026-11-08):
+ * /mcdonald-county: the landing page for one talk. Bart Paden, "AI and
+ * Leadership," McDonald County Chamber lunch and learn, Wednesday, November 11,
+ * 2026. Chamber members reach it from the QR code on the last slide
+ * (public/mcdonald-county/mcdonald-county-qr.svg and .png). Built like /occ (Bart, 2026-11-08):
  * what the talk said, five steps, a free copy of Remaining Human, and how to
  * reach him.
  *
@@ -15,7 +15,7 @@ import { Helmet } from 'react-helmet-async';
 
 // The Remaining Human checkout with the room's code already applied, so the
 // eBook is free and nobody types anything. The code lives in SamCart.
-const BOOK_URL = 'https://aobooks.mysamcart.com/checkout/remaining-human?coupon=NEOSHO';
+const BOOK_URL = 'https://aobooks.mysamcart.com/checkout/remaining-human?coupon=MCCFREE';
 
 // Archetype Original's channels, exactly as the site footer lists them.
 const SOCIAL = [
@@ -40,14 +40,14 @@ const STEPS = [
   "Check its work like you'd check a sharp new hire: often at first, then as trust is earned.",
 ];
 
-export default function Neosho() {
+export default function McDonaldCounty() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-white text-[#2B2929]">
       <Helmet>
         <title>AI and Leadership | Archetype Original</title>
         <meta name="robots" content="noindex, nofollow" />
         <meta name="googlebot" content="noindex, nofollow" />
-        <meta name="description" content="AI and Leadership, a talk by Bart Paden at the Neosho Chamber of Commerce." />
+        <meta name="description" content="AI and Leadership, a talk by Bart Paden at the McDonald County Chamber." />
       </Helmet>
       <style>{"@font-face{font-family:'AO Display';src:url('/fonts/BebasNeue-Regular.ttf') format('truetype');font-display:swap}"}</style>
 
@@ -56,7 +56,7 @@ export default function Neosho() {
           <div className="mx-auto max-w-2xl px-5 pb-12 pt-12 sm:px-8 sm:pt-16">
             <img src="/brand/archetype-original-lockup.svg" alt="Archetype Original" className="mb-10 h-10 w-auto" style={{ filter: 'brightness(0) invert(1)' }} />
             <h1 className={`${display} text-6xl leading-[0.95] sm:text-7xl`}>AI and Leadership</h1>
-            <p className="mt-4 text-base text-gray-300">Neosho Chamber of Commerce · Lunch and Learn · November 11, 2026</p>
+            <p className="mt-4 text-base text-gray-300">McDonald County Chamber · Lunch and Learn · November 11, 2026</p>
           </div>
         </header>
 
@@ -115,7 +115,7 @@ export default function Neosho() {
               <p className={`${display} text-3xl text-[#2B2929]`}>Remaining Human</p>
               <p className="mt-2 text-lg leading-relaxed">
                 A field guide for leaders navigating speed, pressure and AI without losing clarity, trust or responsibility.
-                Free for Neosho Chamber members.
+                Free for McDonald County Chamber members.
               </p>
               <a href={BOOK_URL} target="_blank" rel="noopener" className={`${button} mt-5 bg-[#DB0812] text-white hover:opacity-90`}>
                 Get your free copy

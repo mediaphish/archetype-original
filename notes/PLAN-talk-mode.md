@@ -1,6 +1,6 @@
 # Talk mode: plan (approved 2026-10-28)
 
-The first talk is AI and Leadership at the Neosho, Missouri Chamber of Commerce
+The first talk is AI and Leadership at the McDonald County, Missouri Chamber of Commerce
 on Wed, Nov 11, 2026. It's a lunch and learn on a big screen: about 45 minutes
 of talk and demo, then about 15 minutes of questions, and Bart stays after for
 longer conversations.

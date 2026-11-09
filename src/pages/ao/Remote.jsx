@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
  * slide on the big screen and follows along as he clicks.
  */
 
-const DEFAULT_SLUG = 'neosho-chamber-2026';
+const DEFAULT_SLUG = 'mcdonald-county-chamber-2026';
 
 async function shrink(file) {
   const img = await new Promise((resolve, reject) => {

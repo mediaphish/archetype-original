@@ -652,7 +652,7 @@
       "continue": true
     },
     {
-      "src": "^/neosho(/.*)?$",
+      "src": "^/mcdonald-county(/.*)?$",
       "headers": {
         "X-Robots-Tag": "noindex, nofollow"
       },
