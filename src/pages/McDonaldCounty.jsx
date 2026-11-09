@@ -10,7 +10,7 @@
  * noindex and nofollow here and in an X-Robots-Tag header (vercel.json),
  * disallowed in robots.txt, and left out of the sitemap and llms.txt.
  */
-import React from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 // The Remaining Human checkout with the room's code already applied, so the
@@ -45,6 +45,72 @@ const COURSE = [
   ['Budget for it.', 'It costs real time and real money. There is no easy button.'],
   ['Bring your people with you.', 'The employees who learn to direct AI become more valuable. Help them get there.'],
 ];
+
+// The course's second layer (Bart, 2026-11-08): prompts to copy and try.
+const PROMPTS = [
+  {
+    title: 'Teach it about your business',
+    text: 'I want you to get to know my business so you can help me well. Interview me one question at a time. Ask about my industry, what my business does and who it serves, my customers, my team, how we make money, my goals for the next year, what takes up most of my week, and how I like to communicate. Wait for my answer before you ask the next question. After about 15 questions, or when I say "done," write a one-page summary titled "About My Business" that I can paste at the start of future conversations so you understand me. Keep it plain and specific.',
+    after: 'Save that summary. Several of the prompts below use it.',
+  },
+  {
+    title: 'Put it to work',
+    text: 'Here is a summary of my business: [paste your About My Business summary]. Using it, create [one thing, for example a welcome email for new customers, a job description, or a month of social posts]. Write it the way I talk. Before you start, ask me up to three questions if anything important is missing. When you finish, list anything you assumed so I can check it.',
+  },
+  {
+    title: 'Find your first job for AI',
+    text: "Here is a summary of my business: [paste your About My Business summary]. Based on how I spend my week, suggest three tasks I repeat often that you could do a first draft of. For each one, tell me what I'd need to give you, what you'd hand back, and what I should still check myself. Then write the exact prompt I'd use to start on the first one.",
+  },
+  {
+    title: 'Check its work',
+    text: "Here is something an AI wrote for me: [paste it]. Act as a tough editor. Point out anything that might be wrong, made up, unclear, or that doesn't sound like a real person wrote it. Suggest a fix for each one, but don't rewrite the whole thing.",
+  },
+  {
+    title: 'Turn a meeting into action',
+    text: 'Here are my notes from a meeting: [paste your notes]. Pull out every decision we made, each next step with who owns it, and any deadlines. Then write a short follow-up email I can send to everyone who was there.',
+    after: 'Leave out anything private, like customer details, health information or pay.',
+  },
+  {
+    title: 'Prepare for a hard conversation',
+    text: "I need to have a difficult conversation with [a role, like \"an employee\" or \"a customer\"] about [the issue]. Help me prepare. What's the one point I need to make clear? How might they react? What questions should I ask so I understand their side? How do I keep it respectful and direct? Don't write me a script. Help me think it through.",
+  },
+  {
+    title: 'Learn something fast',
+    text: 'Teach me about [a topic, like "what an AI agent is"] as if I run a small business and have ten minutes. Use a simple example from my industry: [your industry]. End with one thing I can try this week.',
+  },
+];
+
+function PromptCard({ n, title, text, after }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+  return (
+    <div className="rounded-[2px] border border-[#D9D3C8] bg-white p-5">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <p className="text-lg font-semibold text-[#2B2929]">
+          <span className={`${display} mr-2 text-2xl text-[#DB0812]`}>{n}</span>
+          {title}
+        </p>
+        <button
+          type="button"
+          onClick={copy}
+          className="min-h-[40px] flex-shrink-0 rounded-[2px] border border-[#2B2929] px-4 text-sm font-semibold text-[#2B2929] hover:bg-[#F0ECE4]"
+        >
+          {copied ? 'Copied' : 'Copy'}
+        </button>
+      </div>
+      <p className="whitespace-pre-line rounded-[2px] bg-[#F7F4EE] p-4 text-base leading-relaxed text-[#2B2929]">{text}</p>
+      {after ? <p className="mt-3 text-sm italic text-[#6B6B6B]">{after}</p> : null}
+    </div>
+  );
+}
 
 export default function McDonaldCounty() {
   return (
@@ -117,6 +183,19 @@ export default function McDonaldCounty() {
               picks up where this course leaves off, and it&rsquo;s free for McDonald County Chamber members with code{' '}
               <strong>{BOOK_CODE}</strong>.
             </p>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-2xl px-5 py-12 sm:px-8">
+          <p className={`${eyebrow} mb-2 text-[#A8A9AD]`}>Try it this week</p>
+          <h2 className={`${display} mb-3 text-4xl leading-tight text-[#2B2929] sm:text-5xl`}>Prompts to test</h2>
+          <p className="mb-8 text-lg leading-relaxed">
+            Copy one into whichever AI you use: ChatGPT, Claude, Gemini, Copilot or Grok. Fill in the parts in [brackets].
+          </p>
+          <div className="space-y-5">
+            {PROMPTS.map((p, i) => (
+              <PromptCard key={p.title} n={i + 1} {...p} />
+            ))}
           </div>
         </section>
 
