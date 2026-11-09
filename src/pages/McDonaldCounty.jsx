@@ -46,20 +46,31 @@ const COURSE = [
   ['Bring your people with you.', 'The employees who learn to direct AI become more valuable. Help them get there.'],
 ];
 
-// The course's second layer (Bart, 2026-11-08): prompts to copy and try.
+// The course's second layer (Bart, 2026-11-08): prompts to copy and try. The
+// first four build on each other; the rest are other helpful ideas.
+const BUILD_COUNT = 4;
+
+// A good prompt, part by part, like a good assignment for a new hire.
+const ANATOMY = [
+  ['Role', 'who you want it to be.', 'Act as an operations advisor for small businesses.'],
+  ['Context', 'who you are and what is going on, like your business summary from prompt 1.', 'Here is a summary of my business: …'],
+  ['Task', 'exactly what you want done.', 'Find three ways to save time on scheduling.'],
+  ['Standard', 'what good looks like: length, tone, audience, format.', 'Plain language, one page, a short list.'],
+  ['Guardrails', 'what to avoid and how to handle gaps.', "Ask me if something is missing. Mark anything you're unsure of."],
+];
 const PROMPTS = [
   {
     title: 'Teach it about your business',
     text: 'I want you to get to know my business so you can help me well. Interview me one question at a time. Ask about my industry, what my business does and who it serves, my customers, my team, how we make money, my goals for the next year, what takes up most of my week, and how I like to communicate. Wait for my answer before you ask the next question. After about 15 questions, or when I say "done," write a one-page summary titled "About My Business" that I can paste at the start of future conversations so you understand me. Keep it plain and specific.',
-    after: 'Save that summary. Several of the prompts below use it.',
+    after: 'Save that summary. The next prompts use it.',
+  },
+  {
+    title: 'Find where AI can help',
+    text: "Act as an advisor who helps small businesses put AI to work. Here is a summary of my business: [paste your About My Business summary]. Research how businesses like mine are using AI today, and find the five best opportunities for my business, ranked by how quickly I'd see a result. For each one, tell me what it is, what it would save or improve, what kind of AI tool does it, roughly what it costs, and what to watch out for. If you can search the web, use current sources and tell me where each idea came from. Mark anything you're not sure of.",
   },
   {
     title: 'Put it to work',
-    text: 'Here is a summary of my business: [paste your About My Business summary]. Using it, create [one thing, for example a welcome email for new customers, a job description, or a month of social posts]. Write it the way I talk. Before you start, ask me up to three questions if anything important is missing. When you finish, list anything you assumed so I can check it.',
-  },
-  {
-    title: 'Find your first job for AI',
-    text: "Here is a summary of my business: [paste your About My Business summary]. Based on how I spend my week, suggest three tasks I repeat often that you could do a first draft of. For each one, tell me what I'd need to give you, what you'd hand back, and what I should still check myself. Then write the exact prompt I'd use to start on the first one.",
+    text: 'Here is a summary of my business: [paste your About My Business summary]. From the opportunities you found for me, let\'s start with [the one you picked]. Do the first real piece of it now: [for example, draft the email, build the checklist, or write the schedule]. Write it the way I talk. Before you start, ask me up to three questions if anything important is missing. When you finish, list anything you assumed so I can check it, and tell me the next step.',
   },
   {
     title: 'Check its work',
@@ -188,13 +199,30 @@ export default function McDonaldCounty() {
 
         <section className="mx-auto max-w-2xl px-5 py-12 sm:px-8">
           <p className={`${eyebrow} mb-2 text-[#A8A9AD]`}>Try it this week</p>
-          <h2 className={`${display} mb-3 text-4xl leading-tight text-[#2B2929] sm:text-5xl`}>Prompts to test</h2>
-          <p className="mb-8 text-lg leading-relaxed">
-            Copy one into whichever AI you use: ChatGPT, Claude, Gemini, Copilot or Grok. Fill in the parts in [brackets].
+          <h2 className={`${display} mb-3 text-4xl leading-tight text-[#2B2929] sm:text-5xl`}>The anatomy of a good prompt</h2>
+          <p className="mb-5 text-lg leading-relaxed">A good prompt is like a good assignment for a new hire. It has five parts:</p>
+          <ul className="mb-8 list-none space-y-3 pl-0 text-lg leading-relaxed">
+            {ANATOMY.map(([part, what, example]) => (
+              <li key={part}>
+                <strong className="font-semibold">{part}:</strong> {what} <em className="text-[#6B6B6B]">&ldquo;{example}&rdquo;</em>
+              </li>
+            ))}
+          </ul>
+          <p className="mb-10 text-lg leading-relaxed">
+            Every prompt below uses these parts. Copy one into whichever AI you use: ChatGPT, Claude, Gemini, Copilot or Grok,
+            and fill in the parts in [brackets].
           </p>
+          <h3 className={`${display} mb-2 text-3xl text-[#2B2929]`}>Build it, step by step</h3>
+          <p className="mb-5 text-base text-[#6B6B6B]">Do these in order. Each one builds on the one before.</p>
           <div className="space-y-5">
-            {PROMPTS.map((p, i) => (
+            {PROMPTS.slice(0, BUILD_COUNT).map((p, i) => (
               <PromptCard key={p.title} n={i + 1} {...p} />
+            ))}
+          </div>
+          <h3 className={`${display} mb-5 mt-12 text-3xl text-[#2B2929]`}>Other helpful prompt ideas</h3>
+          <div className="space-y-5">
+            {PROMPTS.slice(BUILD_COUNT).map((p, i) => (
+              <PromptCard key={p.title} n={BUILD_COUNT + i + 1} {...p} />
             ))}
           </div>
         </section>
