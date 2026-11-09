@@ -198,7 +198,7 @@ And the team knows it. *(Press Back.)* "Team, tell them about a time you got it 
 *(Jot, Des and Bit each own a real mistake, then say what changed. Let them land.)*
 - **Jot:** told the team four of your quote cards put words in your mouth. Wrong. It mixed up a caption with a quote. Now every card is checked word for word against what you wrote.
 - **Des:** couldn't find an infographic you were reviewing and asked you to send it again. It was in your Queue the whole time. Now the team can see the Queue.
-- **Bit:** the afternoon the team spent about fifty dollars reviewing each other's reviews. Now there's a hard daily spending line, and Bit stops the work when it's hit.
+- **Bit:** the afternoon the team spent about fifty dollars reviewing each other's reviews. Now there's a hard daily spending line, and I stop the work when it's hit.
 
 *(Then Des speaks up: "Hey Bart, tell them about the tattoos.")*
 
@@ -240,7 +240,7 @@ Those stay yours. Don't hand them off. *(Click.)*
 - It takes real time.
 - It needs someone watching it. Every day.
 
-I want to be straight with you, because somebody's going to try to sell you an easy button. There isn't one.
+Remember how I opened this talk, with those headlines? A lot of what's out there right now is selling you an easy button. There isn't one.
 
 What I showed you costs real money every month. It took real time to build. It needs somebody watching it every day: what it says, what it spends, what it gets wrong.
 
