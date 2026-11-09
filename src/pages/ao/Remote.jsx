@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useKeepAwake } from '../../lib/useKeepAwake.js';
 
 /**
@@ -87,6 +88,17 @@ function Script({ md }) {
 
 export default function Remote() {
   useKeepAwake();
+  // Nothing behind the screen can scroll it sideways (2026-11-09, iPhone).
+  useEffect(() => {
+    const els = [document.documentElement, document.body];
+    const prev = els.map((e) => e.style.overflow);
+    els.forEach((e) => {
+      e.style.overflow = 'hidden';
+    });
+    return () => els.forEach((e, i) => {
+      e.style.overflow = prev[i];
+    });
+  }, []);
   const slug = new URLSearchParams(window.location.search).get('slug') || DEFAULT_SLUG;
   const [status, setStatus] = useState('');
   const [preview, setPreview] = useState(null);
@@ -194,9 +206,11 @@ export default function Remote() {
   const photoInput = <input type="file" accept="image/*" capture="environment" className="hidden" onChange={takePhoto} />;
 
   if (view === 'phone') {
-    // The phone is only the camera for the live demo (2026-11-09).
-    return (
-      <div className="flex h-[100dvh] flex-col items-center justify-center gap-6 bg-black px-6 text-center text-white" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+    // The phone is only the camera for the live demo (2026-11-09). Pinned to the
+    // screen: the site's page frame is two screens wide on a phone, and this
+    // page centered itself across both (Bart's iPhone, 2026-11-09).
+    return createPortal(
+      <div className="fixed inset-0 z-[70] flex flex-col items-center justify-center gap-6 overflow-hidden bg-black px-6 text-center text-white" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <p className="text-xs uppercase tracking-widest text-gray-400">Live demo</p>
         <p className="text-2xl font-bold">Take the room photo</p>
         <label className="flex h-40 w-full max-w-sm cursor-pointer items-center justify-center rounded-3xl bg-[#DB0812] text-3xl font-bold active:scale-[0.98]">
@@ -205,16 +219,17 @@ export default function Remote() {
         </label>
         {preview ? <img src={preview} alt="" className="max-h-[30vh] rounded-xl" /> : null}
         <p className="min-h-[1.5em] text-base text-gray-300">{status}</p>
-      </div>
+      </div>,
+      document.body
     );
   }
   const next = sections[index + 1];
   const btn = 'min-h-[56px] flex-1 rounded-2xl text-lg font-bold active:scale-[0.98] sm:min-h-[64px] sm:text-xl';
 
-  return (
+  return createPortal(
     // One screen tall on any device: the script scrolls in the middle and the
     // buttons stay on screen (Bart, 2026-11-08, iPhone: "the buttons are off the screen").
-    <div className="flex h-[100dvh] flex-col overflow-hidden bg-black text-white" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+    <div className="fixed inset-0 z-[70] flex flex-col overflow-hidden bg-black text-white" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
       <header className="flex flex-shrink-0 flex-wrap items-center gap-2 border-b border-white/10 bg-black px-4 py-3 sm:gap-3 sm:px-5">
         <div className="min-w-0 flex-1">
           <p className="text-xs uppercase tracking-widest text-gray-400">
@@ -277,6 +292,7 @@ export default function Remote() {
           </div>
         ) : null}
       </footer>
-    </div>
+    </div>,
+    document.body
   );
 }
