@@ -1,6 +1,7 @@
 /**
- * The talk view for the McDonald County Chamber (2026-10-28): the clicker moves the
- * screens, and holding Back listens instead of going back.
+ * The talk view for the McDonald County Chamber (2026-10-28). Since 2026-11-09
+ * there is no clicker: the arrows only change slides, the iPad's Talk button
+ * runs the mic, and holding V on the laptop still listens.
  */
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
@@ -24,20 +25,19 @@ afterEach(() => {
   jest.useRealTimers();
 });
 
-test('Page Down moves forward; Back no longer moves back (it talks)', async () => {
+test('the arrows only change slides (2026-11-09)', async () => {
   render(<Talk />);
   await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
-  fireEvent.keyDown(window, { key: 'PageDown' });
+  fireEvent.keyDown(window, { key: 'ArrowRight' });
   expect(screen.getByText('Live from the room')).toBeInTheDocument();
   expect(screen.getByText('Live')).toBeInTheDocument();
-  fireEvent.keyDown(window, { key: 'PageUp' });
-  fireEvent.keyUp(window, { key: 'PageUp' });
-  expect(screen.getByText('Live from the room')).toBeInTheDocument();
+  fireEvent.keyDown(window, { key: 'ArrowLeft' });
+  expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument();
 });
 
 // 2026-11-08: on Bart's first run Chrome stopped listening on its own while he
 // held Back. Letting go must still send what it heard to the team.
-test('the second press sends what was heard even when listening already ended', async () => {
+test('letting go of V sends what was heard even when listening already ended', async () => {
   jest.useFakeTimers();
   let rec;
   window.webkitSpeechRecognition = function Rec() {
@@ -57,16 +57,12 @@ test('the second press sends what was heard even when listening already ended', 
     await Promise.resolve();
   });
   await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
-  fireEvent.keyDown(window, { key: 'PageUp' });
-  fireEvent.keyUp(window, { key: 'PageUp' });
-  act(() => {
-    jest.advanceTimersByTime(800);
-  });
+  fireEvent.keyDown(window, { key: 'v' });
   act(() => {
     rec.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: 'hey Ada are you ready' }], { isFinal: true })] });
-    rec.onend(); // Chrome ends it before the second press
+    rec.onend(); // Chrome ends it before letting go
   });
-  fireEvent.keyDown(window, { key: 'PageUp' });
+  fireEvent.keyUp(window, { key: 'v' });
   await act(async () => {
     jest.advanceTimersByTime(2500);
     await Promise.resolve();
@@ -103,16 +99,13 @@ test("a teammate's message fades a few seconds after it is spoken (2026-11-08)",
     await Promise.resolve();
   });
   await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
-  fireEvent.keyDown(window, { key: 'PageUp' });
-  act(() => {
-    jest.advanceTimersByTime(500);
-  });
+  fireEvent.keyDown(window, { key: 'v' });
   act(() => {
     rec.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: 'hey Ada are you ready' }], { isFinal: true })] });
     rec.onend();
     jest.advanceTimersByTime(800);
   });
-  fireEvent.keyDown(window, { key: 'PageUp' });
+  fireEvent.keyUp(window, { key: 'v' });
   act(() => {
     jest.advanceTimersByTime(500);
   });
@@ -156,11 +149,51 @@ test('a teammate cuts in once, on their own, some seconds into a slide (2026-11-
   expect(screen.getByText('Go Wildcats!')).toBeInTheDocument();
 });
 
-test('two quick presses of Back go back a slide instead of talking (2026-11-08)', async () => {
+test("the iPad's Talk button turns the mic on, and a second tap sends (2026-11-09)", async () => {
   jest.useFakeTimers();
-  const started = [];
+  let rec;
   window.webkitSpeechRecognition = function Rec() {
-    this.start = () => started.push(1);
+    rec = this;
+    this.start = () => {};
+    this.stop = () => {};
+  };
+  let state = { seq: 0, index: 0 };
+  const calls = [];
+  global.fetch = jest.fn(async (url) => {
+    calls.push(String(url));
+    if (String(url).includes('/api/ao/talk/remote')) return { ok: true, status: 200, json: async () => ({ ok: true, state }) };
+    if (String(url).includes('/api/ao/talk/ask')) return { ok: true, status: 200, json: async () => ({ ok: true, agent: 'auto', reply: 'Ready.' }) };
+    if (String(url).includes('/api/ao/talk/speak')) return { ok: false, status: 500 };
+    return { ok: true, status: 200, json: async () => ({ ok: true, talk }) };
+  });
+  render(<Talk />);
+  await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
+  const tick = async () => {
+    for (let i = 0; i < 4; i++) {
+      await act(async () => {
+        jest.advanceTimersByTime(400);
+        await Promise.resolve();
+      });
+    }
+  };
+  await tick();
+  state = { ...state, seq: 1, action: 'talk' };
+  await tick();
+  expect(screen.getByText(/tap Send on the iPad/)).toBeInTheDocument();
+  act(() => {
+    rec.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: 'hey Ada are you ready' }], { isFinal: true })] });
+    rec.onend();
+  });
+  state = { ...state, seq: 2, action: 'talk' };
+  await tick();
+  await waitFor(() => expect(calls.some((u) => u.includes('/api/ao/talk/ask'))).toBe(true));
+  delete window.webkitSpeechRecognition;
+});
+
+test('moving on while the mic is on drops it and changes the slide (2026-11-09)', async () => {
+  jest.useFakeTimers();
+  window.webkitSpeechRecognition = function Rec() {
+    this.start = () => {};
     this.stop = () => {};
     this.abort = () => {};
   };
@@ -169,44 +202,11 @@ test('two quick presses of Back go back a slide instead of talking (2026-11-08)'
     await Promise.resolve();
   });
   await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
-  fireEvent.keyDown(window, { key: 'PageDown' });
+  fireEvent.keyDown(window, { key: 'v' });
+  expect(screen.getByText(/tap Send on the iPad/)).toBeInTheDocument();
+  fireEvent.keyDown(window, { key: 'ArrowRight' });
+  expect(screen.queryByText(/tap Send on the iPad/)).not.toBeInTheDocument();
   expect(screen.getByText('Live from the room')).toBeInTheDocument();
-  fireEvent.keyDown(window, { key: 'PageUp' });
-  act(() => {
-    jest.advanceTimersByTime(200);
-  });
-  fireEvent.keyDown(window, { key: 'PageUp' });
-  act(() => {
-    jest.advanceTimersByTime(1000);
-  });
-  expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument();
-  expect(started).toHaveLength(0);
-  delete window.webkitSpeechRecognition;
-});
-
-test('while listening, Next stops it instead of moving on (2026-11-08)', async () => {
-  jest.useFakeTimers();
-  window.webkitSpeechRecognition = function Rec() {
-    this.start = () => {};
-    this.stop = () => {};
-  };
-  render(<Talk />);
-  await act(async () => {
-    await Promise.resolve();
-  });
-  await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
-  fireEvent.keyDown(window, { key: 'PageUp' });
-  act(() => {
-    jest.advanceTimersByTime(500);
-  });
-  expect(screen.getByText(/press Back or Next to send/)).toBeInTheDocument();
-  fireEvent.keyDown(window, { key: 'PageDown' });
-  await act(async () => {
-    jest.advanceTimersByTime(2500);
-    await Promise.resolve();
-  });
-  expect(screen.queryByText(/press Back or Next to send/)).not.toBeInTheDocument();
-  expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument();
   delete window.webkitSpeechRecognition;
 });
 

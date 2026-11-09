@@ -10,6 +10,10 @@ import React, { useEffect, useState } from 'react';
  * reference it ... Maybe we shift the remote control to be a screen I can
  * pull up on my iPad with the script there?" It now shows the script for the
  * slide on the big screen and follows along as he clicks.
+ * 2026-11-09, three devices and no clicker. The iPad runs the talk: Back, Talk
+ * (turns the laptop's mic on, tap again to send), Photo and Next. The phone
+ * shows only the live demo's camera (open with ?view=phone, or any phone-sized
+ * screen opens it that way).
  */
 
 const DEFAULT_SLUG = 'mcdonald-county-chamber-2026';
@@ -86,6 +90,13 @@ export default function Remote() {
   const [preview, setPreview] = useState(null);
   const [sections, setSections] = useState([]);
   const [index, setIndex] = useState(0);
+  const [listening, setListening] = useState(false);
+  const [talkPending, setTalkPending] = useState(false);
+  const view = (() => {
+    const v = new URLSearchParams(window.location.search).get('view');
+    if (v === 'phone' || v === 'ipad') return v;
+    return window.innerWidth < 640 ? 'phone' : 'ipad';
+  })();
   const [size, setSize] = useState(() => {
     try {
       return Number(localStorage.getItem('talk-script-size')) || (window.innerWidth < 640 ? 20 : 26);
@@ -122,12 +133,16 @@ export default function Remote() {
         const r = await fetch(`/api/ao/talk/remote?slug=${encodeURIComponent(slug)}`);
         const j = await r.json().catch(() => ({}));
         if (!stop && Number.isFinite(Number(j?.state?.index))) setIndex(Number(j.state.index));
+        if (!stop) {
+          setListening(Boolean(j?.state?.listening));
+          setTalkPending(false);
+        }
       } catch (_) {
         /* keep the last slide */
       }
     };
     poll();
-    const t = setInterval(poll, 1000);
+    const t = setInterval(poll, 700);
     return () => {
       stop = true;
       clearInterval(t);
@@ -148,7 +163,8 @@ export default function Remote() {
   };
 
   const move = async (action) => {
-    setStatus(action === 'next' ? 'Next' : action === 'first' ? 'Back to the start' : 'Back');
+    if (action === 'talk') setTalkPending(true);
+    setStatus(action === 'next' ? 'Next' : action === 'first' ? 'Back to the start' : action === 'talk' ? '' : 'Back');
     const j = await send({ action });
     setStatus(j.ok ? '' : 'Did not reach the screen. Try again.');
   };
@@ -173,6 +189,23 @@ export default function Remote() {
   };
 
   const section = sections[index];
+  const photoInput = <input type="file" accept="image/*" capture="environment" className="hidden" onChange={takePhoto} />;
+
+  if (view === 'phone') {
+    // The phone is only the camera for the live demo (2026-11-09).
+    return (
+      <div className="flex h-[100dvh] flex-col items-center justify-center gap-6 bg-black px-6 text-center text-white" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+        <p className="text-xs uppercase tracking-widest text-gray-400">Live demo</p>
+        <p className="text-2xl font-bold">Take the room photo</p>
+        <label className="flex h-40 w-full max-w-sm cursor-pointer items-center justify-center rounded-3xl bg-[#DB0812] text-3xl font-bold active:scale-[0.98]">
+          Photo
+          {photoInput}
+        </label>
+        {preview ? <img src={preview} alt="" className="max-h-[30vh] rounded-xl" /> : null}
+        <p className="min-h-[1.5em] text-base text-gray-300">{status}</p>
+      </div>
+    );
+  }
   const next = sections[index + 1];
   const btn = 'min-h-[56px] flex-1 rounded-2xl text-lg font-bold active:scale-[0.98] sm:min-h-[64px] sm:text-xl';
 
@@ -219,9 +252,17 @@ export default function Remote() {
           <button type="button" className={`${btn} bg-white/10`} onClick={() => move('back')}>
             Back
           </button>
-          <label className={`${btn} flex cursor-pointer items-center justify-center bg-[#DB0812]`}>
+          {/* The laptop's mic (2026-11-09): tap to talk to the team, tap again to send. */}
+          <button
+            type="button"
+            className={`${btn} ${listening ? 'animate-pulse bg-[#DB0812] text-white' : 'bg-[#1f6feb] text-white'} ${talkPending ? 'opacity-60' : ''}`}
+            onClick={() => move('talk')}
+          >
+            {listening ? 'Send' : 'Talk'}
+          </button>
+          <label className={`${btn} flex cursor-pointer items-center justify-center bg-white/10`}>
             Photo
-            <input type="file" accept="image/*" capture="environment" className="hidden" onChange={takePhoto} />
+            {photoInput}
           </label>
           <button type="button" className={`${btn} bg-white text-black`} onClick={() => move('next')}>
             Next

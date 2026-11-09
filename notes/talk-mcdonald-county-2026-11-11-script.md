@@ -7,11 +7,10 @@
 **About this draft:** what you see on screen is in bold. What you say is everything else, written the way you talk. Where it says *[your story]*, put in something only you can tell. I left those open rather than make anything up about you. Say it in your own words. This is a map, not a teleprompter.
 
 **Controls:**
-- **Clicker:** forward and back.
-- **Talk to the team:** press Back, speak, then press Back (or Next) to send. It sends on its own after 20 seconds.
-- **Going back a slide:** press Back twice, quickly, on the remote (or Back on the iPad).
+- **iPad:** Back and Next change slides. Talk turns on the laptop's mic; speak, then tap it again (it says Send) to send. It sends on its own after 20 seconds.
+- **Laptop:** the arrow keys change slides. Hold V to talk, let go to send.
 - **Starting over:** Start over on the iPad, or the Esc key on the laptop.
-- **Phone:** the room photo.
+- **Phone:** the room photo, nothing else.
 
 ---
 
@@ -19,7 +18,7 @@
 
 **SCREEN: AI and Leadership · McDonald County Chamber · Bart Paden, Archetype Original**
 
-*(Press Back.)* "Hey Ada, are you ready to start our talk with the McDonald County Chamber?"
+*(Tap Talk.)* "Hey Ada, are you ready to start our talk with the McDonald County Chamber?"
 
 *(Ada answers out loud. Let it land. Smile.)*
 
@@ -127,7 +126,7 @@ I wanted to know how far into that house a small business could actually get. So
 
 I didn't hire seven people. I built seven roles, the same way I'd build a team if I were starting a company tomorrow. Each one knows my writing, my voice and my rules. Let me introduce them.
 
-*(Press Back.)* "Team, say hi to McDonald County."
+*(Tap Talk.)* "Team, say hi to McDonald County."
 
 *(All seven introduce themselves, one at a time. Let the laughs happen. Bit and Red usually get one.)*
 
@@ -140,7 +139,7 @@ So:
 - **Des** designs.
 - **Bit** keeps everything connected.
 
-*(Press Back.)* "Hey Bit, give them a run down on what it took to build you all and put this presentation together."
+*(Tap Talk.)* "Hey Bit, give them a run down on what it took to build you all and put this presentation together."
 
 *(Bit tells the room what it was built with, that you just told Claude what you wanted, that it's an oversimplification (two years, started on ChatGPT in 2024, now on Claude), and how many tokens the team has used. Let it land.)*
 
@@ -160,7 +159,7 @@ Let's do one for real.
 
 *(Take the photo with the phone page. It shows up on screen.)*
 
-Okay. *(Press Back.)* "Okay Ada, start the demo."
+Okay. *(Tap Talk.)* "Okay Ada, start the demo."
 
 *(About 20 seconds while the team works. Fill it:)* Right now they're writing a post about being here with you today. No template. Nobody's typed anything.
 
@@ -170,7 +169,7 @@ Okay. *(Press Back.)* "Okay Ada, start the demo."
 
 Now here's the part that matters. It's ready. It's good. And it doesn't go anywhere until I say so.
 
-*(Beat.)* *(Press Back.)* "Looks good. Post it."
+*(Beat.)* *(Tap Talk.)* "Looks good. Post it."
 
 *(Ada confirms it's live. Open LinkedIn on the screen and show it.)*
 
@@ -193,7 +192,7 @@ I don't trust it.
 
 That's not a knock. It's the job. AI tells you something wrong in exactly the same voice it tells you something right. Same confidence. Same polish. No tells.
 
-And the team knows it. *(Press Back.)* "Team, tell them about a time you got it wrong."
+And the team knows it. *(Tap Talk.)* "Team, tell them about a time you got it wrong."
 
 *(Jot, Des and Bit each own a real mistake, then say what changed. Let them land.)*
 - **Jot:** told the team four of your quote cards put words in your mouth. Wrong. It mixed up a caption with a quote. Now every card is checked word for word against what you wrote.
@@ -283,7 +282,7 @@ Thank you. *(Click.)*
 
 What've you got?
 
-*(If a question is about the team, you can ask them out loud. Press Back, say their name and the question, press Back again. If it belongs to someone else, they'll hand it over.)*
+*(If a question is about the team, you can ask them out loud. Tap Talk, say their name and the question, tap Send. If it belongs to someone else, they'll hand it over.)*
 
 ---
 

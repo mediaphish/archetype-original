@@ -7,13 +7,13 @@ import { avatarFor } from '../../components/ao/teamAvatars.js';
  * McDonald County Chamber, Nov 11). Bart: "Maybe instead of a slide deck. We have the
  * whole talk built out in Auto?" and "Let's explore voice."
  *
- * Clicker (Logitech R500s): Page Down / Page Up, or the arrow keys and space.
- * Press Back once to talk and again to send (2026-11-08), or hold V on the laptop.
+ * 2026-11-09: no clicker. The iPad's Back, Next and Talk buttons run it (Talk
+ * turns this laptop's mic on, a second tap sends), the arrow keys only change
+ * slides, and holding V on the laptop still listens.
  * Slide moves happen here; anything said to a teammate gets a spoken reply.
  * See notes/PLAN-talk-mode.md.
  */
 
-const DOUBLE_PRESS_MS = 450;
 const LISTEN_MAX_MS = 20000;
 const REPLY_HOLD_MS = 6000;
 const DEFAULT_SLUG = 'mcdonald-county-chamber-2026';
@@ -120,7 +120,6 @@ export default function Talk() {
   const audioRef = useRef(null);
   const speech = useSpeech();
   const holdRef = useRef(null);
-  const backTimerRef = useRef(null);
   const fadeRef = useRef(null);
   const startOverRef = useRef(null);
   const [heardNote, setHeardNote] = useState('');
@@ -158,6 +157,8 @@ export default function Talk() {
 
   // The phone remote: next, back, and the room photo (lib/ao/talkDemo.js).
   const remoteRef = useRef(null);
+  const screenRef = useRef(null);
+  const reportRef = useRef(null);
   useEffect(() => {
     let stop = false;
     const poll = async () => {
@@ -175,12 +176,17 @@ export default function Talk() {
           seqRef.current = Number(st.seq);
           remoteRef.current?.(st);
         }
+        // The iPad follows what is written here. If a write was lost (2026-11-09:
+        // the iPad sat two slides behind), say it again.
+        const mine = screenRef.current;
+        if (mine && (Number(st.index) !== mine.index || Boolean(st.listening) !== mine.listening)) reportRef.current?.();
       } catch (_) {
         /* the clicker still works */
       }
     };
     poll();
-    const t = setInterval(poll, 1500);
+    // Fast enough that the iPad's Talk button feels immediate.
+    const t = setInterval(poll, 700);
     return () => {
       stop = true;
       clearInterval(t);
@@ -444,15 +450,26 @@ export default function Talk() {
     audioRef.current?.pause();
   }, [index]);
 
-  // Tell the iPad which slide is up, so it shows that slide's script (2026-11-08).
-  useEffect(() => {
-    if (!total) return;
+  // Tell the iPad which slide is up, so it shows that slide's script
+  // (2026-11-08), and whether the mic is on, so Talk reads Send (2026-11-09).
+  screenRef.current = total ? { index, listening: Boolean(speech.listening) } : null;
+  const reportingRef = useRef(false);
+  reportRef.current = () => {
+    if (!screenRef.current || reportingRef.current) return;
+    reportingRef.current = true;
     fetch('/api/ao/talk/remote', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slug, action: 'at', index }),
-    }).catch(() => {});
-  }, [index, total, slug]);
+      body: JSON.stringify({ slug, action: 'at', ...screenRef.current }),
+    })
+      .catch(() => {})
+      .finally(() => {
+        reportingRef.current = false;
+      });
+  };
+  useEffect(() => {
+    if (total) reportRef.current?.();
+  }, [index, total, slug, speech.listening]);
 
   // Starting over wipes the run: the room photo, the demo, any message on
   // screen, and the interruptions play again (Bart, 2026-11-08: "The original
@@ -476,10 +493,18 @@ export default function Talk() {
 
   startOverRef.current = startOver;
   remoteRef.current = (st) => {
-    if (st.action === 'next' && speech.listening) endListening();
-    else if (st.action === 'next') go(index + 1);
+    if (st.action === 'talk') {
+      if (speech.listening) endListening();
+      else beginListening();
+    } else if (st.action === 'next') {
+      if (speech.listening) speech.cancel();
+      go(index + 1);
+    }
     else if (st.action === 'first') startOver();
-    else if (st.action === 'back') go(index - 1);
+    else if (st.action === 'back') {
+      if (speech.listening) speech.cancel();
+      go(index - 1);
+    }
     else if (st.action === 'photo' && st.photo_url) setPhoto(st.photo_url);
   };
 
@@ -506,33 +531,18 @@ export default function Talk() {
 
   useEffect(() => {
     const down = (e) => {
+      // The arrows only change slides (2026-11-09: "free up the left and right
+      // arrows to just be navigation"). Moving on while the mic is on drops it.
       if (e.key === 'PageDown' || e.key === 'ArrowRight' || e.key === ' ') {
         e.preventDefault();
         if (e.repeat) return;
-        // While listening, Next sends instead of moving on, so there is always a
-        // way to stop (Bart, 2026-11-08: "it just sits there listening").
-        if (speech.listening) endListening();
-        else go(index + 1);
+        if (speech.listening) speech.cancel();
+        go(index + 1);
       } else if (e.key === 'PageUp' || e.key === 'ArrowLeft') {
-        // The clicker's Back button (2026-11-08). Bart's Logitech sends one
-        // quick press even while held, so: one press starts talking to the
-        // team, the next one sends. Two presses in quick succession go back a
-        // slide instead (Bart: "I tried to use the back button to go back and
-        // start the presentation over and it won't work").
         e.preventDefault();
         if (e.repeat) return;
-        if (backTimerRef.current) {
-          clearTimeout(backTimerRef.current);
-          backTimerRef.current = null;
-          speech.cancel();
-          go(index - 1);
-          return;
-        }
-        backTimerRef.current = setTimeout(() => {
-          backTimerRef.current = null;
-          if (speech.listening) endListening();
-          else beginListening();
-        }, DOUBLE_PRESS_MS);
+        if (speech.listening) speech.cancel();
+        go(index - 1);
       } else if (e.key === 'v' || e.key === 'V') {
         e.preventDefault();
         if (e.repeat || holdRef.current) return;
@@ -615,7 +625,7 @@ export default function Talk() {
         {speech.listening ? (
           <p className="w-full text-center text-gray-400" style={{ fontSize: '1.4vw' }}>
             <span className="mr-2 inline-block h-3 w-3 animate-pulse rounded-full bg-[#DB0812] align-middle" />
-            {speech.heard || 'Listening… press Back or Next to send'}
+            {speech.heard || 'Listening… tap Send on the iPad'}
           </p>
         ) : heardNote && !speaker ? (
           <p className="w-full text-center text-gray-400" style={{ fontSize: '1.3vw' }}>
