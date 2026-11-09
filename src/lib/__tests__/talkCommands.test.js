@@ -47,3 +47,10 @@ test("Bart's cue sends Bit his how-it-was-built rundown (2026-11-08)", () => {
   expect(parseTalkCommand('Hey Bit, give them a rundown on what it took to get here today')).toMatchObject({ topic: 'built' });
   expect(parseTalkCommand('Bit, is everything connected?').topic).toBeUndefined();
 });
+
+test('an intro request said any common way reaches the whole team (2026-11-08)', () => {
+  for (const said of ['Team, say hi to Neosho', 'Can you all introduce yourselves', 'Guys, introduce yourselves to the room', 'Everybody, tell them who you are', 'Crew, quick intros please']) {
+    expect(parseTalkCommand(said).type).toBe('team');
+  }
+});
+

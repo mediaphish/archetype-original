@@ -122,6 +122,8 @@ export default function Talk() {
   const holdRef = useRef(null);
   const backTimerRef = useRef(null);
   const fadeRef = useRef(null);
+  const [heardNote, setHeardNote] = useState('');
+  const heardNoteRef = useRef(null);
   // Rehearsal only: which key each clicker button sends, so a remote that sends
   // something unexpected can be matched (2026-11-08, Bart's Logitech Back).
   const [lastKey, setLastKey] = useState('');
@@ -255,6 +257,14 @@ export default function Talk() {
       if (cmd.type === 'next') return go(index + 1);
       if (cmd.type === 'back') return go(index - 1);
       if (cmd.type === 'last') return go(total - 1);
+      // Heard words but no teammate or command in them: say so instead of
+      // doing nothing (2026-11-08: an intro request vanished).
+      if (cmd.type === 'none' && cmd.text && cmd.text.split(' ').length >= 3) {
+        setHeardNote(`Didn't catch who that was for: "${cmd.text}"`);
+        clearTimeout(heardNoteRef.current);
+        heardNoteRef.current = setTimeout(() => setHeardNote(''), 5000);
+        return;
+      }
       if (cmd.type === 'goto') return go(cmd.index);
       if (cmd.type === 'demo') {
         const d = sections.findIndex((s) => s.kind === 'demo');
@@ -532,6 +542,10 @@ export default function Talk() {
           <p className="w-full text-center text-gray-400" style={{ fontSize: '1.4vw' }}>
             <span className="mr-2 inline-block h-3 w-3 animate-pulse rounded-full bg-[#DB0812] align-middle" />
             {speech.heard || 'Listening… press Back or Next to send'}
+          </p>
+        ) : heardNote && !speaker ? (
+          <p className="w-full text-center text-gray-400" style={{ fontSize: '1.3vw' }}>
+            {heardNote}
           </p>
         ) : speaker ? (
           <div className={`flex w-full items-center gap-4 rounded-2xl bg-white/10 px-6 py-4 transition-opacity duration-700 ${reply?.fading ? 'opacity-0' : 'opacity-100'}`}>
