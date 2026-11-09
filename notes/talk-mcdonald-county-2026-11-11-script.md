@@ -70,6 +70,7 @@ Both cost you. *(Click.)*
 - Some jobs will change. Some will go away.
 - Repetitive, button-pushing work goes first.
 - Even work we called safe a year ago.
+- RemAIning Human: free for McDonald County Chamber members, with the QR code
 
 Now I owe you the honest part. I just told you not to panic. That's not the same as telling you nothing is changing.
 
@@ -83,7 +84,11 @@ Then add robots. A year ago most of us would have said a manufacturing floor or 
 
 I'm not saying this to scare you. I'm saying it because some of the people in this room employ people, and you're going to make decisions about this whether you choose to or not.
 
-Here's what I believe. The work changes before the people have to. The person who learns to use it, who becomes the one directing it, becomes more valuable, not less. The business that waits is the one that gets caught off guard. *(Click.)*
+Here's what I believe. The work changes before the people have to. The person who learns to use it, who becomes the one directing it, becomes more valuable, not less. The business that waits is the one that gets caught off guard.
+
+That's exactly why I wrote a book called *RemAIning Human*. It's a field guide for leaders working through all of this, the speed, the pressure and AI, without losing clarity, trust or responsibility.
+
+And I want every one of you to have it. It's free for everyone in this room today. Scan the code on the screen, and the free copy is right there. *(Click.)*
 
 ---
 
