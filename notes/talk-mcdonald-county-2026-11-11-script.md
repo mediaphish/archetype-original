@@ -115,10 +115,6 @@ The house behind it is work that keeps going when you're not there. Research tha
 
 I wanted to know how far into that house a small business could actually get. So I built it for myself.
 
-*(Press Back.)* "Hey Bit, give them a run down on what it took to get here today."
-
-*(Bit tells the room what it was built with, that you just told Claude what you wanted, that it's an oversimplification (two years, started on ChatGPT in 2024, now on Claude), and how many tokens the team has used. Let it land.)*
-
 *(Click.)*
 
 ---
@@ -143,6 +139,10 @@ So:
 - **Red** edits, and Red does not say thank you.
 - **Des** designs.
 - **Bit** keeps everything connected.
+
+*(Press Back.)* "Hey Bit, give them a run down on what it took to get here today."
+
+*(Bit tells the room what it was built with, that you just told Claude what you wanted, that it's an oversimplification (two years, started on ChatGPT in 2024, now on Claude), and how many tokens the team has used. Let it land.)*
 
 Here's the leadership part. They each have a lane. They hand work to each other. They push back on each other. And none of them decides what goes out under my name. I do.
 
