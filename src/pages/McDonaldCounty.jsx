@@ -82,8 +82,8 @@ const PROMPTS = [
     after: 'Leave out anything private, like customer details, health information or pay.',
   },
   {
-    title: 'Prepare for a hard conversation',
-    text: "Act as a leadership coach. I need to have a difficult conversation with [a role, like \"an employee\" or \"a customer\"] about [the issue]. Help me prepare in plain language: What's the one point I need to make clear? How might they react? What questions should I ask so I understand their side? How do I keep it respectful and direct? Don't write me a script, and don't take sides before you've asked me what I know. Help me think it through.",
+    title: 'Answer a customer review',
+    text: "Act as my customer service writer. Here is a review a customer left for my business: [paste the review]. Write a short reply I can post publicly. Thank them by name if they gave it, answer anything specific they mentioned, and keep it warm and professional, in a few sentences. If the review is negative, don't argue and don't make promises I haven't agreed to. Offer a way to reach me directly instead.",
   },
   {
     title: 'Learn something fast',
