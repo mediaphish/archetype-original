@@ -309,7 +309,7 @@ function CaptionsTab({ captions, plan = null, stage = null, captionsApproved = f
 
 /**
  * The schedule, before the captions: the publish day and a time for every
- * channel, including the two Bart posts by hand (2026-10-27: "I want our plan
+ * channel, including the one Bart posts by hand (2026-10-27: "I want our plan
  * that's developed inside Auto to be the schedule").
  */
 function PlanTab({ plan, stage = null, approved = false, approving = false, approveError = null, onApprove = null }) {
