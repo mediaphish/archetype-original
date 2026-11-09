@@ -223,7 +223,7 @@ Here's the other limit, and this one doesn't go away with better technology.
 
 It only knows what it's been given. And what it's been given is always incomplete.
 
-It doesn't know your customer just lost his wife. It doesn't know your best employee has been quietly looking for six months. It doesn't know the handshake deal that matters more than the contract, or that the guy who's "not responding" is drowning at home.
+It doesn't know your customer just had their first child and they're way behind on everything. It doesn't know your best employee got a call from a headhunter and is thinking about leaving. It doesn't know about the handshake deal that matters more than the contract.
 
 *[your story: a time the right call came from something no report would show.]*
 
