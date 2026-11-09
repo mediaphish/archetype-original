@@ -620,7 +620,7 @@ export default function Talk() {
             </div>
             {section.kind === 'demo' && photo ? (
               <div className="flex max-w-[44vw] flex-col gap-3">
-                <img src={photo} alt="The room" className="max-h-[38vh] rounded-lg object-contain" />
+                <img src={demo.pkg?.photo_url || photo} alt="The room" className="max-h-[38vh] rounded-lg object-contain" />
                 {demo.pkg ? (
                   <p className="max-h-[24vh] overflow-y-auto whitespace-pre-line rounded-lg bg-white/10 p-4 text-gray-200" style={{ fontSize: '1.05vw' }}>
                     {demo.pkg.captions.linkedin_personal}
