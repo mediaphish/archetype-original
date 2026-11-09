@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { parseTalkCommand, TEAM_LABELS, TEAM_ORDER, MISTAKE_ORDER } from '../../lib/talkCommands.js';
+import { parseTalkCommand, captionChunks, chunkAt, TEAM_LABELS, TEAM_ORDER, MISTAKE_ORDER } from '../../lib/talkCommands.js';
 import { avatarFor } from '../../components/ao/teamAvatars.js';
 
 /**
@@ -128,6 +128,8 @@ export default function Talk() {
   // Rehearsal only: which key each clicker button sends, so a remote that sends
   // something unexpected can be matched (2026-11-08, Bart's Logitech Back).
   const [lastKey, setLastKey] = useState('');
+  // Rehearsal only: what the mic heard last, so a missed ask can be read back.
+  const [lastHeard, setLastHeard] = useState('');
   useEffect(() => {
     const note = (e) => {
       if (['Meta', 'Shift', 'Control', 'Alt', 'CapsLock'].includes(e.key)) return;
@@ -192,12 +194,14 @@ export default function Talk() {
 
   // Shows the line and speaks it; resolves when the line has finished playing.
   const say = useCallback(
-    async (agent, text) => {
+    async (agent, text, readyAudio = null) => {
       // A message fades a few seconds after it is spoken (Bart, 2026-11-08: Ada's
       // line was still up minutes later).
       const id = Date.now() + Math.random();
       clearTimeout(fadeRef.current);
-      setReply({ agent, text, id });
+      // Long replies show a screen-sized piece at a time, in step with the voice
+      // (2026-11-09: Bit's build story ran off the bottom of the screen).
+      setReply({ agent, text, id, chunks: captionChunks(text), part: 0 });
       const fadeLater = () => {
         fadeRef.current = setTimeout(() => {
           setReply((r) => (r && r.id === id ? { ...r, fading: true } : r));
@@ -205,16 +209,28 @@ export default function Talk() {
         }, REPLY_HOLD_MS);
       };
       try {
-        const r = await fetch('/api/ao/talk/speak', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ agent, text }),
-        });
-        if (!r.ok) return fadeLater();
-        const url = URL.createObjectURL(await r.blob());
+        let blob = readyAudio;
+        if (!blob) {
+          const r = await fetch('/api/ao/talk/speak', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ agent, text }),
+          });
+          if (!r.ok) return fadeLater();
+          blob = await r.blob();
+        }
+        const url = URL.createObjectURL(blob);
         audioRef.current?.pause();
         const audio = new Audio(url);
         audioRef.current = audio;
+        audio.ontimeupdate = () => {
+          if (!audio.duration) return;
+          setReply((r) => {
+            if (!r || r.id !== id || !r.chunks) return r;
+            const part = chunkAt(r.chunks, audio.currentTime / audio.duration);
+            return part === r.part ? r : { ...r, part };
+          });
+        };
         await new Promise((resolve) => {
           audio.onended = () => {
             URL.revokeObjectURL(url);
@@ -252,8 +268,36 @@ export default function Talk() {
     [slug, section]
   );
 
+  // Bit's build story is written and voiced as soon as its slide is up, so it
+  // plays the moment Bart asks (2026-11-09: "It took about 10 seconds for Bit
+  // to start talking").
+  const builtRef = useRef(null);
+  useEffect(() => {
+    if (section?.id !== 'team' || builtRef.current) return;
+    builtRef.current = (async () => {
+      try {
+        const r = await fetch('/api/ao/talk/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ agent: 'it', text: 'Hey Bit, give them a run down on what it took to build you all and put this presentation together.', slug, section_id: section.id, topic: 'built' }),
+        });
+        const j = await r.json().catch(() => ({}));
+        if (!j.ok) return null;
+        const v = await fetch('/api/ao/talk/speak', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ agent: j.agent, text: j.reply }),
+        });
+        return { ...j, audio: v.ok ? await v.blob() : null };
+      } catch (_) {
+        return null;
+      }
+    })();
+  }, [section, slug]);
+
   const act = useCallback(
     async (said) => {
+      setLastHeard(said);
       const cmd = parseTalkCommand(said);
       if (cmd.type === 'next') return go(index + 1);
       if (cmd.type === 'back') return go(index - 1);
@@ -311,6 +355,14 @@ export default function Talk() {
           setDemo((d) => ({ ...d, phase: 'ready' }));
         }
         return;
+      }
+      if (cmd.type === 'ask' && cmd.topic === 'built' && builtRef.current) {
+        setReply(null);
+        setThinking('it');
+        const ready = await builtRef.current;
+        builtRef.current = null;
+        setThinking(null);
+        if (ready) return say(ready.agent, ready.reply, ready.audio);
       }
       if (cmd.type === 'ask') {
         setReply(null);
@@ -413,6 +465,7 @@ export default function Talk() {
     setPhoto(null);
     setDemo({ phase: 'idle' });
     interruptedRef.current = new Set();
+    builtRef.current = null;
     go(0);
     fetch('/api/ao/talk/remote', {
       method: 'POST',
@@ -573,7 +626,7 @@ export default function Talk() {
             <img src={avatarFor(speaker)} alt="" className="h-14 w-14 flex-shrink-0 rounded-full object-cover" />
             <div className="min-w-0">
               <p className="font-semibold text-gray-300" style={{ fontSize: '1.2vw' }}>{TEAM_LABELS[speaker] || 'Ada'}</p>
-              <p className="text-white" style={{ fontSize: '1.8vw', lineHeight: 1.3 }}>{thinking ? '…' : reply?.text}</p>
+              <p className="text-white" style={{ fontSize: '1.8vw', lineHeight: 1.3 }}>{thinking ? '…' : reply?.chunks ? reply.chunks[reply.part || 0] : reply?.text}</p>
             </div>
           </div>
         ) : null}
@@ -590,6 +643,7 @@ export default function Talk() {
       {!speech.supported ? <p className="absolute left-4 top-3 text-xs text-gray-500">Voice needs Chrome.</p> : null}
       {!live ? <p className="absolute right-4 top-3 rounded bg-white/10 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-gray-400">Rehearsal</p> : null}
       {!live && lastKey ? <p className="absolute left-4 top-3 rounded bg-white/10 px-2 py-1 text-xs text-gray-400">Last buttons: {lastKey}</p> : null}
+      {!live && lastHeard ? <p className="absolute left-4 top-11 max-w-[60vw] truncate rounded bg-white/10 px-2 py-1 text-xs text-gray-400">Last heard: {lastHeard}</p> : null}
     </div>
   );
 }

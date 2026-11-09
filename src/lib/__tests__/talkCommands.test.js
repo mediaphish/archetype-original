@@ -54,3 +54,31 @@ test('an intro request said any common way reaches the whole team (2026-11-08)',
   }
 });
 
+
+// 2026-11-09: two asks for Bit's rundown from the clicker got no answer.
+describe('Bit\'s cue survives a misheard name', () => {
+  it('routes the cue to Bit with no name', () => {
+    expect(parseTalkCommand('give them a rundown on what it took to build you all')).toMatchObject({ type: 'ask', agent: 'it', topic: 'built' });
+  });
+  it('hears "hey bet" as Bit, and a hyphenated run-down', () => {
+    expect(parseTalkCommand('Hey bet, give them a run-down')).toMatchObject({ agent: 'it', topic: 'built' });
+  });
+  it('still sends other names where they belong', () => {
+    expect(parseTalkCommand('Hey Ada, what did we spend today')).toMatchObject({ agent: 'auto' });
+  });
+});
+
+describe('long replies show in screen-sized pieces', () => {
+  const { captionChunks, chunkAt } = require('../talkCommands.js');
+  const text = 'Yeah, totally, so dude, all of this was built with Claude Code. Bart is not a programmer, but thirty years in software taught him what good looks like, so he told Claude what he wanted and it built it. That is a simplified version though, it was really about two years of back and forth and mistakes, starting with ChatGPT back in 2024. The cool part is you do not need his background to start.';
+  const chunks = captionChunks(text);
+  it('keeps every piece short and loses no words', () => {
+    expect(chunks.length).toBeGreaterThan(1);
+    expect(chunks.every((c) => c.length <= 150)).toBe(true);
+    expect(chunks.join(' ').replace(/\s+/g, ' ')).toBe(text);
+  });
+  it('follows the voice from first piece to last', () => {
+    expect(chunkAt(chunks, 0)).toBe(0);
+    expect(chunkAt(chunks, 0.999)).toBe(chunks.length - 1);
+  });
+});
