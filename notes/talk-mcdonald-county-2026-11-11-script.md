@@ -140,7 +140,7 @@ So:
 - **Des** designs.
 - **Bit** keeps everything connected.
 
-*(Press Back.)* "Hey Bit, give them a run down on what it took to get here today."
+*(Press Back.)* "Hey Bit, give them a run down on what it took to build you all and put this presentation together."
 
 *(Bit tells the room what it was built with, that you just told Claude what you wanted, that it's an oversimplification (two years, started on ChatGPT in 2024, now on Claude), and how many tokens the team has used. Let it land.)*
 
@@ -217,7 +217,7 @@ So here's the rule: you don't hand AI the keys and walk away. You lead it. You c
 - The human factor is always missing.
 - The room, the relationship, the judgment call. Those stay yours.
 
-*(About 20 seconds into this slide, Jot cuts in with local news: McDonald County R-1 Schools and Walmart filled a bus with winter clothes for students. React, then use it: that's exactly the kind of thing no report shows you.)*
+*(About 20 seconds into this slide, Jot cuts in after more research on the area: McDonald County R-1 Schools and Walmart filled a bus with winter clothes for students. Jot ends with "As you were." Carry on.)*
 
 Here's the other limit, and this one doesn't go away with better technology.
 
