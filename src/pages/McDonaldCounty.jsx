@@ -61,33 +61,33 @@ const ANATOMY = [
 const PROMPTS = [
   {
     title: 'Teach it about your business',
-    text: 'I want you to get to know my business so you can help me well. Interview me one question at a time. Ask about my industry, what my business does and who it serves, my customers, my team, how we make money, my goals for the next year, what takes up most of my week, and how I like to communicate. Wait for my answer before you ask the next question. After about 15 questions, or when I say "done," write a one-page summary titled "About My Business" that I can paste at the start of future conversations so you understand me. Keep it plain and specific.',
+    text: 'Act as a business consultant getting to know a new client. I want you to understand my business so you can help me well. Interview me one question at a time about my industry, what my business does and who it serves, my customers, my team, how we make money, my goals for the next year, what takes up most of my week, and how I like to communicate. Wait for my answer before you ask the next question. After about 15 questions, or when I say "done," write a one-page summary titled "About My Business" that I can paste at the start of future conversations. Keep it plain and specific. Do not guess at anything I have not told you.',
     after: 'Save that summary. The next prompts use it.',
   },
   {
     title: 'Find where AI can help',
-    text: "Act as an advisor who helps small businesses put AI to work. Here is a summary of my business: [paste your About My Business summary]. Research how businesses like mine are using AI today, and find the five best opportunities for my business, ranked by how quickly I'd see a result. For each one, tell me what it is, what it would save or improve, what kind of AI tool does it, roughly what it costs, and what to watch out for. If you can search the web, use current sources and tell me where each idea came from. Mark anything you're not sure of.",
+    text: "Act as an advisor who helps small businesses put AI to work. Here is a summary of my business: [paste your About My Business summary]. Research how businesses like mine are using AI today, and find the five best opportunities for my business. Rank them by how quickly I'd see a result. For each one, give me a short plain-language entry: what it is, what it would save or improve, what kind of AI tool does it, roughly what it costs, and what to watch out for. If you can search the web, use current sources and tell me where each idea came from. Mark anything you're not sure of, and don't make up numbers.",
   },
   {
     title: 'Put it to work',
-    text: 'Here is a summary of my business: [paste your About My Business summary]. From the opportunities you found for me, let\'s start with [the one you picked]. Do the first real piece of it now: [for example, draft the email, build the checklist, or write the schedule]. Write it the way I talk. Before you start, ask me up to three questions if anything important is missing. When you finish, list anything you assumed so I can check it, and tell me the next step.',
+    text: "Act as my assistant who knows my business. Here is a summary of my business: [paste your About My Business summary]. From the opportunities you found for me, let's start with [the one you picked]. Do the first real piece of it now: [for example, draft the email, build the checklist, or write the schedule]. Write it the way I talk, ready for me to use with light edits. Before you start, ask me up to three questions if anything important is missing. When you finish, list anything you assumed so I can check it, and tell me the next step.",
   },
   {
     title: 'Check its work',
-    text: "Here is something an AI wrote for me: [paste it]. Act as a tough editor. Point out anything that might be wrong, made up, unclear, or that doesn't sound like a real person wrote it. Suggest a fix for each one, but don't rewrite the whole thing.",
+    text: "Act as a tough editor. Here is something an AI wrote for me, for [who will read it and why]: [paste it]. Point out anything that might be wrong, made up, unclear, or that doesn't sound like a real person wrote it. Give me a short list, with a suggested fix for each item. Don't rewrite the whole thing, and say so if you can't tell whether a fact is true.",
   },
   {
     title: 'Turn a meeting into action',
-    text: 'Here are my notes from a meeting: [paste your notes]. Pull out every decision we made, each next step with who owns it, and any deadlines. Then write a short follow-up email I can send to everyone who was there.',
+    text: 'Act as my operations assistant. Here are my notes from a meeting about [the topic]: [paste your notes]. Pull out every decision we made, each next step with who owns it, and any deadlines. Then write a short, friendly follow-up email I can send to everyone who was there. If something in my notes is unclear, flag it instead of guessing.',
     after: 'Leave out anything private, like customer details, health information or pay.',
   },
   {
     title: 'Prepare for a hard conversation',
-    text: "I need to have a difficult conversation with [a role, like \"an employee\" or \"a customer\"] about [the issue]. Help me prepare. What's the one point I need to make clear? How might they react? What questions should I ask so I understand their side? How do I keep it respectful and direct? Don't write me a script. Help me think it through.",
+    text: "Act as a leadership coach. I need to have a difficult conversation with [a role, like \"an employee\" or \"a customer\"] about [the issue]. Help me prepare in plain language: What's the one point I need to make clear? How might they react? What questions should I ask so I understand their side? How do I keep it respectful and direct? Don't write me a script, and don't take sides before you've asked me what I know. Help me think it through.",
   },
   {
     title: 'Learn something fast',
-    text: 'Teach me about [a topic, like "what an AI agent is"] as if I run a small business and have ten minutes. Use a simple example from my industry: [your industry]. End with one thing I can try this week.',
+    text: 'Act as a patient teacher. I run a small business in [your industry] and have ten minutes. Teach me about [a topic, like "what an AI agent is"] using a simple example from my industry. Keep it short and plain, explain any technical word the first time you use it, and end with one thing I can try this week.',
   },
 ];
 
@@ -104,20 +104,29 @@ function PromptCard({ n, title, text, after }) {
   };
   return (
     <div className="rounded-[2px] border border-[#D9D3C8] bg-white p-5">
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <p className="text-lg font-semibold text-[#2B2929]">
-          <span className={`${display} mr-2 text-2xl text-[#DB0812]`}>{n}</span>
-          {title}
-        </p>
+      <p className="mb-3 text-lg font-semibold text-[#2B2929]">
+        <span className={`${display} mr-2 text-2xl text-[#DB0812]`}>{n}</span>
+        {title}
+      </p>
+      {/* A copy-and-paste box (Bart, 2026-11-08): the whole prompt selects on a
+          tap, and the Copy button sits inside the box. */}
+      <div className="relative rounded-[2px] border border-[#BDB6A8] bg-[#F7F4EE]">
+        <textarea
+          readOnly
+          value={text}
+          onFocus={(e) => e.target.select()}
+          aria-label={`Prompt: ${title}`}
+          rows={Math.min(14, Math.ceil(text.length / 48) + 1)}
+          className="block w-full resize-y bg-transparent p-4 pb-14 font-mono text-[15px] leading-relaxed text-[#2B2929] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#DB0812]"
+        />
         <button
           type="button"
           onClick={copy}
-          className="min-h-[40px] flex-shrink-0 rounded-[2px] border border-[#2B2929] px-4 text-sm font-semibold text-[#2B2929] hover:bg-[#F0ECE4]"
+          className="absolute bottom-3 right-3 min-h-[40px] rounded-[2px] bg-[#2B2929] px-4 text-sm font-semibold text-white hover:opacity-90"
         >
           {copied ? 'Copied' : 'Copy'}
         </button>
       </div>
-      <p className="whitespace-pre-line rounded-[2px] bg-[#F7F4EE] p-4 text-base leading-relaxed text-[#2B2929]">{text}</p>
       {after ? <p className="mt-3 text-sm italic text-[#6B6B6B]">{after}</p> : null}
     </div>
   );
