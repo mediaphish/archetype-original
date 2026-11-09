@@ -224,3 +224,18 @@ test('starting over goes to the title slide and tells the server to forget the r
   expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument();
   await waitFor(() => expect(calls.some(([u, b]) => u.includes('/api/ao/talk/remote') && b.includes('"reset"'))).toBe(true));
 });
+
+// 2026-11-09: a second talk tab spoke the last slide's line while Bart was on slide 8.
+test('an older copy of the talk goes quiet when a newer one opens', async () => {
+  const listeners = [];
+  global.BroadcastChannel = function BC() {
+    this.postMessage = (data) => listeners.filter((l) => l !== this).forEach((l) => l.onmessage?.({ data }));
+    this.close = () => {};
+    listeners.push(this);
+  };
+  render(<Talk />);
+  await waitFor(() => expect(screen.getByText('McDonald County Chamber')).toBeInTheDocument());
+  render(<Talk />);
+  await waitFor(() => expect(screen.getByText(/open in another tab/)).toBeInTheDocument());
+  delete global.BroadcastChannel;
+});

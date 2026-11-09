@@ -158,6 +158,25 @@ export default function Talk() {
   // The phone remote: next, back, and the room photo (lib/ao/talkDemo.js).
   const remoteRef = useRef(null);
   const screenRef = useRef(null);
+  // One talk page at a time (2026-11-09: a second tab on the last slide spoke
+  // Ada's closing line while Bart was on slide 8, and both tabs told the iPad
+  // their slide). The newest page takes over; any older one goes quiet.
+  const [benched, setBenched] = useState(false);
+  const benchedRef = useRef(false);
+  benchedRef.current = benched;
+  useEffect(() => {
+    if (typeof BroadcastChannel === 'undefined') return undefined;
+    const me = `${Date.now()}-${Math.random()}`;
+    const ch = new BroadcastChannel('ao-talk');
+    ch.onmessage = (e) => {
+      if (e.data?.type === 'claim' && e.data.id !== me) {
+        setBenched(true);
+        audioRef.current?.pause();
+      }
+    };
+    ch.postMessage({ type: 'claim', id: me });
+    return () => ch.close();
+  }, []);
   const reportRef = useRef(null);
   useEffect(() => {
     let stop = false;
@@ -174,11 +193,11 @@ export default function Talk() {
         }
         if ((Number(st.seq) || 0) > seqRef.current) {
           seqRef.current = Number(st.seq);
-          remoteRef.current?.(st);
+          if (!benchedRef.current) remoteRef.current?.(st);
         }
         // The iPad follows what is written here. If a write was lost (2026-11-09:
         // the iPad sat two slides behind), say it again.
-        const mine = screenRef.current;
+        const mine = benchedRef.current ? null : screenRef.current;
         if (mine && (Number(st.index) !== mine.index || Boolean(st.listening) !== mine.listening)) reportRef.current?.();
       } catch (_) {
         /* the clicker still works */
@@ -421,6 +440,7 @@ export default function Talk() {
   const busyRef = useRef(false);
   busyRef.current = Boolean(speech.listening || thinking || (reply && !reply.fading));
   useEffect(() => {
+    if (benched) return undefined;
     const plan = section?.interrupt;
     if (!plan?.lines?.length || interruptedRef.current.has(section.id)) return undefined;
     let cancelled = false;
@@ -441,7 +461,7 @@ export default function Talk() {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [section, say]);
+  }, [section, say, benched]);
 
   // A teammate's answer belongs to the slide it was given on (Bart, 2026-11-08:
   // Ada's reply was still on screen after he moved to slide 2).
@@ -455,7 +475,7 @@ export default function Talk() {
   screenRef.current = total ? { index, listening: Boolean(speech.listening) } : null;
   const reportingRef = useRef(false);
   reportRef.current = () => {
-    if (!screenRef.current || reportingRef.current) return;
+    if (!screenRef.current || reportingRef.current || benchedRef.current) return;
     reportingRef.current = true;
     fetch('/api/ao/talk/remote', {
       method: 'POST',
@@ -569,6 +589,12 @@ export default function Talk() {
 
   if (error) return <div className="flex min-h-screen items-center justify-center bg-black p-8 text-lg text-gray-300">{error}</div>;
   if (!talk) return <div className="min-h-screen bg-black" />;
+  if (benched)
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black p-8 text-center text-gray-300" style={{ fontSize: '2vw' }}>
+        The talk is open in another tab. This one is paused so the two don't talk over each other. Close this tab.
+      </div>
+    );
 
   const speaker = reply?.agent || thinking;
   return (
