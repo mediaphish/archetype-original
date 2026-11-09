@@ -209,3 +209,18 @@ test('while listening, Next stops it instead of moving on (2026-11-08)', async (
   expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument();
   delete window.webkitSpeechRecognition;
 });
+
+test('starting over goes to the title slide and tells the server to forget the run (2026-11-08)', async () => {
+  const calls = [];
+  global.fetch = jest.fn(async (url, opts) => {
+    calls.push([String(url), opts?.body || '']);
+    return { ok: true, status: 200, json: async () => ({ ok: true, talk }) };
+  });
+  render(<Talk />);
+  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  fireEvent.keyDown(window, { key: 'PageDown' });
+  expect(screen.getByText('Live from the room')).toBeInTheDocument();
+  fireEvent.keyDown(window, { key: 'Escape' });
+  expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument();
+  await waitFor(() => expect(calls.some(([u, b]) => u.includes('/api/ao/talk/remote') && b.includes('"reset"'))).toBe(true));
+});

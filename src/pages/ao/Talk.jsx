@@ -122,6 +122,7 @@ export default function Talk() {
   const holdRef = useRef(null);
   const backTimerRef = useRef(null);
   const fadeRef = useRef(null);
+  const startOverRef = useRef(null);
   const [heardNote, setHeardNote] = useState('');
   const heardNoteRef = useRef(null);
   // Rehearsal only: which key each clicker button sends, so a remote that sends
@@ -401,10 +402,30 @@ export default function Talk() {
     }).catch(() => {});
   }, [index, total, slug]);
 
+  // Starting over wipes the run: the room photo, the demo, any message on
+  // screen, and the interruptions play again (Bart, 2026-11-08: "The original
+  // photo I took is still there. When the presentation starts over, this needs
+  // to be wiped.").
+  const startOver = () => {
+    speech.cancel();
+    audioRef.current?.pause();
+    setReply(null);
+    setPhoto(null);
+    setDemo({ phase: 'idle' });
+    interruptedRef.current = new Set();
+    go(0);
+    fetch('/api/ao/talk/remote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug, action: 'reset' }),
+    }).catch(() => {});
+  };
+
+  startOverRef.current = startOver;
   remoteRef.current = (st) => {
     if (st.action === 'next' && speech.listening) endListening();
     else if (st.action === 'next') go(index + 1);
-    else if (st.action === 'first') go(0);
+    else if (st.action === 'first') startOver();
     else if (st.action === 'back') go(index - 1);
     else if (st.action === 'photo' && st.photo_url) setPhoto(st.photo_url);
   };
@@ -465,7 +486,7 @@ export default function Talk() {
         // The V key on the laptop still listens while held.
         holdRef.current = { key: e.key, listening: true, timer: null };
         beginListening();
-      } else if (e.key === 'Home' || e.key === 'Escape') go(0);
+      } else if (e.key === 'Home' || e.key === 'Escape') startOverRef.current?.();
       else if (e.key === 'End') go(total - 1);
       else if (e.key === 'f' || e.key === 'F') document.documentElement.requestFullscreen?.().catch(() => {});
     };
