@@ -29,7 +29,9 @@ Thanks for having me, and thanks for giving up your lunch hour. I know what that
 
 Quick bit about me. In July 2022 I sold the software company I'd spent twenty-nine years building. At one point I had a team of 104 people. *[your story: one line about what you do now.]*
 
-Here's what I want to do today. I'm going to talk to you about AI the way I'd talk to you about a new hire. Not the hype. Not the fear. What it can actually do, what it gets wrong, and what it asks of you as a leader. And I'm going to show you, live, what I've built for myself, warts and all.
+I want to be clear about why I'm up here. I'm not here to show off what I built. Most of what you hear about AI is either fear or hype, and most people only ever use it to clean up an email or write a quick post. I want you to see how deep this actually goes when you build it with a purpose, train it on your own work and lead it like you'd lead people. That last part is the whole talk.
+
+So I'm going to talk to you about AI the way I'd talk to you about a new hire. Not the hype. Not the fear. What it can actually do, what it gets wrong, and what it asks of you as a leader. And I'm going to show you, live, what that looks like in my own business, warts and all.
 
 *(Click.)*
 
