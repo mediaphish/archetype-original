@@ -44,6 +44,8 @@ So I'm going to talk to you about AI the way I'd talk to you about a new hire. N
 - It is not going to end the world.
 - It is not magic either.
 
+*(About 20 seconds into this slide, Vox cuts in on her own to congratulate the chamber on becoming a Destination Marketing Organization ahead of schedule. Let her, react, then carry on.)*
+
 Raise your hand if you've seen a headline this year that made AI sound like the end of the world.
 
 *(Hands.)*
