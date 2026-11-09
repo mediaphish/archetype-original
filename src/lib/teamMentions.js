@@ -40,3 +40,28 @@ export function pendingMention(input) {
   const m = String(input || '').match(/(^|\s)@(\w*)$/);
   return m ? m[2].toLowerCase() : null;
 }
+
+/**
+ * Teammates a teammate's reply actually hands the work to. A name inside a
+ * sentence that waits on Bart ("If you say yes, @Jot builds the outline") is a
+ * plan for later, not a hand-off, so it is skipped. Bart, 2026-11-09, after
+ * that exact sentence set Jot off on a full outline before he had picked the
+ * angle: "Once I approve the brief, then you can finish the research and
+ * produce the outline. Once I approve the outline, then you can write the post."
+ */
+const WAITS_ON_BART = /\b(if|once|when|whenever|after|as soon as|should|unless|until|pending)\s+(you|bart|he)\b|\bif (that|this|it|the (angle|brief|pitch|outline))\b|\bsay the word\b|\bwith your (ok|okay|yes|approval|go[- ]ahead)\b|\b(your|bart'?s) (ok|okay|yes|approval|go[- ]ahead)\b|\bon your (ok|okay|yes|word|approval)\b/i;
+
+export function handoffMentions(reply) {
+  const text = String(reply || '');
+  const sentences = text.split(/(?<=[.!?])\s+|\n+/);
+  const out = [];
+  sentences.forEach((s, i) => {
+    if (WAITS_ON_BART.test(s)) return;
+    // "Jot, take it" counts only at the very start, as it always has.
+    const part = i === 0 ? s : s.replace(/^\s*(ada|jot|vox|cam|red|des|bit)\s*[,:]/i, ' ');
+    for (const k of mentionedAgents(part)) {
+      if (!out.includes(k)) out.push(k);
+    }
+  });
+  return out;
+}

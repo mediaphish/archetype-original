@@ -25,7 +25,7 @@ import { channelOfThread, groupByChannel } from '../../lib/channels.js';
 import { splitBySpeaker } from '../../lib/speakerSplit.js';
 import ImageZoom, { isZoomableImage } from './ImageZoom.jsx';
 import { speakUpMessage } from '../../lib/speakUpMessage.js';
-import { mentionedAgents, MENTION_CHOICES, pendingMention } from '../../lib/teamMentions.js';
+import { mentionedAgents, handoffMentions, MENTION_CHOICES, pendingMention } from '../../lib/teamMentions.js';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
 import StagedJournalPanel from './StagedJournalPanel.jsx';
 import { resolveDraftArtifactSlug } from './draftArtifactSlug.js';
@@ -4216,8 +4216,10 @@ export default function AutoV2Panel({ onNavigate, className,
                 return 'auto';
               })();
               // One hand-off at most (2026-10-28, spend): a reply naming three
-              // teammates set off three more paid replies.
-              const handedTo = mentionedAgents(String(json.assistant_message || '').replace(/^\s*\w+:\s*/, ' ')).filter(
+              // teammates set off three more paid replies. A name in a sentence
+              // that waits on Bart ("if you say yes, @Jot ...") is not a hand-off
+              // (2026-11-09: it set Jot off on an outline before Bart chose).
+              const handedTo = handoffMentions(String(json.assistant_message || '').replace(/^\s*\w+:\s*/, ' ')).filter(
                 (k) => k !== answeredBy && !named.includes(k)
               ).slice(0, 1);
               for (const teammate of handedTo) {
