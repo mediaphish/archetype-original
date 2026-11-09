@@ -75,7 +75,9 @@ Now I owe you the honest part. I just told you not to panic. That's not the same
 
 Some jobs are at risk. If most of a job is pushing the same buttons, moving information from one screen to another, or answering the same questions the same way, AI is going to do that work. It's already starting. And it isn't only entry-level work. Some higher-level jobs that follow a pattern are in the same spot.
 
-This isn't just my opinion. The World Economic Forum surveyed employers around the world, and the jobs they expect to shrink fastest are the ones built on the same steps every day: data entry, bookkeeping and payroll, bank tellers, cashiers, administrative work, a lot of customer service.
+This isn't just my opinion. The World Economic Forum surveyed employers around the world, and the jobs they expect to shrink fastest are the ones built on the same steps every day: data entry, bookkeeping and payroll, bank tellers, cashiers, administrative work.
+
+Some will tell you customer service is next. Companies will try. I think we end up somewhere else: AI helping real people serve customers better. That's what my team does for me with my clients. It isn't replacing me anytime soon. It makes my work more efficient. Some of the time, anyway.
 
 Then add robots. A year ago most of us would have said a manufacturing floor or some of the trades were safe. That isn't as certain as it used to be.
 
