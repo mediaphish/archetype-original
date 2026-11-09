@@ -183,3 +183,29 @@ test('two quick presses of Back go back a slide instead of talking (2026-11-08)'
   expect(started).toHaveLength(0);
   delete window.webkitSpeechRecognition;
 });
+
+test('while listening, Next stops it instead of moving on (2026-11-08)', async () => {
+  jest.useFakeTimers();
+  window.webkitSpeechRecognition = function Rec() {
+    this.start = () => {};
+    this.stop = () => {};
+  };
+  render(<Talk />);
+  await act(async () => {
+    await Promise.resolve();
+  });
+  await waitFor(() => expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument());
+  fireEvent.keyDown(window, { key: 'PageUp' });
+  act(() => {
+    jest.advanceTimersByTime(500);
+  });
+  expect(screen.getByText(/press Back or Next to send/)).toBeInTheDocument();
+  fireEvent.keyDown(window, { key: 'PageDown' });
+  await act(async () => {
+    jest.advanceTimersByTime(2500);
+    await Promise.resolve();
+  });
+  expect(screen.queryByText(/press Back or Next to send/)).not.toBeInTheDocument();
+  expect(screen.getByText('Neosho Chamber of Commerce')).toBeInTheDocument();
+  delete window.webkitSpeechRecognition;
+});

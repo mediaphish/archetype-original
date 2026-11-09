@@ -14,6 +14,7 @@ import { avatarFor } from '../../components/ao/teamAvatars.js';
  */
 
 const DOUBLE_PRESS_MS = 450;
+const LISTEN_MAX_MS = 20000;
 const REPLY_HOLD_MS = 6000;
 const DEFAULT_SLUG = 'neosho-chamber-2026';
 
@@ -125,7 +126,11 @@ export default function Talk() {
   // something unexpected can be matched (2026-11-08, Bart's Logitech Back).
   const [lastKey, setLastKey] = useState('');
   useEffect(() => {
-    const note = (e) => setLastKey(`${e.key}${e.code && e.code !== e.key ? ` (${e.code})` : ''}`);
+    const note = (e) => {
+      if (['Meta', 'Shift', 'Control', 'Alt', 'CapsLock'].includes(e.key)) return;
+      const name = `${e.key}${e.code && e.code !== e.key ? ` (${e.code})` : ''}`;
+      setLastKey((prev) => [name, ...String(prev || '').split(' · ').filter(Boolean)].slice(0, 3).join(' · '));
+    };
     window.addEventListener('keydown', note, true);
     return () => window.removeEventListener('keydown', note, true);
   }, []);
@@ -387,7 +392,8 @@ export default function Talk() {
   }, [index, total, slug]);
 
   remoteRef.current = (st) => {
-    if (st.action === 'next') go(index + 1);
+    if (st.action === 'next' && speech.listening) endListening();
+    else if (st.action === 'next') go(index + 1);
     else if (st.action === 'first') go(0);
     else if (st.action === 'back') go(index - 1);
     else if (st.action === 'photo' && st.photo_url) setPhoto(st.photo_url);
@@ -400,16 +406,29 @@ export default function Talk() {
     speech.start();
   }, [speech]);
 
+  // Listening never runs on forever: after LISTEN_MAX_MS it sends what it heard.
+  const endRef = useRef(null);
+  useEffect(() => {
+    if (!speech.listening) return undefined;
+    const t = setTimeout(() => endRef.current?.(), LISTEN_MAX_MS);
+    return () => clearTimeout(t);
+  }, [speech.listening]);
+
   const endListening = useCallback(async () => {
     const said = await speech.stop();
     if (said) act(said);
   }, [speech, act]);
+  endRef.current = endListening;
 
   useEffect(() => {
     const down = (e) => {
       if (e.key === 'PageDown' || e.key === 'ArrowRight' || e.key === ' ') {
         e.preventDefault();
-        if (!e.repeat) go(index + 1);
+        if (e.repeat) return;
+        // While listening, Next sends instead of moving on, so there is always a
+        // way to stop (Bart, 2026-11-08: "it just sits there listening").
+        if (speech.listening) endListening();
+        else go(index + 1);
       } else if (e.key === 'PageUp' || e.key === 'ArrowLeft') {
         // The clicker's Back button (2026-11-08). Bart's Logitech sends one
         // quick press even while held, so: one press starts talking to the
@@ -512,7 +531,7 @@ export default function Talk() {
         {speech.listening ? (
           <p className="w-full text-center text-gray-400" style={{ fontSize: '1.4vw' }}>
             <span className="mr-2 inline-block h-3 w-3 animate-pulse rounded-full bg-[#DB0812] align-middle" />
-            {speech.heard || 'Listening… press Back again to send'}
+            {speech.heard || 'Listening… press Back or Next to send'}
           </p>
         ) : speaker ? (
           <div className={`flex w-full items-center gap-4 rounded-2xl bg-white/10 px-6 py-4 transition-opacity duration-700 ${reply?.fading ? 'opacity-0' : 'opacity-100'}`}>
@@ -535,7 +554,7 @@ export default function Talk() {
       </footer>
       {!speech.supported ? <p className="absolute left-4 top-3 text-xs text-gray-500">Voice needs Chrome.</p> : null}
       {!live ? <p className="absolute right-4 top-3 rounded bg-white/10 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-gray-400">Rehearsal</p> : null}
-      {!live && lastKey ? <p className="absolute left-4 top-3 rounded bg-white/10 px-2 py-1 text-xs text-gray-400">Last button: {lastKey}</p> : null}
+      {!live && lastKey ? <p className="absolute left-4 top-3 rounded bg-white/10 px-2 py-1 text-xs text-gray-400">Last buttons: {lastKey}</p> : null}
     </div>
   );
 }

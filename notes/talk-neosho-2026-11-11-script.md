@@ -8,7 +8,7 @@
 
 **Controls:**
 - **Clicker:** forward and back.
-- **Talk to the team:** press Back, speak, then press Back again to send.
+- **Talk to the team:** press Back, speak, then press Back (or Next) to send. It sends on its own after 20 seconds.
 - **Going back a slide:** press Back twice, quickly, on the remote (or Back on the iPad).
 - **Starting over:** Start over on the iPad, or the Esc key on the laptop.
 - **Phone:** the room photo.
