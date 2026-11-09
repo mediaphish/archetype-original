@@ -32,12 +32,18 @@ const button =
   'inline-flex min-h-[48px] w-full items-center justify-center rounded-[2px] px-6 py-3 text-base font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#DB0812] focus-visible:ring-offset-2 sm:w-auto';
 const link = 'text-[#2B2929] no-underline hover:underline active:underline decoration-[#A8A9AD] underline-offset-4';
 
-const STEPS = [
-  'Pick one task that repeats every week. Let AI do the first draft. You do the final one.',
-  'Tell it what good looks like before it starts. Clear goals get better work from people and from machines.',
-  'Read everything before it goes out under your name.',
-  'Keep the human calls human: relationships, judgment and the hard conversations stay with you.',
-  "Check its work like you'd check a sharp new hire: often at first, then as trust is earned.",
+// The AI 101 Course (Bart, 2026-11-08): ten basic ideas to put AI to work.
+const COURSE = [
+  ['Know the difference between a search and a coworker.', 'Asking it a question is a search. Giving it a job, the background and a standard to meet is a coworker. An agent goes one step further: it carries out work on its own, inside limits you set.'],
+  ['Start with one task that repeats every week.', 'Let AI do the first draft. You do the final one.'],
+  ['Tell it what good looks like before it starts.', 'Clear goals get better work from people and from machines.'],
+  ['Give it your context.', 'Your voice, your customers, your past work. Generic in, generic out.'],
+  ['Read everything before it goes out under your name.', 'It is sometimes wrong with total confidence.'],
+  ["Protect what's private.", 'Keep customer records, passwords and financial details out unless you know exactly where they go.'],
+  ['Keep the human calls human.', 'Relationships, judgment and the hard conversations stay with you.'],
+  ["Check its work like a sharp new hire's.", 'Often at first, then less as it earns your trust.'],
+  ['Budget for it.', 'It costs real time and real money. There is no easy button.'],
+  ['Bring your people with you.', 'The employees who learn to direct AI become more valuable. Help them get there.'],
 ];
 
 export default function McDonaldCounty() {
@@ -91,15 +97,26 @@ export default function McDonaldCounty() {
 
         <section className="bg-[#F0ECE4]">
           <div className="mx-auto max-w-2xl px-5 py-12 sm:px-8">
-            <p className={`${eyebrow} mb-6 text-[#2B2929]`}>Five steps for this week</p>
-            <ol className="list-none space-y-5 pl-0 text-lg leading-relaxed">
-              {STEPS.map((s, i) => (
-                <li key={s} className="flex gap-4">
-                  <span className={`${display} text-3xl leading-none text-[#DB0812]`}>{i + 1}</span>
-                  <span>{s}</span>
+            <p className={`${eyebrow} mb-2 text-[#2B2929]`}>AI 101 Course</p>
+            <h2 className={`${display} mb-8 text-4xl leading-tight text-[#2B2929] sm:text-5xl`}>Ten ideas to put AI to work in your business</h2>
+            <ol className="list-none space-y-6 pl-0 text-lg leading-relaxed">
+              {COURSE.map(([head, body], i) => (
+                <li key={head} className="flex gap-4">
+                  <span className={`${display} w-8 flex-shrink-0 text-3xl leading-none text-[#DB0812]`}>{i + 1}</span>
+                  <span>
+                    <strong className="font-semibold">{head}</strong> {body}
+                  </span>
                 </li>
               ))}
             </ol>
+            <p className="mt-10 text-lg leading-relaxed">
+              Want to go deeper? My book{' '}
+              <a href={BOOK_URL} className="font-semibold text-[#DB0812] underline underline-offset-4">
+                RemAIning Human
+              </a>{' '}
+              picks up where this course leaves off, and it&rsquo;s free for McDonald County Chamber members with code{' '}
+              <strong>{BOOK_CODE}</strong>.
+            </p>
           </div>
         </section>
 
