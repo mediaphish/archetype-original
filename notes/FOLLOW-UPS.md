@@ -4,6 +4,12 @@ Running list of work Bart has asked for that is not started yet. Newest first.
 When something here gets built, move it to "Done" with the date.
 
 ## Open
+### Book idea: leading your AI, a follow-up to RemAIning Human (Bart, 2026-11-08, not started)
+"We should do a follow up book to RemAIning Human that is about leading your AI." Came up while reworking the McDonald County Chamber AI talk, whose spine is "lead it like you lead people: set the goal, check the work, keep the human in it." A full book, published and sold like RemAIning Human.
+
+### Guide: the RemAIning Human guidebook (Bart, 2026-11-08, add to the roadmap, not started)
+"Probably also need to add to our roadmap the addition of the RemAIning Human guidebook." A guide built from RemAIning Human the same way the Toxic Empathy and Earned Authority guides were built, with its own theme.
+
 - 2026-11-02 Site updates take about 13 minutes because every update rebuilds all 414 journal and devotional pages even when none changed. Bart asked why. Look at reusing unchanged pages so small changes build faster.
 
 ### Guide idea: servant leadership as strong leadership (Bart, 2026-10-31, not started)
