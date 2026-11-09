@@ -88,7 +88,7 @@ export default function Remote() {
   const [index, setIndex] = useState(0);
   const [size, setSize] = useState(() => {
     try {
-      return Number(localStorage.getItem('talk-script-size')) || 26;
+      return Number(localStorage.getItem('talk-script-size')) || (window.innerWidth < 640 ? 20 : 26);
     } catch {
       return 26;
     }
@@ -134,8 +134,9 @@ export default function Remote() {
     };
   }, [slug]);
 
+  const scrollRef = React.useRef(null);
   useEffect(() => {
-    window.scrollTo({ top: 0 });
+    scrollRef.current?.scrollTo({ top: 0 });
   }, [index]);
 
   const setFont = (n) => {
@@ -173,11 +174,13 @@ export default function Remote() {
 
   const section = sections[index];
   const next = sections[index + 1];
-  const btn = 'min-h-[64px] flex-1 rounded-2xl text-xl font-bold active:scale-[0.98]';
+  const btn = 'min-h-[56px] flex-1 rounded-2xl text-lg font-bold active:scale-[0.98] sm:min-h-[64px] sm:text-xl';
 
   return (
-    <div className="min-h-screen bg-black text-white" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-      <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-white/10 bg-black/95 px-5 py-3">
+    // One screen tall on any device: the script scrolls in the middle and the
+    // buttons stay on screen (Bart, 2026-11-08, iPhone: "the buttons are off the screen").
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-black text-white" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+      <header className="flex flex-shrink-0 flex-wrap items-center gap-2 border-b border-white/10 bg-black px-4 py-3 sm:gap-3 sm:px-5">
         <div className="min-w-0 flex-1">
           <p className="text-xs uppercase tracking-widest text-gray-400">
             Slide {sections.length ? index + 1 : '–'} of {sections.length || '–'}
@@ -185,18 +188,19 @@ export default function Remote() {
           </p>
           <p className="truncate text-xl font-bold">{section?.title || 'Waiting for the big screen…'}</p>
         </div>
-        <button type="button" className="h-11 rounded-lg bg-white/10 px-3 text-sm font-semibold" onClick={() => move('first')}>
+        <button type="button" className="h-10 rounded-lg bg-white/10 px-3 text-sm font-semibold sm:h-11" onClick={() => move('first')}>
           Start over
         </button>
-        <button type="button" aria-label="Smaller text" className="h-11 w-11 rounded-lg bg-white/10 text-lg" onClick={() => setFont(size - 2)}>
+        <button type="button" aria-label="Smaller text" className="h-10 w-10 rounded-lg bg-white/10 text-base sm:h-11 sm:w-11 sm:text-lg" onClick={() => setFont(size - 2)}>
           A-
         </button>
-        <button type="button" aria-label="Larger text" className="h-11 w-11 rounded-lg bg-white/10 text-xl" onClick={() => setFont(size + 2)}>
+        <button type="button" aria-label="Larger text" className="h-10 w-10 rounded-lg bg-white/10 text-lg sm:h-11 sm:w-11 sm:text-xl" onClick={() => setFont(size + 2)}>
           A+
         </button>
       </header>
 
-      <main className="mx-auto max-w-3xl px-5 pb-48 pt-5 leading-relaxed" style={{ fontSize: `${size}px` }}>
+      <main ref={scrollRef} className="min-h-0 w-full flex-1 overflow-y-auto overscroll-contain px-4 pb-8 pt-5 leading-relaxed sm:px-5" style={{ fontSize: `${size}px` }}>
+        <div className="mx-auto max-w-3xl break-words">
         {section?.lines?.length ? (
           <div className="mb-6 rounded-xl border border-white/15 px-4 py-3 text-[0.75em] text-gray-300">
             <p className="mb-1 text-[0.8em] uppercase tracking-widest text-gray-500">On screen</p>
@@ -207,9 +211,10 @@ export default function Remote() {
         ) : null}
         <Script md={section?.script} />
         {next ? <p className="mt-10 text-[0.7em] text-gray-500">Next: {next.title}</p> : null}
+        </div>
       </main>
 
-      <footer className="fixed inset-x-0 bottom-0 border-t border-white/10 bg-black/95 px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3">
+      <footer className="flex-shrink-0 border-t border-white/10 bg-black px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 sm:px-5">
         <div className="mx-auto flex max-w-3xl gap-3">
           <button type="button" className={`${btn} bg-white/10`} onClick={() => move('back')}>
             Back
