@@ -15,7 +15,7 @@ import { Helmet } from 'react-helmet-async';
 
 // The Remaining Human checkout with the room's code already applied, so the
 // eBook is free and nobody types anything. The code lives in SamCart.
-const BOOK_URL = 'https://aobooks.mysamcart.com/archetype-original/?coupon=NEOSHO';
+const BOOK_URL = 'https://aobooks.mysamcart.com/checkout/remaining-human?coupon=NEOSHO';
 
 // Archetype Original's channels, exactly as the site footer lists them.
 const SOCIAL = [
