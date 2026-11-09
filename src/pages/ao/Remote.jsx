@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useKeepAwake } from '../../lib/useKeepAwake.js';
 
 /**
  * The presenter screen for a live talk. Open /ao/remote on the iPad (or phone)
@@ -85,6 +86,7 @@ function Script({ md }) {
 }
 
 export default function Remote() {
+  useKeepAwake();
   const slug = new URLSearchParams(window.location.search).get('slug') || DEFAULT_SLUG;
   const [status, setStatus] = useState('');
   const [preview, setPreview] = useState(null);

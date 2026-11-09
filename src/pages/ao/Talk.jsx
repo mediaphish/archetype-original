@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useKeepAwake } from '../../lib/useKeepAwake.js';
 import { parseTalkCommand, captionChunks, chunkAt, TEAM_LABELS, TEAM_ORDER, MISTAKE_ORDER } from '../../lib/talkCommands.js';
 import { avatarFor } from '../../components/ao/teamAvatars.js';
 
@@ -111,6 +112,7 @@ function useSpeech() {
 }
 
 export default function Talk() {
+  useKeepAwake();
   const slug = new URLSearchParams(window.location.search).get('slug') || DEFAULT_SLUG;
   const [talk, setTalk] = useState(null);
   const [error, setError] = useState('');
