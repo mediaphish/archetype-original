@@ -110,7 +110,7 @@ export default function McDonaldCounty() {
               ))}
             </ol>
             <p className="mt-10 text-lg leading-relaxed">
-              Want to go deeper? My book{' '}
+              Want to go deeper? Bart&rsquo;s book{' '}
               <a href={BOOK_URL} className="font-semibold text-[#DB0812] underline underline-offset-4">
                 RemAIning Human
               </a>{' '}
