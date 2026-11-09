@@ -113,6 +113,7 @@ import EngagementInquiryPage from "./pages/EngagementInquiry";
 import AccidentalCEOPage from "./pages/AccidentalCEO";
 import RemainingHumanPage from "./pages/RemainingHuman";
 import OCCPage from "./pages/OCC";
+import NeoshoPage from "./pages/Neosho";
 import AdvisoryPage from "./pages/Advisory";
 import WorkWithBartPage from "./pages/WorkWithBart";
 import TheRoomPage from "./pages/TheRoom";
@@ -197,6 +198,7 @@ export default function App() {
     if (path === '/work-with-bart') return 'work-with-bart';
     if (path === '/remaining-human') return 'remaining-human';
     if (path === '/occ' || path === '/occ/') return 'occ';
+    if (path === '/neosho' || path === '/neosho/') return 'neosho';
     // Operators Platform routes
     if (path === '/operators') return 'operators-landing';
     if (path === '/operators/login') return 'operators-login';
@@ -674,6 +676,8 @@ export default function App() {
         setCurrentPage('remaining-human');
       } else if (path === '/occ' || path === '/occ/') {
         setCurrentPage('occ');
+      } else if (path === '/neosho' || path === '/neosho/') {
+        setCurrentPage('neosho');
       } else {
         setCurrentPage('home');
       }
@@ -872,6 +876,9 @@ export default function App() {
   // One talk's landing page, reached by QR code only (no global nav/footer).
   if (currentPage === 'occ') {
     return <OCCPage />;
+  }
+  if (currentPage === 'neosho') {
+    return <NeoshoPage />;
   }
 
   // Remaining Human standalone landing page (no global nav/footer)

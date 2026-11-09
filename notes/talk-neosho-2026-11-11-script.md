@@ -244,6 +244,11 @@ Thank you. *(Click.)*
 ## 10. Questions (15 min)
 
 **SCREEN: Questions**
+- Want help with AI in your business? Let's talk.
+- bart@archetypeoriginal.com
+- The QR code to archetypeoriginal.com/neosho
+
+*(About 5 seconds in, Ada cuts in: if anyone wants to talk with you about AI in their own business, you do that. A plan and help putting it to work, not a custom app. Grab you after, or scan the code.)*
 
 What've you got?
 
