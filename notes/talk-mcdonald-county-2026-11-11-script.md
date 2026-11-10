@@ -4,7 +4,7 @@
 
 **Length:** about 45 minutes, then 15 minutes of questions.
 
-**About this draft:** what you see on screen is in bold. What you say is everything else, written the way you talk. Where it says *[your story]*, put in something only you can tell. I left those open rather than make anything up about you. Say it in your own words. This is a map, not a teleprompter.
+**About this draft:** what you see on screen is in bold. What you say is everything else, written the way you talk. Your stories (what you do now, the tattoos, the Crying Couch) are written out from your own run-through, tightened up. Directions are in *(italics)*. Say it in your own words. This is a map, not a teleprompter.
 
 **Controls:**
 - **iPad:** Back and Next change slides. Talk turns on the laptop's mic; speak, then tap it again (it says Send) to send. It sends on its own after 20 seconds.
@@ -26,9 +26,9 @@ Yeah, that's real. I'll explain in a minute.
 
 Thanks for having me, and thanks for giving up your lunch hour. I know what that hour is worth to a business owner.
 
-Quick bit about me. In July 2022 I sold the software company I'd spent twenty-nine years building. At one point I had a team of 104 people. *[your story: one line about what you do now.]*
+Quick bit about me. In July 2022 I sold the software company I'd spent twenty-nine years building. At one point I had a team of 104 people. Since then I've spent four and a half years researching and writing about leadership, and building tools for my business with AI.
 
-I want to be clear about why I'm up here. I'm not here to show off what I built. Most of what you hear about AI is either fear or hype, and most people only ever use it to clean up an email or write a quick post. I want you to see how deep this actually goes when you build it with a purpose, train it on your own work and lead it like you'd lead people. That last part is the whole talk.
+I want to be clear about why I'm up here. I'm not here to show off what I built. Most of what you hear about AI is fear or hype. And most people only use it to clean up an email or write a quick post. I want you to see how deep this actually goes when you build it with a purpose, train it on your own work and lead it like you'd lead people. That last part is the whole talk.
 
 So I'm going to talk to you about AI the way I'd talk to you about a new hire. Not the hype. Not the fear. What it can actually do, what it gets wrong, and what it asks of you as a leader. And I'm going to show you, live, what that looks like in my own business, warts and all.
 
@@ -43,7 +43,7 @@ So I'm going to talk to you about AI the way I'd talk to you about a new hire. N
 - It is not going to end the world.
 - It is not magic either.
 
-*(About 20 seconds into this slide, Vox cuts in on her own to congratulate the chamber on becoming a Destination Marketing Organization ahead of schedule. Let her, react, then carry on.)*
+*(About 20 seconds into this slide, Vox cuts in on her own to congratulate the chamber on becoming a Destination Marketing Organization ahead of schedule. She ends with "Back to you." Say: "Thank you, Vox." Then pick up where you were.)*
 
 Raise your hand if you've seen a headline this year that made AI sound like the end of the world.
 
@@ -74,7 +74,7 @@ Both cost you. *(Click.)*
 
 Now I owe you the honest part. I just told you not to panic. That's not the same as telling you nothing is changing.
 
-Some jobs are at risk. If most of a job is pushing the same buttons, moving information from one screen to another, or answering the same questions the same way, AI is going to do that work. It's already starting. And it isn't only entry-level work. Some higher-level jobs that follow a pattern are in the same spot.
+Some jobs are at risk. If most of a job is pushing the same buttons, moving information from one screen to another, or answering the same questions the same way, AI is going to do that work. It's already starting, and not just in entry-level jobs. Some higher-level jobs that follow a pattern are in the same spot.
 
 This isn't just my opinion. The World Economic Forum surveyed employers around the world, and the jobs they expect to shrink fastest are the ones built on the same steps every day: data entry, bookkeeping and payroll, bank tellers, cashiers, administrative work.
 
@@ -82,7 +82,7 @@ Some will tell you customer service is next. Companies will try. I think we end 
 
 Then add robots. A year ago most of us would have said a manufacturing floor or some of the trades were safe. That isn't as certain as it used to be.
 
-I'm not saying this to scare you. I'm saying it because some of the people in this room employ people, and you're going to make decisions about this whether you choose to or not.
+I'm not saying this to scare you. I'm saying it because some of you employ people. Ready or not, you're going to be making decisions about this.
 
 Here's what I believe. The work changes before the people have to. The person who learns to use it, who becomes the one directing it, becomes more valuable, not less. The business that waits is the one that gets caught off guard.
 
@@ -108,11 +108,11 @@ Keep it up if it's doing real work in your business every week, without you sitt
 
 That gap right there is what this talk is about.
 
-Most of us stop at the front door. "Write me an email." "Fix this paragraph." "Give me ten ideas for a post." That's useful. But it's the front door.
+Most people stop at the first task. "Write me an email." "Fix this paragraph." "Give me ten ideas for a post." That's useful. But it's like hiring someone sharp and only ever asking them to proofread.
 
-The house behind it is work that keeps going when you're not there. Research that's done before you ask. Posts that go out on schedule, in your voice, about your real work. Follow-ups that don't fall through the cracks. Somebody who notices something's broken before your customer does.
+The real value is the work that keeps going when you're not there. Research that's done before you ask. Posts that go out on a schedule, in your voice, about your real work. Follow-ups that don't fall through the cracks. Somebody who notices something broke before your customer does.
 
-I wanted to know how far into that house a small business could actually get. So I built it for myself.
+I wanted to see how much of that a small business could actually hand off. So I built it for myself.
 
 *(Click.)*
 
@@ -143,6 +143,8 @@ So:
 
 *(Bit tells the room what it was built with, that you just told Claude what you wanted, that it's an oversimplification (two years, started on ChatGPT in 2024, now on Claude), and how many tokens the team has used. Let it land.)*
 
+Thanks, Bit.
+
 Here's the leadership part. They each have a lane. They hand work to each other. They push back on each other. And none of them decides what goes out under my name. I do.
 
 That's not a tech decision. That's a leadership decision. *(Click.)*
@@ -161,7 +163,9 @@ Let's do one for real.
 
 Okay. *(Tap Talk.)* "Okay Ada, start the demo."
 
-*(About 20 seconds while the team works. Fill it:)* Right now they're writing a post about being here with you today. No template. Nobody's typed anything.
+*(The team takes a minute or two. Fill it:)* This takes a minute. AI isn't instant; it's doing real work. Right now the team is writing a post about being here with you. No template. Nobody's typed a word.
+
+*(If it's still working, a joke is fine. The Jeopardy line got a laugh in rehearsal: "I should have loaded the Jeopardy theme for this part.")*
 
 *(Each teammate says what they did. Bit checks the connections, Jot writes it, Red edits it, Des looks at the photo, Vox picks where it goes, Cam packages it, Ada hands it to you.)*
 
@@ -201,7 +205,9 @@ And the team knows it. *(Tap Talk.)* "Team, tell them about a time you got it wr
 
 *(Then Des speaks up: "Hey Bart, tell them about the tattoos.")*
 
-Here's mine. *[your story: the tattoos. It can't draw them right, so in every picture it makes of me, my sleeves are down. Tell it your way: what it got wrong and how you found out.]*
+Here's mine. You may have noticed my tattoos. Or maybe you can't, because of the long sleeves. In every picture AI has made of me, my sleeves are down. It can't draw them.
+
+*(Pause. Let them look at your arms.)*
 
 Every one of those got caught because a human was paying attention.
 
@@ -216,7 +222,7 @@ So here's the rule: you don't hand AI the keys and walk away. You lead it. You c
 - The human factor is always missing.
 - The room, the relationship, the judgment call. Those stay yours.
 
-*(About 20 seconds into this slide, Jot cuts in after more research on the area: McDonald County R-1 Schools and Walmart filled a bus with winter clothes for students. Jot ends with "As you were." Carry on.)*
+*(About 20 seconds into this slide, Jot cuts in after more research on the area: McDonald County R-1 Schools and Walmart filled a bus with winter clothes for students. Jot hands it back. Say: "Thanks for that, Jot. Where was I?" Then repeat the line you were on.)*
 
 Here's the other limit, and this one doesn't go away with better technology.
 
@@ -224,7 +230,17 @@ It only knows what it's been given. And what it's been given is always incomplet
 
 It doesn't know your customer just had their first child and they're way behind on everything. It doesn't know your best employee got a call from a headhunter and is thinking about leaving. It doesn't know about the handshake deal that matters more than the contract.
 
-*[your story: a time the right call came from something no report would show. Tell them about the Crying Couch.]*
+I've got one myself. In my office at the software company, I had what I called the crying couch. A lot of mornings I'd walk in and somebody would be sitting on it, upset or dealing with something.
+
+One morning it was a young graphic designer, and he was clearly upset. As we talked, it came out that he had some really significant things going on at home.
+
+What he didn't know was that behind the scenes, we'd been looking at his work. The quality had dropped off, and so had his pace.
+
+*(Slow down here.)*
+
+The data said he was underperforming. It couldn't tell me why. That conversation on the couch did. He's still with the company today, and he's doing an incredible job.
+
+That's the human factor.
 
 Leadership lives exactly in the places the data can't reach: the room, the relationship, the judgment call.
 
@@ -243,7 +259,7 @@ Remember how I opened this talk, with those headlines? A lot of what's out there
 
 What I showed you costs real money every month. It took real time to build. It needs somebody watching it every day: what it says, what it spends, what it gets wrong.
 
-Is it worth it? For me, yes. It does real work while I'm doing other things. But only because I own it. The minute you stop paying attention, it'll happily, confidently drive off the road.
+Is it worth it? For me, yes. I'm a one-man operation. It does real work while I'm doing other things. But only because I own it. The minute you stop paying attention, it'll happily, confidently drive off the road.
 
 Anybody who tells you it's easy is selling you something. *(Click.)*
 
@@ -256,7 +272,7 @@ Anybody who tells you it's easy is selling you something. *(Click.)*
 - Check the work.
 - Keep the human in it.
 
-*(About 20 seconds into this slide, Ada cuts in: it's Veterans Day, asks the veterans to raise their hands, pauses, then thanks them. Give it room.)*
+*(As soon as this slide opens, Ada cuts in: it's Veterans Day, asks the veterans to raise their hands, pauses, then thanks them. Wait for her. Add your own: "Thank you for your service." Take a breath, then start your close.)*
 
 So here's where I'll land.
 
@@ -280,7 +296,7 @@ Thank you. *(Click.)*
 
 *(About 5 seconds in, Ada cuts in: if anyone wants to talk with you about AI in their own business, you do that. A plan and help putting it to work, not a custom app. Grab you after, or scan the code.)*
 
-What've you got?
+Thanks, Ada. What questions do you have?
 
 *(If a question is about the team, you can ask them out loud. Tap Talk, say their name and the question, tap Send. If it belongs to someone else, they'll hand it over.)*
 
