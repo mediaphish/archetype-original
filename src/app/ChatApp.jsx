@@ -99,7 +99,7 @@ export default function ChatApp({
         "Hi, I'm Archy. You're looking at an engagement inquiry. I can help you think through fit, timing, or what a next step might look like — or answer questions about how Bart works with leaders. What’s on your mind?";
     } else if (context === 'remaining-human') {
       greetingText =
-        "Hi, I'm Archy. You're looking at Remaining Human—Bart's field guide for leading when speed, pressure, and AI-shaped systems stack together. Ask about the ideas in the book, whether it's a fit for you, or how to think clearly when everything accelerates. What would you like to explore?";
+        "Hi, I'm Archy. You're looking at RemAIning Human—Bart's field guide for leading when speed, pressure, and AI-shaped systems stack together. Ask about the ideas in the book, whether it's a fit for you, or how to think clearly when everything accelerates. What would you like to explore?";
     } else if (context === 'advisory') {
       greetingText =
         "Hi, I'm Archy. You're on the Advisory page — Bart's book The Room and the option for private advisory outside your organization. Ask about the book's argument, whether advisory might fit your situation, or what \"outside the room\" means in practice. What would you like to explore?";

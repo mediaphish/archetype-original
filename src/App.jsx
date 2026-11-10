@@ -881,7 +881,7 @@ export default function App() {
     return <McDonaldCountyPage />;
   }
 
-  // Remaining Human standalone landing page (no global nav/footer)
+  // RemAIning Human standalone landing page (no global nav/footer)
   if (currentPage === 'remaining-human') {
     return (
       <>

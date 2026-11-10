@@ -130,9 +130,9 @@ The books
 
 Building something real, and leading when the weight shows up before the clarity does.
 
-[Image: Remaining Human by Bart Paden, standing on a desk]
+[Image: RemAIning Human by Bart Paden, standing on a desk]
 
-### Remaining Human
+### RemAIning Human
 
 Servant leadership and staying human while intelligent systems reshape how decisions are made.
 

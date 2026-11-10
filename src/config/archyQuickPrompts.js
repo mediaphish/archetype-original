@@ -107,7 +107,7 @@ const ARCHY_QUICK_PROMPTS = {
     { label: 'Is it a fit for me?', send: 'How would I know if working with Bart is a fit for me?' },
   ],
   'remaining-human': [
-    { label: 'Core argument', send: 'What is the core argument of Remaining Human?' },
+    { label: 'Core argument', send: 'What is the core argument of RemAIning Human?' },
     { label: 'Pressure & speed', send: 'How should I think about leading when speed and pressure pile up?' },
     { label: 'AI-shaped systems', send: 'What does “AI-shaped systems” mean for leaders here?' },
   ],

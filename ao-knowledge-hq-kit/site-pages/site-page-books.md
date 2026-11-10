@@ -6,7 +6,7 @@ status: published
 url: 'https://www.archetypeoriginal.com/books'
 summary: >-
   Three books on leadership, organizational behavior, and the human cost of
-  every decision leaders make. The Room, Accidental CEO, Remaining Human.
+  every decision leaders make. The Room, Accidental CEO, RemAIning Human.
 tags:
   - site-page
 created_at: '2026-10-22'
@@ -29,9 +29,9 @@ A leadership story about building something real, carrying more than expected, a
 
 Learn more & order
 
-[Image: Remaining Human by Bart Paden, standing on a desk]
+[Image: RemAIning Human by Bart Paden, standing on a desk]
 
-## Remaining Human
+## RemAIning Human
 
 Servant leadership, clarity, and staying human while intelligent systems reshape how decisions are made.
 

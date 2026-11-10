@@ -204,7 +204,7 @@ function isLegitimateFollowUpMessage(message) {
   return patterns.some((re) => re.test(t));
 }
 
-/** On the Remaining Human landing, always include that book in retrieval so Archy can discuss it. */
+/** On the RemAIning Human landing, always include that book in retrieval so Archy can discuss it. */
 function ensureRemainingHumanInKnowledge(relevantKnowledge, corpus, pageContext) {
   if (pageContext !== 'remaining-human' || !corpus?.docs?.length) {
     return relevantKnowledge;

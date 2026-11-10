@@ -1,5 +1,5 @@
 ---
-title: Remaining Human
+title: RemAIning Human
 slug: site-page-remaining-human
 type: site-page
 status: published
@@ -17,7 +17,7 @@ source:
     Generated from the live page by scripts/extract-site-pages.mjs. Edit the
     page, not this file.
 ---
-Remaining Human
+RemAIning Human
 
 AO Site
 
@@ -35,7 +35,7 @@ Get the eBook — $27
 
 Digital download · One-time purchase.
 
-[Image: Remaining Human book cover]
+[Image: RemAIning Human book cover]
 
 ## You've felt it. You just haven't named it yet.
 
@@ -47,9 +47,9 @@ Speed increases as AI accelerates decisions. Wisdom gets thinner. Output grows. 
 
 Leadership is what gets exposed inside it.
 
-## Remaining Human
+## RemAIning Human
 
-Remaining Human is a field guide for leaders operating inside systems that move faster than clarity—especially as AI lifts the tempo across decisions, handoffs, and expectations. Not theory. Not tactics. A way to think clearly when everything else speeds up.
+RemAIning Human is a field guide for leaders operating inside systems that move faster than clarity—especially as AI lifts the tempo across decisions, handoffs, and expectations. Not theory. Not tactics. A way to think clearly when everything else speeds up.
 
 Get the eBook — $27
 
@@ -71,7 +71,7 @@ Digital download · One-time purchase.
 
 Bart Paden has spent decades building organizations, leading teams, and living with decisions that carried real consequences for people and culture—not as a story told later, but as daily weight.
 
-Remaining Human isn't an abstract take on leadership. It's written from inside complexity: incomplete information, constant pressure, and outcomes you still own after the moment passes.
+RemAIning Human isn't an abstract take on leadership. It's written from inside complexity: incomplete information, constant pressure, and outcomes you still own after the moment passes.
 
 When AI and the systems around it accelerate together, the risk isn't only a wrong call—it's losing the clarity to know what "right" even means for the people you lead.
 
@@ -89,7 +89,7 @@ When AI and the systems around it accelerate together, the risk isn't only a wro
 
 ## When the problem is not speed, it is honesty inside the room
 
-Remaining Human is about staying human while systems accelerate. If you also need a space where the conversation can be fully true, outside your hierarchy, that is what the advisory is for. Or read The Room first if you want the argument about why feedback collapses under authority.
+RemAIning Human is about staying human while systems accelerate. If you also need a space where the conversation can be fully true, outside your hierarchy, that is what the advisory is for. Or read The Room first if you want the argument about why feedback collapses under authority.
 
 The Room — book
 

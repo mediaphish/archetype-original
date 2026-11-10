@@ -102,7 +102,7 @@ It is a failure to hold the line.
 
 Servant leadership does not fall into this.
 
-A servant leader does not ignore what someone is dealing with. As I have written in Remaining Human, leadership requires presence. It requires stepping into the reality someone is living in and refusing to reduce them to output.
+A servant leader does not ignore what someone is dealing with. As I have written in RemAIning Human, leadership requires presence. It requires stepping into the reality someone is living in and refusing to reduce them to output.
 
 But that is not where it stops.
 

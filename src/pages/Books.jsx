@@ -1,5 +1,5 @@
 /**
- * Books hub: Accidental CEO, Remaining Human, The Room, in the order Bart wrote them.
+ * Books hub: Accidental CEO, RemAIning Human, The Room, in the order Bart wrote them.
  */
 import React from 'react';
 import SEO from '../components/SEO';
@@ -27,9 +27,9 @@ const BOOKS = [
     eager: true,
   },
   {
-    title: 'Remaining Human',
+    title: 'RemAIning Human',
     image: '/images/books/remaining-human-desk.jpg',
-    alt: 'Remaining Human by Bart Paden, standing on a desk',
+    alt: 'RemAIning Human by Bart Paden, standing on a desk',
     blurb: 'Servant leadership, clarity, and staying human while intelligent systems reshape how decisions are made.',
     href: '/remaining-human',
     cta: 'Read more & buy',

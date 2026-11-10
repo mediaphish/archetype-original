@@ -21,7 +21,7 @@ takeaways:
   - Speed and capability from AI compress time for correction and amplify both good and poor leadership.
   - Leadership is defined by what people experience, not only by output.
 applications:
-  - Knowledge base and Archy reference for Remaining Human themes.
+  - Knowledge base and Archy reference for RemAIning Human themes.
 related: []
 ---
 

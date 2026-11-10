@@ -1,5 +1,5 @@
 /**
- * Changelog — Remaining Human landing (AI as accelerant, not subject)
+ * Changelog — RemAIning Human landing (AI as accelerant, not subject)
  * - Hero: supporting copy names AI-driven systems; keeps leadership frame.
  * - Agitation: opens with AI accelerating decisions; rest of rhythm matches spec.
  * - Reframe: AI as force accelerating everything; leadership exposed under that pressure.
@@ -70,7 +70,7 @@ export default function RemainingHuman() {
       <SEO pageKey="remaining-human" />
       <SchemaJsonLd
         schema={buildBookSchema({
-          name: 'Remaining Human',
+          name: 'RemAIning Human',
           pageKey: 'remaining-human',
           path: '/remaining-human',
           imagePath: '/images/remaining-human/cover-front.png',
@@ -114,7 +114,7 @@ export default function RemainingHuman() {
                   aria-hidden="true"
                 />
                 <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-[#A9D8D0]">
-                  Remaining Human
+                  RemAIning Human
                 </p>
               </div>
               <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
@@ -167,7 +167,7 @@ export default function RemainingHuman() {
               <div className="relative mx-auto w-full max-w-md rounded-xl border border-[#8CCFC4]/30 bg-[#081816]/60 p-4 sm:p-5 shadow-[0_0_0_1px_rgba(140,207,196,0.06),0_22px_70px_rgba(0,0,0,0.35)]">
                 <img
                   src="/images/remaining-human/cover-front.png"
-                  alt="Remaining Human book cover"
+                  alt="RemAIning Human book cover"
                   className="w-full rounded-lg object-cover"
                   loading="eager"
                 />
@@ -260,9 +260,9 @@ export default function RemainingHuman() {
 
           <div className="container relative mx-auto px-4 sm:px-6 md:px-12">
             <div className="mx-auto max-w-3xl">
-              <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#EAF8F5]">Remaining Human</h2>
+              <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#EAF8F5]">RemAIning Human</h2>
               <p className="mt-6 text-base sm:text-lg leading-relaxed text-[#D5EAE5]">
-                Remaining Human is a field guide for leaders operating inside systems that move faster than
+                RemAIning Human is a field guide for leaders operating inside systems that move faster than
                 clarity—especially as AI lifts the tempo across decisions, handoffs, and expectations. Not theory. Not
                 tactics. A way to think clearly when everything else speeds up.
               </p>
@@ -325,7 +325,7 @@ export default function RemainingHuman() {
                     carried real consequences for people and culture—not as a story told later, but as daily weight.
                   </p>
                   <p className="mt-5 text-base sm:text-lg leading-relaxed text-[#E4F1EE]">
-                    Remaining Human isn&apos;t an abstract take on leadership. It&apos;s written from inside complexity:
+                    RemAIning Human isn&apos;t an abstract take on leadership. It&apos;s written from inside complexity:
                     incomplete information, constant pressure, and outcomes you still own after the moment passes.
                   </p>
                   <p className="mt-5 text-base sm:text-lg leading-relaxed text-[#E4F1EE]">
@@ -370,7 +370,7 @@ export default function RemainingHuman() {
               When the problem is not speed, it is honesty inside the room
             </h2>
             <p className="mt-4 text-base leading-relaxed text-[#C8E8E2] sm:text-lg">
-              <em>Remaining Human</em> is about staying human while systems accelerate. If you also need a space where
+              <em>RemAIning Human</em> is about staying human while systems accelerate. If you also need a space where
               the conversation can be fully true, outside your hierarchy, that is what the advisory is for. Or read{' '}
               <em>The Room</em> first if you want the argument about why feedback collapses under authority.
             </p>

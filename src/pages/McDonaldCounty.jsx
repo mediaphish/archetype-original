@@ -3,7 +3,7 @@
  * Leadership," McDonald County Chamber lunch and learn, Wednesday, November 11,
  * 2026. Chamber members reach it from the QR code on the last slide
  * (public/mcdonald-county/mcdonald-county-qr.svg and .png). Built like /occ (Bart, 2026-11-08):
- * what the talk said, five steps, a free copy of Remaining Human, and how to
+ * what the talk said, five steps, a free copy of RemAIning Human, and how to
  * reach him.
  *
  * Deliberately private-feeling: not linked from the nav, footer or any page,
@@ -13,7 +13,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 
-// The Remaining Human checkout with the room's code already applied, so the
+// The RemAIning Human checkout with the room's code already applied, so the
 // eBook is free and nobody types anything. The code lives in SamCart.
 const BOOK_URL = 'https://aobooks.mysamcart.com/checkout/remaining-human?coupon=MCCFREE';
 
@@ -247,9 +247,9 @@ export default function McDonaldCounty() {
         <section className="mx-auto max-w-2xl px-5 py-12 sm:px-8">
           <p className={`${eyebrow} mb-4 text-[#A8A9AD]`}>A gift for the room</p>
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-            <img src="/images/remaining-human/cover-front.png" alt="Remaining Human, by Bart Paden" className="w-36 flex-shrink-0 rounded shadow-md" />
+            <img src="/images/remaining-human/cover-front.png" alt="RemAIning Human, by Bart Paden" className="w-36 flex-shrink-0 rounded shadow-md" />
             <div>
-              <p className={`${display} text-3xl text-[#2B2929]`}>Remaining Human</p>
+              <p className={`${display} text-3xl text-[#2B2929]`}>RemAIning Human</p>
               <p className="mt-2 text-lg leading-relaxed">
                 A field guide for leaders navigating speed, pressure and AI without losing clarity, trust or responsibility.
                 Free for McDonald County Chamber members.

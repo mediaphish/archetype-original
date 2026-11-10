@@ -42,7 +42,7 @@ const BOOKS = [
     href: '/accidental-ceo',
   },
   {
-    title: 'Remaining Human',
+    title: 'RemAIning Human',
     line: 'Servant leadership and staying human while intelligent systems reshape how decisions are made.',
     cover: '/images/books/remaining-human-desk.jpg',
     href: '/remaining-human',

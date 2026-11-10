@@ -1,5 +1,5 @@
 /**
- * Build a guide PDF in the Remaining Human look.
+ * Build a guide PDF in the RemAIning Human look.
  *
  * Bart, 2026-10-30: the guides match his RemAIning Human PDF: off-white
  * pages, Garamond-style serif chapter titles, small sans body in two

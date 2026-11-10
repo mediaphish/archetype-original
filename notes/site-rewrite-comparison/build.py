@@ -129,12 +129,12 @@ PAGES = [
  ("The Room (book page)", "/the-room", [
   ("Already updated today by another session to match the revised edition and Work with Bart.", "Only the buttons: Start the Conversation and Contact Bart open the booking instead of the long form", ""),
  ]),
- ("Books, Accidental CEO, Remaining Human", "/books · /accidental-ceo · /remaining-human", [
+ ("Books, Accidental CEO, RemAIning Human", "/books · /accidental-ceo · /remaining-human", [
   ("Books: …or begin with advisory if you already know you need an outside-the-building conversation. Button: Start a conversation",
    "…or begin with a conversation if you already know you need someone outside your building. Button: Book a conversation", ""),
   ("Accidental CEO: If what you are carrying is also structural — the room itself cannot stay honest — read The Room or explore private advisory as the next step. Button: Leadership advisory",
    "If what you are carrying is also structural, and the room itself cannot stay honest, read The Room or start with a conversation. Button: Work with Bart", ""),
-  ("Remaining Human: When the problem is not speed — it is honesty inside the room. … If you also need a space where the conversation can be fully true — outside your hierarchy — that is what private advisory is for. Button: Leadership advisory",
+  ("RemAIning Human: When the problem is not speed — it is honesty inside the room. … If you also need a space where the conversation can be fully true — outside your hierarchy — that is what private advisory is for. Button: Leadership advisory",
    "When the problem is not speed, it is honesty inside the room. … If you also need a space where the conversation can be fully true, outside your hierarchy, that is what the advisory is for. Button: Leadership Advisory",
    "Only the long dashes change here; the advisory still exists."),
  ]),
