@@ -95,8 +95,8 @@ And I want every one of you to have it. It's free for everyone in this room toda
 ## 4. You're using about 5% of it (5 min)
 
 **SCREEN: You're using about 5% of it.**
-- Asking a chatbot a question is the front door.
-- There is a whole house behind it.
+- Most of us only hand it one task at a time.
+- The real value is the work it does without you.
 
 Hands up if you've used ChatGPT, or something like it.
 
