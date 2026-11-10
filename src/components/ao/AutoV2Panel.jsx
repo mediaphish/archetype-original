@@ -39,6 +39,7 @@ import {
 } from './draftDiff.js';
 import {
   parseArtifact,
+  stripPostBlocks,
   resolveArtifactPanelState,
 } from './draftArtifactSync.js';
 import { useKeyboardInset } from '../../hooks/useKeyboardInset';
@@ -660,9 +661,9 @@ export function MessageBubble({ message, onNavigate }) {
       </div>
     );
   }
-  const withoutImages = stripGeneratedImageBlocksFromChat(raw);
-  const { cleanText } = parseArtifact(withoutImages);
-  const text = cleanText || withoutImages;
+  // The post block comes out first, before the tag cleanup can eat its closing
+  // tag and spill the whole post into the chat (2026-11-09).
+  const text = stripGeneratedImageBlocksFromChat(stripPostBlocks(raw));
   const reshareImageUrl =
     message.meta?.reshare_image_url && String(message.meta.reshare_image_url).startsWith('https://')
       ? message.meta.reshare_image_url

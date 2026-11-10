@@ -37,6 +37,20 @@ export function parseArtifact(text) {
 }
 
 /**
+ * Pure: the chat text with every post block taken out, closed or not.
+ * Bart, 2026-11-09: "After I respond it drops the entire edited post in the
+ * chat." The chat's tag cleanup removed the closing [/ARTIFACT] before the
+ * block was hidden, so since July 24 every saved post spilled into the chat
+ * as text. The post lives in the panel, never in a chat bubble.
+ */
+export function stripPostBlocks(text) {
+  return String(text || '')
+    .replace(/\[ARTIFACT\b[^\]]*\][\s\S]*?\[\/ARTIFACT\]/gi, '')
+    .replace(/\[ARTIFACT\b[^\]]*\][\s\S]*$/i, '')
+    .trim();
+}
+
+/**
  * Prefer the latest assistant message's artifact; if missing, walk backward.
  * Does not clear — returns null only when no message in the thread has a tag.
  * @param {Array<{ role?: string, content?: string }>} msgs
@@ -155,6 +169,7 @@ function findNewerDraftWork(msgs, shown) {
 
 const DRAFT_TOOLS = new Set([
   'save_draft',
+  'edit_draft_lines',
   'present_outline',
   'approve_draft',
   'approve_stage',
