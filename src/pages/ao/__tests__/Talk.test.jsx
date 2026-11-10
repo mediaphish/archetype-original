@@ -116,10 +116,13 @@ test("a teammate's message fades a few seconds after it is spoken (2026-11-08)",
     });
   }
   expect(screen.getByText('Ready when you are.')).toBeInTheDocument();
-  await act(async () => {
-    jest.advanceTimersByTime(8000);
-    await Promise.resolve();
-  });
+  // A line whose voice failed stays up about as long as it takes to say, then fades.
+  for (let i = 0; i < 12; i++) {
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+      await Promise.resolve();
+    });
+  }
   expect(screen.queryByText('Ready when you are.')).not.toBeInTheDocument();
   delete window.webkitSpeechRecognition;
 });
@@ -146,7 +149,9 @@ test('a teammate cuts in once, on their own, some seconds into a slide (2026-11-
       await Promise.resolve();
     });
   }
-  expect(screen.getByText('Go Wildcats!')).toBeInTheDocument();
+  expect(screen.getByText(/Go Wildcats!/)).toBeInTheDocument();
+  // 2026-11-09: a cut-in always hands back out loud.
+  expect(screen.getByText(/Back to you\./)).toBeInTheDocument();
 });
 
 test("the iPad's Talk button turns the mic on, and a second tap sends (2026-11-09)", async () => {
@@ -238,4 +243,11 @@ test('an older copy of the talk goes quiet when a newer one opens', async () => 
   render(<Talk />);
   await waitFor(() => expect(screen.getByText(/open in another tab/)).toBeInTheDocument());
   delete global.BroadcastChannel;
+});
+
+test('a cut-in that does not hand back gets "Back to you." (2026-11-09)', () => {
+  const { withHandBack } = require('../Talk.jsx');
+  expect(withHandBack([{ agent: 'auto', text: 'Thank you for your service.' }])[0].text).toBe('Thank you for your service. Back to you.');
+  expect(withHandBack([{ agent: 'jot', text: 'Worth bringing up. As you were.' }])[0].text).toBe('Worth bringing up. As you were.');
+  expect(withHandBack([{ agent: 'auto', text: 'Hands up?' }, { pause: 5000 }])[0].text).toMatch(/Back to you\.$/);
 });

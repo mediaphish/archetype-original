@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useKeepAwake } from '../../lib/useKeepAwake.js';
-import { parseTalkCommand, captionChunks, chunkAt, TEAM_LABELS, TEAM_ORDER, MISTAKE_ORDER } from '../../lib/talkCommands.js';
+import { parseTalkCommand, captionChunks, TEAM_LABELS, TEAM_ORDER, MISTAKE_ORDER } from '../../lib/talkCommands.js';
 import { avatarFor } from '../../components/ao/teamAvatars.js';
 
 /**
@@ -17,6 +17,34 @@ import { avatarFor } from '../../components/ao/teamAvatars.js';
 
 const LISTEN_MAX_MS = 20000;
 const REPLY_HOLD_MS = 6000;
+
+/** Pure: a cut-in whose last spoken line does not hand back to Bart gets "Back to you." */
+export function withHandBack(lines) {
+  const out = (lines || []).map((l) => ({ ...l }));
+  for (let i = out.length - 1; i >= 0; i--) {
+    if (out[i].pause) continue;
+    if (!/\b(back to you|as you were|over to you|all yours)\b/i.test(out[i].text || '')) out[i].text = `${String(out[i].text || '').trim()} Back to you.`;
+    break;
+  }
+  return out;
+}
+
+/** One piece of a teammate's line as audio, tried twice; null if the voice failed. */
+async function speechBlob(agent, text) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const r = await fetch('/api/ao/talk/speak', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agent, text }),
+      });
+      if (r.ok) return await r.blob();
+    } catch (_) {
+      /* try once more */
+    }
+  }
+  return null;
+}
 const DEFAULT_SLUG = 'mcdonald-county-chamber-2026';
 
 function useSpeech() {
@@ -120,6 +148,7 @@ export default function Talk() {
   const [reply, setReply] = useState(null); // { agent, text }
   const [thinking, setThinking] = useState(null); // agent key
   const audioRef = useRef(null);
+  const replyIdRef = useRef(null);
   const speech = useSpeech();
   const holdRef = useRef(null);
   const fadeRef = useRef(null);
@@ -220,52 +249,57 @@ export default function Talk() {
   const section = sections[index];
 
   // Shows the line and speaks it; resolves when the line has finished playing.
+  // Spoken a piece at a time, the next piece's voice made while this one plays
+  // (2026-11-09: long answers took about 9 seconds to voice in one go, ran into
+  // the site's time limit, and the room saw words nobody said). A piece whose
+  // voice fails stays on screen for about as long as it would take to say.
   const say = useCallback(
     async (agent, text, readyAudio = null) => {
       // A message fades a few seconds after it is spoken (Bart, 2026-11-08: Ada's
       // line was still up minutes later).
       const id = Date.now() + Math.random();
       clearTimeout(fadeRef.current);
-      // Long replies show a screen-sized piece at a time, in step with the voice
-      // (2026-11-09: Bit's build story ran off the bottom of the screen).
-      setReply({ agent, text, id, chunks: captionChunks(text), part: 0 });
+      const chunks = captionChunks(text);
+      setReply({ agent, text, id, chunks, part: 0 });
       const fadeLater = () => {
         fadeRef.current = setTimeout(() => {
           setReply((r) => (r && r.id === id ? { ...r, fading: true } : r));
           fadeRef.current = setTimeout(() => setReply((r) => (r && r.id === id ? null : r)), 900);
         }, REPLY_HOLD_MS);
       };
+      const stillMine = () => replyIdRef.current === id;
+      replyIdRef.current = id;
+      const voices = Array.isArray(readyAudio) ? readyAudio.map((b) => Promise.resolve(b)) : [];
+      const voiceFor = (i) => {
+        if (!voices[i]) voices[i] = speechBlob(agent, chunks[i]);
+        return voices[i];
+      };
       try {
-        let blob = readyAudio;
-        if (!blob) {
-          const r = await fetch('/api/ao/talk/speak', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ agent, text }),
+        voiceFor(0);
+        for (let i = 0; i < chunks.length; i++) {
+          if (!stillMine()) return;
+          if (i + 1 < chunks.length) voiceFor(i + 1);
+          const blob = await voiceFor(i);
+          if (!stillMine()) return;
+          setReply((r) => (r && r.id === id ? { ...r, part: i } : r));
+          if (!blob) {
+            await new Promise((resolve) => setTimeout(resolve, Math.max(1500, chunks[i].length * 65)));
+            continue;
+          }
+          const url = URL.createObjectURL(blob);
+          audioRef.current?.pause();
+          const audio = new Audio(url);
+          audioRef.current = audio;
+          await new Promise((resolve) => {
+            audio.onended = resolve;
+            audio.onerror = resolve;
+            audio.onpause = () => {
+              if (!audio.ended) resolve();
+            };
+            audio.play().catch(resolve);
           });
-          if (!r.ok) return fadeLater();
-          blob = await r.blob();
+          URL.revokeObjectURL(url);
         }
-        const url = URL.createObjectURL(blob);
-        audioRef.current?.pause();
-        const audio = new Audio(url);
-        audioRef.current = audio;
-        audio.ontimeupdate = () => {
-          if (!audio.duration) return;
-          setReply((r) => {
-            if (!r || r.id !== id || !r.chunks) return r;
-            const part = chunkAt(r.chunks, audio.currentTime / audio.duration);
-            return part === r.part ? r : { ...r, part };
-          });
-        };
-        await new Promise((resolve) => {
-          audio.onended = () => {
-            URL.revokeObjectURL(url);
-            resolve();
-          };
-          audio.onerror = resolve;
-          audio.play().catch(resolve);
-        });
         fadeLater();
       } catch (_) {
         /* the words are on screen either way */
@@ -310,12 +344,9 @@ export default function Talk() {
         });
         const j = await r.json().catch(() => ({}));
         if (!j.ok) return null;
-        const v = await fetch('/api/ao/talk/speak', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ agent: j.agent, text: j.reply }),
-        });
-        return { ...j, audio: v.ok ? await v.blob() : null };
+        // Voiced a piece at a time, the same pieces the screen shows.
+        const audio = await Promise.all(captionChunks(j.reply).map((c) => speechBlob(j.agent, c)));
+        return { ...j, audio };
       } catch (_) {
         return null;
       }
@@ -446,6 +477,11 @@ export default function Talk() {
     const plan = section?.interrupt;
     if (!plan?.lines?.length || interruptedRef.current.has(section.id)) return undefined;
     let cancelled = false;
+    // Every cut-in ends by handing back to Bart, out loud (2026-11-09: "When the
+    // interruptions happen, I need them to tell me when they are done").
+    const lines = withHandBack(plan.lines);
+    // Voiced as the slide opens, so it plays the moment it is due.
+    const voiced = lines.map((l) => (l.pause ? Promise.resolve(null) : Promise.all(captionChunks(l.text).map((c) => speechBlob(l.agent, c)))));
     let timer = setTimeout(async function go() {
       if (cancelled) return;
       if (busyRef.current) {
@@ -453,10 +489,11 @@ export default function Talk() {
         return;
       }
       interruptedRef.current.add(section.id);
-      for (const l of plan.lines) {
+      for (let i = 0; i < lines.length; i++) {
+        const l = lines[i];
         if (cancelled) return;
         if (l.pause) await new Promise((r) => setTimeout(r, l.pause));
-        else await say(l.agent, l.text);
+        else await say(l.agent, l.text, await voiced[i]);
       }
     }, (plan.after_seconds || 20) * 1000);
     return () => {
@@ -465,9 +502,30 @@ export default function Talk() {
     };
   }, [section, say, benched]);
 
+  // A page opened before an update keeps running the old talk (2026-11-09: the
+  // team photo was made, but the laptop's page was older and never showed it).
+  // On the title slide, with nothing going on, it picks up a newer version.
+  useEffect(() => {
+    if (index !== 0) return undefined;
+    const mine = document.querySelector('script[src*="/assets/index-"]')?.getAttribute('src');
+    if (!mine) return undefined;
+    const t = setInterval(async () => {
+      if (busyRef.current || benchedRef.current) return;
+      try {
+        const html = await (await fetch('/ao/talk', { cache: 'no-store' })).text();
+        const latest = /\/assets\/index-[^"']+\.js/.exec(html)?.[0];
+        if (latest && !mine.endsWith(latest)) window.location.reload();
+      } catch (_) {
+        /* try again next time */
+      }
+    }, 60000);
+    return () => clearInterval(t);
+  }, [index]);
+
   // A teammate's answer belongs to the slide it was given on (Bart, 2026-11-08:
   // Ada's reply was still on screen after he moved to slide 2).
   useEffect(() => {
+    replyIdRef.current = null;
     setReply(null);
     audioRef.current?.pause();
   }, [index]);
@@ -499,6 +557,7 @@ export default function Talk() {
   // to be wiped.").
   const startOver = () => {
     speech.cancel();
+    replyIdRef.current = null;
     audioRef.current?.pause();
     setReply(null);
     setPhoto(null);
@@ -532,6 +591,7 @@ export default function Talk() {
 
   const beginListening = useCallback(() => {
     if (!speech.supported) return;
+    replyIdRef.current = null;
     audioRef.current?.pause();
     setReply(null);
     speech.start();
@@ -620,7 +680,12 @@ export default function Talk() {
             </div>
             {section.kind === 'demo' && photo ? (
               <div className="flex max-w-[44vw] flex-col gap-3">
-                <img src={demo.pkg?.photo_url || photo} alt="The room" className="max-h-[38vh] rounded-lg object-contain" />
+                <img
+                  src={demo.pkg?.photo_url || photo}
+                  alt="The room"
+                  // The team in the room is the moment, so it gets the space (2026-11-09).
+                  className={`${demo.pkg?.team_in_photo?.length ? 'max-h-[52vh]' : 'max-h-[38vh]'} rounded-lg object-contain`}
+                />
                 {demo.pkg ? (
                   <p className="max-h-[24vh] overflow-y-auto whitespace-pre-line rounded-lg bg-white/10 p-4 text-gray-200" style={{ fontSize: '1.05vw' }}>
                     {demo.pkg.captions.linkedin_personal}
