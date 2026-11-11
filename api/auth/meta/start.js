@@ -19,6 +19,8 @@ const DEFAULT_SCOPES = [
   'pages_show_list',
   'pages_read_engagement',
   'pages_manage_posts',
+  // Link comments under Page posts (2026-11-11: refused without it).
+  'pages_manage_engagement',
   'pages_manage_metadata',
   'read_insights',
   'instagram_basic',
