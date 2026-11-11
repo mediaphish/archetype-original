@@ -25,6 +25,8 @@ const DEFAULT_SCOPES = [
   'read_insights',
   'instagram_basic',
   'instagram_content_publish',
+  // Comments under Instagram posts (2026-11-11: refused without it).
+  'instagram_manage_comments',
   'instagram_manage_insights',
 ].join(',');
 
