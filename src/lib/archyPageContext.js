@@ -51,6 +51,7 @@ export function readArticleTitle(doc = typeof document !== 'undefined' ? documen
 /** Talk pages reached by QR code, pinned to the talk itself (see /occ). */
 const TALK_PAGES = {
   '/occ': { slug: 'people-first-leadership-occ-2026', title: 'People First Leadership' },
+  '/mcdonald-county-leadership': { slug: 'people-first-leadership-mcdonald-county-2026', title: 'People First Leadership' },
 };
 
 export function buildPageContext(pathname, doc) {

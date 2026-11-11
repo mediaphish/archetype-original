@@ -114,6 +114,7 @@ import AccidentalCEOPage from "./pages/AccidentalCEO";
 import RemainingHumanPage from "./pages/RemainingHuman";
 import OCCPage from "./pages/OCC";
 import McDonaldCountyPage from "./pages/McDonaldCounty";
+import McDonaldCountyLeadershipPage from "./pages/McDonaldCountyLeadership";
 import AdvisoryPage from "./pages/Advisory";
 import WorkWithBartPage from "./pages/WorkWithBart";
 import TheRoomPage from "./pages/TheRoom";
@@ -199,6 +200,7 @@ export default function App() {
     if (path === '/remaining-human') return 'remaining-human';
     if (path === '/occ' || path === '/occ/') return 'occ';
     if (path === '/mcdonald-county' || path === '/mcdonald-county/') return 'mcdonald-county';
+    if (path === '/mcdonald-county-leadership' || path === '/mcdonald-county-leadership/') return 'mcdonald-county-leadership';
     // Operators Platform routes
     if (path === '/operators') return 'operators-landing';
     if (path === '/operators/login') return 'operators-login';
@@ -678,6 +680,8 @@ export default function App() {
         setCurrentPage('occ');
       } else if (path === '/mcdonald-county' || path === '/mcdonald-county/') {
         setCurrentPage('mcdonald-county');
+      } else if (path === '/mcdonald-county-leadership' || path === '/mcdonald-county-leadership/') {
+        setCurrentPage('mcdonald-county-leadership');
       } else {
         setCurrentPage('home');
       }
@@ -879,6 +883,9 @@ export default function App() {
   }
   if (currentPage === 'mcdonald-county') {
     return <McDonaldCountyPage />;
+  }
+  if (currentPage === 'mcdonald-county-leadership') {
+    return <McDonaldCountyLeadershipPage />;
   }
 
   // RemAIning Human standalone landing page (no global nav/footer)

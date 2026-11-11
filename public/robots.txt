@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /occ
 Disallow: /mcdonald-county
+Disallow: /mcdonald-county-leadership
 
 Sitemap: https://www.archetypeoriginal.com/sitemap.xml

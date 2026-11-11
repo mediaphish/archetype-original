@@ -652,6 +652,13 @@
       "continue": true
     },
     {
+      "src": "^/mcdonald-county-leadership(/.*)?$",
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow"
+      },
+      "continue": true
+    },
+    {
       "src": "^/mcdonald-county(/.*)?$",
       "headers": {
         "X-Robots-Tag": "noindex, nofollow"
