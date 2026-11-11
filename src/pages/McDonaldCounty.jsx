@@ -201,7 +201,7 @@ export default function McDonaldCounty() {
                 RemAIning Human
               </a>{' '}
               picks up where this course leaves off, and it&rsquo;s free for McDonald County Chamber members with code{' '}
-              <strong>{BOOK_CODE}</strong>.
+              <strong>MCCFREE</strong>.
             </p>
           </div>
         </section>
