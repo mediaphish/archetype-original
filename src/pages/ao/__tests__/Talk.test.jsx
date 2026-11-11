@@ -269,3 +269,17 @@ describe('every voice at the same loudness', () => {
     expect(levelGain(-80)).toBe(6);
   });
 });
+
+describe('live on talk day (2026-11-10)', () => {
+  const { isLiveTalk } = require('../Talk.jsx');
+  test('rehearsal the night before, live all of Nov 11 Central, rehearsal after', () => {
+    expect(isLiveTalk('', new Date('2026-11-11T05:59:00Z'))).toBe(false);
+    expect(isLiveTalk('', new Date('2026-11-11T06:00:00Z'))).toBe(true);
+    expect(isLiveTalk('', new Date('2026-11-12T05:59:00Z'))).toBe(true);
+    expect(isLiveTalk('', new Date('2026-11-12T06:00:00Z'))).toBe(false);
+  });
+  test('the address can force either one', () => {
+    expect(isLiveTalk('?live=1', new Date('2026-11-10T20:00:00Z'))).toBe(true);
+    expect(isLiveTalk('?rehearse=1', new Date('2026-11-11T18:00:00Z'))).toBe(false);
+  });
+});

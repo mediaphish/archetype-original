@@ -76,6 +76,21 @@ if (typeof window !== 'undefined') {
 }
 
 /** Pure: loudness of speech in decibels, ignoring the silent stretches. */
+/**
+ * Pure: whether the talk runs live (posts for real) or as a rehearsal.
+ * ?live=1 is always live and ?rehearse=1 always a rehearsal. Otherwise it is
+ * live on a talk day, Central time (Bart, 2026-11-10: "turn off rehearsal mode"
+ * for the McDonald County Chamber talk on November 11, 2026).
+ */
+export const LIVE_TALK_DAYS = ['2026-11-11'];
+export function isLiveTalk(search = '', now = new Date()) {
+  const q = new URLSearchParams(search);
+  if (q.get('rehearse') === '1') return false;
+  if (q.get('live') === '1') return true;
+  const day = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
+  return LIVE_TALK_DAYS.includes(day);
+}
+
 export function speechLevelDb(samples, windowSize = 1200) {
   let sum = 0;
   let n = 0;
@@ -257,8 +272,9 @@ export default function Talk() {
     window.addEventListener('keydown', note, true);
     return () => window.removeEventListener('keydown', note, true);
   }, []);
-  // Rehearsal unless the page is opened with ?live=1: a rehearsal never posts.
-  const live = new URLSearchParams(window.location.search).get('live') === '1';
+  // Rehearsal unless live: a rehearsal never posts. Live on talk day by itself
+  // (Bart, 2026-11-10: "We need to turn off rehearsal mode").
+  const live = isLiveTalk(window.location.search);
   const [photo, setPhoto] = useState(null);
   const [demo, setDemo] = useState({ phase: 'idle' });
   const seqRef = useRef(null);
