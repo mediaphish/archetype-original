@@ -102,11 +102,11 @@ Hands up if you've used ChatGPT, or something like it.
 
 *(Most hands.)*
 
-Keep it up if it's doing real work in your business every week, without you sitting there typing into it.
+Keep it up if it knows your business. If it's learned from your own work and has a real job it does for you every week, not just whatever you happened to type into it that day.
 
 *(Few hands.)*
 
-That gap right there is what this talk is about.
+That gap right there is where the real value is.
 
 Most people stop at the first task. "Write me an email." "Fix this paragraph." "Give me ten ideas for a post." That's useful. But it's like hiring someone sharp and only ever asking them to proofread.
 
@@ -192,26 +192,26 @@ That's real, and it's on my LinkedIn right now. You can go look.
 - It still can't draw my tattoos.
 - One day it spent fifty dollars talking to itself.
 
-Now that you've seen it work, I need to tell you the most important thing in this whole talk.
+Now that you've seen it work, I need to be honest with you about something.
 
-I don't trust it.
+I don't trust AI.
 
 That's not a knock. It's the job. AI tells you something wrong in exactly the same voice it tells you something right. Same confidence. Same polish. No tells.
 
 And the team knows it. *(Tap Talk.)* "Team, tell them about a time you got it wrong."
 
-*(Jot, Des and Bit each own a real mistake, then say what changed. Let them land.)*
-- **Jot:** told the team four of your quote cards put words in your mouth. Wrong. It mixed up a caption with a quote. Now every card is checked word for word against what you wrote.
-- **Des:** couldn't find an infographic you were reviewing and asked you to send it again. It was in your Queue the whole time. Now the team can see the Queue.
-- **Bit:** the afternoon the team spent about fifty dollars reviewing each other's reviews. Now there's a hard daily spending line, and I stop the work when it's hit.
+*(Jot, Des and Bit each own a real mistake, say that you caught it, and say how you changed the way the team works so it doesn't happen again. Let them land.)*
+- **Jot:** told the team four of your quote cards put words in your mouth. Wrong. It mixed up a caption with a quote. You caught it, and changed how the team works: now every card is checked word for word against what you wrote.
+- **Des:** couldn't find an infographic you were reviewing and asked you to send it again. It was in your Queue the whole time. You caught it, and changed how the team works: now they can see the Queue.
+- **Bit:** the afternoon the team spent about fifty dollars reviewing each other's reviews. You caught it, and changed how the team works: now there's a hard daily spending line, and Bit stops the work when it's hit.
 
 *(Then Des speaks up: "Hey Bart, tell them about the tattoos.")*
 
-Here's mine. You may have noticed my tattoos. Or maybe you can't, because of the long sleeves. In every picture AI has made of me, my sleeves are down. It can't draw them.
+Here's mine. You've probably noticed my tattoos. In every picture AI has made of me, my sleeves are down. It can't draw them.
 
 *(Pause. Let them look at your arms.)*
 
-Every one of those got caught because a human was paying attention.
+Notice what every one of those has in common. A human caught it, and then changed how the work gets done so it doesn't happen again.
 
 So here's the rule: you don't hand AI the keys and walk away. You lead it. You check its work. Same way you'd treat a sharp new hire who's fast, eager and occasionally, confidently wrong. *(Click.)*
 
@@ -228,7 +228,7 @@ So here's the rule: you don't hand AI the keys and walk away. You lead it. You c
 
 Here's the other limit, and this one doesn't go away with better technology.
 
-It only knows what it's been given. And what it's been given is always incomplete.
+It only knows what it's been given. And what it's been given is always incomplete. Mine is trained on almost 400,000 words of my own writing, and it's still incomplete.
 
 It doesn't know your customer just had their first child and they're way behind on everything. It doesn't know your best employee got a call from a headhunter and is thinking about leaving. It doesn't know about the handshake deal that matters more than the contract.
 
@@ -236,7 +236,7 @@ I've got one myself. In my office at the software company, I had what I called t
 
 One morning it was a young graphic designer, and he was clearly upset. As we talked, it came out that he had some really significant things going on at home.
 
-What he didn't know was that behind the scenes, we'd been looking at his work. The quality had dropped off, and so had his pace.
+What he didn't know was that behind the scenes, we'd been looking at his work. The quality had dropped off, and so had his pace. We were actually giving serious thought to letting him go.
 
 *(Slow down here.)*
 
@@ -257,7 +257,7 @@ Those stay yours. Don't hand them off. *(Click.)*
 - It takes real time.
 - It needs someone watching it. Every day.
 
-Remember how I opened this talk, with those headlines? A lot of what's out there right now is selling you an easy button. There isn't one.
+Remember the fear and the hype I talked about at the start? A lot of what's out there right now is selling you an easy button. There isn't one.
 
 What I showed you costs real money every month. It took real time to build. It needs somebody watching it every day: what it says, what it spends, what it gets wrong.
 
@@ -274,7 +274,7 @@ Anybody who tells you it's easy is selling you something. *(Click.)*
 - Check the work.
 - Keep the human in it.
 
-*(As soon as this slide opens, Ada cuts in: it's Veterans Day, asks the veterans to raise their hands, pauses, then thanks them. Wait for her. Add your own: "Thank you for your service." Take a breath, then start your close.)*
+*(As soon as this slide opens, Ada cuts in: "Hey Bart, remember we talked about it being Veterans Day? Did you stop and tell them thank you?" Then you make the ask yourself: ask any veterans in the room to raise their hands, and thank them for their service. Take a breath, then start your close.)*
 
 So here's where I'll land.
 
