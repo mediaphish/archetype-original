@@ -324,6 +324,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-11-12 | Blessed Be Your Discretion | 1 Samuel 25:32–35 (ESV) | `blessed-be-your-discretion` | `2026-11-12-blessed-be-your-discretion.md` |
 | 2026-11-13 | No Greater Joy | 3 John 1:1–4 (ESV) | `no-greater-joy` | `2026-11-13-no-greater-joy.md` |
 | 2026-11-14 | Who Risked Their Necks | Romans 16:3–4 (ESV) | `who-risked-their-necks` | `2026-11-14-who-risked-their-necks.md` |
+| 2026-11-15 | Though the Fig Tree Should Not Blossom | Habakkuk 3:17–18 (ESV) | `though-the-fig-tree-should-not-blossom` | `2026-11-15-though-the-fig-tree-should-not-blossom.md` |
+| 2026-11-16 | I Will Magnify Him with Thanksgiving | Psalm 69:29–30 (ESV) | `i-will-magnify-him-with-thanksgiving` | `2026-11-16-i-will-magnify-him-with-thanksgiving.md` |
+| 2026-11-17 | Through the Prayers of Many | 2 Corinthians 1:8–11 (ESV) | `through-the-prayers-of-many` | `2026-11-17-through-the-prayers-of-many.md` |
+| 2026-11-18 | And Not Be Silent | Psalm 30:11–12 (ESV) | `and-not-be-silent` | `2026-11-18-and-not-be-silent.md` |
+| 2026-11-19 | Kept in Heaven for You | 1 Peter 1:3–7 (ESV) | `kept-in-heaven-for-you` | `2026-11-19-kept-in-heaven-for-you.md` |
+| 2026-11-20 | The Stone the Builders Rejected | Psalm 118:21–24 (ESV) | `the-stone-the-builders-rejected` | `2026-11-20-the-stone-the-builders-rejected.md` |
+| 2026-11-21 | Wisdom and Thanksgiving and Honor | Revelation 7:11–12 (ESV) | `wisdom-and-thanksgiving-and-honor` | `2026-11-21-wisdom-and-thanksgiving-and-honor.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 

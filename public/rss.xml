@@ -5,8 +5,22 @@
     <link>https://www.archetypeoriginal.com/journal</link>
     <description>Essays on leadership, culture, and accountability by Bart Paden.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 04 Nov 2026 12:00:35 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 11 Nov 2026 12:00:35 GMT</lastBuildDate>
     <atom:link href="https://www.archetypeoriginal.com/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The Dashboard Is Green</title>
+      <link>https://www.archetypeoriginal.com/journal/the-dashboard-is-green</link>
+      <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/the-dashboard-is-green</guid>
+      <pubDate>Wed, 11 Nov 2026 12:00:35 GMT</pubDate>
+      <description>It is Monday morning at a mid-sized distributor, and the operations review is going well. The screen at the front of the room is green from corner to corner. A year ago, leadership put an AI system in place to draft replies to customer emails.</description>
+    </item>
+    <item>
+      <title>The Eli Archetype</title>
+      <link>https://www.archetypeoriginal.com/journal/the-eli-archetype</link>
+      <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/the-eli-archetype</guid>
+      <pubDate>Mon, 09 Nov 2026 20:04:53 GMT</pubDate>
+      <description>The Archetype Series, Entry Fourteen Samuel thought the old man was calling him. The boy slept in the temple at Shiloh, a few steps from the ark of God.</description>
+    </item>
     <item>
       <title>Who Signs for It?</title>
       <link>https://www.archetypeoriginal.com/journal/who-signs-for-it</link>
@@ -342,20 +356,6 @@
       <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/toxic-empathy-2-holding-the-line</guid>
       <pubDate>Tue, 07 Apr 2026 00:00:00 GMT</pubDate>
       <description>A close examination of the exact moment leaders hesitate, why the decision to hold the line is difficult, and how avoiding that cost reshapes standards, effort, and culture in real time.</description>
-    </item>
-    <item>
-      <title>Toxic Empathy</title>
-      <link>https://www.archetypeoriginal.com/journal/toxic-empathy</link>
-      <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/toxic-empathy</guid>
-      <pubDate>Tue, 31 Mar 2026 00:00:00 GMT</pubDate>
-      <description>An examination of toxic empathy in leadership, how avoidance disguises itself as care, and why servant leadership requires the strength to hold both presence and accountability.</description>
-    </item>
-    <item>
-      <title>Leading Well Under Bad Leadership</title>
-      <link>https://www.archetypeoriginal.com/journal/leading-well-under-bad-leadership</link>
-      <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/leading-well-under-bad-leadership</guid>
-      <pubDate>Tue, 10 Mar 2026 00:00:00 GMT</pubDate>
-      <description>The final entry in the Unaccountable Leadership series examining how leaders maintain integrity and influence when the system above them refuses accountability.</description>
     </item>
   </channel>
 </rss>
