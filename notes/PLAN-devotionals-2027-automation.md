@@ -253,6 +253,10 @@ Whether Lev or this session writes the 2028 drafts can be decided later. The pla
 
 ---
 
+## Answers so far
+
+- 2026-11-11: the devotional Facebook Page does not exist yet. Bart creates it.
+
 ## Changed files for this plan
 
 - `notes/PLAN-devotionals-2027-automation.md` (this file)
