@@ -154,7 +154,11 @@ export default async function handler(req, res) {
   authUrl.searchParams.set('redirect_uri', getMetaRedirectUri(req));
   authUrl.searchParams.set('state', state);
   authUrl.searchParams.set('response_type', 'code');
-  authUrl.searchParams.set('scope', process.env.META_SCOPE || DEFAULT_SCOPES);
+  // The comment permissions always ride along, even when META_SCOPE replaces the
+  // list (2026-11-11: Bart reconnected and they were silently left off).
+  const scopes = new Set(String(process.env.META_SCOPE || DEFAULT_SCOPES).split(',').map((x) => x.trim()).filter(Boolean));
+  for (const need of ['pages_manage_engagement', 'instagram_manage_comments']) scopes.add(need);
+  authUrl.searchParams.set('scope', [...scopes].join(','));
 
   redirect(res, authUrl.toString());
 }
