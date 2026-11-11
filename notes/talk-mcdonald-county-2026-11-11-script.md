@@ -296,7 +296,7 @@ Thank you. *(Click.)*
 - bart@archetypeoriginal.com
 - The QR code to archetypeoriginal.com/mcdonald-county
 
-*(About 5 seconds in, Ada cuts in: if anyone wants to talk with you about AI in their own business, you do that. A plan and help putting it to work, not a custom app. Grab you after, or scan the code.)*
+*(About 5 seconds in, Ada cuts in: if anyone wants to talk with you about AI in their own business, you do that. A plan and help putting it to work. Grab you after, or scan the code.)*
 
 Thanks, Ada. What questions do you have?
 
