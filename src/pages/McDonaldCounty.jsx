@@ -265,7 +265,7 @@ export default function McDonaldCounty() {
           <p className={`${eyebrow} mb-4 text-[#A8A9AD]`}>Keep the conversation going</p>
           <p className="mb-5 text-lg leading-relaxed">
             Want to talk about what AI could look like in your own business? Bart helps leaders build a plan and put it to
-            work. He doesn’t build custom apps. His work is helping you lead it.
+            work.
           </p>
           <p className={`${display} mb-3 text-3xl text-[#2B2929]`}>Bart Paden</p>
           <ul className="list-none space-y-3 pl-0 text-lg leading-relaxed">
