@@ -141,7 +141,9 @@ So:
 
 *(Tap Talk.)* "Hey Bit, give them a run down on what it took to build you all and put this presentation together."
 
-*(Bit tells the room what it was built with, that you just told Claude what you wanted, that it's an oversimplification (two years, started on ChatGPT in 2024, now on Claude), and how many tokens the team has used. Let it land.)*
+*(Bit tells the room what it was built with, that you just told Claude what you wanted, that it's an oversimplification (two years, started on ChatGPT in 2024, now on Claude), and how many tokens the team has used and what they cost. Let it land.)*
+
+*(The numbers are live, read the moment you ask. As of Nov 10 it was about 153 million tokens and about $125 since Oct 28.)*
 
 Thanks, Bit.
 
