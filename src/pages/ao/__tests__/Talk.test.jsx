@@ -251,3 +251,21 @@ test('a cut-in that does not hand back gets "Back to you." (2026-11-09)', () => 
   expect(withHandBack([{ agent: 'jot', text: 'Worth bringing up. As you were.' }])[0].text).toBe('Worth bringing up. As you were.');
   expect(withHandBack([{ agent: 'auto', text: 'Hands up?' }, { pause: 5000 }])[0].text).toMatch(/Back to you\.$/);
 });
+
+describe('every voice at the same loudness', () => {
+  const { speechLevelDb, levelGain } = require('../Talk.jsx');
+  const tone = (amp) => Float32Array.from({ length: 24000 }, (_, i) => amp * Math.sin(i / 5));
+
+  test('a quiet line is turned up and a loud one down', () => {
+    expect(levelGain(speechLevelDb(tone(0.03)))).toBeGreaterThan(2);
+    expect(levelGain(speechLevelDb(tone(0.3)))).toBeLessThan(1);
+  });
+
+  test('silence is left alone', () => {
+    expect(levelGain(speechLevelDb(new Float32Array(24000)))).toBe(1);
+  });
+
+  test('the boost never runs away', () => {
+    expect(levelGain(-80)).toBe(6);
+  });
+});

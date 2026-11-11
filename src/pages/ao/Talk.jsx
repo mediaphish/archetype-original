@@ -38,13 +38,101 @@ async function speechBlob(agent, text) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ agent, text }),
       });
-      if (r.ok) return await r.blob();
+      if (r.ok) {
+        const blob = await r.blob();
+        blob.voiceRate = Number(r.headers.get('X-Voice-Rate')) || 1;
+        return blob;
+      }
     } catch (_) {
       /* try once more */
     }
   }
   return null;
 }
+// Every teammate at the same loudness (Bart, 2026-11-10: "Cam's voice is super
+// quiet. Can we level each voice so they are presented at the same volume?").
+// Each line is measured and lifted or lowered to one target, with a limiter so
+// a boosted line never distorts. Without sound processing it plays as recorded.
+const TARGET_DB = -20;
+let soundCtx = null;
+function sound() {
+  try {
+    if (!soundCtx) {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return null;
+      soundCtx = new Ctx();
+    }
+    if (soundCtx.state === 'suspended') soundCtx.resume().catch(() => {});
+    return soundCtx;
+  } catch (_) {
+    return null;
+  }
+}
+
+// Browsers only allow sound processing after a click or key press, and the
+// presenter always presses something to start, so any press switches it on.
+if (typeof window !== 'undefined') {
+  ['pointerdown', 'keydown', 'touchstart'].forEach((e) => window.addEventListener(e, () => sound(), { capture: true, passive: true }));
+}
+
+/** Pure: loudness of speech in decibels, ignoring the silent stretches. */
+export function speechLevelDb(samples, windowSize = 1200) {
+  let sum = 0;
+  let n = 0;
+  for (let i = 0; i + windowSize <= samples.length; i += windowSize) {
+    let p = 0;
+    for (let j = i; j < i + windowSize; j++) p += samples[j] * samples[j];
+    p /= windowSize;
+    if (p > 1e-5) {
+      sum += p;
+      n++;
+    }
+  }
+  return n ? 10 * Math.log10(sum / n) : null;
+}
+
+/** Pure: how much to turn a line up or down to reach the target. */
+export function levelGain(db) {
+  if (db === null || !Number.isFinite(db)) return 1;
+  return Math.min(6, Math.max(0.25, 10 ** ((TARGET_DB - db) / 20)));
+}
+
+async function gainFor(blob) {
+  const ctx = sound();
+  if (!ctx) return 1;
+  try {
+    const buf = await ctx.decodeAudioData(await blob.arrayBuffer());
+    return levelGain(speechLevelDb(buf.getChannelData(0), Math.round(buf.sampleRate / 20)));
+  } catch (_) {
+    return 1;
+  }
+}
+
+/** Plays one line at its teammate's pace and the shared loudness. */
+function playLeveled(audio, blob, gain) {
+  audio.playbackRate = blob.voiceRate || 1;
+  audio.preservesPitch = true;
+  const ctx = sound();
+  if (!ctx || ctx.state !== 'running') {
+    audio.volume = Math.min(1, gain);
+    return;
+  }
+  try {
+    const src = ctx.createMediaElementSource(audio);
+    const g = ctx.createGain();
+    g.gain.value = gain;
+    const limit = ctx.createDynamicsCompressor();
+    limit.threshold.value = -3;
+    limit.knee.value = 0;
+    limit.ratio.value = 20;
+    limit.attack.value = 0.003;
+    limit.release.value = 0.1;
+    src.connect(g).connect(limit).connect(ctx.destination);
+  } catch (_) {
+    audio.volume = Math.min(1, gain);
+  }
+}
+
 const DEFAULT_SLUG = 'mcdonald-county-chamber-2026';
 
 function useSpeech() {
@@ -286,9 +374,12 @@ export default function Talk() {
             await new Promise((resolve) => setTimeout(resolve, Math.max(1500, chunks[i].length * 65)));
             continue;
           }
+          const gain = await gainFor(blob);
+          if (!stillMine()) return;
           const url = URL.createObjectURL(blob);
           audioRef.current?.pause();
           const audio = new Audio(url);
+          playLeveled(audio, blob, gain);
           audioRef.current = audio;
           await new Promise((resolve) => {
             audio.onended = resolve;

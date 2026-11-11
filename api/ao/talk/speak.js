@@ -3,7 +3,7 @@
  * A teammate's line read aloud during a live talk. See lib/ao/talkVoice.js.
  */
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
-import { speak } from '../../../lib/ao/talkVoice.js';
+import { speak, voiceRate } from '../../../lib/ao/talkVoice.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -14,5 +14,6 @@ export default async function handler(req, res) {
   if (!out.ok) return res.status(502).json(out);
   res.setHeader('Content-Type', 'audio/mpeg');
   res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('X-Voice-Rate', String(voiceRate(String(body.agent || 'auto'))));
   return res.status(200).send(out.audio);
 }
