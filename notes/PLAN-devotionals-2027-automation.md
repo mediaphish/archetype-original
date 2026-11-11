@@ -256,6 +256,7 @@ Whether Lev or this session writes the 2028 drafts can be decided later. The pla
 ## Answers so far
 
 - 2026-11-11: the devotional Facebook Page does not exist yet. Bart creates it.
+- 2026-11-11, Easter: "I need it to land on Easter every year, so yes. Whatever that takes." Approved: event tags with a safety check that blocks scheduling if Easter is wrong (Part 4). 2027 runs the passion story from Mar 1 to Easter Mar 28, and self-control moves to April.
 
 ## Changed files for this plan
 
