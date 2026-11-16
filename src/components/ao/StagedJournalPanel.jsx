@@ -567,8 +567,19 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
   // has it, so it stands in for the stub rather than showing Bart a placeholder
   // and a word count of 4.
   const postFallback = useMemo(
-    () => (isPlaceholderArtifactBody(postContent) && draft?.content?.trim() ? draft.content : null),
-    [postContent, draft]
+    () => {
+      const saved = draft?.content?.trim() ? draft.content : null;
+      if (!saved) return null;
+      if (isPlaceholderArtifactBody(postContent)) return saved;
+      // Once the saved draft holds the real post, the Post tab shows it, not
+      // whatever the chat showed last (2026-11-16: the team wrote and edited
+      // the 4,443-word Abigail post in the background, and the tab kept showing
+      // the 2,064-word outline from the chat).
+      const pastBrief = stageInfo?.stage && stageInfo.stage !== 'brief';
+      if (pastBrief && String(saved).trim() !== String(postContent || '').trim()) return saved;
+      return null;
+    },
+    [postContent, draft, stageInfo]
   );
   const effectivePostContent = postFallback || postContent;
 
