@@ -51,6 +51,7 @@ import { videoClipTag, splitVideoClips } from '../../lib/videoClips.js';
 import CardPackages from './CardPackages.jsx';
 import { KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import QueueFeed from './QueueFeed.jsx';
+import ListenButton from './ListenButton.jsx';
 import { idleStatus } from '../../lib/teamStatus.js';
 import { openQuestions, quotedReply } from '../../lib/openQuestions.js';
 import {
@@ -945,6 +946,7 @@ function DraftArtifact({ content, label, slug: slugProp = null }) {
       <div className="flex-shrink-0 flex flex-wrap items-center justify-between gap-2">
         <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{label}</p>
         <div className="flex flex-wrap items-center gap-2">
+          <ListenButton text={content} title={label} />
           <label className="inline-flex items-center gap-1.5 text-xs text-gray-600 select-none">
             <input
               type="checkbox"

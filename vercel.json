@@ -290,6 +290,17 @@
       }
     },
     {
+      "src": "api/ao/auto/listen.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 300,
+        "memory": 1024,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
       "src": "api/ao/team/run.js",
       "use": "@vercel/node",
       "config": {
