@@ -73,6 +73,18 @@ export default async function handler(req, res) {
     // (the notes queue, among others), so it never goes back to the client, and
     // callers without with_stage get exactly the fields they always did.
     const { metadata, ...draftOut } = draft;
+    // The Research & Brief tab (2026-11-16: "the Research and Brief where the
+    // outline should probably be is empty"). Only the brief and outline text go
+    // back, never the rest of metadata.
+    if (withStage) {
+      const b = metadata?.brief && typeof metadata.brief === 'object' ? metadata.brief : {};
+      draftOut.brief = {
+        brief_text: b.brief_text ? String(b.brief_text) : null,
+        brief_approved_at: b.brief_approved_at || null,
+        outline_text: b.outline_text && b.outline_text !== b.brief_text ? String(b.outline_text) : null,
+        outline_approved_at: b.outline_approved_at || null,
+      };
+    }
 
     if (withStage && String(draft.kind || 'journal') === 'journal') {
       // A caption lookup failure must not cost Bart the draft itself. The

@@ -21,6 +21,7 @@ import { buildTabs, resolveOpenTab, pickImageCandidates } from '../../lib/staged
 import { countDraftWords } from '../../../lib/ao/draftStats.js';
 import { captionsFromChatText, mergeChatCaptions } from '../../../lib/ao/journalPanelData.js';
 import { isPlaceholderArtifactBody } from '../../../lib/ao/artifactPlaceholder.js';
+import ListenButton from './ListenButton.jsx';
 
 function formatWhen(ms) {
   if (!ms) return '';
@@ -71,6 +72,46 @@ function EmptyTab({ title, detail }) {
     <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
       <p className="text-sm font-medium text-gray-700">{title}</p>
       {detail ? <p className="mt-1 max-w-xs text-xs leading-relaxed text-gray-500">{detail}</p> : null}
+    </div>
+  );
+}
+
+/**
+ * The approved brief and the outline, saved on the draft (2026-11-16). Outline
+ * first when there is one, since that is what the post was built from.
+ */
+export function BriefTab({ brief }) {
+  const outline = brief?.outline_text || '';
+  const briefText = brief?.brief_text || '';
+  const sections = [
+    outline ? { key: 'outline', label: brief?.outline_approved_at ? 'Outline (approved)' : 'Outline', text: outline } : null,
+    briefText ? { key: 'brief', label: brief?.brief_approved_at ? 'Brief (approved)' : 'Brief', text: briefText } : null,
+  ].filter(Boolean);
+  const [open, setOpen] = useState(sections[0]?.key || null);
+  if (!sections.length) {
+    return <EmptyTab title="Research & Brief" detail="No brief or outline is saved on this post yet. Until then they are in the conversation." />;
+  }
+  const current = sections.find((x) => x.key === open) || sections[0];
+  return (
+    <div className="flex min-h-0 flex-1 flex-col gap-3" data-testid="brief-tab">
+      <div className="flex flex-shrink-0 flex-wrap items-center justify-between gap-2">
+        <div className="flex gap-2">
+          {sections.map((x) => (
+            <button
+              key={x.key}
+              type="button"
+              onClick={() => setOpen(x.key)}
+              className={`rounded-md px-2.5 py-1 text-xs font-medium ${x.key === current.key ? 'bg-gray-900 text-white' : 'border border-gray-200 bg-white text-gray-700 hover:bg-gray-50'}`}
+            >
+              {x.label}
+            </button>
+          ))}
+        </div>
+        <ListenButton key={current.key} text={current.text} title={current.label.replace(/ \(approved\)$/, '')} />
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-gray-200 bg-white p-4 text-sm leading-relaxed text-gray-800">
+        {current.text}
+      </div>
     </div>
   );
 }
@@ -675,7 +716,7 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
             onApprove={() => approveStage('image')}
           />
         ) : activeTab === 'research_brief' ? (
-          <EmptyTab title="Research & Brief" detail="The research and brief for this post will live here. Until then they are in the conversation." />
+          <BriefTab brief={draft?.brief} />
         ) : activeTab === 'schedule' ? (
           <PlanTab
             plan={panel?.plan}
