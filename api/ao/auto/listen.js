@@ -8,7 +8,7 @@
  */
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
-import { narrate, markdownToSpeech, audioKey } from '../../../lib/ao/readAloud.js';
+import { narrate, markdownToSpeech, audioKey, estimateListen } from '../../../lib/ao/readAloud.js';
 
 const BUCKET = 'ao-auto-attachments';
 const MAX_CHARS = 120000;
@@ -33,6 +33,15 @@ export default async function handler(req, res) {
   if (!dir.error && (dir.data || []).some((f) => `listen/${f.name}` === path)) {
     return res.status(200).json({ ok: true, url: publicUrl, cached: true });
   }
+
+  // Ask first (Bart, 2026-11-16: "only generate the audio for a post when I ask
+  // for it. I don't want the spend unless I really need it."). A check never
+  // makes audio; it only says what making it would cost.
+  if (body.check) {
+    const est = estimateListen(text);
+    return res.status(200).json({ ok: true, cached: false, minutes: Math.max(1, est.minutes), dollars: est.dollars });
+  }
+  if (body.confirm !== true) return res.status(400).json({ ok: false, error: 'Tap Make the audio to confirm first.' });
 
   const out = await narrate(markdown, { title, concurrency: 6 });
   if (!out.ok) return res.status(502).json({ ok: false, error: out.error });
