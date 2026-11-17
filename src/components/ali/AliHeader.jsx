@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
-import { ChevronDown, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { OptimizedImage } from '../OptimizedImage';
 import { clearAliSessionEmail } from '../../lib/magicLinkBrowserSession';
 
+/**
+ * ALI app header. Main items: Results (the results screen at /ali/dashboard),
+ * Send survey (/ali/deploy), Settings, Billing. The old report pages
+ * (/ali/reports/*) now redirect to Results and are no longer linked here.
+ */
+export const ALI_NAV_ITEMS = Object.freeze([
+  { key: 'dashboard', label: 'Results', path: '/ali/dashboard' },
+  { key: 'deploy', label: 'Send survey', path: '/ali/deploy' },
+  { key: 'settings', label: 'Settings', path: '/ali/settings' },
+  { key: 'billing', label: 'Billing', path: '/ali/billing' },
+]);
+
 export default function AliHeader({ active = 'dashboard', email = '', isSuperAdminUser = false, onNavigate }) {
-  const [reportsDropdownOpen, setReportsDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleNavigate = (path) => {
@@ -13,7 +24,6 @@ export default function AliHeader({ active = 'dashboard', email = '', isSuperAdm
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
-    setReportsDropdownOpen(false);
   };
 
   const handleLogout = async () => {
@@ -34,13 +44,18 @@ export default function AliHeader({ active = 'dashboard', email = '', isSuperAdm
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
 
-  const tabClass = (key) =>
-    key === active ? 'text-blue-600 font-semibold' : 'text-gray-600 hover:text-gray-900';
+  // Old report pages count as Results (they redirect there).
+  const activeKey = typeof active === 'string' && active.startsWith('reports') ? 'dashboard' : active;
 
-  const isReportsActive = active === 'reports' || active === 'reports-mirror' || active === 'reports-zones' || active === 'reports-analytics' || active === 'reports-profile';
+  const tabClass = (key) =>
+    key === activeKey ? 'text-blue-600 font-semibold' : 'text-gray-600 hover:text-gray-900';
 
   const mobileTabClass = (key) =>
-    key === active ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-gray-700 hover:bg-gray-50';
+    key === activeKey ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-gray-700 hover:bg-gray-50';
+
+  const items = isSuperAdminUser
+    ? [...ALI_NAV_ITEMS, { key: 'super-admin', label: 'Super Admin', path: '/ali/super-admin/overview' }]
+    : ALI_NAV_ITEMS;
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
@@ -50,93 +65,25 @@ export default function AliHeader({ active = 'dashboard', email = '', isSuperAdm
             type="button"
             onClick={() => handleNavigate(withEmail('/ali/dashboard'))}
             className="flex items-center gap-2 text-xl font-bold text-gray-900 min-h-[44px] min-w-[44px] md:min-w-0"
-            aria-label="Go to ALI Dashboard"
+            aria-label="Go to ALI results"
           >
             <OptimizedImage src="/brand/ao-icon.svg" alt="Archetype Original" className="w-6 h-6" loading="eager" width={24} height={24} />
             <span>ALI</span>
           </button>
 
           <nav className="hidden md:flex items-center gap-6" role="navigation" aria-label="ALI main navigation">
-            <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className={tabClass('dashboard')}>
-              Dashboard
-            </button>
-            
-            {/* Reports Dropdown */}
-            <div 
-              className="relative"
-              onMouseEnter={() => setReportsDropdownOpen(true)}
-              onMouseLeave={() => setReportsDropdownOpen(false)}
-            >
-              <button 
+            {items.map((item) => (
+              <button
+                key={item.key}
                 type="button"
-                className={`flex items-center gap-1 ${isReportsActive ? 'text-blue-600 font-semibold' : 'text-gray-600 hover:text-gray-900'}`}
-                aria-expanded={reportsDropdownOpen}
-                aria-haspopup="true"
-                aria-label="Reports menu"
+                onClick={() => handleNavigate(withEmail(item.path))}
+                className={tabClass(item.key)}
+                aria-current={item.key === activeKey ? 'page' : undefined}
               >
-                Reports
-                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${reportsDropdownOpen ? 'rotate-180' : ''}`} />
+                {item.label}
               </button>
-              
-              {reportsDropdownOpen && (
-                <div className="absolute left-0 top-full z-50 w-56 pt-1" role="presentation">
-                  <div
-                    className="rounded-lg border border-gray-200 bg-white py-2 shadow-lg"
-                    role="menu"
-                    aria-label="Reports menu"
-                  >
-                  <button
-                    type="button"
-                    role="menuitem"
-                    onClick={() => handleNavigate(withEmail('/ali/reports'))}
-                    className="min-h-[44px] w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors flex items-center"
-                  >
-                    Reports Hub
-                  </button>
-                  <button
-                    type="button"
-                    role="menuitem"
-                    onClick={() => handleNavigate(withEmail('/ali/reports/mirror'))}
-                    className="min-h-[44px] w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors flex items-center"
-                  >
-                    Leadership Mirror
-                  </button>
-                  <button
-                    type="button"
-                    role="menuitem"
-                    onClick={() => handleNavigate(withEmail('/ali/reports/zones'))}
-                    className="min-h-[44px] w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors flex items-center"
-                  >
-                    Zones Guide
-                  </button>
-                  <button
-                    type="button"
-                    role="menuitem"
-                    onClick={() => handleNavigate(withEmail('/ali/reports/profile'))}
-                    className="min-h-[44px] w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors flex items-center"
-                  >
-                    Leadership Profile
-                  </button>
-                  </div>
-                </div>
-              )}
-            </div>
-            
-            <button onClick={() => handleNavigate(withEmail('/ali/deploy'))} className={tabClass('deploy')}>
-              Deploy
-            </button>
-            <button onClick={() => handleNavigate(withEmail('/ali/settings'))} className={tabClass('settings')}>
-              Settings
-            </button>
-            <button onClick={() => handleNavigate(withEmail('/ali/billing'))} className={tabClass('billing')}>
-              Billing
-            </button>
-            {isSuperAdminUser && (
-              <button onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))} className={tabClass('super-admin')}>
-                Super Admin
-              </button>
-            )}
-            <button onClick={handleLogout} className="min-h-[44px] px-3 py-2 text-gray-600 hover:text-gray-900 rounded">
+            ))}
+            <button type="button" onClick={handleLogout} className="min-h-[44px] px-3 py-2 text-gray-600 hover:text-gray-900 rounded">
               Log Out
             </button>
           </nav>
@@ -158,39 +105,18 @@ export default function AliHeader({ active = 'dashboard', email = '', isSuperAdm
         {mobileMenuOpen && (
           <nav id="ali-mobile-navigation" className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4" role="navigation" aria-label="ALI mobile navigation">
             <div className="flex flex-col gap-1">
-              <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('dashboard')}`}>
-                Dashboard
-              </button>
-              <div className="pt-2 pb-1">
-                <span className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Reports</span>
-              </div>
-              <button onClick={() => handleNavigate(withEmail('/ali/reports'))} className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('reports')}`}>
-                Reports Hub
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/reports/mirror'))} className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('reports-mirror')}`}>
-                Leadership Mirror
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/reports/zones'))} className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('reports-zones')}`}>
-                Zones Guide
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/reports/profile'))} className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('reports-profile')}`}>
-                Leadership Profile
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/deploy'))} className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('deploy')}`}>
-                Deploy
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/settings'))} className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('settings')}`}>
-                Settings
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/billing'))} className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('billing')}`}>
-                Billing
-              </button>
-              {isSuperAdminUser && (
-                <button onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))} className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('super-admin')}`}>
-                  Super Admin
+              {items.map((item) => (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => handleNavigate(withEmail(item.path))}
+                  className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass(item.key)}`}
+                  aria-current={item.key === activeKey ? 'page' : undefined}
+                >
+                  {item.label}
                 </button>
-              )}
-              <button onClick={handleLogout} className="min-h-[44px] px-4 py-3 rounded-lg text-left text-gray-700 hover:bg-gray-50 border-t border-gray-200 mt-2 pt-2">
+              ))}
+              <button type="button" onClick={handleLogout} className="min-h-[44px] px-4 py-3 rounded-lg text-left text-gray-700 hover:bg-gray-50 border-t border-gray-200 mt-2 pt-2">
                 Log Out
               </button>
             </div>
@@ -200,4 +126,3 @@ export default function AliHeader({ active = 'dashboard', email = '', isSuperAdm
     </header>
   );
 }
-

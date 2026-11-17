@@ -110,19 +110,13 @@ const ALISettings = () => {
                 onClick={() => handleNavigate(withEmail('/ali/dashboard'))}
                 className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-900"
               >
-                Dashboard
-              </button>
-              <button
-                onClick={() => handleNavigate(withEmail('/ali/reports'))}
-                className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-900"
-              >
-                Reports
+                Results
               </button>
               <button
                 onClick={() => handleNavigate(withEmail('/ali/deploy'))}
-                className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-900"
+                className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-900 whitespace-nowrap"
               >
-                Deploy
+                Send survey
               </button>
               <button
                 onClick={() => handleNavigate(withEmail('/ali/settings'))}

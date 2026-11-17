@@ -208,13 +208,10 @@ const ALIDeploy = () => {
             <div className="text-xl font-bold text-gray-900">ALI</div>
             <nav className="flex items-center gap-4 sm:gap-6 overflow-x-auto">
               <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className="text-gray-600 hover:text-gray-900">
-                Dashboard
+                Results
               </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/reports'))} className="text-gray-600 hover:text-gray-900">
-                Reports
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/deploy'))} className="text-blue-600 font-semibold">
-                Deploy
+              <button onClick={() => handleNavigate(withEmail('/ali/deploy'))} className="text-blue-600 font-semibold whitespace-nowrap">
+                Send survey
               </button>
               <button onClick={() => handleNavigate(withEmail('/ali/settings'))} className="text-gray-600 hover:text-gray-900">
                 Settings
@@ -240,7 +237,7 @@ const ALIDeploy = () => {
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Survey rounds</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Send survey</h1>
           <p className="text-gray-600">
             Each round has a team link to share with your team and a separate leader link for the leader.
             Team results appear after the round closes, once at least five team members have answered.

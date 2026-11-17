@@ -145,3 +145,29 @@ export function buildAliReportsSnapshot(liveReports, liveDashboardSummary) {
   }
   return out;
 }
+
+/**
+ * Results screen (instrument v3). Combined numbers only, exactly what the screen shows.
+ * Never includes per-person data (the server never sends any).
+ */
+export function buildAliResultsSnapshot(payload, extra = {}) {
+  if (!payload || typeof payload !== 'object') return { type: 'ali-results', hasData: false };
+  const pick = (rows) =>
+    Array.isArray(rows) ? rows.map((r) => ({ condition: r.label || r.key, team: r.team, leader: r.leader })) : undefined;
+  return {
+    type: 'ali-results',
+    round: payload.round ? { number: payload.round.number, status: payload.round.status } : null,
+    ready: !!payload.ready,
+    reason: payload.ready ? undefined : payload.reason,
+    teamResponses: payload.teamResponses,
+    confidence: payload.confidence?.label,
+    leaderAnswered: !!payload.leaderAnswered,
+    conditions: pick(payload.conditions),
+    results: pick(payload.results),
+    changeSinceLastRound: Array.isArray(payload.drift)
+      ? payload.drift.map((d) => ({ condition: d.label || d.key, change: d.change }))
+      : undefined,
+    patterns: Array.isArray(payload.patterns) ? payload.patterns.map((p) => p.title || p.key) : undefined,
+    focus: extra.focus || undefined,
+  };
+}
