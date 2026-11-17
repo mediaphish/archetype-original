@@ -55,6 +55,20 @@ export default async function handler(req, res) {
       }
     }
 
+    // Security (2026-11-16 audit): only send to real ALI accounts, and at most
+    // 3 links per address every 15 minutes, so nobody can use this form to flood
+    // strangers' inboxes from our sending domain. The reply is the same either
+    // way, so it never reveals whether an account exists.
+    const quietOk = () => res.status(200).json({ ok: true, message: 'Magic link sent to your email' });
+    if (!userExists) return quietOk();
+    const since = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+    const { count: recent } = await supabaseAdmin
+      .from('ali_magic_link_tokens')
+      .select('id', { count: 'exact', head: true })
+      .eq('email', emailLower)
+      .gte('created_at', since);
+    if ((recent || 0) >= 3) return quietOk();
+
     // Generate secure token
     const token = crypto.randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes

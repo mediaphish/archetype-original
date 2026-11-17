@@ -25,6 +25,19 @@ export default async function handler(req, res) {
   const companyId = session.companyId;
   const { divisionId } = req.query;
 
+  // Security (2026-11-16 audit): only an account owner may add, change or remove
+  // records, and only inside their own company.
+  if (method !== 'GET') {
+    const { data: me } = await supabaseAdmin
+      .from('ali_contacts')
+      .select('permission_level, company_id')
+      .eq('id', session.contactId || '')
+      .maybeSingle();
+    if (!me || me.company_id !== companyId || me.permission_level !== 'account_owner') {
+      return res.status(403).json({ ok: false, error: 'Only the account owner can make this change.' });
+    }
+  }
+
   try {
     // GET - List divisions for a company
     if (method === 'GET') {
@@ -169,6 +182,7 @@ export default async function handler(req, res) {
         .from('ali_divisions')
         .update(updates)
         .eq('id', updateId)
+        .eq('company_id', companyId)
         .select()
         .single();
 
@@ -209,7 +223,8 @@ export default async function handler(req, res) {
       const { error } = await supabaseAdmin
         .from('ali_divisions')
         .delete()
-        .eq('id', deleteId);
+        .eq('id', deleteId)
+        .eq('company_id', companyId);
 
       if (error) {
         console.error('Error deleting division:', error);
