@@ -18,7 +18,7 @@ import { buildAliZonesSnapshot } from '../../lib/ali/archyContextPayload';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import AliFooter from '../../components/ali/AliFooter';
 import { getAliSessionEmail, setAliSessionEmail } from '../../lib/magicLinkBrowserSession';
-import { CONDITION_KEYS } from '../../../lib/ali-conditions.js';
+import { LEGACY_CONDITION_KEYS as CONDITION_KEYS } from '../../../lib/ali-conditions.js';
 
 function fmt1(n) {
   if (typeof n !== 'number' || !Number.isFinite(n)) return '—';

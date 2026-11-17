@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import SEO from '../../components/SEO';
 import { splitNeutralizedParagraphs } from '../../lib/blpStoryParagraphs.js';
-import { CONDITION_KEYS, CONDITION_LABELS } from '../../../lib/ali-conditions.js';
+import { LEGACY_CONDITION_KEYS as CONDITION_KEYS, LEGACY_CONDITION_LABELS as CONDITION_LABELS } from '../../../lib/ali-conditions.js';
 import './badLeaderProject.css';
 
 function BlpStoryParagraphs({ text, excerpt }) {

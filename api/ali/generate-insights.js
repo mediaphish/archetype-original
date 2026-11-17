@@ -8,7 +8,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { CONDITION_KEYS, CONDITION_LABELS } from '../../lib/ali-conditions.js';
+import { LEGACY_CONDITION_KEYS as CONDITION_KEYS, LEGACY_CONDITION_LABELS as CONDITION_LABELS } from '../../lib/ali-conditions.js';
 import { requireAliSession } from '../../lib/ali-session.js';
 import { completeJson, textModelConfigured } from '../../lib/ao/textModel.js';
 

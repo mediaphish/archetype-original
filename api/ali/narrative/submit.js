@@ -22,7 +22,7 @@
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
-import { CONDITION_KEYS } from '../../../lib/ali-conditions.js';
+import { LEGACY_CONDITION_KEYS as CONDITION_KEYS } from '../../../lib/ali-conditions.js';
 import { generateEmbedding } from '../../../lib/ao/corpusEmbeddings.js';
 
 const MAX_LENGTH = 4000;

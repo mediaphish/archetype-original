@@ -1,233 +1,82 @@
 /**
- * ALI Survey Questions Fetch
+ * ALI survey questions for a link.
  *
- * Get survey questions for a deployment token.
+ * GET /api/ali/survey/[token]
  *
- * GET /api/ali/survey/[token]?role=leader|team_member
+ * The link decides the role: the team link gets team wording, the leader link
+ * gets leader wording. Nobody chooses their own role.
  *
- * For v1.x snapshots the role parameter is ignored and the existing
- * (role-agnostic) question list is returned.
+ * Response (v3):
+ *   { status: 'open' | 'closed' | 'not_open', company_name, role, round_number,
+ *     closes_at, questions: [{ id, text, is_trial, order }], answer_labels,
+ *     previous_answers (leader link only, so the leader can edit until close) }
  *
- * For v2.0 paired snapshots the role parameter selects the role-matched
- * stems in identical construct order. If role is omitted, both stems are
- * returned for each construct under `leader_item` and `team_item`, so
- * the client can decide how to render them.
+ * Never tells a team member how many others have answered.
+ * Surveys from the retired v1/v2 instruments no longer accept answers; their
+ * links show the closed message.
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { V3_ANSWER_LABELS } from '../../../lib/ali-v3-bank.js';
+import { questionsForRole } from '../../../lib/ali-v3-survey.js';
+import { findDeploymentByToken, isV3Deployment, loadRound, loadCompanyName, roundStatus } from '../../../lib/ali-v3-rounds.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+  res.setHeader('Cache-Control', 'no-store');
 
   try {
-    const { token, role: roleParam } = req.query;
+    const { token } = req.query;
+    const found = await findDeploymentByToken(typeof token === 'string' ? token : '');
+    if (!found) {
+      return res.status(404).json({ error: 'This survey link is not valid. Please ask for a new link.' });
+    }
+    const { deployment, role } = found;
+    const companyName = await loadCompanyName(deployment.company_id);
 
-    if (!token) {
-      return res.status(400).json({ error: 'Token is required' });
+    if (!isV3Deployment(deployment)) {
+      return res.status(200).json({ status: 'closed', company_name: companyName, role: null, questions: [] });
     }
 
-    let respondentRole = null;
-    if (typeof roleParam === 'string') {
-      const normalized = roleParam.trim().toLowerCase();
-      if (normalized === 'leader' || normalized === 'team_member') {
-        respondentRole = normalized;
-      } else if (normalized.length > 0) {
-        return res.status(400).json({ error: 'role must be "leader" or "team_member"' });
-      }
+    const status = roundStatus(deployment);
+    const base = {
+      status,
+      company_name: companyName,
+      role,
+      round_number: deployment.round_number,
+      closes_at: deployment.closes_at,
+      answer_labels: V3_ANSWER_LABELS,
+    };
+    if (status !== 'open') {
+      return res.status(200).json({ ...base, questions: [] });
     }
 
-    const { data: deployment, error: deploymentError } = await supabaseAdmin
-      .from('ali_survey_deployments')
-      .select(`
-        id,
-        survey_index,
-        snapshot_id,
-        status,
-        opens_at,
-        closes_at,
-        company_id
-      `)
-      .eq('deployment_token', token)
-      .single();
-
-    if (deploymentError || !deployment) {
-      return res.status(404).json({ error: 'Survey not found' });
+    const round = await loadRound(deployment.v3_round_id);
+    if (!round || !Array.isArray(round.items) || round.items.length === 0) {
+      console.error('[ali/survey] round missing for deployment', deployment.id);
+      return res.status(500).json({ error: 'This survey could not be loaded. Please try again later.' });
     }
 
-    // Check if deployment is open
-    if (deployment.status === 'closed' || deployment.status === 'archived') {
-      return res.status(400).json({ error: 'This survey is no longer accepting responses' });
-    }
-
-    // Check if deployment has opened yet
-    if (deployment.opens_at) {
-      const opensAt = new Date(deployment.opens_at);
-      if (new Date() < opensAt) {
-        return res.status(400).json({ error: 'This survey is not yet open' });
-      }
-    }
-
-    // Check if deployment has closed
-    if (deployment.closes_at) {
-      const closesAt = new Date(deployment.closes_at);
-      if (new Date() > closesAt) {
-        return res.status(400).json({ error: 'This survey has closed' });
-      }
-    }
-
-    const { data: snapshot, error: snapshotError } = await supabaseAdmin
-      .from('ali_survey_snapshots')
-      .select('question_stable_ids, question_order, instrument_version')
-      .eq('id', deployment.snapshot_id)
-      .single();
-
-    if (snapshotError || !snapshot) {
-      return res.status(500).json({ error: 'Failed to load survey questions' });
-    }
-
-    const snapshotOrder = snapshot.question_order;
-    const isV2Snapshot =
-      typeof snapshot.instrument_version === 'string' && snapshot.instrument_version.startsWith('v2.');
-
-    const isPairedConstructArray =
-      Array.isArray(snapshotOrder) &&
-      snapshotOrder.length > 0 &&
-      typeof snapshotOrder[0] === 'object' &&
-      snapshotOrder[0] !== null &&
-      Object.prototype.hasOwnProperty.call(snapshotOrder[0], 'construct_id') &&
-      (Object.prototype.hasOwnProperty.call(snapshotOrder[0], 'leader_item') ||
-        Object.prototype.hasOwnProperty.call(snapshotOrder[0], 'team_item'));
-
-    if (isPairedConstructArray) {
-      const orderedConstructs = snapshotOrder
-        .slice()
-        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-
-      const constructs = orderedConstructs.map((c, idx) => ({
-        order: c.order ?? idx + 1,
-        construct_id: c.construct_id,
-        pattern: c.pattern,
-        is_anchor: !!c.is_anchor,
-        response_scale: c.response_scale || '1_5_likert',
-        leader_item: c.leader_item || null,
-        team_item: c.team_item || null
-      }));
-
-      let questions = null;
-      if (respondentRole) {
-        questions = constructs
-          .map((c, idx) => {
-            const item = respondentRole === 'leader' ? c.leader_item : c.team_item;
-            if (!item) return null;
-            return {
-              id: item.stable_id,
-              construct_id: c.construct_id,
-              question_text: item.question_text,
-              pattern: c.pattern,
-              role: respondentRole,
-              response_scale: c.response_scale || '1_5_likert',
-              is_negative: !!item.is_negative,
-              is_anchor: !!c.is_anchor,
-              order: c.order ?? idx + 1
-            };
-          })
-          .filter(Boolean);
-      }
-
-      return res.status(200).json({
-        survey_index: deployment.survey_index,
-        deployment_id: deployment.id,
-        instrument_version: snapshot.instrument_version,
-        role: respondentRole,
-        constructs,
-        questions,
-        closes_at: deployment.closes_at
-      });
-    }
-
-    if (isV2Snapshot && !isPairedConstructArray) {
-      console.error('v2.x snapshot stored in non-paired format:', deployment.snapshot_id);
-      return res.status(500).json({ error: 'Survey configuration error' });
-    }
-
-    const isObjectArray =
-      Array.isArray(snapshotOrder) &&
-      snapshotOrder.length > 0 &&
-      typeof snapshotOrder[0] === 'object' &&
-      snapshotOrder[0] !== null &&
-      Object.prototype.hasOwnProperty.call(snapshotOrder[0], 'stable_id');
-
-    let orderedQuestions = [];
-
-    if (isObjectArray) {
-      // New format: question_order is an array of objects with question_text captured at generation time
-      orderedQuestions = snapshotOrder
-        .slice()
-        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-        .map((q, idx) => ({
-          id: q.stable_id,
-          question_text: q.question_text,
-          pattern: q.pattern,
-          is_negative: !!q.is_negative,
-          is_anchor: !!q.is_anchor,
-          order: q.order ?? (idx + 1)
-        }))
-        .filter(q => !!q.id && !!q.question_text);
-    } else {
-      // Back-compat: if snapshots were stored with question_order as stable_id[] (older data),
-      // fetch question text from the bank and order by that stable_id list.
-      const stableIdList = Array.isArray(snapshotOrder) && snapshotOrder.length > 0
-        ? snapshotOrder
-        : snapshot.question_stable_ids;
-
-      const { data: questions, error: questionsError } = await supabaseAdmin
-        .from('ali_question_bank')
-        .select('stable_id, question_text, pattern, is_negative, is_anchor')
-        .in('stable_id', stableIdList);
-
-      if (questionsError || !questions) {
-        return res.status(500).json({ error: 'Failed to load question details' });
-      }
-
-      orderedQuestions = stableIdList
-        .map((stableId, index) => {
-          const question = questions.find(q => q.stable_id === stableId);
-          if (!question) return null;
-          return {
-            id: question.stable_id,
-            question_text: question.question_text,
-            pattern: question.pattern,
-            is_negative: question.is_negative,
-            is_anchor: question.is_anchor,
-            order: index + 1
-          };
-        })
-        .filter(Boolean);
-    }
-
-    // Defensive check: if snapshot has stable_ids, ensure we didn't drop anything unexpectedly
-    if (Array.isArray(snapshot.question_stable_ids) && orderedQuestions.length !== snapshot.question_stable_ids.length) {
-      console.error('Question count mismatch:', {
-        expected: snapshot.question_stable_ids.length,
-        found: orderedQuestions.length,
-        deployment_id: deployment.id,
-        snapshot_id: deployment.snapshot_id
-      });
-      return res.status(500).json({ error: 'Survey configuration error' });
+    let previousAnswers = null;
+    if (role === 'leader') {
+      const { data } = await supabaseAdmin
+        .from('ali_survey_responses')
+        .select('responses')
+        .eq('deployment_id', deployment.id)
+        .eq('respondent_role', 'leader')
+        .maybeSingle();
+      previousAnswers = data?.responses || null;
     }
 
     return res.status(200).json({
-      survey_index: deployment.survey_index,
-      deployment_id: deployment.id,
-      questions: orderedQuestions,
-      closes_at: deployment.closes_at
+      ...base,
+      questions: questionsForRole(round.items, role),
+      previous_answers: previousAnswers,
     });
-
   } catch (err) {
-    console.error('Server error:', err);
+    console.error('[ali/survey] error:', err);
     return res.status(500).json({ error: 'Server error. Please try again.' });
   }
 }
-

@@ -4,7 +4,7 @@ import SuperAdminNav from '../../components/ali/SuperAdminNav';
 import AliArchyDrawer from '../../components/ali/AliArchyDrawer';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import { buildSuperAdminOverviewSnapshot } from '../../lib/ali/archyContextPayload';
-import { CONDITION_KEYS } from '../../../lib/ali-conditions.js';
+import { LEGACY_CONDITION_KEYS as CONDITION_KEYS } from '../../../lib/ali-conditions.js';
 import { getSuperAdminEmail } from '../../lib/ali-super-admin-email';
 
 const SuperAdminOverview = () => {

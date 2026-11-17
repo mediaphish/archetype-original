@@ -1,441 +1,212 @@
 /**
- * ALI Survey Deployment (Updated)
- * 
- * Creates survey deployment using system-generated survey snapshots
- * 
+ * ALI: start a survey round (instrument v3).
+ *
  * POST /api/ali/deploy-survey
  * Body: {
- *   companyId: string (required)
- *   surveyIndex?: string (optional - auto-calculated if not provided)
+ *   closesAt?: string   ISO date or YYYY-MM-DD. Default: 14 days from now. Max 90 days.
  *   divisionId?: string (null = company-wide)
- *   instrumentVersion?: string (default: "v1.0")
- *   opensAt?: string (ISO timestamp - when company chooses to open)
- *   closesAt?: string (ISO timestamp - optional closing date)
- *   minimumResponses?: number (default: 5)
  * }
- * 
- * Note: surveyId is deprecated. System now generates surveys deterministically.
+ *
+ * Creates one round with two links:
+ *   - a team link (deployment_token), shared with the team;
+ *   - a leader link (leader_token), shown only to the account owner.
+ * The link used decides the respondent's role. Every new round uses v3; there is
+ * no way to start a v1 or v2 survey any more.
+ *
+ * Only the company's account owner can start a round.
  */
 
-import { supabaseAdmin } from '../../lib/supabase-admin.js';
 import { randomBytes } from 'crypto';
-import { calculateAvailableAt, getNextSurveyIndex } from '../../lib/ali-cadence.js';
-import {
-  generateSeed,
-  buildSurvey,
-  buildPairedSurvey,
-  validateSurveyComposition
-} from '../../lib/ali-survey-builder.js';
+import { supabaseAdmin } from '../../lib/supabase-admin.js';
+import { calculateAvailableAt } from '../../lib/ali-cadence.js';
 import { requireAliSession } from '../../lib/ali-session.js';
+import { V3_INSTRUMENT_VERSION } from '../../lib/ali-v3-bank.js';
+import { buildV3Round } from '../../lib/ali-v3-survey.js';
+import {
+  DEFAULT_ROUND_DAYS,
+  MAX_ROUND_DAYS,
+  nextRoundNumber,
+  listV3Deployments,
+  roundStatus,
+} from '../../lib/ali-v3-rounds.js';
 
-const DEFAULT_INSTRUMENT_VERSION = process.env.ALI_DEFAULT_INSTRUMENT_VERSION || 'v2.0';
-
-function isV2(instrumentVersion) {
-  return instrumentVersion === 'v2.0' || (typeof instrumentVersion === 'string' && instrumentVersion.startsWith('v2.'));
-}
-
-// In-memory cache for question bank (refreshed periodically)
-let questionBankCache = null;
-let questionBankCacheTimestamp = null;
-const QUESTION_BANK_CACHE_TTL = 60 * 60 * 1000; // 1 hour
-
-/**
- * Load question bank from database (with caching)
- */
-async function loadQuestionBank(instrumentVersion = 'v1.0') {
-  const now = Date.now();
-  
-  // Return cached if still valid
-  if (questionBankCache && 
-      questionBankCacheTimestamp && 
-      (now - questionBankCacheTimestamp) < QUESTION_BANK_CACHE_TTL) {
-    return questionBankCache.filter(q => q.instrument_version === instrumentVersion);
-  }
-  
-  // Load from database
-  const { data: questions, error } = await supabaseAdmin
-    .from('ali_question_bank')
-    .select('*')
-    .eq('status', 'active')
-    .order('stable_id');
-  
-  if (error) {
-    console.error('Error loading question bank:', error);
-    throw new Error('Failed to load question bank');
-  }
-  
-  if (!questions || questions.length === 0) {
-    throw new Error('Question bank is empty. No active questions found.');
-  }
-  
-  // Update cache
-  questionBankCache = questions;
-  questionBankCacheTimestamp = now;
-  
-  return questions.filter(q => q.instrument_version === instrumentVersion);
-}
-
-function generateDeploymentToken() {
-  // Generate a secure, URL-safe token
+function newToken() {
   return randomBytes(32).toString('base64url');
 }
 
-/**
- * Get or create survey snapshot
- */
-async function getOrCreateSnapshot(companyId, surveyIndex, instrumentVersion) {
-  const { data: existing } = await supabaseAdmin
-    .from('ali_survey_snapshots')
-    .select('*')
-    .eq('client_id', companyId)
-    .eq('survey_index', surveyIndex)
-    .eq('instrument_version', instrumentVersion)
-    .single();
-  
-  if (existing) {
-    return existing;
+/** Parse the requested close date. Returns { date } or { error }. */
+export function resolveClosesAt(input, now = new Date()) {
+  if (input === undefined || input === null || input === '') {
+    return { date: new Date(now.getTime() + DEFAULT_ROUND_DAYS * 24 * 60 * 60 * 1000) };
   }
-
-  const questionBank = await loadQuestionBank(instrumentVersion);
-
-  let questionStableIds;
-  let questionOrder;
-  let composition;
-
-  if (isV2(instrumentVersion)) {
-    const surveyResult = buildPairedSurvey(questionBank, companyId, surveyIndex, instrumentVersion);
-    if (!surveyResult.validation.isValid) {
-      throw new Error(`Paired survey composition validation failed: ${surveyResult.validation.errors.join('; ')}`);
-    }
-    questionStableIds = [];
-    questionOrder = surveyResult.constructs.map((c, idx) => {
-      questionStableIds.push(c.leader.stable_id, c.team_member.stable_id);
-      return {
-        order: idx + 1,
-        construct_id: c.construct_id,
-        pattern: c.pattern,
-        is_anchor: !!c.is_anchor,
-        response_scale: c.leader.response_scale || c.team_member.response_scale || '1_5_likert',
-        leader_item: {
-          stable_id: c.leader.stable_id,
-          question_text: c.leader.question_text,
-          angle: c.leader.angle,
-          lens: c.leader.lens,
-          is_negative: !!c.leader.is_negative,
-          is_anchor: !!c.leader.is_anchor,
-          role: 'leader'
-        },
-        team_item: {
-          stable_id: c.team_member.stable_id,
-          question_text: c.team_member.question_text,
-          angle: c.team_member.angle,
-          lens: c.team_member.lens,
-          is_negative: !!c.team_member.is_negative,
-          is_anchor: !!c.team_member.is_anchor,
-          role: 'team_member'
-        }
-      };
-    });
-    composition = surveyResult.validation.composition;
-  } else {
-    const surveyResult = buildSurvey(questionBank, companyId, surveyIndex, instrumentVersion);
-    const finalValidation = validateSurveyComposition(surveyResult.questions);
-    if (!finalValidation.isValid) {
-      throw new Error(`Survey composition validation failed: ${finalValidation.errors.join('; ')}`);
-    }
-    questionStableIds = surveyResult.questions.map(q => q.stable_id);
-    questionOrder = surveyResult.questions.map((q, index) => ({
-      order: index + 1,
-      stable_id: q.stable_id,
-      question_text: q.question_text,
-      pattern: q.pattern,
-      role: q.role,
-      angle: q.angle,
-      lens: q.lens,
-      is_negative: q.is_negative,
-      is_anchor: q.is_anchor
-    }));
-    composition = finalValidation.composition;
+  const s = String(input);
+  // A bare date means the end of that day (UTC).
+  const d = /^\d{4}-\d{2}-\d{2}$/.test(s) ? new Date(`${s}T23:59:59Z`) : new Date(s);
+  if (Number.isNaN(d.getTime())) return { error: 'The close date is not a valid date.' };
+  if (d.getTime() <= now.getTime()) return { error: 'The close date must be in the future.' };
+  if (d.getTime() > now.getTime() + MAX_ROUND_DAYS * 24 * 60 * 60 * 1000) {
+    return { error: `The close date can be at most ${MAX_ROUND_DAYS} days away.` };
   }
-
-  const generationSeed = generateSeed(companyId, surveyIndex, instrumentVersion);
-
-  const { data: snapshot, error: snapshotError } = await supabaseAdmin
-    .from('ali_survey_snapshots')
-    .insert({
-      client_id: companyId,
-      survey_index: surveyIndex,
-      instrument_version: instrumentVersion,
-      generation_seed: generationSeed,
-      generated_by: 'system',
-      question_stable_ids: questionStableIds,
-      question_order: questionOrder,
-      anchor_count: composition.anchorCount,
-      pattern_question_count: composition.patternCount,
-      total_question_count: composition.totalCount,
-      negative_item_count: composition.negativeCount,
-      is_locked: true
-    })
-    .select()
-    .single();
-  
-  if (snapshotError) {
-    // Check if it's a unique constraint violation (race condition)
-    if (snapshotError.code === '23505') {
-      // Snapshot was created by another request, fetch it
-      const { data: raceSnapshot } = await supabaseAdmin
-        .from('ali_survey_snapshots')
-        .select('*')
-        .eq('client_id', companyId)
-        .eq('survey_index', surveyIndex)
-        .eq('instrument_version', instrumentVersion)
-        .single();
-      
-      if (raceSnapshot) {
-        return raceSnapshot;
-      }
-    }
-    
-    throw new Error(`Failed to create survey snapshot: ${snapshotError.message}`);
-  }
-  
-  return snapshot;
+  return { date: d };
 }
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
 
   const session = await requireAliSession(req, res);
   if (!session) return;
 
-  if (session.isSuperAdmin && !session.companyId) {
-    return res.status(403).json({ ok: false, error: 'This action requires a tenant account.' });
+  if (!session.companyId) {
+    return res.status(403).json({ ok: false, error: 'This action requires a company account.' });
   }
 
   try {
-    const {
-      surveyIndex,
-      divisionId,
-      instrumentVersion = DEFAULT_INSTRUMENT_VERSION,
-      opensAt,
-      closesAt,
-      minimumResponses = 5
-    } = req.body || {};
-
     const companyId = session.companyId;
+    const { closesAt, divisionId } = req.body || {};
 
-    if (!companyId) {
-      return res.status(400).json({ error: 'companyId is required' });
+    // Only the account owner may start a round (the response carries the leader link).
+    const { data: me } = await supabaseAdmin
+      .from('ali_contacts')
+      .select('id, company_id, permission_level')
+      .eq('id', session.contactId)
+      .maybeSingle();
+    if (!me || me.company_id !== companyId || me.permission_level !== 'account_owner') {
+      return res.status(403).json({ ok: false, error: 'Only the account owner can start a survey round.' });
     }
 
-    // Verify company exists
     const { data: company, error: companyError } = await supabaseAdmin
       .from('ali_companies')
       .select('id, name, baseline_date')
       .eq('id', companyId)
       .single();
-
     if (companyError || !company) {
-      return res.status(404).json({ error: 'Company not found' });
+      return res.status(404).json({ ok: false, error: 'Company not found' });
     }
 
-    // Determine survey index
-    let finalSurveyIndex = surveyIndex;
-    if (!finalSurveyIndex) {
-      // Get existing surveys for this company
-      const { data: existingSurveys } = await supabaseAdmin
-        .from('ali_survey_snapshots')
-        .select('survey_index')
-        .eq('client_id', companyId)
-        .eq('instrument_version', instrumentVersion);
-      
-      finalSurveyIndex = getNextSurveyIndex(existingSurveys || []);
-    } else {
-      // Validate survey index format
-      if (!/^S\d+$/.test(finalSurveyIndex)) {
-        return res.status(400).json({ 
-          error: 'surveyIndex must match pattern S1, S2, S3, etc.' 
-        });
-      }
-    }
+    const close = resolveClosesAt(closesAt);
+    if (close.error) return res.status(400).json({ ok: false, error: close.error });
 
-    // For S1, always anchor cadence to actual first deployment day.
-    // This guarantees new customers can launch immediately.
-    if (finalSurveyIndex === 'S1') {
-      const today = new Date().toISOString().split('T')[0];
-      const { error: updateError } = await supabaseAdmin
-        .from('ali_companies')
-        .update({ baseline_date: today })
-        .eq('id', companyId);
-      
-      if (updateError) {
-        console.error('Error setting baseline_date:', updateError);
-        return res.status(500).json({ 
-          error: 'Failed to set baseline_date',
-          details: updateError.message
-        });
-      }
-      
-      // Refresh company data to get updated baseline_date
-      const { data: updatedCompany, error: refreshError } = await supabaseAdmin
-        .from('ali_companies')
-        .select('id, name, baseline_date')
-        .eq('id', companyId)
-        .single();
-      
-      if (refreshError || !updatedCompany) {
-        console.error('Error refreshing company data:', refreshError);
-        return res.status(500).json({ 
-          error: 'Failed to refresh company data',
-          details: refreshError?.message
-        });
-      }
-      
-      company.baseline_date = updatedCompany.baseline_date;
-    }
-
-    // If division specified, verify it exists and belongs to company
     if (divisionId) {
       const { data: division } = await supabaseAdmin
         .from('ali_divisions')
-        .select('id, company_id, name, status')
+        .select('id, company_id, status')
         .eq('id', divisionId)
-        .single();
-
-      if (!division) {
-        return res.status(404).json({ error: 'Division not found' });
-      }
-
-      if (division.company_id !== companyId) {
-        return res.status(400).json({ error: 'Division does not belong to this company' });
-      }
-
-      if (division.status !== 'active') {
-        return res.status(400).json({ error: 'Division is not active' });
+        .maybeSingle();
+      if (!division || division.company_id !== companyId || division.status !== 'active') {
+        return res.status(400).json({ ok: false, error: 'That division is not available.' });
       }
     }
 
-    // Get or create survey snapshot
-    let snapshot;
-    try {
-      snapshot = await getOrCreateSnapshot(companyId, finalSurveyIndex, instrumentVersion);
-    } catch (error) {
-      console.error('Error getting/creating snapshot:', error);
-      return res.status(500).json({ 
-        error: 'Failed to get or create survey snapshot',
-        details: error.message
+    // One open round at a time.
+    const existing = await listV3Deployments(companyId);
+    const open = existing.find((d) => roundStatus(d) === 'open');
+    if (open) {
+      return res.status(409).json({
+        ok: false,
+        error: `Round ${open.round_number} is still open. Close it before starting a new one.`,
       });
     }
 
-    if (!snapshot) {
-      return res.status(500).json({ error: 'Failed to create survey snapshot' });
-    }
+    const roundNumber = await nextRoundNumber(companyId);
+    const surveyIndex = `S${roundNumber}`;
 
-    // Calculate available_at from baseline_date and survey_index
-    let availableAt = opensAt ? new Date(opensAt) : null;
-    if (!availableAt) {
-      if (finalSurveyIndex === 'S1') {
-        // First survey should always be immediately available.
-        availableAt = new Date();
-      } else if (company.baseline_date) {
-        availableAt = calculateAvailableAt(company.baseline_date, finalSurveyIndex);
-      } else {
-        // Fallback: use current date for S1 if baseline_date is still not set
-        availableAt = new Date();
-        availableAt.setUTCHours(0, 0, 0, 0);
+    // Quarterly cadence after the first round (unchanged product rule).
+    if (roundNumber > 1 && company.baseline_date) {
+      const availableAt = calculateAvailableAt(company.baseline_date, surveyIndex);
+      if (new Date() < availableAt) {
+        const day = availableAt.toISOString().split('T')[0];
+        return res.status(400).json({ ok: false, error: `Round ${roundNumber} can start on ${day}.` });
       }
     }
 
-    // Generate unique deployment token
-    let deploymentToken;
-    let isUnique = false;
-    let attempts = 0;
-    const maxAttempts = 10;
-
-    while (!isUnique && attempts < maxAttempts) {
-      deploymentToken = generateDeploymentToken();
-      const { data: existing } = await supabaseAdmin
-        .from('ali_survey_deployments')
-        .select('id')
-        .eq('deployment_token', deploymentToken)
-        .single();
-
-      if (!existing) {
-        isUnique = true;
-      }
-      attempts++;
+    // Build the round from the bank. Fail loudly if it cannot be built.
+    let built;
+    try {
+      built = buildV3Round(companyId, roundNumber);
+    } catch (err) {
+      console.error('[ali/deploy-survey] v3 bank cannot build a survey:', err?.message || err);
+      return res.status(500).json({
+        ok: false,
+        error: 'The survey could not be built from the question bank. Nothing was started. Please contact support.',
+      });
     }
 
-    if (!isUnique) {
-      return res.status(500).json({ error: 'Failed to generate unique deployment token' });
+    const { data: round, error: roundError } = await supabaseAdmin
+      .from('ali_v3_rounds')
+      .insert({
+        company_id: companyId,
+        round_number: roundNumber,
+        instrument_version: V3_INSTRUMENT_VERSION,
+        seed: built.seed,
+        items: built.items,
+      })
+      .select('id, round_number')
+      .single();
+    if (roundError || !round) {
+      console.error('[ali/deploy-survey] round insert failed:', roundError?.message);
+      const conflict = roundError?.code === '23505';
+      return res.status(conflict ? 409 : 500).json({
+        ok: false,
+        error: conflict ? 'Another round was just started. Refresh the page.' : 'Could not start the round. Please try again.',
+      });
     }
 
-    // Create deployment
-    // Note: survey_id is deprecated but may still be NOT NULL in some databases
-    // We'll try to insert without it first, and if that fails, we'll need to handle it
-    const deploymentData = {
-      snapshot_id: snapshot.id,
-      company_id: companyId,
-      division_id: divisionId || null,
-      survey_index: finalSurveyIndex,
-      deployment_token: deploymentToken,
-      status: availableAt && availableAt > new Date() ? 'pending' : 'active',
-      opens_at: opensAt ? new Date(opensAt) : null,
-      available_at: availableAt,
-      closes_at: closesAt ? new Date(closesAt) : null,
-      minimum_responses: minimumResponses
-    };
-    
-    // Only include survey_id if the column allows null (for backward compatibility)
-    // If the migration hasn't been run, we'll need a workaround
-    // For now, try without survey_id - if it fails, we'll catch and provide better error
+    if (roundNumber === 1) {
+      const today = new Date().toISOString().split('T')[0];
+      await supabaseAdmin.from('ali_companies').update({ baseline_date: today }).eq('id', companyId);
+    }
+
+    const now = new Date();
+    const teamToken = newToken();
+    const leaderToken = newToken();
     const { data: deployment, error: deploymentError } = await supabaseAdmin
       .from('ali_survey_deployments')
-      .insert(deploymentData)
-      .select()
+      .insert({
+        company_id: companyId,
+        division_id: divisionId || null,
+        survey_index: surveyIndex,
+        round_number: roundNumber,
+        instrument_version: V3_INSTRUMENT_VERSION,
+        v3_round_id: round.id,
+        snapshot_id: null,
+        deployment_token: teamToken,
+        leader_token: leaderToken,
+        status: 'active',
+        opens_at: now.toISOString(),
+        available_at: now.toISOString(),
+        closes_at: close.date.toISOString(),
+        minimum_responses: 5,
+      })
+      .select('id, round_number, survey_index, status, opens_at, closes_at')
       .single();
 
-    if (deploymentError) {
-      console.error('Error creating deployment:', deploymentError);
-      return res.status(500).json({ 
-        error: 'Failed to create survey deployment',
-        details: deploymentError.message,
-        code: deploymentError.code,
-        hint: deploymentError.hint
-      });
+    if (deploymentError || !deployment) {
+      console.error('[ali/deploy-survey] deployment insert failed:', deploymentError?.message);
+      await supabaseAdmin.from('ali_v3_rounds').delete().eq('id', round.id);
+      return res.status(500).json({ ok: false, error: 'Could not start the round. Please try again.' });
     }
 
-    // Build survey URL
     const siteUrl = process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com';
-    const surveyUrl = `${siteUrl}/ali/survey/${deploymentToken}`;
-
     return res.status(201).json({
+      ok: true,
       success: true,
       deployment: {
         id: deployment.id,
-        snapshotId: deployment.snapshot_id,
+        roundNumber: deployment.round_number,
         surveyIndex: deployment.survey_index,
-        companyId: deployment.company_id,
-        divisionId: deployment.division_id,
+        instrumentVersion: V3_INSTRUMENT_VERSION,
         status: deployment.status,
         opensAt: deployment.opens_at,
-        availableAt: deployment.available_at,
         closesAt: deployment.closes_at,
-        minimumResponses: deployment.minimum_responses,
-        surveyUrl
+        questionCount: built.items.length,
+        surveyUrl: `${siteUrl}/ali/survey/${teamToken}`,
+        leaderUrl: `${siteUrl}/ali/survey/${leaderToken}`,
       },
-      snapshot: {
-        id: snapshot.id,
-        surveyIndex: snapshot.survey_index,
-        questionCount: snapshot.total_question_count
-      },
-      message: 'Survey deployment created successfully'
     });
-
   } catch (err) {
-    console.error('Server error:', err);
-    return res.status(500).json({ error: 'Server error. Please try again.' });
+    console.error('[ali/deploy-survey] error:', err);
+    return res.status(500).json({ ok: false, error: 'Server error. Please try again.' });
   }
 }

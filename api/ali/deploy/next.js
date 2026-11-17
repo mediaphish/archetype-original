@@ -7,7 +7,8 @@
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
-import { calculateAvailableAt, getNextSurveyIndex } from '../../../lib/ali-cadence.js';
+import { calculateAvailableAt } from '../../../lib/ali-cadence.js';
+import { nextRoundNumber, listV3Deployments, roundStatus } from '../../../lib/ali-v3-rounds.js';
 import { requireAliSession } from '../../../lib/ali-session.js';
 
 export default async function handler(req, res) {
@@ -40,20 +41,16 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: 'Company not found' });
     }
 
-    // Get existing survey snapshots to determine next survey
-    const { data: existingSurveys, error: surveysError } = await supabaseAdmin
-      .from('ali_survey_snapshots')
-      .select('survey_index')
-      .eq('client_id', companyId)
-      .eq('instrument_version', 'v1.0');
-
-    if (surveysError) {
-      console.error('Error fetching existing surveys:', surveysError);
+    // Round numbering counts every earlier round for the company, whatever instrument it used.
+    let nextSurveyIndex;
+    let openRound = null;
+    try {
+      nextSurveyIndex = `S${await nextRoundNumber(companyId)}`;
+      openRound = (await listV3Deployments(companyId)).find((d) => roundStatus(d) === 'open') || null;
+    } catch (e) {
+      console.error('Error counting earlier rounds:', e?.message || e);
       return res.status(500).json({ error: 'Failed to fetch survey history' });
     }
-
-    // Determine next survey index
-    const nextSurveyIndex = getNextSurveyIndex(existingSurveys || []);
 
     // Calculate available date from baseline_date
     let availableOn = null;
@@ -87,6 +84,11 @@ export default async function handler(req, res) {
       }
     }
 
+    if (openRound) {
+      canDeploy = false;
+      reason = `Round ${openRound.round_number} is still open. Close it before starting a new one.`;
+    }
+
     // Extract quarter and year from available date
     let quarter = null;
     let year = null;
@@ -109,7 +111,8 @@ export default async function handler(req, res) {
       available_on: availableOn,
       baseline_date: company.baseline_date,
       can_deploy: canDeploy,
-      reason
+      reason,
+      open_round: openRound ? openRound.round_number : null
     });
 
   } catch (err) {

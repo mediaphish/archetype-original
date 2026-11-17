@@ -22,7 +22,7 @@ import {
   calculatePerceptionGap,
   classifyGapSeverity
 } from '../../lib/ali-scoring.js';
-import { CONDITION_KEYS, CONDITION_LABELS } from '../../lib/ali-conditions.js';
+import { LEGACY_CONDITION_KEYS as CONDITION_KEYS, LEGACY_CONDITION_LABELS as CONDITION_LABELS } from '../../lib/ali-conditions.js';
 
 function transformResponsesForScoring(responseData, questionBank, role) {
   const transformed = [];
