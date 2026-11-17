@@ -103,7 +103,7 @@ export default async function handler(req, res) {
             <p style="margin:0;">All team assessments are completely anonymous. You won't see individual responses, and neither will I. We only share aggregate data when there are at least 5 responses to protect individual privacy. Your team's honest feedback is what makes this tool valuable.</p>
           </div>
           
-          <p>I'm excited about the possibility of working with <strong>${escapeHtml(companyName)}</strong> to better understand and strengthen your leadership culture. Leadership that lasts doesn't happen by accident—it's built intentionally, one decision at a time.</p>
+          <p>I'm excited about the possibility of working with <strong>${escapeHtml(companyName)}</strong> to better understand and strengthen your leadership culture. Leadership that lasts doesn't happen by accident. It's built intentionally, one decision at a time.</p>
           
           <p>If you have any questions in the meantime, don't hesitate to reach out.</p>
           
