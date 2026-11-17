@@ -22,6 +22,7 @@ import { calculateAvailableAt } from '../../lib/ali-cadence.js';
 import { requireAliSession } from '../../lib/ali-session.js';
 import { V3_INSTRUMENT_VERSION } from '../../lib/ali-v3-bank.js';
 import { buildV3Round } from '../../lib/ali-v3-survey.js';
+import { checkRoundAllowed, blockedMessage } from '../../lib/ali-billing.js';
 import {
   DEFAULT_ROUND_DAYS,
   MAX_ROUND_DAYS,
@@ -83,6 +84,13 @@ export default async function handler(req, res) {
       .single();
     if (companyError || !company) {
       return res.status(404).json({ ok: false, error: 'Company not found' });
+    }
+
+    // Billing (2026-11-17): a new round needs a pilot year or a plan. Results
+    // stay viewable whatever this says. See lib/ali-billing.js mayStartRound.
+    const gate = await checkRoundAllowed(companyId);
+    if (!gate.allowed) {
+      return res.status(402).json({ ok: false, error: blockedMessage(gate.reason), billing: true, billingUrl: '/ali/billing' });
     }
 
     const close = resolveClosesAt(closesAt);
