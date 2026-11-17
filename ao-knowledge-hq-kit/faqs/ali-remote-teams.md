@@ -10,6 +10,6 @@ status: published
 
 Yes, and remote environments often make it more necessary, not less.
 
-Drift appears faster when teams aren't in the same room. Silence increases sooner. Tone becomes harder to read. Clarity becomes more critical. Alignment fractures more easily. Communication distortion becomes more visible, and more costly.
+Drift appears faster when teams aren't in the same room. Silence increases sooner. Voice gets harder to hear. Clarity becomes more critical. Alignment fractures more easily. Support is easier to miss when you can't see who's carrying the load.
 
 ALI surfaces those conditions before they escalate into something harder to fix.

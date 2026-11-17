@@ -8,7 +8,7 @@ featured: false
 status: published
 ---
 
-ALI gives leaders visibility into what they're actually creating. Their own patterns. How their behavior impacts conditions. How stability or drift is affecting execution. How their tone is shaping the environment people work inside every day.
+Accountability is one of the seven conditions ALI measures, and it starts with the leader. ALI shows leaders whether standards hold for everyone, whether problems get addressed early, and whether the team sees it the same way the leader does. It also names patterns, like care that avoids hard conversations, or standards held through fear.
 
 Leaders rarely drift intentionally. What ALI does is surface that drift early enough to correct it before it becomes a cultural problem.
 

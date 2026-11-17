@@ -72,7 +72,7 @@ export default async function handler(req, res) {
       ? classification.conditions
           .map((c) => String(c).toLowerCase().trim())
           .filter((c) =>
-            ['clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'drift'].includes(c)
+            ['clarity', 'consistency', 'accountability', 'voice', 'growth', 'support', 'alignment'].includes(c)
           )
       : [];
     const scoreboardLeadership = tone === 'dysfunctional' ? Boolean(classification?.scoreboard_leadership) : false;

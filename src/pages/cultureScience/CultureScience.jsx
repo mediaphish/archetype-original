@@ -239,8 +239,9 @@ export default function CultureScience() {
                 </p>
                 <p>
                   ALI, the Archetype Leadership Index, is the first tool built from this foundation. It exists because
-                  of Culture Science, not above it. Seven conditions: Clarity, Communication, Consistency, Trust,
-                  Alignment, Stability, and Drift. Four times a year. The data your internal rooms will never produce on
+                  of Culture Science, not above it. Seven conditions a leader creates: Clarity, Consistency,
+                  Accountability, Voice, Growth, Support, and Alignment. And what they produce: Trust, Commitment,
+                  and Drift. Four times a year. The data your internal rooms will never produce on
                   their own.
                 </p>
               </div>
