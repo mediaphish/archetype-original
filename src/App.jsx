@@ -42,10 +42,6 @@ import ALIDashboardSaaS from "./pages/ali/Dashboard";
 import ALIDeploy from "./pages/ali/Deploy";
 import ALISettings from "./pages/ali/Settings";
 import ALIBilling from "./pages/ali/Billing";
-import ReportsHub from "./pages/ali/ReportsHub";
-import ReportsZones from "./pages/ali/ReportsZones";
-import ReportsMirror from "./pages/ali/ReportsMirror";
-import ReportsProfile from "./pages/ali/ReportsProfile";
 import ALISurvey from "./pages/ali/Survey";
 import SuperAdminOverview from "./pages/ali/SuperAdminOverview";
 import SuperAdminIntelligence from "./pages/ali/SuperAdminIntelligence";
@@ -163,10 +159,8 @@ export default function App() {
       if (path === '/ali/deploy') return 'ali-deploy';
       if (path === '/ali/settings') return 'ali-settings';
       if (path === '/ali/billing') return 'ali-billing';
-      if (path === '/ali/reports') return 'ali-reports';
-      if (path === '/ali/reports/zones') return 'ali-reports-zones';
-      if (path === '/ali/reports/mirror') return 'ali-reports-mirror';
-      if (path === '/ali/reports/profile') return 'ali-reports-profile';
+      // Old report pages redirect to the results screen (see handleRoute).
+      if (path === '/ali/reports' || path.startsWith('/ali/reports/')) return 'ali-dashboard';
       if (path.startsWith('/ali/survey/')) return 'ali-survey';
       if (path.startsWith('/ali/super-admin/')) {
         if (path === '/ali/super-admin/overview') return 'ali-super-admin-overview';
@@ -306,7 +300,13 @@ export default function App() {
         window.history.replaceState({}, '', '/ao/scout');
         path = '/ao/scout';
       }
-      
+
+      // Old ALI report pages (Reports Hub, Zones, Mirror, Profile) -> the results screen
+      if (path === '/ali/reports' || path.startsWith('/ali/reports/')) {
+        window.history.replaceState({}, '', `/ali/dashboard${window.location.search || ''}`);
+        path = '/ali/dashboard';
+      }
+
       // Standalone ALI SaaS routes
       if (path === '/ali') {
         setCurrentPage('ali-landing');
@@ -341,18 +341,6 @@ export default function App() {
         } else if (path === '/ali/billing') {
           if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
           setCurrentPage('ali-billing');
-        } else if (path === '/ali/reports') {
-          if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
-          setCurrentPage('ali-reports');
-        } else if (path === '/ali/reports/zones') {
-          if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
-          setCurrentPage('ali-reports-zones');
-        } else if (path === '/ali/reports/mirror') {
-          if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
-          setCurrentPage('ali-reports-mirror');
-        } else if (path === '/ali/reports/profile') {
-          if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
-          setCurrentPage('ali-reports-profile');
         } else if (path.startsWith('/ali/super-admin/')) {
           if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
           if (path === '/ali/super-admin/overview') {
@@ -1061,22 +1049,6 @@ export default function App() {
 
   if (currentPage === 'ali-billing') {
     return (<><SEO pageKey="ali-app" /><ALIBilling /></>);
-  }
-
-  if (currentPage === 'ali-reports') {
-    return (<><SEO pageKey="ali-app" /><ReportsHub /></>);
-  }
-
-  if (currentPage === 'ali-reports-zones') {
-    return (<><SEO pageKey="ali-app" /><ReportsZones /></>);
-  }
-
-  if (currentPage === 'ali-reports-mirror') {
-    return (<><SEO pageKey="ali-app" /><ReportsMirror /></>);
-  }
-
-  if (currentPage === 'ali-reports-profile') {
-    return (<><SEO pageKey="ali-app" /><ReportsProfile /></>);
   }
 
   if (currentPage === 'ali-survey') {
