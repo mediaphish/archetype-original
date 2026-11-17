@@ -1028,79 +1028,79 @@ export default function App() {
 
   // Render standalone ALI SaaS pages (no Header/Footer/Archy)
   if (currentPage === 'ali-landing') {
-    return <ALILanding />;
+    return (<><SEO pageKey="ali-app" /><ALILanding /></>);
   }
 
   if (currentPage === 'ali-login') {
-    return <ALILogin />;
+    return (<><SEO pageKey="ali-app" /><ALILogin /></>);
   }
 
   if (currentPage === 'ali-signup') {
-    return <ALISignup />;
+    return (<><SEO pageKey="ali-app" /><ALISignup /></>);
   }
 
   if (currentPage === 'ali-verify-email') {
-    return <ALIVerifyEmail />;
+    return (<><SEO pageKey="ali-app" /><ALIVerifyEmail /></>);
   }
 
   if (currentPage === 'ali-setup-account') {
-    return <ALISetupAccount />;
+    return (<><SEO pageKey="ali-app" /><ALISetupAccount /></>);
   }
 
   if (currentPage === 'ali-dashboard') {
-    return <ALIDashboardSaaS />;
+    return (<><SEO pageKey="ali-app" /><ALIDashboardSaaS /></>);
   }
 
   if (currentPage === 'ali-deploy') {
-    return <ALIDeploy />;
+    return (<><SEO pageKey="ali-app" /><ALIDeploy /></>);
   }
 
   if (currentPage === 'ali-settings') {
-    return <ALISettings />;
+    return (<><SEO pageKey="ali-app" /><ALISettings /></>);
   }
 
   if (currentPage === 'ali-billing') {
-    return <ALIBilling />;
+    return (<><SEO pageKey="ali-app" /><ALIBilling /></>);
   }
 
   if (currentPage === 'ali-reports') {
-    return <ReportsHub />;
+    return (<><SEO pageKey="ali-app" /><ReportsHub /></>);
   }
 
   if (currentPage === 'ali-reports-zones') {
-    return <ReportsZones />;
+    return (<><SEO pageKey="ali-app" /><ReportsZones /></>);
   }
 
   if (currentPage === 'ali-reports-mirror') {
-    return <ReportsMirror />;
+    return (<><SEO pageKey="ali-app" /><ReportsMirror /></>);
   }
 
   if (currentPage === 'ali-reports-profile') {
-    return <ReportsProfile />;
+    return (<><SEO pageKey="ali-app" /><ReportsProfile /></>);
   }
 
   if (currentPage === 'ali-survey') {
-    return <ALISurvey />;
+    return (<><SEO pageKey="ali-app" /><ALISurvey /></>);
   }
 
   if (currentPage === 'ali-super-admin-overview') {
-    return <SuperAdminOverview />;
+    return (<><SEO pageKey="ali-app" /><SuperAdminOverview /></>);
   }
 
   if (currentPage === 'ali-super-admin-intelligence') {
-    return <SuperAdminIntelligence />;
+    return (<><SEO pageKey="ali-app" /><SuperAdminIntelligence /></>);
   }
 
   if (currentPage === 'ali-super-admin-tenants') {
-    return <SuperAdminTenants />;
+    return (<><SEO pageKey="ali-app" /><SuperAdminTenants /></>);
   }
 
   if (currentPage === 'ali-super-admin-deletions') {
-    return <SuperAdminDeletions />;
+    return (<><SEO pageKey="ali-app" /><SuperAdminDeletions /></>);
   }
 
   if (currentPage === 'ali-super-admin-audit-log') {
-    return <SuperAdminAuditLog />;
+    return (<><SEO pageKey="ali-app" /><SuperAdminAuditLog /></>);
   }
 
   // Loading fallback for lazy-loaded Operators pages
