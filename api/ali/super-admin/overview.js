@@ -20,7 +20,7 @@ import {
 import {
   calculateLeadershipMirror
 } from '../../../lib/ali-dashboard-calculations.js';
-import { CONDITION_KEYS, CONDITION_LABELS } from '../../../lib/ali-conditions.js';
+import { LEGACY_CONDITION_KEYS as CONDITION_KEYS, LEGACY_CONDITION_LABELS as CONDITION_LABELS } from '../../../lib/ali-conditions.js';
 import { requireSuperAdmin } from '../../../lib/ali-admin-auth.js';
 
 function emptyPatternBuckets() {

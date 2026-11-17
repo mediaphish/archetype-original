@@ -1,6 +1,6 @@
 import React from "react";
 import SEO from "../../components/SEO";
-import { CONDITION_CARDS } from "../../../lib/ali-conditions.js";
+import { LEGACY_CONDITION_CARDS as CONDITION_CARDS } from "../../../lib/ali-conditions.js";
 
 function go(path) {
   return (e) => {

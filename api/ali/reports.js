@@ -13,8 +13,9 @@ import {
   calculateALIScore,
   calculateRollingScore
 } from '../../lib/ali-scoring.js';
-import { CONDITION_KEYS } from '../../lib/ali-conditions.js';
+import { LEGACY_CONDITION_KEYS as CONDITION_KEYS } from '../../lib/ali-conditions.js';
 import { requireAliSession } from '../../lib/ali-session.js';
+import { teamResultsAllowed } from '../../lib/ali-v3-privacy.js';
 
 function emptyPatternTrends() {
   return CONDITION_KEYS.reduce((acc, k) => {
@@ -146,7 +147,7 @@ export default async function handler(req, res) {
     const { data: questionBankData, error: qbError } = await supabaseAdmin
       .from('ali_question_bank')
       .select('stable_id, pattern, is_negative, is_anchor')
-      .eq('status', 'active');
+      .in('status', ['active', 'deprecated']);
 
     if (qbError || !questionBankData) {
       return res.status(500).json({ error: 'Failed to load question bank' });
@@ -165,9 +166,8 @@ export default async function handler(req, res) {
     const deploymentIds = deployments.map(d => d.id);
     const { data: allResponses, error: responsesError } = await supabaseAdmin
       .from('ali_survey_responses')
-      .select('id, deployment_id, responses, completed_at')
-      .in('deployment_id', deploymentIds)
-      .order('completed_at', { ascending: true });
+      .select('id, deployment_id, responses, respondent_role')
+      .in('deployment_id', deploymentIds);
 
     if (responsesError) {
       console.error('Error fetching responses:', responsesError);
@@ -191,8 +191,10 @@ export default async function handler(req, res) {
 
     for (const deployment of deployments) {
       const deploymentResponses = responsesByDeployment[deployment.id] || [];
-      
-      if (deploymentResponses.length === 0) continue;
+
+      // Privacy minimum: skip rounds with fewer than MIN_TEAM_RESPONSES team answers.
+      const teamCount = deploymentResponses.filter(r => r.respondent_role !== 'leader').length;
+      if (!teamResultsAllowed(teamCount)) continue;
 
       const scores = calculateDeploymentScores(deploymentResponses, questionBank, historicalScores);
       

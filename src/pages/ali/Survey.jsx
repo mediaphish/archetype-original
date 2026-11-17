@@ -1,296 +1,372 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+
+// ALI survey page (instrument v3).
+// The link decides the role (team link or leader link); nobody picks their own role.
+// One question at a time, sized for a 375px phone. Team members are never told how
+// many others have answered.
+
+const FALLBACK_LABELS = [
+  { value: 1, label: 'Strongly disagree' },
+  { value: 2, label: 'Disagree' },
+  { value: 3, label: 'Neither' },
+  { value: 4, label: 'Agree' },
+  { value: 5, label: 'Strongly agree' },
+];
+
+function storageGet(key) {
+  try {
+    return window.localStorage.getItem(key);
+  } catch (_) {
+    return null;
+  }
+}
+function storageSet(key, value) {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch (_) {
+    /* private mode: fine, the server still guards duplicates per id */
+  }
+}
+function newSubmissionId() {
+  try {
+    if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+  } catch (_) {
+    /* fall through */
+  }
+  const bytes = new Uint8Array(16);
+  (window.crypto || window.msCrypto).getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+function formatDay(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleDateString(undefined, { month: 'long', day: 'numeric' });
+  } catch (_) {
+    return '';
+  }
+}
+
+const Shell = ({ children }) => (
+  <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="max-w-xl mx-auto">{children}</div>
+  </div>
+);
+
+const Card = ({ children }) => <div className="bg-white rounded-lg shadow p-5 sm:p-8">{children}</div>;
 
 const ALISurvey = () => {
-  const [questions, setQuestions] = useState([]);
-  const [responses, setResponses] = useState({});
-  const [respondentRole, setRespondentRole] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const token = useMemo(() => window.location.pathname.split('/').filter(Boolean).pop() || '', []);
+  const subKey = `ali_v3_sub_${token}`;
+  const doneKey = `ali_v3_done_${token}`;
+
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
-  const [submitMessage, setSubmitMessage] = useState('');
-
-  // Get token from URL
-  const token = window.location.pathname.split('/').pop();
+  const [survey, setSurvey] = useState(null);
+  const [answers, setAnswers] = useState({});
+  const [step, setStep] = useState(-1); // -1 intro, 0..n-1 questions, n review
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [done, setDone] = useState(false);
+  const [doneMessage, setDoneMessage] = useState('');
 
   useEffect(() => {
-    async function loadSurvey() {
-      setLoading(true);
-      setLoadError('');
-
+    let alive = true;
+    (async () => {
       if (!token) {
-        setLoadError('Survey link is missing a token.');
+        setLoadError('This survey link is incomplete. Please ask for a new link.');
         setLoading(false);
         return;
       }
-
       try {
         const r = await fetch(`/api/ali/survey/${encodeURIComponent(token)}`);
         const j = await r.json().catch(() => ({}));
-
+        if (!alive) return;
         if (!r.ok) {
-          setLoadError(j?.error || 'Failed to load survey.');
-          setLoading(false);
+          setLoadError(j?.error || 'This survey could not be loaded. Please try again later.');
           return;
         }
-
-        const normalized = (j.questions || []).map((q) => ({
-          stable_id: q.id,
-          question_text: q.question_text,
-          pattern: q.pattern,
-          is_negative: !!q.is_negative,
-          is_anchor: !!q.is_anchor,
-          order: q.order
-        }));
-
-        setQuestions(normalized.sort((a, b) => (a.order ?? 0) - (b.order ?? 0)));
-      } catch (e) {
-        setLoadError(e?.message || 'Failed to load survey.');
+        setSurvey(j);
+        if (j.role === 'leader' && j.previous_answers && typeof j.previous_answers === 'object') {
+          setAnswers(j.previous_answers);
+        }
+        if (j.role === 'team_member' && storageGet(doneKey) === '1') setDone(true);
+      } catch (_) {
+        if (alive) setLoadError('This survey could not be loaded. Please check your connection and try again.');
       } finally {
-        setLoading(false);
+        if (alive) setLoading(false);
       }
-    }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [token, doneKey]);
 
-    loadSurvey();
-  }, []);
+  const questions = survey?.questions || [];
+  const labels = survey?.answer_labels?.length === 5 ? survey.answer_labels : FALLBACK_LABELS;
+  const isLeader = survey?.role === 'leader';
+  const answeredCount = questions.filter((q) => answers[q.id] !== undefined).length;
+  const unanswered = questions.filter((q) => answers[q.id] === undefined);
 
-  const handleResponseChange = (stableId, value) => {
-    setResponses(prev => ({
-      ...prev,
-      [stableId]: parseInt(value)
-    }));
+  const choose = (qid, value) => {
+    setError('');
+    setAnswers((prev) => ({ ...prev, [qid]: value }));
+    setTimeout(() => setStep((s) => Math.min(s + 1, questions.length)), 180);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!respondentRole) {
-      alert('Please select your role');
+  const submit = async () => {
+    setError('');
+    if (unanswered.length > 0) {
+      setError(`Please answer every question. ${unanswered.length === 1 ? 'One question is' : `${unanswered.length} questions are`} still open.`);
       return;
     }
-    
-    if (Object.keys(responses).length !== questions.length) {
-      alert('Please answer all questions');
-      return;
+    let submissionId = storageGet(subKey);
+    if (!submissionId) {
+      submissionId = newSubmissionId();
+      storageSet(subKey, submissionId);
     }
-
     setSubmitting(true);
-    setSubmitMessage('');
-
-    // Simple device type hint
-    const deviceType =
-      window.innerWidth < 640 ? 'mobile' :
-      window.innerWidth < 1024 ? 'tablet' :
-      'desktop';
-
     try {
       const r = await fetch('/api/ali/submit-response', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          deploymentToken: token,
-          respondentRole,
-          responses,
-          deviceType
-        })
+        body: JSON.stringify({ token, submissionId, answers }),
       });
-
       const j = await r.json().catch(() => ({}));
-
-      if (!r.ok) {
-        setSubmitting(false);
-        setSubmitMessage(j?.error || 'Failed to submit response.');
+      if (r.ok || j?.duplicate) {
+        if (!isLeader) storageSet(doneKey, '1');
+        setDoneMessage(j?.duplicate ? 'Your answers were already sent. Thank you.' : j?.message || 'Thank you. Your answers were saved.');
+        setDone(true);
         return;
       }
-
+      if (j?.closed) {
+        setSurvey((s) => ({ ...s, status: 'closed' }));
+        return;
+      }
+      setError(j?.error || 'Your answers could not be sent. Please try again.');
+    } catch (_) {
+      setError('Your answers could not be sent. Please check your connection and try again.');
+    } finally {
       setSubmitting(false);
-      setSubmitMessage(j?.message || 'Response submitted successfully.');
-      setSubmitted(true);
-    } catch (err) {
-      setSubmitting(false);
-      setSubmitMessage(err?.message || 'Failed to submit response.');
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading survey…</p>
-        </div>
-      </div>
+      <Shell>
+        <Card>
+          <p className="text-gray-600 text-center">Loading the survey...</p>
+        </Card>
+      </Shell>
     );
   }
 
   if (loadError) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-        <div className="max-w-md w-full text-center">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Survey Unavailable</h1>
-            <p className="text-gray-600 mb-4">{loadError}</p>
-            <p className="text-sm text-gray-500">If you believe this is a mistake, request a new link.</p>
-          </div>
-        </div>
-      </div>
+      <Shell>
+        <Card>
+          <h1 className="text-xl font-bold text-gray-900 mb-2">This survey is not available</h1>
+          <p className="text-gray-600">{loadError}</p>
+        </Card>
+      </Shell>
     );
   }
 
-  if (submitted) {
+  const company = survey?.company_name || 'your company';
+
+  if (survey?.status === 'closed') {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-        <div className="max-w-md w-full text-center">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h1>
-            <p className="text-gray-600 mb-6">
-              {submitMessage || 'Your response has been submitted successfully. Your feedback helps improve leadership conditions.'}
-            </p>
-            <p className="text-sm text-gray-500">
-              Your responses are anonymous and will be aggregated with other team members' responses.
-            </p>
-          </div>
-        </div>
-      </div>
+      <Shell>
+        <Card>
+          <h1 className="text-xl font-bold text-gray-900 mb-2">This survey has closed</h1>
+          <p className="text-gray-600">
+            Thank you for stopping by. This round of the {company} survey is no longer taking answers.
+            If you think you should still be able to answer, please ask the person who sent you the link.
+          </p>
+        </Card>
+      </Shell>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="text-3xl font-bold text-gray-900 mb-2">ALI Survey</div>
-          <p className="text-gray-600">Your responses are anonymous and confidential</p>
-        </div>
+  if (survey?.status === 'not_open') {
+    return (
+      <Shell>
+        <Card>
+          <h1 className="text-xl font-bold text-gray-900 mb-2">This survey is not open yet</h1>
+          <p className="text-gray-600">Please come back when the person who sent you the link says it is open.</p>
+        </Card>
+      </Shell>
+    );
+  }
 
-        {/* Survey Form */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-8">
-          {/* Role Question */}
-          <div className="mb-8 pb-8 border-b border-gray-200">
-            <label className="block text-lg font-medium text-gray-900 mb-4">
-              What best describes your role?
-            </label>
-            <div className="flex gap-4">
-              <label className={`flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                respondentRole === 'leader'
-                  ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-gray-300 hover:border-gray-400'
-              }`}>
-                <input
-                  type="radio"
-                  name="respondentRole"
-                  value="leader"
-                  checked={respondentRole === 'leader'}
-                  onChange={(e) => setRespondentRole(e.target.value)}
-                  className="sr-only"
-                />
-                <div className="text-center">
-                  <div className="font-semibold mb-1">I am a leader or manager</div>
-                </div>
-              </label>
-              <label className={`flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                respondentRole === 'team_member'
-                  ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-gray-300 hover:border-gray-400'
-              }`}>
-                <input
-                  type="radio"
-                  name="respondentRole"
-                  value="team_member"
-                  checked={respondentRole === 'team_member'}
-                  onChange={(e) => setRespondentRole(e.target.value)}
-                  className="sr-only"
-                />
-                <div className="text-center">
-                  <div className="font-semibold mb-1">I am a team member</div>
-                </div>
-              </label>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <p className="text-sm text-gray-600 mb-4">
-              Please answer each question on a scale of 1 (Strongly Disagree) to 5 (Strongly Agree).
+  if (done) {
+    return (
+      <Shell>
+        <Card>
+          <h1 className="text-xl font-bold text-gray-900 mb-2">Thank you</h1>
+          <p className="text-gray-600 mb-4">{doneMessage || 'Your answers were already sent. Thank you.'}</p>
+          {isLeader ? (
+            <p className="text-sm text-gray-500">
+              You can open this link again to change your answers until the round closes
+              {survey?.closes_at ? ` on ${formatDay(survey.closes_at)}` : ''}.
             </p>
-            {submitMessage && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                {submitMessage}
-              </div>
-            )}
-          </div>
+          ) : (
+            <p className="text-sm text-gray-500">
+              Your answers will only ever be shown combined with at least four other people's. Your leader never sees anyone's individual answers.
+            </p>
+          )}
+        </Card>
+      </Shell>
+    );
+  }
 
-          <div className="space-y-8 mb-8">
-            {questions.map((question, index) => (
-              <div key={question.stable_id} className="border-b border-gray-200 pb-6 last:border-0 last:pb-0">
-                <div className="mb-4">
-                  <div className="flex items-start gap-2 mb-2">
-                    <span className="text-sm font-semibold text-gray-500">{index + 1}.</span>
-                    <label className="text-lg font-medium text-gray-900 flex-1">
-                      {question.question_text}
-                    </label>
-                  </div>
-                </div>
+  // Intro
+  if (step === -1) {
+    return (
+      <Shell>
+        <Card>
+          <div className="text-sm font-semibold text-blue-700 mb-2">{company}</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            {isLeader ? 'Your leader survey' : 'Team survey'}
+          </h1>
+          <p className="text-gray-700 mb-3">
+            {questions.length} short statements. It takes about 4 minutes. For each one, choose how much you agree.
+          </p>
+          {isLeader ? (
+            <p className="text-gray-700 mb-3">
+              This link is for you as the leader. Your answers are shown next to your team's combined answers so you can see where you and your team see things the same way and where you don't.
+              {' '}You can change your answers until the round closes{survey?.closes_at ? ` on ${formatDay(survey.closes_at)}` : ''}.
+            </p>
+          ) : (
+            <p className="text-gray-700 mb-3">
+              Your answers are anonymous. They are only ever shown combined with at least four other people's, and your leader never sees anyone's individual answers.
+            </p>
+          )}
+          {survey?.closes_at && !isLeader && (
+            <p className="text-sm text-gray-500 mb-6">Open until {formatDay(survey.closes_at)}.</p>
+          )}
+          <button
+            type="button"
+            onClick={() => setStep(0)}
+            className="w-full min-h-[48px] bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
+          >
+            {isLeader && answeredCount > 0 ? 'Review my answers' : 'Start'}
+          </button>
+        </Card>
+      </Shell>
+    );
+  }
 
-                <div className="flex gap-4 justify-center">
-                  {[1, 2, 3, 4, 5].map((value) => (
-                    <label
-                      key={value}
-                      className={`flex flex-col items-center cursor-pointer p-3 rounded-lg border-2 transition-all ${
-                        responses[question.stable_id] === value
-                          ? 'border-blue-600 bg-blue-600 text-white'
-                          : 'border-gray-300 hover:border-gray-400'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name={question.stable_id}
-                        value={value}
-                        checked={responses[question.stable_id] === value}
-                        onChange={(e) => handleResponseChange(question.stable_id, e.target.value)}
-                        className="sr-only"
-                      />
-                      <span className="text-lg font-semibold">{value}</span>
-                      <span className="text-xs mt-1">
-                        {value === 1 ? 'Strongly Disagree' :
-                         value === 2 ? 'Disagree' :
-                         value === 3 ? 'Neutral' :
-                         value === 4 ? 'Agree' :
-                         'Strongly Agree'}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex items-center justify-between pt-6 border-t border-gray-200">
-            <div className="text-sm text-gray-500">
-              {!respondentRole && <span className="text-gray-600 mr-2">Please select your role</span>}
-              {Object.keys(responses).length} of {questions.length} questions answered
-            </div>
-            <button
-              type="submit"
-              disabled={submitting || !respondentRole || Object.keys(responses).length !== questions.length}
-              className="min-h-[44px] bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            >
-              {submitting ? 'Submitting...' : 'Submit Survey'}
-            </button>
-          </div>
-        </form>
-
-        {/* Footer Note */}
-        <div className="mt-6 text-center text-sm text-gray-500">
-          <p>All responses are anonymous and will be used to improve leadership conditions.</p>
-        </div>
+  const progressPct = Math.round((answeredCount / Math.max(questions.length, 1)) * 100);
+  const Progress = () => (
+    <div className="mb-4">
+      <div className="flex justify-between text-sm text-gray-600 mb-1">
+        <span>{step < questions.length ? `Question ${step + 1} of ${questions.length}` : 'Ready to send'}</span>
+        <span>{answeredCount} answered</span>
+      </div>
+      <div className="h-2 bg-gray-200 rounded-full overflow-hidden" aria-hidden="true">
+        <div className="h-2 bg-blue-600 transition-all" style={{ width: `${progressPct}%` }} />
       </div>
     </div>
+  );
+
+  // Review and send
+  if (step >= questions.length) {
+    return (
+      <Shell>
+        <Progress />
+        <Card>
+          <h2 className="text-xl font-bold text-gray-900 mb-3">
+            {unanswered.length === 0 ? 'All done. Ready to send?' : 'A few questions still need an answer'}
+          </h2>
+          {unanswered.length > 0 && (
+            <ul className="mb-4 space-y-2">
+              {unanswered.map((q) => (
+                <li key={q.id}>
+                  <button
+                    type="button"
+                    onClick={() => setStep(questions.findIndex((x) => x.id === q.id))}
+                    className="text-left text-blue-700 underline min-h-[44px]"
+                  >
+                    {q.text}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          {error && (
+            <div role="alert" className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+              {error}
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={submit}
+            disabled={submitting}
+            className="w-full min-h-[48px] bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50"
+          >
+            {submitting ? 'Sending...' : isLeader ? 'Save my answers' : 'Send my answers'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setStep(questions.length - 1)}
+            className="w-full min-h-[44px] mt-3 text-gray-700"
+          >
+            Back
+          </button>
+        </Card>
+      </Shell>
+    );
+  }
+
+  // One question
+  const q = questions[step];
+  return (
+    <Shell>
+      <Progress />
+      <Card>
+        <h2 id={`q-${q.id}`} className="text-lg sm:text-xl font-semibold text-gray-900 mb-5">
+          {q.text}
+        </h2>
+        <div role="radiogroup" aria-labelledby={`q-${q.id}`} className="flex flex-col gap-2">
+          {labels.map((opt) => {
+            const selected = answers[q.id] === opt.value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                onClick={() => choose(q.id, opt.value)}
+                className={`w-full min-h-[48px] px-4 rounded-lg border-2 text-left font-medium transition-colors ${
+                  selected ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300 text-gray-900 hover:border-gray-400'
+                }`}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+        <div className="flex justify-between mt-5">
+          <button
+            type="button"
+            onClick={() => setStep((s) => s - 1)}
+            className="min-h-[44px] px-3 text-gray-700"
+          >
+            Back
+          </button>
+          {answers[q.id] !== undefined && (
+            <button
+              type="button"
+              onClick={() => setStep((s) => s + 1)}
+              className="min-h-[44px] px-3 text-blue-700 font-semibold"
+            >
+              Next
+            </button>
+          )}
+        </div>
+      </Card>
+    </Shell>
   );
 };
 

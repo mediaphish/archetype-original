@@ -31,8 +31,9 @@ import {
   calculatePairedDeploymentScores,
   buildAnchorTrajectories
 } from '../../lib/ali-paired-scoring.js';
-import { CONDITION_KEYS } from '../../lib/ali-conditions.js';
+import { LEGACY_CONDITION_KEYS as CONDITION_KEYS } from '../../lib/ali-conditions.js';
 import { requireAliSession } from '../../lib/ali-session.js';
+import { teamResultsAllowed, MIN_TEAM_RESPONSES } from '../../lib/ali-v3-privacy.js';
 
 /**
  * Transform response data from database format to scoring function format
@@ -142,48 +143,6 @@ function calculateScoresForResponses(allResponses, questionBank, historicalScore
 }
 
 /**
- * Compute an individual Team Experience Map point for a single respondent response set.
- * We use per-respondent pattern scores (clarity, stability, trust) as coordinates.
- *
- * @returns {{x:number,y:number,zone:string}|null}
- */
-function computeExperiencePointForSingleResponse(transformedResponses, questionBank) {
-  if (!Array.isArray(transformedResponses) || transformedResponses.length === 0) return null;
-
-  const clarity = calculatePatternScore(transformedResponses, 'clarity');
-  const stability = calculatePatternScore(transformedResponses, 'stability');
-  const trust = calculatePatternScore(transformedResponses, 'trust');
-
-  if (clarity === null || stability === null || trust === null) return null;
-
-  // Use the same coordinate system as the Team Experience Map:
-  // X: clarity
-  // Y: (stability + trust) / 2
-  return calculateTeamExperienceMapCoordinates(clarity, stability, trust);
-}
-
-/**
- * Compute a 7-test "system vector" for a single respondent.
- * This is used for the Leadership System Map (radar + heatmap).
- *
- * Notes:
- * - leadership_drift is raw Drift (0–100): higher = more mismatch. Shorter radar spoke = less drift = better.
- *
- * @returns {Object|null} scores keyed by pattern name (0–100) or null if insufficient data
- */
-function computeSystemVectorForSingleResponse(transformedResponses) {
-  if (!Array.isArray(transformedResponses) || transformedResponses.length === 0) return null;
-
-  const patterns = [...CONDITION_KEYS];
-  const scores = {};
-  patterns.forEach((pattern) => {
-    scores[pattern] = calculatePatternScore(transformedResponses, pattern);
-  });
-
-  return scores;
-}
-
-/**
  * Generate lightweight insights from current scores even with small N (pilot).
  * These are deterministic and do not require multi-quarter history.
  */
@@ -264,6 +223,71 @@ function generatePilotInsights({ overallScores, leadershipMirror, responseCounts
   return insights;
 }
 
+/**
+ * Empty dashboard shape. Also used when no round has enough team answers to show
+ * (privacy minimum), so nothing below the minimum ever leaves the server.
+ */
+function emptyDashboard(company, extra = {}) {
+  return {
+    company: {
+        id: company.id,
+        name: company.name,
+        subscription_status: 'active' // Default, should come from billing system
+      },
+      scores: {
+        ali: { current: null, rolling: null, zone: null },
+        anchors: { current: null, rolling: null },
+        patterns: {}
+      },
+      coreScores: {
+        alignment: null,
+        stability: null,
+        clarity: null
+      },
+      experienceMap: {
+        x: null,
+        y: null,
+        zone: null
+      },
+      leadershipProfile: {
+        profile: 'profile_forming',
+        honesty: { score: null, state: null, gap_component_used: false },
+        clarity: { level: null, stddev: null, state: null }
+      },
+      leadershipMirror: {
+        gaps: { ali: null, alignment: null, stability: null, clarity: null },
+        severity: { ali: 'neutral', alignment: 'neutral', stability: 'neutral', clarity: 'neutral' },
+        leaderScores: { ali: null, alignment: null, stability: null, clarity: null },
+        teamScores: { ali: null, alignment: null, stability: null, clarity: null }
+      },
+      drift: {
+        delta_ali: null,
+        drift_index: null
+      },
+      trajectory: {
+        value: null,
+        direction: 'stable',
+        magnitude: 0,
+        method: 'qoq_delta'
+      },
+      responseCounts: {
+        overall: 0,
+        leader: 0,
+        team_member: 0
+      },
+      dataQuality: {
+        meets_minimum_n: false,
+        meets_minimum_n_team: false,
+        meets_minimum_n_org: false,
+        response_count: 0,
+        data_quality_banner: false
+      },
+      surveys: [],
+      historicalTrends: [],
+    ...extra
+  };
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -295,7 +319,7 @@ export default async function handler(req, res) {
     }
 
     // Get all deployments for this company (active or completed - we'll process responses from any)
-    const { data: deployments, error: deploymentsError } = await supabaseAdmin
+    const { data: allDeployments, error: deploymentsError } = await supabaseAdmin
       .from('ali_survey_deployments')
       .select(`
         id,
@@ -305,7 +329,8 @@ export default async function handler(req, res) {
         opens_at,
         created_at,
         closes_at,
-        status
+        status,
+        instrument_version
       `)
       .eq('company_id', companyId)
       .in('status', ['active', 'completed'])
@@ -316,65 +341,11 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Failed to fetch survey deployments' });
     }
 
-    if (!deployments || deployments.length === 0) {
-      // Return empty dashboard structure
-      return res.status(200).json({
-        company: {
-          id: company.id,
-          name: company.name,
-          subscription_status: 'active' // Default, should come from billing system
-        },
-        scores: {
-          ali: { current: null, rolling: null, zone: null },
-          anchors: { current: null, rolling: null },
-          patterns: {}
-        },
-        coreScores: {
-          alignment: null,
-          stability: null,
-          clarity: null
-        },
-        experienceMap: {
-          x: null,
-          y: null,
-          zone: null
-        },
-        leadershipProfile: {
-          profile: 'profile_forming',
-          honesty: { score: null, state: null, gap_component_used: false },
-          clarity: { level: null, stddev: null, state: null }
-        },
-        leadershipMirror: {
-          gaps: { ali: null, alignment: null, stability: null, clarity: null },
-          severity: { ali: 'neutral', alignment: 'neutral', stability: 'neutral', clarity: 'neutral' },
-          leaderScores: { ali: null, alignment: null, stability: null, clarity: null },
-          teamScores: { ali: null, alignment: null, stability: null, clarity: null }
-        },
-        drift: {
-          delta_ali: null,
-          drift_index: null
-        },
-        trajectory: {
-          value: null,
-          direction: 'stable',
-          magnitude: 0,
-          method: 'qoq_delta'
-        },
-        responseCounts: {
-          overall: 0,
-          leader: 0,
-          team_member: 0
-        },
-        dataQuality: {
-          meets_minimum_n: false,
-          meets_minimum_n_team: false,
-          meets_minimum_n_org: false,
-          response_count: 0,
-          data_quality_banner: false
-        },
-        surveys: [],
-        historicalTrends: []
-      });
+    // This page reads the retired v1/v2 instrument only. v3 rounds are read by /api/ali/results.
+    const deployments = (allDeployments || []).filter(d => d.instrument_version !== 'v3.0');
+
+    if (deployments.length === 0) {
+      return res.status(200).json(emptyDashboard(company));
     }
 
     const { data: questionBankData, error: qbError } = await supabaseAdmin
@@ -402,9 +373,8 @@ export default async function handler(req, res) {
     const deploymentIds = deployments.map(d => d.id);
     const { data: allResponses, error: responsesError } = await supabaseAdmin
       .from('ali_survey_responses')
-      .select('id, deployment_id, responses, completed_at, respondent_role')
-      .in('deployment_id', deploymentIds)
-      .order('completed_at', { ascending: true });
+      .select('id, deployment_id, responses, respondent_role')
+      .in('deployment_id', deploymentIds);
 
     if (responsesError) {
       console.error('Error fetching responses:', responsesError);
@@ -430,13 +400,31 @@ export default async function handler(req, res) {
       responsesByDeployment[response.deployment_id]?.push(response);
     });
 
+    // Privacy minimum: a round feeds the dashboard only when at least MIN_TEAM_RESPONSES
+    // team members (leader excluded) answered it. Smaller rounds never feed any number.
+    const teamCountFor = (d) =>
+      (responsesByDeployment[d.id] || []).filter(r => r.respondent_role !== 'leader').length;
+    const shownDeployments = deployments.filter(d => teamResultsAllowed(teamCountFor(d)));
+    const shownResponses = shownDeployments.flatMap(d => responsesByDeployment[d.id] || []);
+
+    if (shownDeployments.length === 0) {
+      return res.status(200).json(emptyDashboard(company, {
+        privacy: {
+          ready: false,
+          teamResponses: Math.max(0, ...deployments.map(teamCountFor)),
+          needed: MIN_TEAM_RESPONSES
+        },
+        experienceMapPoints: [],
+        systemMap: { summary: null, respondents: [] },
+        recentActivity: []
+      }));
+    }
+
     const historicalScores = [];
     const historicalClarityScores = [];
-    const experienceMapPoints = [];
-    const systemMapRespondents = [];
     const pairedDeploymentResults = [];
 
-    for (const deployment of deployments) {
+    for (const deployment of shownDeployments) {
       const deploymentResponses = responsesByDeployment[deployment.id] || [];
       
       if (deploymentResponses.length === 0) continue;
@@ -464,28 +452,8 @@ export default async function handler(req, res) {
         );
 
         transformedForDeployment.push(...transformed);
-        // Individual experience-map point (one per respondent)
-        const point = computeExperiencePointForSingleResponse(transformed, questionBank);
-        if (point) {
-          experienceMapPoints.push({
-            x: point.x,
-            y: point.y,
-            zone: point.zone,
-            role: isLeader ? 'leader' : 'team_member',
-            completed_at: response.completed_at || null
-          });
-        }
+        // Per-person points and vectors are no longer built or sent (privacy).
 
-        // Individual 7-test system vector (one per respondent)
-        const vector = computeSystemVectorForSingleResponse(transformed);
-        if (vector) {
-          systemMapRespondents.push({
-            role: isLeader ? 'leader' : 'team_member',
-            completed_at: response.completed_at || null,
-            scores: vector
-          });
-        }
-        
         if (isLeader) {
           leaderCount++;
           leaderResponses.push(...transformed);
@@ -588,7 +556,7 @@ export default async function handler(req, res) {
         trust: trustGap
       },
       historicalClarityScores: historicalClarityScores.slice(-4), // Last 4 surveys
-      surveyCount: deployments.length
+      surveyCount: shownDeployments.length
     });
 
     // Leadership Mirror - use rolling scores where available, fallback to current (Drift is raw: lower is better)
@@ -658,7 +626,7 @@ export default async function handler(req, res) {
 
     // Trajectory (prefer DriftIndex, fallback to qoq_delta)
     const drift = { ...(overallScores.drift || {}) };
-    const deploymentsWithResponses = deployments.filter(d => (responsesByDeployment[d.id]?.length || 0) > 0);
+    const deploymentsWithResponses = shownDeployments;
     // If we only have one completed cycle with responses, do not show movement.
     if (deploymentsWithResponses.length < 2) {
       drift.delta_ali = null;
@@ -683,7 +651,7 @@ export default async function handler(req, res) {
         };
 
     // Data quality checks
-    const totalResponses = allResponses?.length || 0;
+    const totalResponses = shownResponses.length;
     const meetsMinimumTeam = meetsMinimumN(totalResponses, 'team');
     const meetsMinimumOrg = meetsMinimumN(totalResponses, 'org');
     const dataQualityBanner = totalResponses >= 5 && totalResponses < 10;
@@ -714,7 +682,7 @@ export default async function handler(req, res) {
 
     // Build historical trends
     const historicalTrends = historicalScores.map((score, index) => {
-      const deployment = deployments[index];
+      const deployment = shownDeployments[index];
       const deploymentDate = deployment.available_at || deployment.opens_at || deployment.created_at;
       return {
         period: deploymentDate ? `${new Date(deploymentDate).getFullYear()}-${getQuarterFromDate(deploymentDate)}` : null,
@@ -729,7 +697,7 @@ export default async function handler(req, res) {
     const patternTrends = {};
     CONDITION_KEYS.forEach(pattern => {
       patternTrends[pattern] = historicalScores.map((score, index) => ({
-        survey_index: deployments[index].survey_index,
+        survey_index: shownDeployments[index].survey_index,
         score: score.patterns[pattern]?.current
       })).filter(item => item.score !== null && item.score !== undefined);
     });
@@ -776,14 +744,13 @@ export default async function handler(req, res) {
       console.warn('paired scoring overall skipped:', err?.message || err);
     }
 
-    // Simple recent activity for pilots (avoid fake years)
-    const mostRecent = allResponses && allResponses.length > 0 ? allResponses[allResponses.length - 1] : null;
-    const recentActivity = mostRecent ? [
+    // Recent activity: a count only, never a per-response time.
+    const recentActivity = totalResponses > 0 ? [
       {
         id: 'activity-1',
         type: 'response_collected',
         message: `${totalResponses} response(s) collected`,
-        timestamp: mostRecent.completed_at ? new Date(mostRecent.completed_at).toLocaleString() : 'recently'
+        timestamp: null
       }
     ] : [];
 
@@ -796,10 +763,10 @@ export default async function handler(req, res) {
       scores: overallScores,
       coreScores,
       experienceMap,
-      experienceMapPoints,
+      experienceMapPoints: [],
       systemMap: {
         summary: systemMapSummary,
-        respondents: systemMapRespondents
+        respondents: []
       },
       leadershipProfile: {
         profile: leadershipProfile?.profile || 'profile_forming',

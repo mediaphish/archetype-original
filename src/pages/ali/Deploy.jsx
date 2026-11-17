@@ -1,10 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import { getAliSessionEmail, setAliSessionEmail } from '../../lib/magicLinkBrowserSession';
 
+// Deploy page: start a survey round. Each round has two links:
+//  - the team link, to share with the team;
+//  - the leader link, for the leader only, shown only to the account owner.
+
+const DEFAULT_ROUND_DAYS = 14;
+
+function isoDay(date) {
+  return date.toISOString().split('T')[0];
+}
+function defaultCloseDay() {
+  return isoDay(new Date(Date.now() + DEFAULT_ROUND_DAYS * 24 * 60 * 60 * 1000));
+}
+
+const STATUS_LABEL = { open: 'Open', closed: 'Closed', not_open: 'Not open yet' };
+
+const CopyRow = ({ label, help, url }) => {
+  const [feedback, setFeedback] = useState('');
+  const copy = () => {
+    navigator.clipboard.writeText(url).then(
+      () => {
+        setFeedback('Copied');
+        setTimeout(() => setFeedback(''), 2000);
+      },
+      () => {
+        setFeedback('Copy failed. Select the link and copy it by hand.');
+        setTimeout(() => setFeedback(''), 4000);
+      }
+    );
+  };
+  return (
+    <div className="mb-4">
+      <div className="text-sm font-semibold text-gray-900">{label}</div>
+      {help && <div className="text-xs text-gray-600 mb-2">{help}</div>}
+      <div className="bg-white rounded border border-gray-200 p-3 mb-2 font-mono text-sm break-all text-gray-900">{url}</div>
+      <button
+        type="button"
+        onClick={copy}
+        className="min-h-[44px] w-full sm:w-auto px-5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
+      >
+        {feedback || 'Copy link'}
+      </button>
+    </div>
+  );
+};
+
 const ALIDeploy = () => {
-  const [selectedDivision, setSelectedDivision] = useState('all');
-  const [generatedToken, setGeneratedToken] = useState(null);
-  const [generatedSurveyUrl, setGeneratedSurveyUrl] = useState(null);
   const [nextSurvey, setNextSurvey] = useState({
     index: '—',
     availableOn: '—',
@@ -13,13 +55,17 @@ const ALIDeploy = () => {
     reason: null
   });
   const [loadingNext, setLoadingNext] = useState(true);
+  const [closeDay, setCloseDay] = useState(defaultCloseDay());
   const [deploying, setDeploying] = useState(false);
   const [deployError, setDeployError] = useState('');
-  const [activeDeployments, setActiveDeployments] = useState([]);
-  const [loadingDeployments, setLoadingDeployments] = useState(false);
-  const [deploymentsError, setDeploymentsError] = useState('');
-  const [viewLinkModal, setViewLinkModal] = useState(null);
-  const [copyFeedback, setCopyFeedback] = useState('');
+  const [created, setCreated] = useState(null);
+  const [rounds, setRounds] = useState([]);
+  const [isOwner, setIsOwner] = useState(false);
+  const [loadingRounds, setLoadingRounds] = useState(false);
+  const [roundsError, setRoundsError] = useState('');
+  const [linksFor, setLinksFor] = useState(null);
+  const [actionError, setActionError] = useState('');
+  const [reloadKey, setReloadKey] = useState(0);
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -48,37 +94,18 @@ const ALIDeploy = () => {
   useEffect(() => {
     async function loadNext() {
       setLoadingNext(true);
-      setDeployError('');
-
       if (!email) {
-        setNextSurvey({
-          index: '—',
-          availableOn: '—',
-          baselineDate: '—',
-          canDeploy: false,
-          reason: 'Missing email in URL. Please re-login via magic link.'
-        });
+        setNextSurvey((s) => ({ ...s, canDeploy: false, reason: 'Please sign in again from the email link.' }));
         setLoadingNext(false);
         return;
       }
-
       try {
-        const r = await fetch(`/api/ali/deploy/next?email=${encodeURIComponent(email)}`, {
-          credentials: 'include',
-        });
+        const r = await fetch('/api/ali/deploy/next', { credentials: 'include' });
         const j = await r.json().catch(() => ({}));
         if (!r.ok) {
-          setNextSurvey({
-            index: '—',
-            availableOn: '—',
-            baselineDate: '—',
-            canDeploy: false,
-            reason: j?.error || 'Failed to load next survey info.'
-          });
-          setLoadingNext(false);
+          setNextSurvey((s) => ({ ...s, canDeploy: false, reason: j?.error || 'Could not load the next round.' }));
           return;
         }
-
         setNextSurvey({
           index: j.next_survey_index || '—',
           availableOn: j.available_on || '—',
@@ -87,162 +114,112 @@ const ALIDeploy = () => {
           reason: j.reason || null
         });
       } catch (e) {
-        setNextSurvey({
-          index: '—',
-          availableOn: '—',
-          baselineDate: '—',
-          canDeploy: false,
-          reason: e?.message || 'Failed to load next survey info.'
-        });
+        setNextSurvey((s) => ({ ...s, canDeploy: false, reason: 'Could not load the next round. Please try again.' }));
       } finally {
         setLoadingNext(false);
       }
     }
-
     loadNext();
-  }, [email]);
-
-  const loadDeployments = async () => {
-    if (!email) return;
-    setLoadingDeployments(true);
-    setDeploymentsError('');
-    try {
-      const r = await fetch(`/api/ali/deployments?email=${encodeURIComponent(email)}`, {
-        credentials: 'include',
-      });
-      const j = await r.json().catch(() => ({}));
-      if (!r.ok) {
-        setDeploymentsError(j?.error || 'Failed to load deployments.');
-        setActiveDeployments([]);
-        return;
-      }
-      setActiveDeployments(j.deployments || []);
-    } catch (e) {
-      setDeploymentsError(e?.message || 'Failed to load deployments.');
-      setActiveDeployments([]);
-    } finally {
-      setLoadingDeployments(false);
-    }
-  };
+  }, [email, reloadKey]);
 
   useEffect(() => {
-    loadDeployments();
-  }, [email]);
-
-  const getSurveyUrl = (d) => {
-    if (!d?.deploymentToken) return '';
-    return `${window.location.origin}/ali/survey/${d.deploymentToken}`;
-  };
-
-  const handleCopyViewLink = (deployment) => {
-    const url = getSurveyUrl(deployment);
-    if (!url) return;
-    navigator.clipboard.writeText(url).then(
-      () => {
-        setCopyFeedback('Copied!');
-        setTimeout(() => setCopyFeedback(''), 2000);
-      },
-      () => {
-        setCopyFeedback('Copy failed');
-        setTimeout(() => setCopyFeedback(''), 2000);
+    async function loadRounds() {
+      if (!email) return;
+      setLoadingRounds(true);
+      setRoundsError('');
+      try {
+        const r = await fetch('/api/ali/deployments', { credentials: 'include' });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          setRoundsError(j?.error || 'Could not load your rounds.');
+          setRounds([]);
+          return;
+        }
+        setIsOwner(!!j.isAccountOwner);
+        setRounds((j.deployments || []).filter((d) => d.isV3));
+      } catch (e) {
+        setRoundsError('Could not load your rounds. Please try again.');
+        setRounds([]);
+      } finally {
+        setLoadingRounds(false);
       }
-    );
-  };
+    }
+    loadRounds();
+  }, [email, reloadKey]);
 
-  const openViewLinkModal = (deployment) => {
-    setViewLinkModal(deployment);
-    setCopyFeedback('');
-  };
+  const linkFor = (token) => (token ? `${window.location.origin}/ali/survey/${token}` : '');
 
-  const closeViewLinkModal = () => {
-    setViewLinkModal(null);
-    setCopyFeedback('');
-  };
-
-  const handleGenerateLink = async () => {
+  const handleStartRound = async () => {
     setDeployError('');
+    setCreated(null);
     setDeploying(true);
-    setGeneratedToken(null);
-    setGeneratedSurveyUrl(null);
-
     try {
       const r = await fetch('/api/ali/deploy-survey', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          instrumentVersion: 'v1.0',
-          // Division support is coming soon. For now, only company-wide.
-          divisionId: null,
-          minimumResponses: 5
-        })
+        body: JSON.stringify({ closesAt: closeDay, divisionId: null })
       });
       const j = await r.json().catch(() => ({}));
-
       if (!r.ok) {
-        setDeployError(j?.error || j?.details || 'Failed to create deployment.');
-        setDeploying(false);
+        setDeployError(j?.error || 'Could not start the round.');
         return;
       }
-
-      const surveyUrl = j?.deployment?.surveyUrl || null;
-      setGeneratedSurveyUrl(surveyUrl);
-
-      // Extract token from URL for display/back-compat
-      const tokenMatch = typeof surveyUrl === 'string' ? surveyUrl.split('/').pop() : null;
-      setGeneratedToken(tokenMatch || null);
-
-      await loadDeployments();
+      setCreated(j.deployment || null);
+      setReloadKey((k) => k + 1);
     } catch (e) {
-      setDeployError(e?.message || 'Failed to create deployment.');
+      setDeployError('Could not start the round. Please check your connection and try again.');
     } finally {
       setDeploying(false);
     }
   };
 
-  const handleCopyLink = () => {
-    const url = generatedSurveyUrl || `${window.location.origin}/ali/survey/${generatedToken}`;
-    navigator.clipboard.writeText(url);
-    alert('Link copied to clipboard!');
+  const roundAction = async (deploymentId, body) => {
+    setActionError('');
+    try {
+      const r = await fetch('/api/ali/deployments', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deploymentId, ...body })
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setActionError(j?.error || 'That did not work. Please try again.');
+        return false;
+      }
+      setReloadKey((k) => k + 1);
+      return true;
+    } catch (e) {
+      setActionError('That did not work. Please check your connection and try again.');
+      return false;
+    }
   };
+
+  const minCloseDay = isoDay(new Date(Date.now() + 24 * 60 * 60 * 1000));
+  const maxCloseDay = isoDay(new Date(Date.now() + 90 * 24 * 60 * 60 * 1000));
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <div className="text-xl font-bold text-gray-900">ALI</div>
-            <nav className="flex items-center gap-6">
-              <button
-                onClick={() => handleNavigate(withEmail('/ali/dashboard'))}
-                className="text-gray-600 hover:text-gray-900"
-              >
+            <nav className="flex items-center gap-4 sm:gap-6 overflow-x-auto">
+              <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className="text-gray-600 hover:text-gray-900">
                 Dashboard
               </button>
-              <button
-                onClick={() => handleNavigate(withEmail('/ali/reports'))}
-                className="text-gray-600 hover:text-gray-900"
-              >
+              <button onClick={() => handleNavigate(withEmail('/ali/reports'))} className="text-gray-600 hover:text-gray-900">
                 Reports
               </button>
-              <button
-                onClick={() => handleNavigate(withEmail('/ali/deploy'))}
-                className="text-blue-600 font-semibold"
-              >
+              <button onClick={() => handleNavigate(withEmail('/ali/deploy'))} className="text-blue-600 font-semibold">
                 Deploy
               </button>
-              <button
-                onClick={() => handleNavigate(withEmail('/ali/settings'))}
-                className="text-gray-600 hover:text-gray-900"
-              >
+              <button onClick={() => handleNavigate(withEmail('/ali/settings'))} className="text-gray-600 hover:text-gray-900">
                 Settings
               </button>
-              <button
-                onClick={() => handleNavigate(withEmail('/ali/billing'))}
-                className="text-gray-600 hover:text-gray-900"
-              >
+              <button onClick={() => handleNavigate(withEmail('/ali/billing'))} className="text-gray-600 hover:text-gray-900">
                 Billing
               </button>
               {isSuperAdminUser && (
@@ -253,10 +230,7 @@ const ALIDeploy = () => {
                   Super Admin
                 </button>
               )}
-              <button
-                onClick={() => handleNavigate('/ali')}
-                className="text-gray-600 hover:text-gray-800"
-              >
+              <button onClick={() => handleNavigate('/ali')} className="text-gray-600 hover:text-gray-800">
                 Log Out
               </button>
             </nav>
@@ -265,201 +239,169 @@ const ALIDeploy = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Page Title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Deploy Survey</h1>
-          <p className="text-gray-600">Deploy surveys to your team on quarterly cadence</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Survey rounds</h1>
+          <p className="text-gray-600">
+            Each round has a team link to share with your team and a separate leader link for the leader.
+            Team results appear after the round closes, once at least five team members have answered.
+          </p>
         </div>
 
-        {/* Deploy New Survey Section */}
+        {/* Start a round */}
         <section className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Deploy New Survey</h2>
-          
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Start a new round</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Next Survey
-              </label>
-              <input
-                type="text"
-                value={loadingNext ? 'Loading…' : nextSurvey.index}
-                readOnly
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
-              />
-              <p className="text-xs text-gray-500 mt-1">Auto-calculated from cadence</p>
+              <div className="text-sm font-medium text-gray-700 mb-1">Next round</div>
+              <div className="text-gray-900">{loadingNext ? 'Loading...' : nextSurvey.index.replace(/^S/, 'Round ')}</div>
+              {!loadingNext && nextSurvey.reason && <p className="text-sm text-gray-600 mt-1">{nextSurvey.reason}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Available On
+              <label htmlFor="closeDay" className="block text-sm font-medium text-gray-700 mb-1">
+                Closes on
               </label>
               <input
-                type="text"
-                value={loadingNext ? 'Loading…' : nextSurvey.availableOn}
-                readOnly
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
+                id="closeDay"
+                type="date"
+                value={closeDay}
+                min={minCloseDay}
+                max={maxCloseDay}
+                onChange={(e) => setCloseDay(e.target.value)}
+                className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               />
-              <p className="text-xs text-gray-500 mt-1">Auto-calculated from baseline date ({loadingNext ? '…' : nextSurvey.baselineDate})</p>
-              {!loadingNext && nextSurvey.reason && (
-                <p className="text-xs text-gray-500 mt-1">{nextSurvey.reason}</p>
-              )}
+              <p className="text-xs text-gray-500 mt-1">Two weeks from today unless you change it.</p>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Division (Optional)
-              </label>
-              <select
-                value={selectedDivision}
-                onChange={(e) => setSelectedDivision(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                disabled
-              >
-                <option value="all">Company-wide</option>
-              </select>
-              <p className="text-xs text-gray-500 mt-1">Division targeting will be enabled once divisions are connected to real data.</p>
-            </div>
+            {!isOwner && !loadingRounds && (
+              <p className="text-sm text-gray-600">Only the account owner can start a round.</p>
+            )}
 
             <button
-              onClick={handleGenerateLink}
-              disabled={deploying || loadingNext || !nextSurvey.canDeploy}
-              className="min-h-[44px] w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              onClick={handleStartRound}
+              disabled={deploying || loadingNext || !nextSurvey.canDeploy || !isOwner}
+              className="min-h-[44px] w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {deploying ? 'Generating…' : 'Generate Deployment Link'}
+              {deploying ? 'Starting...' : 'Start round and create links'}
             </button>
 
             {deployError && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+              <div role="alert" className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                 {deployError}
               </div>
             )}
           </div>
         </section>
 
-        {/* Generated Link Display */}
-        {generatedSurveyUrl && (
+        {created && (
           <section className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Deployment Link Generated</h3>
-            <div className="bg-white rounded border border-gray-200 p-4 mb-4">
-              <div className="text-sm text-gray-600 mb-2">Survey URL:</div>
-              <div className="font-mono text-sm break-all text-gray-900">
-                {generatedSurveyUrl}
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <button
-                onClick={handleCopyLink}
-                className="min-h-[44px] flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center"
-              >
-                Copy Link
-              </button>
-              <button
-                onClick={() => alert('QR code generation - coming soon')}
-                className="min-h-[44px] flex-1 bg-white border border-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-50 flex items-center justify-center"
-              >
-                Download QR Code
-              </button>
-            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Round {created.roundNumber} is open</h3>
+            <CopyRow label="Team link" help="Share this with your team." url={created.surveyUrl} />
+            {created.leaderUrl && (
+              <CopyRow
+                label="Leader link"
+                help="For the leader only. Do not share it with the team. The leader can change their answers until the round closes."
+                url={created.leaderUrl}
+              />
+            )}
           </section>
         )}
 
-        {/* Active Deployments List */}
+        {/* Rounds */}
         <section className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Active Deployments</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Rounds</h2>
 
-          {deploymentsError && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-              {deploymentsError}
+          {(roundsError || actionError) && (
+            <div role="alert" className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+              {roundsError || actionError}
             </div>
           )}
 
-          {loadingDeployments ? (
-            <div className="text-center py-8 text-gray-500">Loading deployments…</div>
-          ) : activeDeployments.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">No active deployments</div>
+          {loadingRounds ? (
+            <div className="text-center py-8 text-gray-500">Loading rounds...</div>
+          ) : rounds.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">No rounds yet.</div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Survey</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Status</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Responses</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Opens</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Closes</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {activeDeployments.map((deployment) => (
-                    <tr key={deployment.id} className="border-b border-gray-100">
-                      <td className="py-3 px-4 text-sm text-gray-900">{deployment.surveyIndex}</td>
-                      <td className="py-3 px-4">
-                        <span className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
-                          deployment.status === 'active' ? 'bg-blue-100 text-blue-700' :
-                          deployment.status === 'pending' ? 'bg-gray-100 text-gray-700' :
-                          'bg-gray-100 text-gray-700'
-                        }`}>
-                          {deployment.status}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-sm text-gray-900">
-                        {deployment.responseCount} / {deployment.minimumResponses ?? 5}
-                        {(deployment.responseCount ?? 0) >= (deployment.minimumResponses ?? 5) && (
-                          <span className="ml-2 text-blue-600 text-xs">✓</span>
-                        )}
-                      </td>
-                      <td className="py-3 px-4 text-sm text-gray-600">{deployment.opensAt ?? '—'}</td>
-                      <td className="py-3 px-4 text-sm text-gray-600">{deployment.closesAt ?? '—'}</td>
-                      <td className="py-3 px-4">
+            <ul className="divide-y divide-gray-100">
+              {rounds.map((d) => (
+                <li key={d.id} className="py-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <div className="font-semibold text-gray-900">Round {d.roundNumber}</div>
+                      <div className="text-sm text-gray-600">
+                        {STATUS_LABEL[d.roundStatus] || d.roundStatus}
+                        {d.closesAt ? ` · closes ${d.closesAt}` : ''}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        {d.teamResponseCount} team {d.teamResponseCount === 1 ? 'answer' : 'answers'} (5 needed)
+                        {' · '}
+                        {d.leaderAnswered ? 'leader has answered' : 'leader has not answered yet'}
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {d.roundStatus === 'open' && (
                         <button
-                          onClick={() => openViewLinkModal(deployment)}
-                          className="min-h-[44px] inline-flex items-center justify-center text-sm text-blue-600 hover:underline px-2"
+                          type="button"
+                          onClick={() => setLinksFor(linksFor === d.id ? null : d.id)}
+                          className="min-h-[44px] px-3 text-sm text-blue-700 font-semibold"
                         >
-                          View Link
+                          {linksFor === d.id ? 'Hide links' : 'Show links'}
                         </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      )}
+                      {isOwner && d.roundStatus === 'open' && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (window.confirm(`Close round ${d.roundNumber} now? Nobody will be able to answer after this.`)) {
+                              roundAction(d.id, { action: 'close' });
+                            }
+                          }}
+                          className="min-h-[44px] px-3 text-sm text-gray-700 border border-gray-300 rounded-lg"
+                        >
+                          Close now
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {linksFor === d.id && (
+                    <div className="mt-4">
+                      <CopyRow label="Team link" help="Share this with your team." url={linkFor(d.deploymentToken)} />
+                      {d.leaderToken && (
+                        <CopyRow
+                          label="Leader link"
+                          help="For the leader only. Do not share it with the team."
+                          url={linkFor(d.leaderToken)}
+                        />
+                      )}
+                      {isOwner && (
+                        <div className="mt-2">
+                          <label htmlFor={`close-${d.id}`} className="block text-sm font-medium text-gray-700 mb-1">
+                            Change the close date
+                          </label>
+                          <input
+                            id={`close-${d.id}`}
+                            type="date"
+                            defaultValue={d.closesAt || ''}
+                            min={minCloseDay}
+                            max={maxCloseDay}
+                            onChange={(e) => {
+                              if (e.target.value) roundAction(d.id, { action: 'set_close_date', closesAt: e.target.value });
+                            }}
+                            className="px-4 py-2 border border-gray-300 rounded-lg"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
           )}
         </section>
       </main>
-
-      {/* View Link Modal */}
-      {viewLinkModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={closeViewLinkModal}>
-          <div
-            className="bg-white rounded-lg shadow-xl max-w-lg w-full mx-4 p-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Survey Link — {viewLinkModal.surveyIndex}</h3>
-            <p className="text-sm text-gray-600 mb-3">Share this link with respondents to complete the survey.</p>
-            <div className="bg-gray-50 rounded border border-gray-200 p-3 mb-4">
-              <div className="font-mono text-sm break-all text-gray-900">{getSurveyUrl(viewLinkModal)}</div>
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={() => handleCopyViewLink(viewLinkModal)}
-                className="min-h-[44px] flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center"
-              >
-                {copyFeedback || 'Copy Link'}
-              </button>
-              <button
-                onClick={closeViewLinkModal}
-                className="min-h-[44px] flex-1 bg-white border border-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-50 flex items-center justify-center"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
 export default ALIDeploy;
-

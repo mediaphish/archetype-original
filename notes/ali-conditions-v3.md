@@ -179,3 +179,108 @@ Idea 2, confidence in their judgment
 - Drift is calculated from round-to-round change, starting at round 2.
 - Public page changes "ten questions" to "about 18 questions, under five minutes" (Step 4).
 - Rotating trial ideas to draft next: Clarity (what good work looks like), Consistency (priorities don't flip-flop), Accountability (fairness), Voice (asked for input before deciding), Growth (recognition), Support (a sustainable pace), Alignment (living the stated values), plus one or two more per condition.
+
+## Trial pool (drafted 2026-11-16, not yet reviewed by Bart)
+
+Unscored. One trial idea is asked per round, rotating through this pool. Same rules as the
+approved questions. The first idea under each condition is the topic listed in "Survey shape";
+the second was drafted to fit the condition's definition. Source of truth for the wording:
+`lib/ali-v3-bank.js` (the seed SQL is generated from it).
+
+**Clarity** (trial)
+
+Trial idea 1, what good work looks like
+- A. Team: My leader has shown me what good work looks like in my role. / Leader: I have shown each person what good work looks like in their role.
+- B. Team: I know how my leader judges whether my work is good. / Leader: Each person on my team knows how I judge whether their work is good.
+- C (reversed). Team: I often find out my work missed the mark only after it is done. / Leader: My team often finds out their work missed the mark only after it is done.
+- D. Team: Before I start a task, my leader makes clear what finished looks like. / Leader: Before my team starts a task, I make clear what finished looks like.
+
+Trial idea 2, what matters most right now
+- A. Team: My leader has made clear which of my tasks matter most. / Leader: I have made clear to each person which of their tasks matter most.
+- B. Team: When I have too much to do, I know what my leader wants done first. / Leader: When my team has too much to do, they know what I want done first.
+- C (reversed). Team: My leader treats everything as the top priority. / Leader: I treat everything as the top priority.
+- D. Team: I could name my top three priorities the way my leader would. / Leader: Each person on my team could name their top three priorities the way I would.
+
+**Consistency** (trial)
+
+Trial idea 1, priorities don't flip-flop
+- A. Team: My leader's priorities stay steady from week to week. / Leader: My priorities for the team stay steady from week to week.
+- B. Team: When my leader sets a direction, it holds long enough for us to finish the work. / Leader: When I set a direction, it holds long enough for my team to finish the work.
+- C (reversed). Team: My leader changes direction so often that our work gets thrown away. / Leader: I change direction so often that my team's work gets thrown away.
+- D. Team: I can plan my week around what my leader says matters. / Leader: My team can plan their week around what I say matters.
+
+Trial idea 2, the rules stay the same
+- A. Team: My leader applies the rules the same way each time. / Leader: I apply the rules the same way each time.
+- B. Team: What my leader accepts today, they will still accept next week. / Leader: What I accept today, I will still accept next week.
+- C (reversed). Team: Something my leader allowed last week could get me in trouble this week. / Leader: Something I allowed last week could get someone in trouble this week.
+- D. Team: My leader's expectations stay the same no matter who is watching. / Leader: My expectations stay the same no matter who is watching.
+
+**Accountability** (trial)
+
+Trial idea 1, fairness
+- A. Team: My leader is fair when someone falls short. / Leader: I am fair when someone on my team falls short.
+- B. Team: My leader judges my work by the same measure as everyone else's. / Leader: I judge each person's work by the same measure.
+- C (reversed). Team: My leader lets some people get away with things others would be called out for. / Leader: I let some people get away with things others would be called out for.
+- D. Team: On my team, the same mistake gets the same response from my leader, no matter who made it. / Leader: On my team, the same mistake gets the same response from me, no matter who made it.
+
+Trial idea 2, follow-through is checked
+- A. Team: My leader follows up on what we agreed to do. / Leader: I follow up on what my team agreed to do.
+- B. Team: When we set a goal, my leader checks how we did against it. / Leader: When my team sets a goal, I check how we did against it.
+- C (reversed). Team: My leader lets missed deadlines pass without a word. / Leader: I let missed deadlines pass without a word.
+- D. Team: My leader makes sure the work we promise actually gets done. / Leader: I make sure the work my team promises actually gets done.
+
+**Voice** (trial)
+
+Trial idea 1, asked for input before deciding
+- A. Team: My leader asks for my input before making decisions that affect my work. / Leader: I ask for my team's input before making decisions that affect their work.
+- B. Team: My leader wants to hear from the people closest to the work before deciding. / Leader: I want to hear from the people closest to the work before I decide.
+- C (reversed). Team: I usually hear about decisions that affect me after they have been made. / Leader: My team usually hears about decisions that affect them after they have been made.
+- D. Team: My leader's decisions show they listened to what we said. / Leader: My decisions show my team that I listened to what they said.
+
+Trial idea 2, ideas get a real hearing
+- A. Team: My leader takes my ideas seriously. / Leader: I take my team's ideas seriously.
+- B. Team: When I suggest a better way to do something, my leader gives it a real look. / Leader: When someone suggests a better way to do something, I give it a real look.
+- C (reversed). Team: Suggesting a new idea to my leader feels like a waste of time. / Leader: My team feels that suggesting a new idea to me is a waste of time.
+- D. Team: My leader has acted on ideas that came from me or my coworkers. / Leader: I have acted on ideas that came from my team.
+
+**Growth** (trial)
+
+Trial idea 1, recognition
+- A. Team: My leader notices when I do good work. / Leader: I notice when someone on my team does good work.
+- B. Team: My leader tells me specifically what I did well. / Leader: I tell each person specifically what they did well.
+- C (reversed). Team: Good work on my team mostly goes unnoticed by my leader. / Leader: Good work on my team mostly goes unnoticed by me.
+- D. Team: My leader recognizes effort that others don't see. / Leader: I recognize effort on my team that others don't see.
+
+Trial idea 2, room to learn
+- A. Team: My leader gives me chances to learn new skills. / Leader: I give each person chances to learn new skills.
+- B. Team: My leader trusts me with work that stretches me. / Leader: I trust my team with work that stretches them.
+- C (reversed). Team: My leader keeps me doing only what I already know. / Leader: I keep each person doing only what they already know.
+- D. Team: When I make a mistake while learning, my leader treats it as part of growing. / Leader: When someone makes a mistake while learning, I treat it as part of growing.
+
+**Support** (trial)
+
+Trial idea 1, a sustainable pace
+- A. Team: I can keep up my current pace of work without burning out. / Leader: My team can keep up their current pace of work without burning out.
+- B. Team: My leader keeps our workload at a level we can sustain. / Leader: I keep my team's workload at a level they can sustain.
+- C (reversed). Team: The pace my leader expects is wearing me down. / Leader: The pace I expect is wearing my team down.
+- D. Team: My leader makes sure we recover after a hard stretch. / Leader: I make sure my team recovers after a hard stretch.
+
+Trial idea 2, help when stuck
+- A. Team: When I'm stuck, my leader helps me get unstuck. / Leader: When someone on my team is stuck, I help them get unstuck.
+- B. Team: I can ask my leader for help without feeling judged. / Leader: My team can ask me for help without feeling judged.
+- C (reversed). Team: When I'm in over my head, my leader leaves me to figure it out alone. / Leader: When someone on my team is in over their head, I leave them to figure it out alone.
+- D. Team: My leader removes obstacles that get in the way of my work. / Leader: I remove obstacles that get in the way of my team's work.
+
+**Alignment** (trial)
+
+Trial idea 1, living the stated values
+- A. Team: My leader lives by the values we say we hold. / Leader: I live by the values we say we hold.
+- B. Team: When a decision is hard, my leader uses our values to make it. / Leader: When a decision is hard, I use our values to make it.
+- C (reversed). Team: My leader's choices often don't match the values we say we hold. / Leader: My choices often don't match the values we say we hold.
+- D. Team: My leader would give up a short-term win to stay true to our values. / Leader: I would give up a short-term win to stay true to our values.
+
+Trial idea 2, one shared goal
+- A. Team: I know what my team is trying to achieve this year. / Leader: Everyone on my team knows what we are trying to achieve this year.
+- B. Team: My leader keeps our team goals in front of us. / Leader: I keep our team goals in front of my team.
+- C (reversed). Team: People on my team would describe our main goal in different ways. / Leader: People on my team would describe our main goal in different ways.
+- D. Team: My leader checks that our daily work still points at our main goal. / Leader: I check that my team's daily work still points at our main goal.

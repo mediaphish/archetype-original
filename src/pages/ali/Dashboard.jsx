@@ -7,7 +7,7 @@ import { buildAliDashboardSnapshot } from '../../lib/ali/archyContextPayload';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import AliFooter from '../../components/ali/AliFooter';
 import GapRangeBar from '../../components/ali/GapRangeBar';
-import { CONDITION_KEYS, CONDITION_LABELS } from '../../../lib/ali-conditions.js';
+import { LEGACY_CONDITION_KEYS as CONDITION_KEYS, LEGACY_CONDITION_LABELS as CONDITION_LABELS } from '../../../lib/ali-conditions.js';
 import { getAliSessionEmail, setAliSessionEmail } from '../../lib/magicLinkBrowserSession';
 
 const ALIDashboard = () => {
@@ -65,11 +65,10 @@ const ALIDashboard = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emailParam]);
 
-  // Fallback counts (match the embedded mock data below) so we can safely compute
-  // display values before the big mock object is initialized.
+  // Counts before live data arrives. Zero, never sample numbers.
   const FALLBACK_RESPONSE_COUNTS = {
-    overall: 86,
-    thisQuarter: 24
+    overall: 0,
+    thisQuarter: 0
   };
 
   const pickNumber = (value, fallback) => {
@@ -180,34 +179,16 @@ const ALIDashboard = () => {
 
     // Animate all numeric values
     setTimeout(() => {
-      Object.entries(mockData.coreScores).forEach(([key, value]) => {
-        animateValue(`core_${key}`, 0, value.rolling, 1200);
-      });
-      
-      Object.entries(mockData.scores.patterns).forEach(([key, value]) => {
-        const displayValue = value.rolling;
-        animateValue(`pattern_${key}`, 0, displayValue, 1200);
-      });
 
       // Trajectory is only meaningful after more than one survey cycle.
       // We'll animate it only if live data provides a value; otherwise leave as "—".
       if (typeof dashboardData?.trajectory?.value === 'number') {
         animateValue('trajectory', 0, dashboardData.trajectory.value, 1000);
       }
-      animateValue('honesty', 0, mockData.leadershipProfile.honesty.score, 1000);
-      animateValue('clarity_level', 0, mockData.leadershipProfile.clarity.level, 1000);
       animateValue('response_overall', 0, responseOverallTarget, 800);
       animateValue('response_quarter', 0, responseThisQuarterTarget, 800);
-      animateValue('response_completion', 0, mockData.responseCounts.avgCompletion, 800);
-      animateValue('response_rate', 0, mockData.responseCounts.responseRate, 800);
     }, 100);
 
-    // Animate ALI score line chart
-    if (mockData.scores.ali.history) {
-      mockData.scores.ali.history.forEach((point, idx) => {
-        animateValue(`ali_score_${idx}`, 0, point.score, 1200 + (idx * 100));
-      });
-    }
 
     // Animate chart lines
     setTimeout(() => {
@@ -631,13 +612,14 @@ const ALIDashboard = () => {
   // IMPORTANT: When live data is present but incomplete (e.g., first survey / <10 org responses),
   // we should NOT show fake historical metrics. In that case we prefer showing "—" / neutral states.
   const dashboardData = (() => {
-    if (!liveDashboard) return mockData;
-
-    const liveScores = liveDashboard.scores || {};
+    // Never show sample numbers to a real customer: with no live data, build the
+    // same shape from an empty object so every value reads as empty.
+    const live = liveDashboard || {};
+    const liveScores = live.scores || {};
     const liveALI = liveScores.ali || {};
     const liveAnchors = liveScores.anchors || {};
     const livePatterns = liveScores.patterns || {};
-    const liveDataQuality = liveDashboard.dataQuality || {};
+    const liveDataQuality = live.dataQuality || {};
 
     const liveMode = true;
     const dqOrgOk = !!liveDataQuality.meets_minimum_n_org;
@@ -654,8 +636,8 @@ const ALIDashboard = () => {
     const aliRolling = liveMode ? (typeof liveALI.rolling === 'number' ? liveALI.rolling : null) : pickNumber(liveALI.rolling, mockData.scores.ali.rolling);
     const aliZone = liveMode ? (liveALI.zone || null) : (liveALI.zone || mockData.scores.ali.zone);
 
-    const history = Array.isArray(liveDashboard.historicalTrends) && liveDashboard.historicalTrends.length > 0
-      ? liveDashboard.historicalTrends
+    const history = Array.isArray(live.historicalTrends) && live.historicalTrends.length > 0
+      ? live.historicalTrends
           .filter(p => !!p?.period)
           .map((p) => ({
             period: String(p.period).replace('-', ' '),
@@ -664,7 +646,7 @@ const ALIDashboard = () => {
           }))
       : (liveMode ? [] : mockData.scores.ali.history);
 
-    const liveCore = liveDashboard.coreScores || {};
+    const liveCore = live.coreScores || {};
     const coreAlignmentRolling = liveMode ? (typeof liveCore.alignment === 'number' ? liveCore.alignment : null) : pickNumber(liveCore.alignment, mockData.coreScores.alignment.rolling);
     const coreStabilityRolling = liveMode ? (typeof liveCore.stability === 'number' ? liveCore.stability : null) : pickNumber(liveCore.stability, mockData.coreScores.stability.rolling);
     const coreClarityRolling = liveMode ? (typeof liveCore.clarity === 'number' ? liveCore.clarity : null) : pickNumber(liveCore.clarity, mockData.coreScores.clarity.rolling);
@@ -673,7 +655,7 @@ const ALIDashboard = () => {
     const patternStability = getPattern('stability');
     const patternClarity = getPattern('clarity');
 
-    const exp = liveDashboard.experienceMap || null;
+    const exp = live.experienceMap || null;
     const expCurrent = exp && typeof exp === 'object'
       ? {
           x: (typeof exp.x === 'number' ? exp.x : null),
@@ -682,17 +664,20 @@ const ALIDashboard = () => {
         }
       : (liveMode ? { x: null, y: null, zone: null } : mockData.experienceMap.current);
 
-    const lp = liveDashboard.leadershipProfile || {};
-    const lm = liveDashboard.leadershipMirror || {};
-    const trajectory = liveDashboard.trajectory || {};
+    const lp = live.leadershipProfile || {};
+    const lm = live.leadershipMirror || {};
+    const trajectory = live.trajectory || {};
 
     return {
-      ...mockData,
+      insights: [],
+      alerts: [],
+      recentActivity: [],
+      lastQuarterComparison: {},
       company: {
         ...mockData.company,
-        id: liveDashboard.company?.id || null,
-        name: liveDashboard.company?.name || '',
-        subscription_status: liveDashboard.company?.subscription_status || null
+        id: live.company?.id || null,
+        name: live.company?.name || '',
+        subscription_status: live.company?.subscription_status || null
       },
       scores: {
         ...mockData.scores,
@@ -777,11 +762,11 @@ const ALIDashboard = () => {
       },
       responseCounts: {
         ...mockData.responseCounts,
-        overall: typeof liveDashboard?.responseCounts?.overall === 'number' ? liveDashboard.responseCounts.overall : null,
+        overall: typeof live?.responseCounts?.overall === 'number' ? live.responseCounts.overall : null,
         // For pilots (single deployment), "this quarter" is equivalent to overall responses returned by the API.
-        thisQuarter: typeof liveDashboard?.responseCounts?.overall === 'number' ? liveDashboard.responseCounts.overall : null,
-        leader: typeof liveDashboard?.responseCounts?.leader === 'number' ? liveDashboard.responseCounts.leader : null,
-        team_member: typeof liveDashboard?.responseCounts?.team_member === 'number' ? liveDashboard.responseCounts.team_member : null,
+        thisQuarter: typeof live?.responseCounts?.overall === 'number' ? live.responseCounts.overall : null,
+        leader: typeof live?.responseCounts?.leader === 'number' ? live.responseCounts.leader : null,
+        team_member: typeof live?.responseCounts?.team_member === 'number' ? live.responseCounts.team_member : null,
         avgCompletion: null,
         responseRate: null
       },
@@ -1094,8 +1079,8 @@ const ALIDashboard = () => {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">ALI Dashboard</h1>
           <p className="text-gray-600 mb-4">
             {liveDashboardError
-              ? `We couldn’t load your live dashboard (${liveDashboardError}).`
-              : 'No dashboard data yet — insights and scores will appear once your team starts responding.'}
+              ? 'We could not load your dashboard right now. Nothing is shown until your real results load.'
+              : 'No results yet. Scores appear once at least five team members have answered a round.'}
           </p>
           <button
             onClick={() => window.location.reload()}
@@ -2474,7 +2459,7 @@ const ALIDashboard = () => {
                     <div className="flex-1">
                       <div className="text-[13px] font-medium text-black/[0.6] mb-2">Honesty</div>
                       <div className="text-[42px] font-bold text-black/[0.87] transition-all duration-500 leading-none">
-                        {fmt1(animatedValues.honesty ?? dashboardData.leadershipProfile.honesty.score)}
+                        {fmt1(dashboardData.leadershipProfile.honesty.score)}
                       </div>
                     </div>
                     <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-[12px] font-medium capitalize">
@@ -2489,7 +2474,7 @@ const ALIDashboard = () => {
                     <div className="flex-1">
                       <div className="text-[13px] font-medium text-black/[0.6] mb-2">Clarity</div>
                       <div className="text-[42px] font-bold text-black/[0.87] transition-all duration-500 leading-none">
-                        {fmt1(animatedValues.clarity_level ?? dashboardData.leadershipProfile.clarity.level)}
+                        {fmt1(dashboardData.leadershipProfile.clarity.level)}
                       </div>
                     </div>
                     <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-[12px] font-medium capitalize">
@@ -2759,14 +2744,14 @@ const ALIDashboard = () => {
               <div className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:shadow-lg">
                 <div className="text-sm font-medium text-gray-600 mb-2">Avg. Completion</div>
                 <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
-                  {liveDashboard ? '—' : (animatedValues.response_completion ?? mockData.responseCounts.avgCompletion).toFixed(1)}
+                  {'—'}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">min</div>
               </div>
               <div className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:shadow-lg">
                 <div className="text-sm font-medium text-gray-600 mb-2">Response Rate</div>
                 <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
-                  {liveDashboard ? '—' : Math.round(animatedValues.response_rate ?? mockData.responseCounts.responseRate)}
+                  {'—'}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">%</div>
               </div>
