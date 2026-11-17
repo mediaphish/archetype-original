@@ -284,3 +284,10 @@ Trial idea 2, one shared goal
 - B. Team: My leader keeps our team goals in front of us. / Leader: I keep our team goals in front of my team.
 - C (reversed). Team: People on my team would describe our main goal in different ways. / Leader: People on my team would describe our main goal in different ways.
 - D. Team: My leader checks that our daily work still points at our main goal. / Leader: I check that my team's daily work still points at our main goal.
+
+## Pricing (decided by Bart 2026-11-17)
+
+- Annual only, per leader, the leader's whole team included. Not monthly, not per round.
+- Founding price $149 per leader per year. Raise to $249 to $299 for new customers once ALI has a year of real results; founding customers keep $149.
+- The first 20 companies get their first year free (the promise already on the ALI page), then $149.
+- Billing through Bart's existing Stripe account (same connection the shop uses, lib/shop/stripe.js).
