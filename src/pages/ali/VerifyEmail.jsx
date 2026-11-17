@@ -23,6 +23,9 @@ const ALIVerifyEmail = () => {
           <p className="text-gray-600 mb-6">
             {email ? `We sent a setup link to ${email}.` : 'We sent you a setup link.'} Click it to finish setting up your account. The link expires in 24 hours.
           </p>
+          <p className="text-gray-600 mb-6 text-sm">
+            There is nothing to pay to sign up, and setting up your first survey is free.
+          </p>
           <button
             onClick={() => handleNavigate('/ali/login')}
             className="text-sm text-gray-600 hover:text-gray-800"

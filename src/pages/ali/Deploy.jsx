@@ -58,6 +58,7 @@ const ALIDeploy = () => {
   const [closeDay, setCloseDay] = useState(defaultCloseDay());
   const [deploying, setDeploying] = useState(false);
   const [deployError, setDeployError] = useState('');
+  const [deployNeedsBilling, setDeployNeedsBilling] = useState(false);
   const [created, setCreated] = useState(null);
   const [rounds, setRounds] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
@@ -151,6 +152,7 @@ const ALIDeploy = () => {
 
   const handleStartRound = async () => {
     setDeployError('');
+    setDeployNeedsBilling(false);
     setCreated(null);
     setDeploying(true);
     try {
@@ -163,6 +165,7 @@ const ALIDeploy = () => {
       const j = await r.json().catch(() => ({}));
       if (!r.ok) {
         setDeployError(j?.error || 'Could not start the round.');
+        setDeployNeedsBilling(Boolean(j?.billing));
         return;
       }
       setCreated(j.deployment || null);
@@ -285,6 +288,15 @@ const ALIDeploy = () => {
             {deployError && (
               <div role="alert" className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                 {deployError}
+                {deployNeedsBilling && (
+                  <button
+                    type="button"
+                    onClick={() => handleNavigate(withEmail('/ali/billing'))}
+                    className="block mt-2 min-h-[44px] font-semibold underline text-red-800"
+                  >
+                    Go to Billing
+                  </button>
+                )}
               </div>
             )}
           </div>
