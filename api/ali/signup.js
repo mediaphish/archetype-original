@@ -250,7 +250,7 @@ export default async function handler(req, res) {
           const emailResponse = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ from: fromEmail, to: normalizedEmail, subject: 'Welcome to ALI — set up your account', html: emailHtml }),
+            body: JSON.stringify({ from: fromEmail, to: normalizedEmail, subject: 'Welcome to ALI: set up your account', html: emailHtml }),
           });
           if (!emailResponse.ok) {
             console.error('[ali/signup] Setup email send failed:', await emailResponse.text());
