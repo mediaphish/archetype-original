@@ -1,5 +1,5 @@
 ---
-title: "SECTION 7 — Introducing the ALI Model"
+title: "SECTION 7 — Introducing the ALI Model"
 slug: ali-diagnostic-part-1
 type: culture-science
 tags:
@@ -24,18 +24,25 @@ related:
   - ali-diagnostic-part-2
 ---
 
-SECTION 7 — Introducing the ALI Model
-(This is the clean, non-annoying version. No drift. No detours. Just canon.)
-Below is Part I of Section 7. Short, tight, and foundational — the doorway into the full ALI model.
-You can read this without needing to correct tone or direction. And when you say “continue,” I’ll move right into Part II.
+SECTION 7 — Introducing the ALI Model
 
- SECTION 7 — The Archetype Leadership Index (ALI)
+ SECTION 7 — The Archetype Leadership Index (ALI)
 The First Instrument of Culture Science
-Servant leadership has been studied for decades. Trust, safety, clarity, communication, and alignment have all been measured before. But no one ever built a practical, behavioral, small-business diagnostic that brings all of those truths together in one place.
+Servant leadership has been studied for decades.
+Trust, safety, clarity, communication, and alignment have all been measured before.
+But no one ever built a practical, behavioral, small-business diagnostic
+that brings all of those truths together in one place.
 That’s what ALI is.
-Not a survey. Not a personality profile. Not an engagement score.
-A mirror. A behavioral diagnostic built specifically for companies with 10–250 employees, where the founder still carries weight, leaders still produce, and culture shifts faster than anyone realizes.
-Small businesses don’t need corporate HR theater. They need a tool that reveals:
+Not a survey.
+Not a personality profile.
+Not an engagement score.
+A mirror.
+A behavioral diagnostic built specifically for companies with 10–250 employees,
+where the founder still carries weight,
+leaders still produce,
+and culture shifts faster than anyone realizes.
+Small businesses don’t need corporate HR theater.
+They need a tool that reveals:
 	•	where leadership is aligned
 	•	where it’s drifting
 	•	where it’s unclear
@@ -44,23 +51,36 @@ Small businesses don’t need corporate HR theater. They need a tool that reve
 	•	where fear is hiding
 	•	where expectations are crisp
 	•	where they are not
-	•	where communication is breaking down
+	•	where the truth isn’t reaching the leader
 	•	where the team’s lived reality diverges from the leader’s intent
-Every company has these gaps. Even healthy ones. Even growing ones. Even award-winning ones.
-ALI exists because no one ever built a system that measures leadership in the environment where it matters most— small and mid-sized businesses.
-That world is different. It moves faster. It breaks easier. It grows harder. People carry more weight. Leaders wear more hats. And culture shifts in weeks, not years.
+Every company has these gaps.
+Even healthy ones.
+Even growing ones.
+Even award-winning ones.
+ALI exists because no one ever built a system
+that measures leadership in the environment where it matters most—
+small and mid-sized businesses.
+That world is different.
+It moves faster.
+It breaks easier.
+It grows harder.
+People carry more weight.
+Leaders wear more hats.
+And culture shifts in weeks, not years.
 ALI is built for that reality.
-It measures what actually determines whether a company thrives:
+It measures what actually determines whether a company thrives. First, the seven conditions a leader creates:
 	•	clarity
 	•	consistency
-	•	trust density
-	•	psychological safety
-	•	communication patterns
-	•	behavioral alignment
-	•	leadership drift
-	•	expectation stability
-	•	fear signals
-	•	team perception gaps
-	•	early-warning indicators
-It doesn’t tell leaders who they are as people. It tells leaders what their people are experiencing.
+	•	accountability
+	•	voice
+	•	growth
+	•	support
+	•	alignment
+Then the results those conditions produce:
+	•	trust
+	•	commitment
+	•	drift, the direction the conditions are moving from one round to the next
+And it shows the gap between how the leader sees each condition and how the team experiences it.
+It doesn’t tell leaders who they are as people.
+It tells leaders what their people are experiencing.
 And that’s where everything begins.

@@ -22,11 +22,11 @@ applications:
   - Reference when generating articles, training, or product copy related to this part.
 related:
   - ali-diagnostic-part-7
-  - ali-diagnostic-part-9
+  - ali-diagnostic-part-11
 ---
 
 SECTION 7 — Part VIII
-The Drift Timeline
+Drift Over Time
 How ALI Detects Problems Before They Happen
 Culture rarely fails suddenly. Leaders don’t wake up one day and “become bad.” Teams don’t collapse overnight.
 Drift is slow. Predictable. Measurable.
@@ -39,13 +39,13 @@ Most small-business crises begin months — sometimes years — before the sympt
 	•	emotions are already elevated
 	•	alignment is already fractured
 	•	performance is already unstable
-The Drift Timeline shows leaders exactly where the pattern began and how far it has traveled.
+ALI tracks drift as the change in each condition from one round to the next, starting with the second round. That shows which conditions are sliding and how fast.
 
- The Five Stages of Drift
-Every cultural decline follows this path — ALI measures each stage.
+ The Five Stages of Drift
+Every cultural decline follows this path.
 Drift doesn’t begin with conflict or chaos. It begins with something far quieter:
 
- 1. Micro-Drift
+ 1. Micro-Drift
 Small signals, easy to miss
 These are subtle:
 	•	minor clarity misses
@@ -55,10 +55,10 @@ These are subtle:
 	•	brief tension in communication
 	•	slow-downs in follow-through
 	•	silence where there used to be ideas
-Leaders almost never notice micro-drift. ALI does.
+Leaders almost never notice micro-drift. Movement from one ALI round to the next can show it.
 This is where prevention is simplest.
 
- 2. Early Drift
+ 2. Early Drift
 Clarity begins to fracture
 At this stage:
 	•	expectations get fuzzy
@@ -71,7 +71,7 @@ At this stage:
 Teams feel this long before leaders do.
 ALI surfaces the pattern early enough to fix it with simple adjustments.
 
- 3. Mid-Drift
+ 3. Mid-Drift
 Trust begins to wobble
 This is where:
 	•	people stop volunteering information
@@ -82,9 +82,9 @@ This is where:
 	•	communication fractures in small but meaningful ways
 Stress rises. Predictability drops. Stability weakens.
 This is the moment leaders usually realize “something feels off.”
-ALI tells them exactly what and where.
+ALI shows which conditions are moving and where the leader and team see things differently.
 
- 4. Late Drift
+ 4. Late Drift
 Instability becomes visible
 Now the pattern is clear:
 	•	inconsistencies compound
@@ -96,9 +96,9 @@ Now the pattern is clear:
 	•	psychological safety erodes
 	•	leaders overcompensate
 Teams begin to feel exhausted. The organization becomes reactive.
-ALI provides a map for recovery before the culture tips.
+ALI shows where to start before the culture tips.
 
- 5. Cultural Failure (The Edge)
+ 5. Cultural Failure (The Edge)
 When drift is left unaddressed
 This looks like:
 	•	fear replacing honesty
@@ -110,9 +110,9 @@ This looks like:
 Cultural failure does not mean the company dies — it means the culture can no longer sustain healthy performance.
 Recoverable? Yes. But costly.
 Most leaders only intervene here.
-ALI intervenes four stages earlier.
+ALI is built to catch it four stages earlier.
 
- Why the Drift Timeline Matters
+ Why Tracking Drift Matters
 Leaders don’t need more theories.
 They need:
 	•	early detection
@@ -125,6 +125,6 @@ They need:
 	•	a way to maintain alignment
 	•	a way to stabilize growth
 	•	a way to lead without guessing
-That’s what the Drift Timeline gives them.
-And because ALI measures micro-patterns quarterly — leaders get a moving picture of their culture, not a frozen one.
+That’s what tracking drift gives them.
+And because ALI runs every quarter, leaders get a moving picture of their culture, not a frozen one.
 This is the difference between prevention and repair. ALI exists to prevent.

@@ -21,7 +21,7 @@ applications:
   - Use as source-of-truth content when building ALI and Culture Science tools.
   - Reference when generating articles, training, or product copy related to this part.
 related:
-  - ali-diagnostic-part-10
+  - ali-diagnostic-part-8
   - ali-diagnostic-part-12
 ---
 
@@ -29,7 +29,7 @@ SECTION 7 — Part XI
 The ALI Method
 How Leaders Improve With Small, Repeatable Shifts
 Big change is seductive. But big change rarely sticks.
-Small businesses don’t need dramatic reinvention — they need reliable improvement.
+Small businesses don’t need dramatic reinvention — they need reliable improvement.
 The ALI Method is built around one truth:
 Leadership doesn’t improve by intensity. Leadership improves by consistency.
 Most leadership systems fail because they demand:
@@ -41,16 +41,15 @@ ALI operates on the opposite principle:
 Micro-shifts → Macro-impact
 Here’s the structure:
 
- 1. One Focus Per Quarter
-Each quarter, based on the report, ALI identifies:
-	•	one clarity shift
-	•	or one communication shift
-	•	or one behavioral consistency shift
-	•	or one stability shift
-Not all four. Just one.
-The fastest way to grow leaders is to unburden them, not overload them.
+ 1. One Focus Per Quarter
+Each quarter, based on the results, the leader picks one condition to work on:
+	•	the one the team scores lowest
+	•	or the one with the biggest gap between leader and team
+	•	or the one a named pattern points to
+Not all seven. Just one.
+The fastest way to grow leaders is to unburden them, not overload them.
 
- 2. One Leadership Micro-Practice
+ 2. One Leadership Micro-Practice
 This is not homework.
 This is a micro-habit that rewires leadership behavior:
 Examples:
@@ -59,11 +58,11 @@ Examples:
 	•	“Check understanding without making it a test.”
 	•	“Use the ‘you-first’ rule once per day.”
 	•	“Close every meeting with a recap.”
-ALI recommends the practice. Leaders apply it in 15 seconds per use, not hours.
+ALI’s “try this” guidance for that condition suggests a practice. Leaders apply it in 15 seconds per use, not hours.
 
- 3. One Stability Anchor
-Stability is the foundation of trust.
-Each quarter, ALI recommends a stability anchor such as:
+ 3. One Consistency Anchor
+Consistency is part of the foundation of trust.
+Each quarter, pick one anchor such as:
 	•	predictable meeting rhythm
 	•	written alignment summary
 	•	a change-free week
@@ -72,9 +71,9 @@ Each quarter, ALI recommends a stability anchor such as:
 	•	establishing a “no surprise” rule
 One anchor = massive impact.
 
- 4. One Cultural Reinforcement
+ 4. One Cultural Reinforcement
 Culture dies without reinforcement.
-ALI identifies a reinforcement action each quarter:
+Each quarter, choose one reinforcement action:
 	•	celebrate consistency
 	•	acknowledge growth
 	•	call out alignment
@@ -83,14 +82,14 @@ ALI identifies a reinforcement action each quarter:
 	•	highlight shifts in communication
 Positive reinforcement stabilizes cultures faster than correction.
 
- 5. One Transparency Moment
-Ali doesn’t ask leaders to dump data on their team. Instead, they practice limited transparency:
+ 5. One Transparency Moment
+ALI doesn’t ask leaders to dump data on their team. Instead, they practice limited transparency:
 	•	“Here’s what we’re working on.”
 	•	“Here’s one thing I’m improving.”
 	•	“Here’s one shift we’re making together.”
 This builds trust faster than complexity.
 
- 6. Repeat for a Year
+ 6. Repeat for a Year
 After four cycles (four quarters):
 	•	clarity increases
 	•	trust stabilizes
@@ -98,7 +97,7 @@ After four cycles (four quarters):
 	•	communication evens out
 	•	emotional volatility drops
 	•	alignment rises
-	•	psychological safety strengthens
+	•	people speak up more
 	•	stability returns
 	•	performance steadies
 No drama. No overload. No burnout.
