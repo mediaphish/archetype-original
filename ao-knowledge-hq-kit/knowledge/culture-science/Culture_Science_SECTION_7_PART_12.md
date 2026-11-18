@@ -22,7 +22,7 @@ applications:
   - Reference when generating articles, training, or product copy related to this part.
 related:
   - ali-diagnostic-part-11
-  - ali-diagnostic-part-13
+  - ali-diagnostic-part-15
 ---
 
 SECTION 7 — Part XII

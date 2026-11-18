@@ -2,7 +2,7 @@
 
 These parts described the first version of ALI: the old condition set (Clarity,
 Communication, Consistency, Trust, Alignment, Stability, Drift), scores, profiles,
-zones, warning indicators and dashboards that the rebuilt ALI does not have.
+zones, warning indicators, dashboards and visuals that the rebuilt ALI does not have.
 
 Retired with Bart's approval on 2026-11-17 during the ALI v3 conditions rollout.
 Kept as history. They sit outside ao-knowledge-hq-kit/knowledge, so the knowledge

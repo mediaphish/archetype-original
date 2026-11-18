@@ -22,19 +22,19 @@ applications:
   - Reference when generating articles, training, or product copy related to this part.
 related:
   - ali-diagnostic-part-17
-  - ali-diagnostic-part-19
+  - ali-diagnostic-part-22
 ---
 
 SECTION 7 — PART XVIII
 THE LEADERSHIP COMPETENCY MODEL
 
-ALI measures how leadership is experienced across seven diagnostic dimensions.
+ALI measures how leadership is experienced across seven conditions.
 But measurement alone does not create growth.
 
 Growth requires competencies—repeatable, observable, trainable leadership behaviors
 that shape culture every single day.
 
-Where the ALI dimensions reveal reality, the Leadership Competency Model shapes it.
+Where the ALI conditions reveal reality, the Leadership Competency Model shapes it.
 
 These five competencies are the foundation of all development inside Culture Science.
 They are:
@@ -75,7 +75,7 @@ Operationalization:
 - say no to misaligned work
 
 ALI Mapping:
-Influences Clarity, Alignment, Communication, Drift, Stability.
+Influences Clarity, Alignment, Trust, Drift.
 
 Signals:
 Strong clarity → faster cycles, lower friction, fewer resets.
@@ -115,7 +115,7 @@ Operationalization:
 - remove fear from communication
 
 ALI Mapping:
-Influences Trust/Safety, Honesty, Stability, Communication, Drift.
+Influences Trust, Voice, Consistency, Accountability, Drift.
 
 Signals:
 Strong trust → candor, early escalation, safety.
@@ -153,7 +153,7 @@ Operationalization:
 - deliver context, not just tasks
 
 ALI Mapping:
-Influences Communication, Alignment, Stability, Drift.
+Influences Clarity, Voice, Alignment, Drift.
 
 Signals:
 Strong communication → autonomy, short meetings, aligned teams.
@@ -190,7 +190,7 @@ Operationalization:
 - fair enforcement
 
 ALI Mapping:
-Influences Drift, Stability, Trust, Alignment.
+Influences Consistency, Accountability, Trust, Drift.
 
 Signals:
 Strong consistency → credibility, stability, predictability.
@@ -227,7 +227,7 @@ Operationalization:
 - acknowledge emotion neutrally
 
 ALI Mapping:
-Influences Safety, Trust, Communication, Stability.
+Influences Voice, Support, Trust, Drift.
 
 Signals:
 Strong safety → early escalation, innovation, collaborative conflict.
@@ -253,6 +253,3 @@ CLOSING
 These five competencies form the structural backbone of leadership development within
 Culture Science. ALI reveals the truth; the competencies transform it.
 They are the muscles of Servant Leadership, and strengthening them changes everything.
-
-
-**

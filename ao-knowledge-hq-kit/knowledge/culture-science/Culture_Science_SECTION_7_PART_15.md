@@ -21,68 +21,44 @@ applications:
   - Use as source-of-truth content when building ALI and Culture Science tools.
   - Reference when generating articles, training, or product copy related to this part.
 related:
-  - ali-diagnostic-part-14
-  - ali-diagnostic-part-16
+  - ali-diagnostic-part-12
+  - ali-diagnostic-part-17
 ---
 
 SECTION 7 — Part XV
 The Survey Engine
 How ALI Asks the Right Questions — and Asks Them the Right Way
-Most surveys fail because they rely on one version of a question. They assume one phrasing reveals the truth.
+Most surveys fail because they rely on one version of a question. They assume one phrasing reveals the truth.
 It doesn’t.
 Real culture is complex. Human psychology is complex. And truth surfaces differently depending on how you ask.
-That’s why ALI uses a multi-angle questioning model.
-Each dimension (Clarity, Trust, Communication, Safety, Stability, Alignment) is measured through:
-	•	Direct phrasing
-	•	Soft phrasing
-	•	Inverted phrasing
-	•	Projection phrasing
-	•	Scenario phrasing
-	•	Consistency checks across time
+That’s why ALI asks every question idea in four different wordings.
+Each of the seven conditions (Clarity, Consistency, Accountability, Voice, Growth, Support, Alignment) is measured through two question ideas. Trust gets two more, and Commitment gets one. Each idea is written four ways that mean the same thing. Every round uses a different wording of each idea, in shuffled order.
 This reduces bias, exposes drift, and reveals hidden patterns no single question could detect.
 Let’s break it down.
 
- 1. Direct Questions
-These measure conscious awareness.
-Example: “Do you understand what’s expected of you day to day?”
-Direct questions reveal surface truth. Necessary but not sufficient.
+ 1. Four Wordings of Every Idea
+Each question idea has four versions that ask the same thing in different words. A different version shows up each round. People answer from experience, not from memory.
 
- 2. Soft Questions
-These bypass defensiveness.
-Example: “How often do expectations feel confusing or unclear?”
-Soft questions surface what people don’t want to say bluntly.
+ 2. One Wording Turned Around
+One of the four versions is reversed. Agreeing with it means the condition is weaker, so it is scored the other way. It catches people who agree with everything.
 
- 3. Inverted Questions
-These expose drift.
-Example: “When confusion arises, how long does it typically last before clarity returns?”
-The question never asks, “Is there confusion?” It assumes it exists — which helps people answer honestly.
+ 3. The Same Questions for Leader and Team
+The leader and the team get the same wording in the same shuffled order. That keeps the mirror fair. The leader’s view sits right next to the team’s.
 
- 4. Projection Questions
-These uncover deeper patterns.
-Example: “How often do others on your team seem unsure about direction?”
-People will often tell the truth indirectly when direct truth feels risky.
+ 4. The Same Five Answers Every Time
+Every question uses the same five answers: Strongly disagree, Disagree, Neither, Agree, Strongly agree.
 
- 5. Scenario Questions
-These reveal behavioral tendencies.
-Example: “If you speak up about a concern, what outcome feels most likely?”
-	•	You’re heard
-	•	You’re misunderstood
-	•	You’re ignored
-	•	You’re penalized
-	•	You’re not sure
-Scenarios surface the internal prediction model of your team. That model reveals more about culture than any single opinion ever could.
+ 5. One Trial Question
+Each round adds one unscored trial question. It tests new question ideas without touching anyone’s results.
 
- 6. Repeated Questions Across Time
+
+ 6. Repeated Questions Across Time
 This is where ALI transcends traditional surveys.
-We don’t just ask a question once. We ask variants in every quarterly pulse, including:
-	•	3-question anchors that remain the same every quarter
-	•	rotational questions that hit each dimension from different angles
-	•	yearly deep dives that examine long-arc patterns
+We don’t just ask a question once. We ask it again every quarter, in a new wording.
 Teams change. Cultures evolve. Stress spikes and drops.
-Quarterly anchors track progress. Quarterly rotations reveal nuance. Yearly deep dives expose long-term truth.
-No other small-business tool does this.
+The ideas stay fixed, so scores line up from round to round. The wording rotates, so the survey never feels memorized. From the second round, ALI shows which way each condition is moving.
 
- Three Purposes of the Survey Engine
+ Three Purposes of the Survey Engine
 1. Reduce Response Bias
 People answer differently depending on:
 	•	their emotional state
@@ -98,10 +74,10 @@ But invert the angle and they say:
 That contradiction isn’t a mistake. That’s culture speaking.
 3. Let the Truth Surface Organically
 People won’t always tell you the truth directly. They will tell you the truth consistently.
-ALI measures consistency across question types — not just the words people choose.
+ALI measures consistency across the four wordings of each idea, not just the words people choose.
 
- The Survey Engine Is Not a Form — It’s an Instrument
+ The Survey Engine Is Not a Form — It’s an Instrument
 Most tools ask: “What do you think?”
-ALI asks: “What does your experience reveal?”
-Most tools analyze subjective opinion. ALI analyzes patterns over time, across multiple lenses, mapped onto scientific dimensions.
+ALI asks: “What does your experience reveal?”
+Most tools analyze subjective opinion. ALI analyzes patterns over time, across leader and team, mapped onto seven conditions a leader can change.
 This is not a survey. This is a diagnostic instrument for Servant Leadership.

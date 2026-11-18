@@ -19,9 +19,9 @@ takeaways:
   - The development layer gives leaders concrete practices and rhythms tied directly to ALI results and foundational skills.
 applications:
   - Use this section to design ongoing leadership development programs that align quarterly ALI data with micro-practices and coaching.
-  - Reference it when building Archy prompts, leadership pathways, and Institute curriculum around behavior change.
+  - Reference it when building leadership pathways, and Institute curriculum around behavior change.
 related:
-  - ali-diagnostic-part-16
+  - ali-diagnostic-part-15
   - ali-diagnostic-part-18
 ---
 
@@ -63,7 +63,7 @@ The Development Layer exists to give leaders:
   • something to reflect on this month
   • something to measure next quarter
 
-Your clients don’t need ideology.
+Leaders don’t need ideology.
 They need momentum.
 
 The Development Layer gives them exactly that.
@@ -77,10 +77,10 @@ Track A: Diagnostic-Driven Development
 This is the leadership development that emerges directly from ALI results.
 
 Examples:
-  • Trust anchor declining → Work on “voice confidence rituals”
-  • Clarity anchor rising → Strengthen expectation-setting systems
-  • Safety indicators dropping → Focus on “leader-first vulnerability”
-  • Consistency drift → Reinforce “repeatable leadership practices”
+  • Trust declining → Work on “voice confidence rituals”
+  • Clarity rising → Strengthen expectation-setting systems
+  • Voice dropping → Focus on “leader-first vulnerability”
+  • Consistency sliding since last round → Reinforce “repeatable leadership practices”
 
 This is where the tool becomes a coach.
 
@@ -107,10 +107,9 @@ AO teaches how to do it.
 
 These two tracks together are the development engine.
 
-3. Instruments That Support Development (Not Yet in Tech, but Necessary in Canon)
+3. Practices That Support Development
 
-These will eventually live inside Archy + the ALI dashboard.
-For now, they live conceptually in the canon:
+These practices sit alongside ALI results. They are not part of the survey:
 
 Micro-Practices
 
@@ -126,9 +125,6 @@ Small.
 Actionable.
 Measurable.
 
-Leadership Prompts
-
-Archy will eventually deliver daily or weekly prompts personalized to the leader’s ALI profile.
 
 Monthly Calibration Check-Ins
 
@@ -154,13 +150,13 @@ All of this becomes part of the eventual Institute curriculum.
 This is the essential rhythm for SMB leadership:
 
 Month 1 — Receive survey results
-  • Identify top drift indicator
-  • Identify top strength indicator
+  • Identify the condition that needs the most attention
+  • Identify the strongest condition
   • Set 1 practice + 1 focus
 
 Month 2 — Practice and coaching support
   • Micro-practices
-  • Archy recommendations
+  • The “try this” guidance for each condition
   • Mentoring support (if part of their plan)
 
 Month 3 — Pre-survey calibration
@@ -168,7 +164,7 @@ Month 3 — Pre-survey calibration
   • Accountability
   • Reinforcement
 
-Survey #X (Pulse)
+Next quarterly round
 
 Then the cycle repeats.
 
@@ -183,7 +179,6 @@ It removes the chaos of trying to “be a better leader” and replaces it with 
 
 5. Development as a System, Not a Service
 
-This is your advantage over every competitor.
 
 Consultants provide coaching.
 Coaching disappears when the engagement ends.
@@ -194,12 +189,11 @@ ALI + AO provide systems:
   • an accountability structure
   • a set of foundational competencies
   • a library of micro-practices
-  • an AI-driven reinforcement layer
   • long-term leadership identity formation
 
-Your consulting becomes the strategic layer, not the labor layer.
+Consulting becomes the strategic layer, not the labor layer.
 
-This is the only way you can serve:
+This is the only way to serve:
   • 15 companies?
   • 50 companies?
   • 200 companies?
@@ -207,7 +201,7 @@ This is the only way you can serve:
 A system scales.
 A consultant does not.
 
-6. A Key Truth for the Canon:
+6. A Key Truth:
 
 Data reveals direction.
 Development creates change.
@@ -215,7 +209,6 @@ ALI without development is incomplete.
 Development without ALI is unanchored.
 Together, they create transformation.
 
-This line belongs everywhere.
 
 7. Where Section XVII Ends
 
