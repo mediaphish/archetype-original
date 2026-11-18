@@ -65,6 +65,7 @@ The relationship is simple:
 ALI reveals the patterns. Archy interprets and coaches against those patterns in real time.
 Canon rule:
 	•	Archy never gives advice that drifts from ALI and Culture Science.
+	•	ALI and Archy work together. ALI measures the conditions. Archy helps leaders understand their results, compare them with similar businesses, and choose what to work on next.
 
 3. How ALI Connects to the Anti-Projects
 The Anti-Projects (narcissistic leadership, transactional leadership, extractive leadership, fear-based leadership, “results at any cost,” etc.) are not just side essays.

@@ -145,15 +145,18 @@ Behind the scenes, Anti-Projects inform:
 - the “try this” guidance for each condition  
 - consulting roadmaps  
 
-But publicly, ALI outputs only:
+What a leader sees in ALI is only:
 
-- clarity scores  
-- trust signals  
-- stability indicators  
-- communication patterns  
-- alignment drift  
-- quarter-over-quarter change  
-- practical recommendations  
+- a score for each of the seven conditions  
+- how the leader’s view compares with the team’s  
+- Trust and Commitment  
+- drift from one round to the next  
+- named patterns  
+- practical next steps  
+
+As more companies use ALI, leaders will be able to ask Archy how they compare with other businesses: nationally, by region, by state, and by industry. A leader can ask, “How are other businesses in my industry doing with Accountability?” and Archy answers with a report built for their business, including what has helped similar businesses improve, adjusted to their size and team. Every comparison is built from combined, anonymous results. A comparison group only appears once it holds at least five companies, and no other company’s name, people or details are ever shown.
+
+Archetype Original will also share what ALI shows about leadership in general, such as whether leadership across ALI companies is getting better over time. Those findings are always general and anonymous. No company, leader, or team is ever named or identifiable.
 
 Serving leaders, not shaming them.
 

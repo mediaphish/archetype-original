@@ -124,7 +124,7 @@ Although ALI refuses to diagnose individuals, it absolutely reveals:
 - where clarity is breaking down  
 - where alignment is drifting  
 - where trust is fragile  
-- where communication is reactive  
+- where people hear about changes after they happen instead of before  
 - where standards do not hold for everyone  
 - where the leader sees a different picture than the team  
 - where teams are compensating for leadership gaps  
