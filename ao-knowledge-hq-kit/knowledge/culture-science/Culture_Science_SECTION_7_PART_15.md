@@ -21,7 +21,7 @@ applications:
   - Use as source-of-truth content when building ALI and Culture Science tools.
   - Reference when generating articles, training, or product copy related to this part.
 related:
-  - ali-diagnostic-part-12
+  - ali-diagnostic-part-11
   - ali-diagnostic-part-17
 ---
 
