@@ -11,7 +11,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-10-22'
+updated_at: '2026-11-18T00:49:22.548Z'
 source:
   kind: site
   note: >-
@@ -110,7 +110,7 @@ Most organizations never measure this gap. They track revenue, output, and perfo
 
 Culture Science builds the mirror. Not to judge, to inform. The data shows leaders what their team is actually experiencing, so they can lead from what's real instead of what they assume.
 
-ALI, the Archetype Leadership Index, is the first tool built from this foundation. It exists because of Culture Science, not above it. Seven conditions: Clarity, Communication, Consistency, Trust, Alignment, Stability, and Drift. Four times a year. The data your internal rooms will never produce on their own.
+ALI, the Archetype Leadership Index, is the first tool built from this foundation. It exists because of Culture Science, not above it. Seven conditions a leader creates: Clarity, Consistency, Accountability, Voice, Growth, Support, and Alignment. And what they produce: Trust, Commitment, and Drift. Four times a year. The data your internal rooms will never produce on their own.
 
 The Four Blind Spots
 

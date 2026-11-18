@@ -10,7 +10,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-10-22'
+updated_at: '2026-11-18T00:49:22.548Z'
 source:
   kind: site
   note: >-
@@ -65,7 +65,7 @@ Chat with Archy
 
 ## Ready for the real conversation?
 
-One conversation is ninety minutes on one real situation. When you are ready, start there.
+Your first conversation is free. It runs up to ninety minutes, on whatever you are carrying. When you are ready, start there.
 
 Book a conversation
 

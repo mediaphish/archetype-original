@@ -10,7 +10,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-10-22'
+updated_at: '2026-11-18T00:49:22.548Z'
 source:
   kind: site
   note: >-
@@ -44,6 +44,22 @@ Read more & buy
 The structural limits of honest feedback inside authority, and why the conversation you need often cannot happen inside your own room.
 
 Learn more & buy
+
+## Guides
+
+Short, practical guides with worksheets, built to use with a real person and a real situation in mind.
+
+[Image: Holding the Line by Bart Paden, guide cover]
+
+### Holding the Line
+
+A Leader's Guide to Toxic Empathy
+
+For leaders who care about their people and still feel something slipping. Seven short chapters, each ending with a worksheet, from the moment you hesitate to the thirty days after the conversation.
+
+$29 · 40-page printable PDF, delivered by email
+
+See the guide
 
 ## Not sure where to start?
 
