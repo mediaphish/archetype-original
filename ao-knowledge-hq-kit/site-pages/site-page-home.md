@@ -6,12 +6,12 @@ status: published
 url: 'https://www.archetypeoriginal.com'
 summary: >-
   Thirty-four years of building businesses, on your side of the table. Bart
-  Paden writes about leadership and works with leaders where they are: one
-  conversation, a season, or ongoing.
+  Paden writes about leadership and works with leaders where they are: a free
+  first conversation, a season, or ongoing.
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-10-22'
+updated_at: '2026-11-18T00:49:22.548Z'
 source:
   kind: site
   note: >-
@@ -44,6 +44,8 @@ Industries
 
 Books
 
+New guide Holding the Line: A Leader's Guide to Toxic Empathy. Seven short chapters, a worksheet for each. See the guide
+
 Work with Bart
 
 ## I meet you where you are.
@@ -68,11 +70,11 @@ My favorite part of building businesses was never the product. It was developing
 
 You can see how I think before you spend a dollar. Read one of my three books, or a few entries in the journal.
 
-### One conversation
+### First conversation
 
-$500 one time
+Free
 
-Ninety minutes on one real situation.
+Up to ninety minutes, on whatever you are carrying.
 
 ### A season
 
@@ -86,12 +88,6 @@ $3,000 a month
 
 Someone in your corner for the long haul.
 
-### Rising leaders
-
-$150 one conversation
-
-Three a month, for those early in it.
-
 See how it works
 
 Book a conversation
@@ -102,23 +98,23 @@ From the journal
 
 All entries →
 
-September 30, 2026
+November 16, 2026
 
-### I Called Myself Retired
+### The Abigail Archetype
 
-In July 2022 I sold the software company I had spent twenty nine years building, and then I said one word that did more damage than any hard year before it. A label is a verdict wearing the costume of a description, and you obey it without ever agreeing to.
+The Archetype Series, Entry Fifteen The warning came to the wrong door. One of Nabal's young men, a shepherd who had spent the season out in the hills with his master's flocks, came in with news that could get everyone on the estate killed.
 
-September 25, 2026
+November 11, 2026
 
-### The Jonathan Archetype
+### The Dashboard Is Green
 
-The Archetype Series, Entry Eleven Jonathan takes off his own robe and hands it to David before Saul has said a single hostile word. Genesis gives Cain a warning he ignores. Saul gets a throne he clings to past the point of holding it.
+It is Monday morning at a mid-sized distributor, and the operations review is going well. The screen at the front of the room is green from corner to corner. A year ago, leadership put an AI system in place to draft replies to customer emails.
 
-September 21, 2026
+November 9, 2026
 
-### The Org Chart Only Works Until It's Tested
+### The Eli Archetype
 
-Interactive EQ ran more than 5,000 role-based workplace simulations across 1,700-plus professionals in 46 organizations this year and published the results as the Behavioral Intelligence Index. The finding that matters isn't complicated. About one in four professionals stall when authority becomes ambiguous, even when they already know the right thing to do.
+The Archetype Series, Entry Fourteen Samuel thought the old man was calling him. The boy slept in the temple at Shiloh, a few steps from the ark of God.
 
 The books
 

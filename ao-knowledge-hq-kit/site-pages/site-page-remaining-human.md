@@ -10,7 +10,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-10-22'
+updated_at: '2026-11-18T00:49:22.548Z'
 source:
   kind: site
   note: >-
@@ -31,7 +31,7 @@ It exposed it.
 
 A field guide for leaders navigating speed, pressure, and AI-driven systems without losing clarity, trust, or responsibility.
 
-Get the eBook — $27
+Get the eBook — $35
 
 Digital download · One-time purchase.
 
@@ -51,7 +51,7 @@ Leadership is what gets exposed inside it.
 
 RemAIning Human is a field guide for leaders operating inside systems that move faster than clarity—especially as AI lifts the tempo across decisions, handoffs, and expectations. Not theory. Not tactics. A way to think clearly when everything else speeds up.
 
-Get the eBook — $27
+Get the eBook — $35
 
 Digital download · One-time purchase.
 
@@ -99,6 +99,6 @@ Leadership Advisory
 
 If you've felt that acceleration—including what AI is doing to the clock inside your organization—this book will help you see it and respond with intention.
 
-Get the eBook — $27
+Get the eBook — $35
 
 Digital download · One-time purchase.

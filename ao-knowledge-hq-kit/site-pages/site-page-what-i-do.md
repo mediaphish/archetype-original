@@ -10,12 +10,14 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-10-22'
+updated_at: '2026-11-18T00:49:22.548Z'
 source:
   kind: site
   note: >-
     Generated from the live page by scripts/extract-site-pages.mjs. Edit the
     page, not this file.
+archived: true
+archived_at: '2026-11-18'
 ---
 # What I Do
 

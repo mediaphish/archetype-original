@@ -10,7 +10,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-10-22'
+updated_at: '2026-11-18T00:49:22.548Z'
 source:
   kind: site
   note: >-
@@ -93,7 +93,7 @@ I have spent thirty-four years building and leading companies, including a softw
 
 I have also failed, built through it, lost parts of it, and rebuilt. That full range is what I bring into the room. It is not a framework. It is pattern recognition that only comes from having been inside enough rooms to understand what they cannot produce on their own.
 
-I meet people where they are. Sometimes that is one conversation about one real situation. Sometimes it is a season of working through something together, or a standing relationship that lasts for years.
+I meet people where they are. Sometimes that is a single conversation. Sometimes it is a season of working through something together, or a standing relationship that lasts for years.
 
 If you sense that something important is not fully reaching you, this is the conversation worth having.
 

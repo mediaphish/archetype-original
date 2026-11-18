@@ -5,13 +5,13 @@ type: site-page
 status: published
 url: 'https://www.archetypeoriginal.com/culture-science/ali'
 summary: >-
-  The Archetype Leadership Index measures the seven conditions that determine
-  whether a culture holds: trust, clarity, communication, consistency,
-  alignment, stability, and drift.
+  The Archetype Leadership Index shows the conditions your leadership creates:
+  clarity, consistency, accountability, voice, growth, support, and alignment,
+  and what they produce in trust and commitment.
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-10-22'
+updated_at: '2026-11-18T00:49:22.548Z'
 source:
   kind: site
   note: >-
@@ -20,7 +20,7 @@ source:
 ---
 The Archetype Leadership Index · Culture Science
 
-# Leadership becomes measurable, visible, and directional.
+# See the conditions your leadership creates.
 
 ALI is a leadership condition diagnostic built to help leaders see the conditions they are creating, long before drift becomes damage.
 
@@ -84,59 +84,73 @@ These seven conditions are universal. They exist in every organization regardles
 
 Clarity
 
-How well people know what matters.
+I know what matters.
 
-Clarity is how well people know what matters: priorities, expectations, and what good looks like in the day to day. It is not whether the leader feels clear. It is whether direction, tradeoffs, and decisions land for the team and stay intelligible when pressure hits. Everything else in the system depends on this.
+Priorities, expectations, and what good looks like are plain enough that people can act without guessing, even when things change. Clarity is not whether the leader feels clear. It is whether the message lands.
 
 02
 
-Communication
+Consistency
 
-Whether information moves in both directions.
+People can predict you.
 
-Communication is whether information moves in both directions, not merely whether leaders talk. It is the delivery system for clarity. It covers whether messages land, where bottlenecks and distortion appear, and whether the team is stuck in loops, assumptions, or leadership by rumor.
+You do what you say. Your follow-through and tone are steady from week to week, so people don't brace for which version of you shows up.
 
 03
 
-Consistency
+Accountability
 
-How reliably leadership shows up the same way over time.
+Standards hold for everyone, the leader first.
 
-Consistency is how reliably leadership shows up the same way over time: standards, follow through, emotional steadiness, and the match between what leaders say and what they do. Consistency is what earns the right to be trusted. Inconsistency reads as caprice, erodes trust, and teaches people to second guess or protect themselves.
+The same expectations apply to everyone. Problems are addressed directly and early. The leader admits mistakes and can be corrected. Care that avoids hard conversations isn't kindness. It's avoidance.
 
 04
 
-Trust
+Voice
 
-Whether this is a place where people can be honest.
+People can tell you the truth.
 
-Trust is whether this is a place where people can be honest: psychological safety, fairness, room to disagree, and reactions to bad news that do not train silence. Trust is built by pattern, not by intention — it is the result of consistency over time. High trust shows up as candor and early problem raising. Low trust shows up as filtering, fear, and late exits.
+Disagreement, bad news, and early warnings reach the leader without a price attached. When voice is low, the leader is working from a filtered version of reality.
 
 05
 
-Alignment
+Growth
 
-How well shared intent and lived behavior line up.
+People are getting better here.
 
-Alignment is how well shared intent and lived behavior line up: common read on values, standards, and direction, and whether the group is rowing the same way. Alignment is what happens when a team that trusts its leader is actually pointed in the same direction. Without the prior conditions, alignment is forced. With them, it emerges.
+The leader develops people, gives real feedback, shares credit, and trusts people with real decisions instead of holding every one.
 
 06
 
-Stability
+Support
 
-How steady and predictable the environment feels.
+People are cared for, and pressure is carried fairly.
 
-Stability is how steady and predictable the environment feels: structure under stress, how conflict is held, and whether roles and expectations hold instead of lurching. Stability is the output of the first five conditions functioning together. It is the difference between a team that can perform under load and one that is constantly bracing for the next shift in tone or rules.
+People are cared for as people. Load is matched to capacity, the weight doesn't always fall on the same few, and people are strengthened before they break, not after.
 
 07
 
+Alignment
+
+We are pulling the same direction.
+
+Work and decisions connect to a shared purpose, and people understand the tradeoffs. Unity without sameness: disagreement is welcome, and drifting apart is not.
+
+What They Produce
+
+Conditions are what you create. These are what they produce.
+
+Trust
+
+The result of the seven, earned over time. It can't be declared. It shows up as candor, early problem-raising, and people giving their best.
+
+Commitment
+
+Whether people choose to stay. A signal, not a verdict: pay and the job market play a part too.
+
 Drift
 
-Whether the conditions are holding or silently sliding.
-
-Drift is the pattern where small, tolerated slips in clarity, standards, and accountability compound: avoiding hard conversations, tolerating ambiguity, slowly shifting how things really work. Drift is not a parallel condition; it is the warning signal that one or more of the first six conditions are eroding. On the dashboard, Drift flags growing mismatch and erosion before it becomes visible damage.
-
-The first six name the conditions of leadership people live in. Drift names whether those conditions are holding or silently sliding, the early warning channel, not a separate virtue like trust or clarity.
+The direction your conditions are moving, measured from one round to the next. The early warning that something is sliding before it becomes damage.
 
 The Method
 
@@ -146,13 +160,13 @@ The Method
 
 ### Environmental Measurement
 
-A quarterly pulse that measures conditions, not emotions. Ten questions per survey. Each question engineered to expose behavioral reality, not preference or sentiment. Leadership becomes visible when conditions are measured over time, not when emotions are sampled in isolation.
+A quarterly pulse that measures conditions, not emotions. About 18 questions, under five minutes. The wording changes every round, so people answer what is true now, not what they remember saying last time. Each question is built to expose behavioral reality, not preference or sentiment. Leadership becomes visible when conditions are measured over time, not when emotions are sampled in isolation.
 
 02
 
 ### Pattern Detection
 
-Isolated data points do not mean anything. Patterns do. Leadership conditions do not change all at once. They drift. ALI is built to detect movement through quarterly comparison, drift thresholds, condition to condition relationships, and underlying signal correlation. ALI treats it as directional: Are conditions strengthening? Are they weakening? How consistently? What underlying signals?
+Isolated data points do not mean anything. Patterns do. Leadership conditions do not change all at once. They drift. ALI compares every round to the last, shows which conditions are strengthening or slipping, and names patterns that matter, like care that avoids hard conversations or standards held through fear.
 
 03
 
@@ -242,7 +256,7 @@ The Intelligence Layer
 
 ## The data tells you what. Archy tells you why and what to do about it.
 
-Most dashboards stop at the numbers. ALI does not. Every condition score, every perception gap, every drift signal connects directly to Archy, the AI trained on thirty three years of lived leadership experience and the full Culture Science research foundation.
+Most dashboards stop at the numbers. ALI does not. Every condition score, every perception gap, every drift signal connects directly to Archy, the AI trained on thirty-four years of lived leadership experience and the full Culture Science research foundation.
 
 When ALI surfaces a gap in your Clarity score, Archy can tell you what that pattern typically means, what is likely driving it, and where to focus first. When your Leadership Mirror shows a significant perception gap between how you score yourself and how your team experiences you, Archy helps you understand what that gap signals and what leaders in similar positions have done to close it.
 
@@ -254,7 +268,7 @@ What ALI Surfaces
 
 ### Your score. Your gaps. Your direction.
 
-Seven conditions measured. Quarterly comparison. Leadership Mirror showing where your self perception and your team's experience diverge. Zone classification showing where your organization sits right now.
+Seven conditions measured. Quarterly comparison. Leadership Mirror showing where your self perception and your team's experience diverge. A plain read on each condition: strong, mixed, or weak.
 
 What Archy Adds
 
@@ -280,7 +294,7 @@ Apply for the Pilot
 
 Pilot Details
 
-Free for one year - includes four quarterly surveys
+First 20 organizations: free for the first year, four quarterly surveys included. After that, $149 a year per leader, your whole team included.
 
 Full dashboard access and all insights from day one
 
@@ -332,33 +346,33 @@ ALI sign in is email link based. No password. Enter your email, open the sign in
 
 07
 
-### Open Deploy.
+### Open Send survey.
 
-From the ALI navigation, go to the Deploy page.
+From the ALI navigation, go to Send survey.
 
 08
 
-### Open Deploy and launch when you are ready.
+### Start your round when you're ready.
 
-ALI shows the next survey number, when it is available, and whether deployment is allowed. If this is your first survey, deployment is always allowed immediately with no waiting. Launch as soon as you are ready. Quarterly cadence timing applies starting with the second survey.
+Your first round can start right away. After that, rounds run quarterly.
 
 09
 
-### Generate the deployment link.
+### Get your two links.
 
-Click Generate Deployment Link. ALI creates the live survey link and adds it to Active Deployments.
+ALI creates one link for your team and a separate one just for you.
 
 10
 
-### Copy and send the survey link to your team.
+### Send the team link and take your own survey.
 
-Share through your normal communication channel. Team members open the link, select their role, complete all 10 questions, and submit.
+Share the team link however you normally reach your team. Each person answers about 18 questions in under five minutes. You answer the same questions from your own link.
 
 11
 
-### Track responses in Active Deployments.
+### Watch responses come in.
 
-Watch response count progress. The minimum threshold is shown in the deployment row. Once responses come in, results feed your ALI view and your data begins building.
+You'll see how many have answered, never who. Results appear when the round closes and at least five team members have answered, so no one's answers can be singled out.
 
 Ethics and Confidentiality
 
@@ -368,7 +382,7 @@ Culture Science exists because leaders and teams trust us with their honest feed
 
 ### Complete Anonymity
 
-Every assessment is completely anonymous. No names, no email addresses, no identifying information from team members completing surveys. Leaders see aggregate data only, never individual responses.
+Every assessment is completely anonymous. No names, no email addresses, no identifying information from team members completing surveys. Leaders see aggregate data only, never individual responses. Results only appear once at least five team members have answered and the round has closed.
 
 ### Aggregated Data Only
 
@@ -376,11 +390,11 @@ All data is aggregated and anonymized. Individual responses are never shared. Co
 
 ### No Selling. No Sharing.
 
-The data is never sold. It is never shared with third parties. It is never used for marketing or solicitation. The team&apos;s honest feedback is the cornerstone of meaningful leadership growth and it is protected accordingly.
+The data is never sold. It is never shared with third parties. It is never used for marketing or solicitation. The team's honest feedback is the cornerstone of meaningful leadership growth and it is protected accordingly.
 
 ### Secure Storage
 
-All data is stored securely using industry standard encryption. Access is limited to authorized personnel only and all access is logged and monitored.
+All data is stored securely using industry standard encryption. Access is limited to authorized personnel only.
 
 The Mirror Is Ready
 

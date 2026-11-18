@@ -10,7 +10,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-10-22'
+updated_at: '2026-11-18T00:49:22.548Z'
 source:
   kind: site
   note: >-
@@ -85,7 +85,7 @@ How This Shows Up
 
 ### Ways to work together
 
-One conversation, a season, or an ongoing relationship, plus a rate for rising leaders. Start with the size that fits.
+Start with a free conversation, up to ninety minutes. If there is more to do, a season or an ongoing relationship.
 
 See the options
 

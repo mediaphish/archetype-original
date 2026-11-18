@@ -2,7 +2,7 @@
 
 > Archetype Original is a servant leadership advisory and Culture Science practice founded by Bart Paden, based in Carthage, Missouri. Private advisory for founders and executives, a leadership diagnostic called ALI, three books, a daily journal, and a 365-day servant leadership devotional series.
 
-Bart Paden spent 33 years building companies, including Midwestern Interactive, which he grew from a home office to more than 100 people before its acquisition in 2022. His core claim: if you grow people, you grow the organization. If you use people, you lose the organization. Everything on this site comes from that work.
+Bart Paden spent 34 years building businesses, including Midwestern Interactive, which he grew from a home office to more than 100 people before its acquisition in 2022. His core claim: if you grow people, you grow the organization. If you use people, you lose the organization. Everything on this site comes from that work.
 
 ## Key terms this site defines
 
@@ -14,6 +14,7 @@ Bart Paden spent 33 years building companies, including Midwestern Interactive, 
 
 ## Services
 
+- Work with Bart: a free first conversation (up to ninety minutes), then a season or an ongoing relationship, plus consulting and fractional roles. Rising leaders are welcome. https://www.archetypeoriginal.com/work-with-bart
 - Leadership Advisory: private, one-to-one advisory for founders and executives. One room, outside the system, no consequence. https://www.archetypeoriginal.com/advisory
 - Consulting: https://www.archetypeoriginal.com/consulting
 - Fractional Leadership: C-suite fractional roles. https://www.archetypeoriginal.com/fractional-roles
@@ -22,7 +23,7 @@ Bart Paden spent 33 years building companies, including Midwestern Interactive, 
 
 - The Room: on the structural limits of honest feedback inside authority. https://www.archetypeoriginal.com/the-room
 - Accidental CEO: a leadership story about building something real and choosing to lead when the weight shows up before the clarity does. https://www.archetypeoriginal.com/accidental-ceo
-- Remaining Human: servant leadership, clarity, and staying human while AI reshapes work. https://www.archetypeoriginal.com/remaining-human
+- RemAIning Human: servant leadership, clarity, and staying human while AI reshapes work. https://www.archetypeoriginal.com/remaining-human
 
 ## Content
 
@@ -485,7 +486,7 @@ Can ALI be used during crisis or heavy organizational change?
 
 Yes, and it's often most valuable exactly then.
 
-Change amplifies everything. Tone becomes more variable. Communication distorts. Clarity erodes. Trust gets fragile. Safety shrinks.
+Change amplifies everything. Clarity erodes. Consistency slips. Support gets stretched thin. Voice goes quiet. Trust gets fragile.
 
 ALI shows you how fast those conditions are shifting so you can stabilize the environment before the wheels come off. Most leaders in crisis are flying blind on the cultural side. ALI changes that.
 
@@ -517,7 +518,7 @@ Does ALI work for remote or hybrid teams?
 
 Yes, and remote environments often make it more necessary, not less.
 
-Drift appears faster when teams aren't in the same room. Silence increases sooner. Tone becomes harder to read. Clarity becomes more critical. Alignment fractures more easily. Communication distortion becomes more visible, and more costly.
+Drift appears faster when teams aren't in the same room. Silence increases sooner. Voice gets harder to hear. Clarity becomes more critical. Alignment fractures more easily. Support is easier to miss when you can't see who's carrying the load.
 
 ALI surfaces those conditions before they escalate into something harder to fix.
 
@@ -539,7 +540,7 @@ It's accurate because it measures what actually drives culture, not how people f
 
 How does ALI improve leadership accountability?
 
-ALI gives leaders visibility into what they're actually creating. Their own patterns. How their behavior impacts conditions. How stability or drift is affecting execution. How their tone is shaping the environment people work inside every day.
+Accountability is one of the seven conditions ALI measures, and it starts with the leader. ALI shows leaders whether standards hold for everyone, whether problems get addressed early, and whether the team sees it the same way the leader does. It also names patterns, like care that avoids hard conversations, or standards held through fear.
 
 Leaders rarely drift intentionally. What ALI does is surface that drift early enough to correct it before it becomes a cultural problem.
 
@@ -597,7 +598,7 @@ Is ALI anonymous? Why does that matter?
 
 Yes, completely. And anonymity isn't a feature. It's a requirement.
 
-Without it, people filter their answers. They tell you what feels safe, not what's true. Tone and trust can't be measured honestly when people are managing how they look. And drift in leadership behavior stays invisible because nobody's going to name it out loud.
+Without it, people filter their answers. They tell you what feels safe, not what's true. Voice and trust can't be measured honestly when people are managing how they look. And drift in leadership behavior stays invisible because nobody's going to name it out loud.
 
 The whole premise of ALI is that you need to see what's actually happening inside your culture, not the version of it people present when they think it matters. Anonymity is what makes that possible.
 
@@ -611,22 +612,24 @@ The sophistication is in the interpretation, not the experience. The survey itse
 
 What does the ALI dashboard tell me that I can't see on my own?
 
-It shows you which conditions are stable, which are drifting, how fast the drift is moving, which early warning indicators are active, which leadership behaviors are contributing, and how the environment is trending over time.
+It shows you where each of the seven conditions stands, where your view and your team's experience differ, and which patterns are showing up. From the second round on, it shows which direction each condition is drifting. It also points to what to try next where the conditions are weakest.
 
 The honest answer to the second part of the question is that most of this is invisible without structured measurement, especially when you're stressed, busy, or relying on intuition. Leaders tend to interpret what they see generously. ALI doesn't.
 
 What exactly is ALI measuring?
 
-ALI measures the seven conditions people work inside every day, in the order they actually depend on each other:
-Clarity — how well people know what matters: priorities, expectations, and what good looks like.
-Communication — whether information moves in both directions, and whether messages land instead of distorting.
-Consistency — how reliably leadership shows up the same way over time, and whether words and behavior match.
-Trust — whether people can be honest, raise problems early, and disagree without consequence.
-Alignment — whether shared intent and lived behavior line up, and whether the team is rowing the same way.
-Stability — how steady the environment feels under pressure, and whether structure holds instead of lurching.
-Drift — the early-warning signal that one or more of the first six are quietly eroding.
+ALI measures the seven conditions a leader creates, the environment people work inside every day:
+Clarity: I know what matters. Priorities, expectations, and what good looks like are plain enough to act on without guessing.
+Consistency: people can predict you. Follow-through and tone are steady from week to week.
+Accountability: standards hold for everyone, the leader first. Problems are addressed directly and early.
+Voice: people can tell you the truth. Disagreement and bad news reach the leader without a price attached.
+Growth: people are getting better here. Real feedback, shared credit, and trust with real decisions.
+Support: people are cared for, and pressure is carried fairly.
+Alignment: we are pulling the same direction. Disagreement is welcome. Drifting apart is not.
 
-Those conditions determine how teams think, communicate, decide, take risks, handle conflict, align, and execute.
+Then it measures what those conditions produce. Trust is earned over time and can't be declared. Commitment is whether people choose to stay and give their best. Drift is the direction the conditions are moving from one round to the next, the early warning before something slides into damage.
+
+Leaders and their teams answer the same questions, so ALI also shows where the leader's view and the team's experience don't match.
 
 Most leadership tools measure emotions. ALI measures the environment leadership creates. That's a different thing entirely, and it's far more predictive. Conditions shape behavior long before results appear. ALI makes those conditions visible while there's still time to act on them.
 
@@ -644,7 +647,7 @@ What is the Archetype Leadership Index (ALI)?
 
 ALI is a leadership diagnostic system.
 
-It measures behavioral signals that predict cultural health, stability, or drift, often long before leaders notice a problem. It's not a personality assessment. It's not a satisfaction survey. It measures the conditions people work inside every day.
+It measures the conditions leaders create, and the trust, commitment, or drift those conditions produce, often long before leaders notice a problem. It's not a personality assessment. It's not a satisfaction survey. It measures the conditions people work inside every day.
 
 ALI makes the invisible visible so leaders can correct course while there's still time to do it without major damage.
 
@@ -652,7 +655,7 @@ What kinds of leadership problems does ALI help solve?
 
 Nearly all of them trace back to one or more weakened conditions.
 
-Misalignment points to Clarity. Conflict usually points to Communication or Safety. Turnover points to Trust, Tone, or Safety. Slow execution points to Clarity or Consistency. Disengagement points to Tone, Safety, or Trust. Friction points to Communication. Reactive leadership points to Consistency. Strategy breakdown points to Clarity.
+Misalignment points to Clarity or Alignment. Conflict that never gets resolved points to Accountability or Voice. Turnover points to Support, Growth, or Consistency. Slow execution points to Clarity or Consistency. Disengagement points to Voice, Growth, or Support. Problems that surface too late point to Voice. Reactive leadership points to Consistency. Strategy breakdown points to Clarity or Alignment.
 
 Most organizations treat the surface problem. ALI reveals the root condition. That's the difference between solving something and managing it indefinitely.
 
@@ -722,7 +725,7 @@ How is Archetype Original different from other leadership firms?
 
 It's built from lived leadership, not theory alone.
 
-I spent 33 years inside real organizations before I started teaching anyone else. The frameworks here came from that experience, not from academic research or someone else's model.
+I spent 34 years inside real organizations before I started teaching anyone else. The frameworks here came from that experience, not from academic research or someone else's model.
 
 There's no hype here. No motivational performance. No borrowed language dressed up as original thinking. The work is grounded in responsibility, restraint, and the kind of leadership that holds up when things get hard.
 
@@ -780,7 +783,7 @@ Leadership is not neutral. Every decision, reaction, and habit is teaching peopl
 
 What is Archetype Original?
 
-Archetype Original is the work I built after 33 years of leading real organizations and watching the same problems repeat everywhere I looked.
+Archetype Original is the work I built after 34 years of leading real organizations and watching the same problems repeat everywhere I looked.
 
 It's a leadership consultancy and knowledge system built around responsibility, clarity, and long-term cultural health. It exists to help leaders build cultures that are stable, accountable, and human.
 
@@ -1461,6 +1464,10 @@ The 7 Conditions: Why This Series Exists
 https://www.archetypeoriginal.com/journal/ali-series-the-7-conditions-why-this-series-exists
 We are going to spend the next seven posts talking about the conditions that determine whether your leadership is actually working. Not whether you think it is working. Whether the people living inside the system you have built experience it as working.
 
+The Abigail Archetype
+https://www.archetypeoriginal.com/journal/the-abigail-archetype
+The Archetype Series, Entry Fifteen The warning came to the wrong door. One of Nabal's young men, a shepherd who had spent the season out in the hills with his master's flocks, came in with news that could get everyone on the estate killed.
+
 The Absalom Archetype
 https://www.archetypeoriginal.com/journal/the-absalom-archetype
 Absalom never accused David of failing. He just stood in a gap his father left open, morning after morning, until the sympathy he built there cost David his own most trusted counselor.
@@ -1513,13 +1520,25 @@ The Daniel Archetype
 https://www.archetypeoriginal.com/journal/the-daniel-archetype
 Daniel was taken to Babylon as a captive, one of the young men selected from Judah's nobility to be trained for service in Nebuchadnezzar's court.
 
+The Dashboard Is Green
+https://www.archetypeoriginal.com/journal/the-dashboard-is-green
+It is Monday morning at a mid-sized distributor, and the operations review is going well. The screen at the front of the room is green from corner to corner. A year ago, leadership put an AI system in place to draft replies to customer emails.
+
 The Data Caught Up
 https://www.archetypeoriginal.com/journal/the-data-caught-up
 New research confirms what Holding the Line already argued: unenforced standards don't stay neutral, they quietly become the culture.
 
+The Decision You Cannot Hand Off
+https://www.archetypeoriginal.com/journal/the-decision-you-cannot-hand-off
+A leader sits down with a report an AI system generated overnight. It ranks the workforce by output, attendance, tenure, cost. At the bottom of the list are the names the system recommends cutting first. This is not one leader.
+
 The Distraction Play
 https://www.archetypeoriginal.com/journal/the-distraction-play
 Narcissistic leaders keep teams busy with noise to avoid accountability. Servant leaders resist constant pivots and focus attention on what truly matters.
+
+The Eli Archetype
+https://www.archetypeoriginal.com/journal/the-eli-archetype
+The Archetype Series, Entry Fourteen Samuel thought the old man was calling him. The boy slept in the temple at Shiloh, a few steps from the ark of God.
 
 The Golden Rule Has Always Been a Leadership Strategy
 https://www.archetypeoriginal.com/journal/golden-rule-leadership-strategy
@@ -1548,6 +1567,10 @@ The Archetype Series, Entry Eleven Jonathan takes off his own robe and hands it 
 The Joseph Archetype
 https://www.archetypeoriginal.com/journal/the-joseph-archetype
 The Joseph Archetype is the story of a leader who absorbed betrayal, stayed faithful in obscurity, and arrived at power without bitterness in the hand that held it. The second entry in The Archetype Series.
+
+The Josiah Archetype
+https://www.archetypeoriginal.com/journal/the-josiah-archetype
+Josiah heard a lost book read aloud, tore his robes, and kept obeying it after he was told it would not save his kingdom. The standard you go looking for before anything forces you is the only one you will be able to act on when something does.
 
 The Judas Archetype
 https://www.archetypeoriginal.com/journal/the-judas-archetype
@@ -1592,6 +1615,10 @@ Narcissistic leaders rely on high performers to mask their weaknesses, using the
 The Pursuit of Power Corrupts
 https://www.archetypeoriginal.com/journal/the-pursuit-of-power-corrupts
 A reflection on how the pursuit of power can erode trust and culture, contrasting power-hungry leadership with servant-hearted leadership that carries people, not control.
+
+The Rehoboam Archetype
+https://www.archetypeoriginal.com/journal/the-rehoboam-archetype
+Israel waited three days for an answer. They had gathered at Shechem to make Rehoboam king.
 
 The Ruth Archetype
 https://www.archetypeoriginal.com/journal/the-ruth-archetype
@@ -1685,6 +1712,10 @@ Where We Begin
 https://www.archetypeoriginal.com/journal/where-we-begin
 Why Archetype Original begins with a 365-day Servant Leadership Devotional grounded in the Golden Rule.
 
+Who Signs for It?
+https://www.archetypeoriginal.com/journal/who-signs-for-it
+Her raise came in lower than she expected. Not insulting, just lower, and lower in a year she believed had gone well.
+
 Why I Chose the Name Archetype Original
 https://www.archetypeoriginal.com/journal/why-i-chose-the-name-archetype-original
 A foundational explanation of the name Archetype Original, what it means, why it was chosen, and the conviction about leadership, alignment, and responsibility that sits beneath the work.
@@ -1710,10 +1741,10 @@ Devotional series
 
 The Servant Leadership Devotional Series publishes one entry per day, connecting Scripture to the real pressures of leadership. Formation for leaders who want clarity, restraint, and genuine care for people.
 
-Published devotional entries: 289.
+Published devotional entries: 321.
 Browse the series at https://www.archetypeoriginal.com/faith.
 Individual devotional URLs are listed in https://www.archetypeoriginal.com/sitemap.xml.
 
 
 
-Generated at: 2026-10-16T22:08:12.202Z
+Generated at: 2026-11-18T00:48:24.083Z

@@ -11,7 +11,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-10-22'
+updated_at: '2026-11-18T00:49:22.548Z'
 source:
   kind: site
   note: >-
@@ -32,157 +32,113 @@ These reflections sit at the intersection of faith and the real demands of leadi
 
 Read: The Golden Rule Has Always Been a Leadership Strategy →
 
-Today's Devotional
-
-October 22, 2026
-
-Share
-
-October 22, 2026
-
-# I Bore the Loss Myself
-
-Genesis 31:36–40 (ESV)
-
-Unable to load scripture text: Unexpected token '<', "<!doctype "... is not valid JSON
-
-Read Genesis 31:36–40 (ESV) on ESV.org
-
-## Reflection
-
-Twenty years of work gets summarized in a few sentences here, and the summary is mostly about what did not happen. The ewes did not miscarry. The rams were not eaten. Nothing went missing without being accounted for.
-
-I bore the loss of it myself is the center of it. When an animal was killed by something outside his control, Jacob absorbed the cost instead of passing it back to the owner. The flock was never his, and he treated the losses as his anyway.
-
-That is stewardship at a level most leaders never reach. Taking credit for a good season is easy. Absorbing a bad one, especially when it genuinely was not your fault, is another matter. Plenty of leaders hand the loss down to the team, up to circumstances, or sideways to a vendor who cannot push back.
-
-The heat, the cold and the lost sleep are not decoration added for effect. They are the price of keeping something alive that belonged to someone else. Any leader who has carried a responsibility nobody noticed knows what it is to be the only person who understood what it cost.
-
-The speech also shows what happens when faithful work goes unrecognized for two decades. Jacob is angry, and the anger is specific. He is not asking to be praised. He is asking for an honest accounting in front of witnesses, which is a reasonable thing for a steward to want.
-
-## Practical Application
-
-- Name a loss you passed down that you could have absorbed yourself.
-
-- Tell one person what you know their faithful work has cost them, before they have to bring it up.
-
-- Look at what you are protecting that belongs to someone else, and ask whether you guard it like Jacob or like a hired hand.
-
-## Takeaways
-
-- A steward who absorbs the losses is doing something different from one who only reports them.
-
-- Faithful work left unrecognized for years eventually produces anger, and that anger is usually specific and fair.
-
-Closing Thought
-
-He bore the loss himself, and nobody noticed for twenty years.
+No devotional available yet. Check back soon.
 
 Previous Devotionals
 
 ## Browse the archive
 
-October 21, 2026
+November 17, 2026
 
-Rich in Good Works
+Through the Prayers of Many
 
-1 Timothy 6:17–19 (ESV)
+2 Corinthians 1:8–11 (ESV)
 
-Readiness is the test of generosity, because generosity that needs an internal negotiation every time is not ready.
-
-Read →
-
-October 20, 2026
-
-Wealth Sprouts Wings
-
-Proverbs 23:4–5 (ESV)
-
-Knowing when to stop acquiring is a skill rather than a loss of nerve, and what is held tightly can still disappear.
+Paul tells people he was burdened beyond his strength and asks for their prayers. Thankfulness multiplies when a leader lets people into the hard part.
 
 Read →
 
-October 19, 2026
+November 16, 2026
 
-Leave the Edges
+I Will Magnify Him with Thanksgiving
 
-Leviticus 19:9–10 (ESV)
+Psalm 69:29–30 (ESV)
 
-Generosity designed into the harvest does not depend on how a leader feels at the end of a hard year.
-
-Read →
-
-October 18, 2026
-
-That Nothing May Be Lost
-
-John 6:11–12 (ESV)
-
-Abundance reveals whether a leader's care for resources was a value or only a reaction to fear.
+The psalmist says plainly, I am afflicted and in pain, then magnifies God with thanksgiving before anything changes. Honesty and thankfulness can share a sentence.
 
 Read →
 
-October 17, 2026
+November 15, 2026
 
-Where There Are No Oxen
+Though the Fig Tree Should Not Blossom
 
-Proverbs 14:4 (ESV)
+Habakkuk 3:17–18 (ESV)
 
-The cost and the capacity are usually the same animal, and a clean manger can mean discipline or avoidance.
-
-Read →
-
-October 16, 2026
-
-Consider Your Ways
-
-Haggai 1:2–6 (ESV)
-
-When output keeps falling short of input, the problem is allocation rather than effort, and leaders usually respond by pushing harder on the same arrangement.
+Habakkuk names every source of income failing and still says, yet I will rejoice. Thankfulness decided in advance holds when the numbers do not.
 
 Read →
 
-October 15, 2026
+November 14, 2026
 
-Know Well the Condition of Your Flocks
+Who Risked Their Necks
 
-Proverbs 27:23–24 (ESV)
+Romans 16:3–4 (ESV)
 
-Reported condition and actual condition are different numbers, and the distance between them is where failures grow unnoticed.
-
-Read →
-
-October 14, 2026
-
-Come Away and Rest a While
-
-Mark 6:30–31 (ESV)
-
-Rest offered in the middle of good work is a different decision than rest granted after someone collapses.
+Paul names Prisca and Aquila and what they risked for him. Thankfulness that names people in public tells everyone what kind of contribution counts.
 
 Read →
 
-October 13, 2026
+November 13, 2026
 
-One Thing Is Necessary
+No Greater Joy
 
-Luke 10:38–42 (ESV)
+3 John 1:1–4 (ESV)
 
-Good work can crowd out the necessary work, and it almost never feels like a mistake while it is happening.
-
-Read →
-
-October 12, 2026
-
-Whatever Your Hand Finds to Do
-
-Ecclesiastes 9:10 (ESV)
-
-The reason given for wholehearted work is the closing window, not the worthiness of the assignment.
+The elder's greatest joy was hearing that people he loved were walking in the truth. Thankfulness for people runs deepest when the report comes from someone else.
 
 Read →
 
-Showing 1-10 of 294
+November 12, 2026
+
+Blessed Be Your Discretion
+
+1 Samuel 25:32–35 (ESV)
+
+David thanked God and Abigail for stopping him from a decision he would have regretted. Thankfulness for being stopped keeps people willing to step in.
+
+Read →
+
+November 11, 2026
+
+And Took Courage
+
+Acts 28:14–15 (ESV)
+
+Paul saw the people who came out to meet him, thanked God and took courage. Thankfulness for people is often how courage reaches a leader.
+
+Read →
+
+November 10, 2026
+
+Work of Faith, Labor of Love
+
+1 Thessalonians 1:2–3 (ESV)
+
+Paul gives thanks for work, labor and steadfastness, not results. Thankfulness for effort tells people that what they put in is seen.
+
+Read →
+
+November 9, 2026
+
+Sustained to the End
+
+1 Corinthians 1:4–9 (ESV)
+
+Paul thanks God for people he is about to correct at length. Thankfulness for what people were given earns a hearing for the hard conversation.
+
+Read →
+
+November 8, 2026
+
+Proclaimed in All the World
+
+Romans 1:8 (ESV)
+
+Paul thanks God for faith he heard reported from a distance. Being thankful for good you did not build is thankfulness with no credit attached.
+
+Read →
+
+Showing 1-10 of 321
 
 ← Prev
 
@@ -192,7 +148,7 @@ Showing 1-10 of 294
 
 ...
 
-30
+33
 
 Next →
 

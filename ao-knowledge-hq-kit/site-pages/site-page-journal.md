@@ -10,7 +10,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-10-22'
+updated_at: '2026-11-18T00:49:22.548Z'
 source:
   kind: site
   note: >-
@@ -21,9 +21,9 @@ source:
 
 Thoughts, insights, and lessons learned from 34 years of building companies and growing people.
 
-All (105)
+All (112)
 
-Leadership (80)
+Leadership (87)
 
 Servant Leadership (73)
 
@@ -31,11 +31,11 @@ Culture (34)
 
 Psychology (28)
 
+Servant Leadership (25)
+
 Accountability (23)
 
 Power Control (20)
-
-Servant Leadership (18)
 
 Narcissism (12)
 
@@ -53,13 +53,97 @@ Leadership Psychology (1)
 
 Organizational Culture (1)
 
-[Image: I Called Myself Retired]
+[Image: The Abigail Archetype]
 
 Featured
 
-September 30, 2026
+November 16, 2026
 
 ##
+
+The Abigail Archetype
+
+The Archetype Series, Entry Fifteen The warning came to the wrong door. One of Nabal's young men, a shepherd who had spent the season out in the hills with his master's flocks, came in with news that could get everyone on the estate killed.
+
+Read Article →
+
+[Image: The Dashboard Is Green]
+
+November 11, 2026
+
+###
+
+The Dashboard Is Green
+
+It is Monday morning at a mid-sized distributor, and the operations review is going well. The screen at the front of the room is green from corner to corner. A year ago, leadership put an AI system in place to draft replies to customer emails.
+
+Read Article →
+
+[Image: The Eli Archetype]
+
+November 9, 2026
+
+###
+
+The Eli Archetype
+
+The Archetype Series, Entry Fourteen Samuel thought the old man was calling him. The boy slept in the temple at Shiloh, a few steps from the ark of God.
+
+Read Article →
+
+[Image: Who Signs for It?]
+
+November 4, 2026
+
+###
+
+Who Signs for It?
+
+Her raise came in lower than she expected. Not insulting, just lower, and lower in a year she believed had gone well.
+
+Read Article →
+
+[Image: The Josiah Archetype]
+
+November 2, 2026
+
+###
+
+The Josiah Archetype
+
+Josiah heard a lost book read aloud, tore his robes, and kept obeying it after he was told it would not save his kingdom. The standard you go looking for before anything forces you is the only one you will be able to act on when something does.
+
+Read Article →
+
+[Image: The Decision You Cannot Hand Off]
+
+October 28, 2026
+
+###
+
+The Decision You Cannot Hand Off
+
+A leader sits down with a report an AI system generated overnight. It ranks the workforce by output, attendance, tenure, cost. At the bottom of the list are the names the system recommends cutting first. This is not one leader.
+
+Read Article →
+
+[Image: The Rehoboam Archetype]
+
+October 26, 2026
+
+###
+
+The Rehoboam Archetype
+
+Israel waited three days for an answer. They had gathered at Shechem to make Rehoboam king.
+
+Read Article →
+
+[Image: I Called Myself Retired]
+
+September 30, 2026
+
+###
 
 I Called Myself Retired
 
@@ -112,90 +196,6 @@ September 14, 2026
 The Cain Archetype
 
 Cain did not fail because no one told him. He failed after being told, in words that named the exact danger and the exact way out of it.
-
-Read Article →
-
-[Image: The Account Under Fire]
-
-September 2, 2026
-
-###
-
-The Account Under Fire
-
-Part 3 closed on a warning. Everything built at Southwest or inside an Alcoa smelting plant got built with time. Years of consistent choices, banked one at a time, until people believed the standard was real. The next environment doesn't have that kind of time.
-
-Read Article →
-
-[Image: The Daniel Archetype]
-
-August 31, 2026
-
-###
-
-The Daniel Archetype
-
-Daniel was taken to Babylon as a captive, one of the young men selected from Judah's nobility to be trained for service in Nebuchadnezzar's court.
-
-Read Article →
-
-[Image: Twenty Points Apart]
-
-August 28, 2026
-
-###
-
-Twenty Points Apart
-
-Gallup asked leaders to rate themselves on seven leadership competencies. Then they asked the managers who work for those leaders to rate the same people on the same seven things.
-
-Read Article →
-
-[Image: The Jezebel Archetype]
-
-August 24, 2026
-
-###
-
-The Jezebel Archetype
-
-Jezebel never drew a sword. She wrote letters in the king's name, called an assembly, seated false witnesses, and let the process do the killing. The seventh Archetype entry on power that hides inside procedure.
-
-Read Article →
-
-[Image: The Signal I Was Actually Watching]
-
-August 21, 2026
-
-###
-
-The Signal I Was Actually Watching
-
-A mentor client asked me whether there was a moment I knew I had made it, and he meant financially. There was no number. What I actually watched was whether my people were growing.
-
-Read Article →
-
-[Image: The Standard That Held]
-
-August 19, 2026
-
-###
-
-The Standard That Held
-
-Nick Saban walked off the field for the last time in January 2024, and the word reporters kept reaching for was not relief. It was grief. Men who had been screamed at in practice did not describe a tyrant.
-
-Read Article →
-
-[Image: Unity Is Not Sameness]
-
-August 17, 2026
-
-###
-
-Unity Is Not Sameness
-
-The growth of humans is tied to being united with others who are not the same. Most leaders agree with that in principle, then build a team that violates it in practice.
 
 Read Article →
 

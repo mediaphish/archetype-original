@@ -5,13 +5,13 @@ type: site-page
 status: published
 url: 'https://www.archetypeoriginal.com/work-with-bart'
 summary: >-
-  Thirty-four years of building businesses, on your side of the table. One
-  conversation, a season, or an ongoing relationship, plus consulting and
-  fractional roles.
+  Thirty-four years of building businesses, on your side of the table. A free
+  first conversation, then a season or an ongoing relationship, plus consulting
+  and fractional roles.
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-10-22'
+updated_at: '2026-11-18T00:49:22.548Z'
 source:
   kind: site
   note: >-
@@ -36,7 +36,7 @@ See how we can work together
 
 Read my books
 
-[Image: Bart Paden in conversation across a small table, coffee in hand]
+[Image: Bart Paden in conversation across a table]
 
 ## I meet you where you are.
 
@@ -58,45 +58,33 @@ Everyone around you is shaped by the system you lead, and so is everything they 
 
 My favorite part of building businesses was never the product. It was developing people into real leaders. A plan that hits the number and diminishes the people doing the work is not one I will help you run.
 
-## Ways to work together.
+## Start with a conversation.
 
-### One conversation
-
-For anyone carrying one real situation.
-
-$500 one time
-
-Ninety minutes on the thing in front of you. A decision. A person. A plan that is not working the way it looked on paper.
-
-You bring the situation. We work it until you can see it clearly. No intake process. No program to join.
+The first conversation is free. It is a full session, up to ninety minutes, and you can bring as many things as you want to talk through. There is no pitch at the end. If there is more to do, we will both know it, and we can decide together what comes next.
 
 Book a conversation
 
+## If we keep going.
+
+Some people want help through a hard stretch. Some want someone in their corner for the long haul. Here is how each of those works.
+
 ### A season
 
-For the leader in a stretch.
+For a stretch of growth, a transition or a rebuild, when the decisions keep coming. We meet twice a month for three months, and you can reach me in between when something will not wait.
 
 $1,500 a month, for three months
 
-Growth, a transition, a rebuild. The kind of stretch where the decisions keep coming and the stakes keep rising.
-
-Two conversations a month, and you can reach me in between when something will not wait.
-
-Start a season
-
 ### Ongoing
 
-For owners who want someone in their corner.
+A standing relationship for owners who want someone in their corner. We talk as often as you need, and the agenda is always yours.
 
 $3,000 a month
 
-A standing relationship. When the weight shows up, you are not carrying it alone.
-
-As often as you need it. No agenda except yours.
-
-Start an ongoing relationship
-
 How the advisory works →
+
+You do not need to choose either of these now. Both start with the free conversation.
+
+Book a conversation
 
 Rising leaders
 
@@ -104,13 +92,13 @@ Rising leaders
 
 My favorite part of building a company was never the revenue. It was developing young people into real leaders. It still is.
 
-If you are early in your career and carrying more than your title says, the one-conversation session is $150 for you. I hold three of these a month.
+If you are early in your career and carrying more than your title says, I want to hear from you. Your first conversation is free. If we keep meeting after that, we will work out something that fits where you are.
 
 Send me a short note. Tell me where you are and what you are carrying. I read every one myself.
 
 You do not need to be sure it counts as leadership. If you are asking, it probably does.
 
-Tell me about you, $150
+Tell me about you
 
 For your organization
 
@@ -130,6 +118,6 @@ See the roles →
 
 ## Not sure which one fits?
 
-Start with one conversation. If there is more to do, we will both know it by the end of the hour and a half.
+Start with the free conversation. By the end of it, we will both know whether there is more to do.
 
 Book a conversation
