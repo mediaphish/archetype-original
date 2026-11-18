@@ -1,7 +1,6 @@
 # Culture Science Section 7: new parts (draft for Bart's review)
 
-Status: drafts 1 to 3 shown to Bart 2026-11-18. Not published. Parts 4 to 7 (named
-patterns, privacy, after a round, competencies) come after his notes on these.
+Status: all seven drafts shown to Bart 2026-11-18. Not published. Waiting on his notes.
 Facts checked against notes/ali-conditions-v3.md, lib/ali-v3-scoring.js and
 src/lib/ali/resultsModel.js.
 
@@ -94,3 +93,153 @@ The screen also shows:
 
 **How to read it well**
 Read the results as a report on conditions, not a verdict on people. Start with where the team and the leader agree, because that is solid ground. Then look at the biggest gap, because that is where the leader's picture is most incomplete. Pick one or two conditions, not seven. Then share what you learned with the team, using Part XXVIII.
+
+---
+
+## SECTION 7, PART XXXVI: THE NAMED PATTERNS
+
+Some of the most useful things ALI shows are not in any single score. They are in how the scores sit together. When certain combinations appear, ALI names the pattern in plain words, so the leader doesn't have to work it out alone.
+
+ALI names a pattern, never a person. A pattern describes the conditions on a team, not the character of the leader.
+
+**Care that avoids hard conversations**
+Support is high and Accountability is low. The team feels cared for, but standards are slipping, and the hard conversations are probably being put off. This is the pattern most often mistaken for good leadership. It feels kind. Over time it isn't, because the people who carry the standard end up carrying the people who don't.
+
+**Standards held through fear**
+Accountability is high, and Voice or Support is low. Standards are holding, but people may not feel safe to speak up, or supported when the load gets heavy. Results can look strong for a while. The cost shows up later, in silence, burnout, and people leaving.
+
+**A filtered picture**
+The leader rates five or more of the seven conditions noticeably higher than the team does. Some of what the team sees is not reaching the leader. This is not a charge of dishonesty on either side. It is what happens when the truth has to travel uphill.
+
+**How a pattern is named**
+For the first two patterns, "high" means a team score of 70 or more, and "low" means a score under 55. For a filtered picture, "noticeably higher" means more than ten points. These lines are first estimates and will be adjusted once a year of real results shows where they belong.
+
+New patterns are added only when real results show a combination that keeps appearing and leads to a different fix. A pattern earns its name the same way a condition earns its place.
+
+---
+
+## SECTION 7, PART XXXVII: PRIVACY
+
+ALI only works if people tell the truth. People only tell the truth when they know it can't be traced back to them. So privacy is not a feature of ALI. It is the foundation.
+
+**What the leader never sees**
+- any single person's answer
+- who answered and who didn't
+- anything about the team before at least five team members, not counting the leader, have answered and the round has closed
+
+The leader does see how many team members answered. That is a count, never names.
+
+**What the leader does see**
+Combined results only: a score for each condition, the mirror, the named patterns, and drift from round to round. Commitment, the question about staying, is shown only as a team total.
+
+**What ALI never collects in a team answer**
+Names, email addresses, or anything else that points to a person. The leader's own account has an email address, because the leader has to log in. The team's answers do not.
+
+**Who else can see results**
+Archetype Original can see combined results for a company only to keep the system running, to help a customer who asks for help, to improve ALI, and for anonymous research and comparisons. No one at Archetype Original can see a single person's answers.
+
+**Comparisons with other companies**
+When leaders compare their results with other businesses, they only ever see combined results from groups of at least five companies. No other company's name, people, or details are ever shown. When Archetype Original shares what ALI shows about leadership in general, it is always general and anonymous.
+
+**Why the line is five**
+Below five people, it becomes possible to guess who said what. The same rule protects companies in comparisons. If a group is too small to protect everyone in it, ALI shows nothing rather than risk showing someone.
+
+---
+
+## SECTION 7, PART XXXVIII: WHAT HAPPENS AFTER A ROUND
+
+A round of ALI is not finished when the results appear. The results are where the work starts.
+
+**1. The round closes.**
+A round stays open for two weeks unless the leader sets a different close date. Once it closes, and at least five team members have answered, the results appear.
+
+**2. The leader reads the results first.**
+Alone, before anyone else. Start where the leader and the team agree, then look at the biggest gap. Part XXXV covers how to read them.
+
+**3. The leader shares what they learned with the team.**
+Not the screen, and not a defense. A short, honest summary: what the team said, what the leader heard, and what will change. Part XXVIII sets out how.
+
+**4. The leader picks one or two conditions.**
+Not seven. ALI suggests a focus, the condition with the lowest team score, but the leader decides. Part XXX covers how to apply it inside the business.
+
+**5. The leader does the work, visibly.**
+ALI gives one practical thing to try for each condition and one sentence to open the conversation. Small repairs, made early and in plain sight, matter more than a big plan nobody sees.
+
+**6. The next round, about a quarter later.**
+The next round asks about the same ideas in different wording. From the second round on, ALI shows how each condition moved. That is drift, and it is how the leader finds out whether the work landed.
+
+**What not to do**
+- Don't try to find out who said what.
+- Don't argue with the results in front of the team.
+- Don't announce a big initiative and then go quiet.
+- Don't wait for a perfect score before acting. An early read is still worth acting on.
+
+---
+
+## SECTION 7, PART XVIII (REWRITTEN): THE LEADERSHIP COMPETENCY MODEL
+
+Replaces the five competencies in the current Part XVIII (Clarity, Trust, Communication, Consistency, Safety). Trust becomes a result, Communication and Safety fold into Voice and Support, and Accountability and Growth get a competency of their own.
+
+ALI shows how leadership is experienced across seven conditions. Measurement alone does not create growth. Growth comes from competencies: repeatable, visible, trainable things a leader does every day.
+
+There are seven competencies, one for each condition. The condition is what the team experiences. The competency is what the leader practices to create it.
+
+**1. Clarity: making what matters plain**
+The leader makes direction, expectations, priorities, and what good looks like plain enough that people can act without guessing, and keeps them plain when things change.
+Micro-practices:
+- Say the expectation in one sentence.
+- Define "done" before the work begins.
+- When priorities shift, say what to stop, start, and keep doing.
+- Ask, "What feels unclear?"
+Builds: Clarity. Feeds Alignment and Trust.
+
+**2. Consistency: being predictable**
+The leader's actions match their words over time, whatever the pressure. People don't have to check the leader's mood before bringing something up.
+Micro-practices:
+- Write down every promise, and close each one or say why it moved.
+- Choose one standard you never bend.
+- Say so when your capacity is low, instead of letting it leak out as tone.
+Builds: Consistency. Feeds Trust and Accountability.
+
+**3. Accountability: holding the standard, starting with yourself**
+The leader applies the same expectations to everyone, addresses problems directly and early, and answers for their own misses first.
+Micro-practices:
+- Name one standard you've let slide and address it this week, directly and kindly.
+- Admit a mistake out loud, without justifying it.
+- Follow up on what was agreed.
+Builds: Accountability. Feeds Trust and Consistency.
+
+**4. Voice: making truth safe to tell**
+The leader makes disagreement, bad news, and early warnings safe to bring, and proves it by how they react the first time.
+Micro-practices:
+- Ask for bad news on purpose.
+- Thank the person who brings it before responding to the problem.
+- Ask for input before deciding, and show what you did with it.
+Builds: Voice. Feeds Trust and Alignment.
+
+**5. Growth: developing people and sharing power**
+The leader helps people get better, gives honest feedback, shares credit, and trusts people with real decisions.
+Micro-practices:
+- Give one piece of specific, honest feedback each week.
+- Give credit to the people who did the work, in front of others.
+- Hand one decision back to the person closest to it.
+Builds: Growth. Feeds Commitment and Trust.
+
+**6. Support: caring for people and carrying pressure fairly**
+The leader cares for people as people, matches the load to capacity, and steps in before someone breaks, not after.
+Micro-practices:
+- Notice who is carrying the most, and take one thing off them.
+- Ask how someone is doing, and wait for the real answer.
+- Step in to help carry the load when the pressure is on.
+Builds: Support. Feeds Commitment and Trust.
+
+**7. Alignment: connecting the work to the purpose**
+The leader connects work and decisions to a shared purpose, is open about tradeoffs, and keeps the team pulling the same direction without demanding sameness.
+Micro-practices:
+- Share the why behind a hard call.
+- Say the tradeoff out loud.
+- Check that daily work still points at the main goal.
+Builds: Alignment. Feeds Trust and Commitment.
+
+**Closing**
+ALI shows where the conditions are. The competencies are how a leader changes them. They are the muscles of servant leadership, and like any muscle, they grow with use.
