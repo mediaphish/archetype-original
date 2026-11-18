@@ -1580,6 +1580,32 @@ export async function runChatTurn({ email, body = {}, sendEvent, end = () => {},
       }
     }
 
+    // Let whoever answers see the pictures in this conversation, not only their
+    // links (Bart, 2026-11-17: "Vox should have the ability to see images").
+    // A link that no longer loads is left out, so a missing picture never
+    // breaks the turn.
+    try {
+      const { threadImagesToShow, withThreadImages } = await import('../../../lib/ao/threadImages.js');
+      const wanted = threadImagesToShow(history, userMessage, { skip: chatAttachedImageUrlsThisTurn || [] });
+      if (wanted.length) {
+        const loads = await Promise.all(
+          wanted.map(async (url) => {
+            try {
+              const r = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(4000) });
+              const size = Number(r.headers.get('content-length') || 0);
+              return r.ok && /^image\//.test(r.headers.get('content-type') || '') && size < 5_000_000 ? url : null;
+            } catch (_) {
+              return null;
+            }
+          })
+        );
+        const shown = loads.filter(Boolean);
+        if (shown.length) currentMessageContent = withThreadImages(currentMessageContent, shown);
+      }
+    } catch (threadImgErr) {
+      console.error('[chat.js] thread images (non-fatal):', threadImgErr?.message || threadImgErr);
+    }
+
     // Stream the model response token by token.
     // Soft-timeout at 270s so we can still send a real error event before
     // Vercel's 300s hard kill (which would leave the client in silence).
