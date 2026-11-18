@@ -21,7 +21,7 @@ applications:
   - Use as source-of-truth content for ALI implementation guidance.
   - Reference when building leadership playbooks, training, and operational frameworks.
 related:
-  - ali-diagnostic-part-29
+  - ali-diagnostic-part-28
   - ali-diagnostic-part-31
 ---
 
@@ -31,7 +31,7 @@ Operationalizing Truth Without Overhauling Everything at Once
 
 This section explains what leaders actually do once they have ALI results — internally, operationally, behaviorally, and structurally.
 
-If Part XXIX was about communicating the truth,  
+If Part XXVIII was about communicating the truth,  
 Part XXX is about leading with it.
 
 ALI gives leaders something they’ve rarely had access to:  
@@ -60,8 +60,7 @@ They:
 ALI is designed to be approached as a 90-day operating system, not a crisis response.
 
 The correct move is to select:
-- one clarity priority
-- one environment priority  
+- the one or two conditions that matter most right now  
 …and nothing else.
 
 Because culture doesn’t change in bulk — it changes in sequence.
@@ -106,7 +105,7 @@ It starts:
 - inside a specific leadership habit
 - inside a point of pressure
 
-ALI points to where the drift originated.
+ALI shows which conditions are drifting. The leader’s job is to find where in the business that drift began.
 
 The leader’s job:
 1. Identify the layer where drift occurred  
@@ -153,8 +152,7 @@ This is the canon-approved application model that AO will use everywhere.
 Just patterns. Just trends. Just reality.
 
 **Step 2 — Identify Two Priorities Only**  
-One clarity priority.  
-One environmental priority (trust, stability, communication, safety, or alignment).
+One or two of the seven conditions: Clarity, Consistency, Accountability, Voice, Growth, Support, or Alignment.
 
 **Step 3 — Define Two Behavioral Shifts**  
 Simple. Observable. Repeatable.
@@ -171,7 +169,7 @@ Quietly. Patiently. Predictably.
 No grand announcements.  
 Just consistency.
 
-**Step 5 — Let the Next ALI Pulse Confirm or Redirect the Work**  
+**Step 5 — Let the Next ALI Round Confirm or Redirect the Work**  
 Truth shows whether behavior created change.  
 No defense.  
 No justification.  

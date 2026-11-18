@@ -35,7 +35,7 @@ Tools that track individuals create fear. Tools that track environments create
 
  1. What ALI Will Never Collect
 There are lines we do not cross. Not because of compliance — but because of ethics and psychological safety.
-ALI will never collect:
+ALI will never collect, in any team answer:
 1.1 Personally identifying information
 	•	No names
 	•	No emails
@@ -67,7 +67,7 @@ If a question could reveal an identity through:
 
  2. What ALI Will Always Protect
 2.1 Total anonymity
-ALI must be safe for the most cautious voice in the room. If they do not feel protected, you will never receive truth.
+ALI must be safe for the most cautious voice in the room. If they do not feel protected, you will never receive truth. Team results only appear once at least five team members, not counting the leader, have answered and the round has closed. No single answer is ever shown.
 2.2 Emotional safety
 Employees must know:
 	•	they cannot be identified
@@ -94,18 +94,18 @@ ALI does not measure:
 	•	who feels what
 	•	who is the issue
 ALI measures patterns, not people.
-Specifically, ALI measures:
+Specifically, ALI measures seven conditions the leader creates:
 	•	Clarity
-	•	Trust
-	•	Communication quality
 	•	Consistency
-	•	Stability
-	•	Safety
-	•	Emotional tone
-	•	Drift direction
-	•	Pressure buildup
-	•	Seasonal stress
-	•	Pattern change over time
+	•	Accountability
+	•	Voice
+	•	Growth
+	•	Support
+	•	Alignment
+And the results they produce:
+	•	Trust
+	•	Commitment
+	•	Drift, the direction the conditions move from one round to the next
 These conditions reflect the health of the leadership environment.
 Not individual psychology. Not individual performance. Not individual personalities.
 ALI measures leadership impact, not employee identity.
@@ -119,19 +119,19 @@ Therefore, ALI only needs aggregate signals, not personal identifiers.
 Quarter over quarter, ALI reads:
 	•	the rise or fall of trust
 	•	the strengthening or weakening of clarity
-	•	the stability of tone
-	•	the presence of strain, stress, or drift
+	•	the steadiness of the leader’s follow-through
+	•	the direction of drift across the seven conditions
 	•	the movement of the environment over time
 None of this requires tying a single answer to a single person.
-✔️ Outliers matter — but identities do not.
-ALI reveals when a subset of the team experiences leadership differently. But ALI does not reveal who they are.
+✔️ Patterns matter. Identities do not.
+ALI shows how the team as a whole experiences leadership, side by side with how the leader sees it. It never shows who answered what.
 Leaders receive:
-“A minority experiences clarity breakdowns.”
+“The team rates Clarity lower than you do.”
 Not:
 “Here are the people who feel unclear.”
 This preserves honesty AND effectiveness.
-✔️ The visualization model only needs aggregated patterns.
-The orb, the density fields, the drift vectors — none require identity.
+✔️ The results only need aggregated patterns.
+The condition scores, the leader-and-team mirror, the named patterns and the drift from round to round: none of them require identity.
 In fact, the visualization becomes more powerful because it represents the truth of the environment, not the noise of individuals.
 
  5. How Leaders Must Interpret ALI Data
@@ -152,7 +152,7 @@ Message 2 — “No answer can be traced back to any person.”
 Trust must be explicit.
 Message 3 — “Your answers tell us how leadership is landing, not whether you’re performing well.”
 Remove the risk of self-defense.
-Message 4 — “Our goal is alignment, clarity, and stability — not control.”
+Message 4 — “Our goal is clarity, alignment, and trust. Not control.”
 Broaden buy-in.
 
  7. How ALI Data Should NEVER Be Used
@@ -169,7 +169,6 @@ ALI must never be used to:
 This is how leadership tools become the enemy. ALI is built to be the opposite.
 
  8. AO’s Ethical Stance on Leadership Data
-This locks the entire section into the canon with your philosophy embedded:
 We measure patterns, not people. We track leadership impact, not individual behavior. We protect anonymity to protect truth. We use data to build leaders, not to expose teams. Culture Science exists to serve people — not to monitor them.
 This is the heart of Part XXII. It is unbreakable canon.
 

@@ -8,3 +8,4 @@ Retired with Bart's approval on 2026-11-17 during the ALI v3 conditions rollout.
 Kept as history. They sit outside ao-knowledge-hq-kit/knowledge, so the knowledge
 build, Archy and the team no longer draw on them. The current design is in
 notes/ali-conditions-v3.md and the remaining Section 7 parts.
+Parts 27 (how ALI evolves over years) and 29 (a near copy of Part 28) retired with Bart's approval on 2026-11-18.

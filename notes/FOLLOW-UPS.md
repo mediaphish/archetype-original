@@ -4,6 +4,9 @@ Running list of work Bart has asked for that is not started yet. Newest first.
 When something here gets built, move it to "Done" with the date.
 
 ## Open
+### ALI: compare with other companies, plus public trend findings (Bart, 2026-11-18, not started)
+"I want to allow other users from other companies inside the platform to be able to compare how their leadership is doing in contrast with other businesses nationally: by region, by state, by industry." Also share general, anonymous findings publicly, such as leadership across ALI companies improving over time. Comparisons show only combined, anonymous results, and a comparison group appears only once it holds enough companies that no one business can be picked out. The privacy policy already allows non-identifiable benchmarking. Needs company region, state and industry captured at signup.
+
 ### Book idea: leading your AI, a follow-up to RemAIning Human (Bart, 2026-11-08, not started)
 "We should do a follow up book to RemAIning Human that is about leading your AI." Came up while reworking the McDonald County Chamber AI talk, whose spine is "lead it like you lead people: set the goal, check the work, keep the human in it." A full book, published and sold like RemAIning Human.
 

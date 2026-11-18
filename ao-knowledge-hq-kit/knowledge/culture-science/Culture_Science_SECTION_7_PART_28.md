@@ -21,8 +21,8 @@ applications:
   - Use as source-of-truth content when building ALI and Culture Science tools.
   - Reference when generating articles, training, or product copy related to this part.
 related:
-  - ali-diagnostic-part-27
-  - ali-diagnostic-part-29
+  - ali-diagnostic-part-26
+  - ali-diagnostic-part-30
 ---
 
 SECTION 7 — Part XXVIII
@@ -111,7 +111,7 @@ Neutral clarity stabilizes them.
 
 Leaders should say:
 
-“It’s my responsibility to create a culture where clarity, trust, and stability stay strong. These results help me see what needs focus.”
+“It’s my responsibility to create a culture where clarity, accountability, and trust stay strong. These results help me see what needs focus.”
 
 Not:
 
@@ -176,15 +176,14 @@ Truth should illuminate, not intimidate.
 
 ALI never leaves a leader alone with interpretation.
 
-Each ALI delivery includes:
+Each ALI round gives the leader:
 
-- a plain-language summary
-- drift explanations
-- common causes
-- clarity statements
-- stabilizing scripts
-- direction-setting prompts
-- recommended next steps
+- a score from 0 to 100 for each condition
+- where the leader’s view is higher than the team’s, in agreement, or lower
+- how sure the read is (an early read under eight team answers, a solid read at eight or more)
+- any named patterns
+- drift from the last round, from round two on
+- “try this” guidance for each condition
 
 This ensures the leader walks into the conversation prepared, steady, and confident — even if the data reveals challenge.
 

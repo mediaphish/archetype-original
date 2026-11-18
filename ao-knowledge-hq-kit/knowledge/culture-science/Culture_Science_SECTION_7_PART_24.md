@@ -98,7 +98,7 @@ These names may evolve, but the categories themselves are locked.
    Withheld information, unclear direction, and political communication emerge as trust erodes.
 
 These are not villains.  
-They are warning systems — measurable distortions that predict cultural decline.
+They are warning systems: distortions whose effects show up in the conditions ALI measures, and that predict cultural decline.
 
 ---
 
@@ -125,7 +125,7 @@ It names these forces — without ever weaponizing them.
 
 ---
 
-## IV. How the Anti-Projects Interact With ALI (Corrected)
+## IV. How the Anti-Projects Interact With ALI
 
 ALI is a diagnostic instrument.  
 Diagnostics measure **team experience**, not motives or identities.
@@ -141,12 +141,8 @@ ALI detects **the effects** of these patterns — not the patterns themselves.
 
 Behind the scenes, Anti-Projects inform:
 
-- drift signatures  
-- destabilization logic  
-- pattern recognition  
-- early-warning signals  
-- dashboard escalation  
-- risk interpretations  
+- the patterns ALI names  
+- the “try this” guidance for each condition  
 - consulting roadmaps  
 
 But publicly, ALI outputs only:
@@ -199,7 +195,7 @@ The Institute will one day:
 
 They become the academic and philosophical backbone of the future Institute.
 
-ALI reveals instability.  
+ALI reveals where conditions are weak or drifting.  
 The Institute teaches leaders how to heal it.  
 Anti-Projects describe why instability happens.
 

@@ -80,7 +80,7 @@ The Institute is the place where:
 
 The Institute is the unifying framework where all AO tools eventually live and interact.
 
-In the future, leaders won’t come to you only for consulting.
+In the future, leaders won’t come to Archetype Original only for consulting.
 They will come to the Institute to:
   • learn the fundamentals of Servant Leadership
   • study cultural patterns
@@ -89,7 +89,7 @@ They will come to the Institute to:
   • practice clarity
   • repair trust
   • rebuild stability
-  • understand their own leadership profile
+  • understand their own leadership patterns
   • and gain mastery over the systems and behaviors that create healthy, sustainable organizations
 
 This is not certification.

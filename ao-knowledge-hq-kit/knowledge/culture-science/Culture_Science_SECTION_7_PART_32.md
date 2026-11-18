@@ -27,7 +27,7 @@ related:
 SECTION 7 — Part XXXII
 Canon Summary & Cross-Linking Layer (How ALI, Culture Science, and AO Fit Together)
 ALI is not a standalone product. It’s the diagnostic core of a much larger ecosystem.
-Everything we’ve built in this canon so far — the scoring model, the categories, the archetypes, the warning indicators, the survey engine, the quarterly rhythm, the dashboard, the visualization system, the data philosophy, the interpretive layer — exists for one reason:
+Everything we’ve built in this canon so far — the seven conditions, the survey, the quarterly rhythm, the leader-and-team mirror, the results screen, the data philosophy, the interpretive layer — exists for one reason:
 To give small and mid-sized businesses a clear, ethical, scientifically grounded way to see how their leadership is actually landing on their people.
 This section pulls all of that together and shows how it connects to the rest of Archetype Original.
 
@@ -35,7 +35,7 @@ This section pulls all of that together and shows how it connects to the rest of
 Culture Science is the discipline. ALI is the instrument.
 Culture Science defines:
 	•	the questions we ask about leadership
-	•	the dimensions we measure (clarity, trust, communication, safety, stability, alignment)
+	•	the conditions we measure (Clarity, Consistency, Accountability, Voice, Growth, Support, Alignment) and the results they produce (Trust, Commitment, Drift)
 	•	the patterns we watch over time
 	•	the way we interpret data ethically and responsibly
 	•	the standards we use to call something healthy, drifting, or destructive
@@ -48,23 +48,22 @@ You can talk about Culture Science without ALI. You cannot talk about ALI with
 2. How ALI Connects to Archy
 Archy is not a mascot with a personality. Archy is the delivery system for this canon.
 ALI produces:
-	•	scores
-	•	profiles
-	•	maps
-	•	drift timelines
-	•	early warning indicators
-	•	narrative interpretations
+	•	a score for each condition
+	•	the leader-and-team mirror
+	•	how sure each read is
+	•	named patterns
+	•	drift from round to round
+	•	“try this” guidance
 Archy:
 	•	explains those results in plain language
 	•	answers “what does this mean?” at 2 a.m. when a leader can’t sleep
 	•	suggests micro-practices that reinforce the leadership behaviors we know work
 	•	helps leaders rehearse difficult conversations
 	•	gives “you can try this next” nudges tied directly to ALI data
-	•	keeps the canon usable without you manually stepping into every conversation
+	•	keeps the canon usable without a person stepping into every conversation
 The relationship is simple:
 ALI reveals the patterns. Archy interprets and coaches against those patterns in real time.
 Canon rule:
-	•	ALI never exists without Archy as the guide.
 	•	Archy never gives advice that drifts from ALI and Culture Science.
 
 3. How ALI Connects to the Anti-Projects
@@ -76,15 +75,15 @@ They are the negative space that defines what we are protecting people from.
 Canon guardrail:
 	•	ALI does not diagnose individuals as narcissists, abusers, or villains.
 	•	ALI does reveal patterns that match the environments those leadership models create:
-	◦	fear signals
-	◦	psychological unsafety
-	◦	chronic instability
-	◦	manipulation of communication
-	◦	“results over people” tradeoffs
+	◦	standards held through fear
+	◦	care that avoids hard conversations
+	◦	a leader working from a filtered picture
+	◦	low Voice
+	◦	load that always falls on the same few
 The flow:
 	•	Anti-Projects → feed the corpus and pattern library
 	•	Culture Science → turns those patterns into measurable dimensions
-	•	ALI → surfaces early warning signals when culture drifts in that direction
+	•	ALI → shows drift, the early sign that culture is moving in that direction
 	•	Archy → helps leaders see it, name it, and choose a different path
 We never call a person a diagnosis. We do call a pattern what it is.
 
@@ -97,7 +96,7 @@ Over time ALI generates:
 	•	case studies of drift, recovery, and collapse
 	•	a library of successful interventions and failed attempts
 The Institute will use that data to:
-	•	build formation paths (“for leaders with this profile, here’s the curriculum”)
+	•	build formation paths (“for leaders with these patterns, here’s the curriculum”)
 	•	refine doctrine (“these are the patterns that repeatedly destroy trust”)
 	•	test models (“when leaders practice these behaviors, this is what changes in 12–24 months”)
 	•	publish research on Servant Leadership in SMBs (the space the enterprise world ignores)
@@ -106,7 +105,7 @@ ALI is the research engine. The Institute is the formation engine.
 You can’t build the Institute with guesses. ALI exists so that, when the Institute launches, it stands on decades of real, lived data.
 
 5. How ALI Fits Into AO as a Whole
-Archetype Original isn’t “a tool company.” It’s the body of work your entire story has been leading toward.
+Archetype Original isn’t “a tool company.” It’s the body of work the founder’s whole story has been leading toward.
 ALI sits at the core of that body:
 	•	Accidental CEO provides the narrative spine — the lived proof that Servant Leadership can build a $25M company and still protect people.
 	•	Culture Science provides the language, structure, and ethical frame.
@@ -123,7 +122,6 @@ For a small or mid-sized business, the journey looks like this:
 
 6. Canon Lock: How We Describe ALI in One Paragraph
 Use this anywhere you need the “30-second doctrine”:
-The Archetype Leadership Index (ALI) is a Servant Leadership–based diagnostic built for small and mid-sized businesses. It measures how leadership is actually experienced across clarity, trust, communication, safety, stability, and alignment — using ethical, anonymous, pattern-level data. ALI doesn’t grade people; it reveals patterns. Culture Science defines what we measure, Archy helps leaders interpret and act on it, the Anti-Projects define what we’re protecting teams from, and the future Archetype Leadership Institute will turn this entire system into a formation pathway for the next generation of leaders.
-That’s the cross-linked, “everything in one place” summary Section 7 needed.
+The Archetype Leadership Index (ALI) is a Servant Leadership–based diagnostic built for small and mid-sized businesses. It measures how leadership is actually experienced through seven conditions the leader creates: Clarity, Consistency, Accountability, Voice, Growth, Support and Alignment, and the Trust and Commitment they produce. Each quarter the leader and the team answer the same short survey, and ALI shows where they see things alike and where they differ, using ethical, anonymous, pattern-level data. ALI doesn’t grade people; it reveals patterns. Culture Science defines what we measure, Archy helps leaders interpret and act on it, the Anti-Projects define what we’re protecting teams from, and the future Archetype Leadership Institute will turn this entire system into a formation pathway for the next generation of leaders.
 
 END SECTION 7 — Part XXXII

@@ -41,7 +41,6 @@ This is an essential part of the canon because every diagnostic system is vulner
 ALI must explicitly protect the organization from all of these misuses.  
 This section codifies that.
 
-How ALI Protects the Organization From Misinterpretation  
 Why the System Must Be Understood Before It Is Applied
 
 ALI is powerful — but any powerful tool becomes dangerous when misinterpreted.
@@ -67,14 +66,9 @@ It never will.
 
 ALI speaks in:
 - patterns
-- correlations
-- stability curves
+- a score for each condition
+- the gap between the leader’s view and the team’s
 - movement over time
-- drift signatures
-- clarity behavior
-- trust behavior
-- communication health
-- leadership consistency
 
 No names.  
 No identifiers.  
@@ -102,9 +96,9 @@ A low score triggers:
 - fear
 
 ALI prevents this by converting every data point into:
-- a normalized trend
 - an anonymized aggregate
-- a multi-angle pattern
+- a score for each condition
+- a trend across rounds
 
 There are no “troublemakers” in ALI.  
 Only signals.
@@ -116,19 +110,18 @@ The canon phrase:
 ## III. ALI Prevents Leaders From Drawing Emotional Conclusions
 Many SMB leaders interpret results like this:
 - “Trust dropped. Someone must be unhappy.”
-- “Stability dipped. Something big is going on.”
-- “Safety is low. My people don’t like me.”
-- “Communication fell. My team is complaining.”
+- “Consistency dipped. Something big is going on.”
+- “Voice is low. My people don’t like me.”
+- “Support fell. My team is complaining.”
 
 None of these interpretations are accurate.
 
 ALI detaches emotion from interpretation by:
-- providing plain-language summaries
-- explaining common causes
+- naming the pattern, not the person
 - normalizing predictable patterns
-- showing the drift arc
-- showing the recovery arc
-- mapping behaviors to signals
+- showing drift from one round to the next
+- marking an early read as early
+- giving “try this” guidance for each condition
 
 When a leader’s emotions interpret the data, they create chaos.  
 When ALI interprets the data, leaders create clarity.
@@ -151,7 +144,7 @@ Most cultural drift is:
 - correctable through micro-behaviors
 
 ALI prevents overreaction by:
-- limiting focus to two priorities
+- encouraging focus on one or two conditions
 - using quarterly pacing
 - showing movement over time
 - preventing snapshot judgment
@@ -170,11 +163,8 @@ SMBs are deeply susceptible to personalization:
 ALI removes the ability to weaponize data by:
 - aggregating trends
 - anonymizing responses
-- collapsing identifiers
-- restricting granularity
-- preventing cross-correlation
-- balancing question types
-- mixing dimensions
+- never showing a single answer
+- showing team results only once at least five team members have answered and the round has closed
 
 Even if a leader tries to track individuals, they will fail.
 
@@ -209,12 +199,11 @@ This prevents fear and preserves morale.
 
 ## VII. ALI Gives a “Safe Interpretation Layer”
 Before a leader speaks to the team, ALI gives them:
-- interpretation language
-- clarity framing
-- emotional neutrality
-- stabilizing phrases
-- directional phrases
-- communication boundaries
+- what each score means
+- any named patterns
+- how sure the read is
+- “try this” guidance
+- the communication boundaries in Part XXVIII
 
 A leader who interprets results through their own anxiety will destabilize the culture.  
 A leader who interprets results through the ALI lens will strengthen it.

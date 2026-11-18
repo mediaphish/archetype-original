@@ -37,7 +37,7 @@ The interpretation layer exists to ensure leaders understand what ALI is showing
 
 ## 1. The Core Canon Line (The Anchor of Interpretation)
 
-This is the line ALI uses whenever a leader encounters difficult truth:
+This is the stance ALI takes whenever a leader encounters difficult truth:
 
 **“This is what’s happening. It’s not good or bad — it’s real. And real is the only place leadership can begin.”**
 
@@ -201,9 +201,9 @@ Low scores are **signals** of:
 - drift  
 - instability  
 - unclear expectations  
-- communication breakdown  
+- bad news not reaching the leader  
 - trust fracture  
-- psychological pressure  
+- pressure carried unfairly  
 - inconsistent leadership behavior  
 
 Interpretation begins with:
@@ -226,6 +226,8 @@ Just reality → direction.
 
 Drift is normal.  
 Instability is normal.
+
+Drift shows from the second round on, once there is a round to compare against.
 
 The interpretation framework normalizes this:  
 - “Every leader drifts under pressure.”  

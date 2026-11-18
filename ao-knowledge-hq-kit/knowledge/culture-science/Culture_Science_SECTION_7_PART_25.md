@@ -30,7 +30,7 @@ This section defines the data philosophy that protects leaders, protects teams, 
 
 ## 1. What ALI Will Never Collect
 
-ALI will never collect:  
+ALI will never collect, in any team answer:  
 - names  
 - emails  
 - IP addresses  
@@ -46,6 +46,8 @@ ALI is not a performance monitor.
 ALI is not a behavioral tracking system.
 
 Nothing a leader or owner sees can be traced back to a person.
+
+Team results only appear once at least five team members, not counting the leader, have answered and the round has closed.
 
 Every response is anonymized at the moment of submission, with no technical path to reverse it.
 
@@ -97,12 +99,9 @@ ALI measures experience, not identity.
 ## 4. ALI’s Interpretive Lens Is Behavioral, Not Personal
 
 All insights derived from ALI describe:  
-- clarity patterns  
-- communication patterns  
-- trust patterns  
-- stability patterns  
-- alignment patterns  
-- safety patterns  
+- clarity, consistency and accountability patterns  
+- voice, growth, support and alignment patterns  
+- trust and commitment patterns  
 - drift patterns  
 - environmental signals  
 
@@ -126,8 +125,8 @@ Although ALI refuses to diagnose individuals, it absolutely reveals:
 - where alignment is drifting  
 - where trust is fragile  
 - where communication is reactive  
-- where psychological safety is low  
-- where instability is rising  
+- where standards do not hold for everyone  
+- where the leader sees a different picture than the team  
 - where teams are compensating for leadership gaps  
 
 These are behavioral realities, not psychological judgments.
@@ -163,9 +162,9 @@ If ALI ignored them, it would fail its purpose.
 Examples:
 
 ALI can say:  
-- “45% of respondents display patterns consistent with narcissistic leadership dynamics.”  
-- “This organization exhibits a low-safety pattern aligned with high-pressure environments.”  
-- “These responses reflect communication patterns common in fear-driven cultures.”  
+- “Support is high and Accountability is low. This is care that avoids hard conversations.”  
+- “Accountability is high and Voice is low. Standards are being held through fear.”  
+- “The leader rates every condition well above the team. The leader is working from a filtered picture.”  
 
 ALI does **not** say:  
 - “Your leader is a narcissist.”  
@@ -214,13 +213,7 @@ If a leader responds poorly to ALI data, the system protects the team.
 
 Psychological safety must be created intentionally.
 
-ALI provides leaders with:  
-- scripts for discussing results  
-- best practices for sharing without blame  
-- guidance for answering team questions  
-- instruction for avoiding reactive responses  
-- direction for creating a follow-up plan  
-- clarity about what teams should expect next  
+ALI gives leaders “try this” guidance for each condition. How to share results with the team is set out in Part XXVIII.
 
 You cannot change what you cannot talk about.
 
