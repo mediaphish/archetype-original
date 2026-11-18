@@ -4341,7 +4341,7 @@ export default function AutoV2Panel({ onNavigate, className,
   useEffect(() => {
     if (!activeThreadId) return undefined;
     let alive = true;
-    const gen = bgGenRef.current;
+    let gen = bgGenRef.current;
     (async () => {
       // Keeps checking while the conversation is open, not only while someone
       // works, so work the team starts later shows up too (2026-10-27: "I
@@ -4351,10 +4351,21 @@ export default function AutoV2Panel({ onNavigate, className,
       const started = Date.now();
       for (let i = 0; alive && Date.now() - started < 60 * 60000; i += 1) {
         if (i > 0) await new Promise((r) => setTimeout(r, working ? 6000 : 20000));
-        if (!alive || bgGenRef.current !== gen) return;
+        if (!alive) return;
+        // Bart sending a message used to end this loop for good, so work the
+        // team finished afterwards never appeared until he typed again
+        // (2026-11-17: the Entry 4 post was written, edited and reviewed in
+        // six minutes while the screen still said nobody was working). A new
+        // message only resets it: skip this round and pick up from there.
+        if (bgGenRef.current !== gen) {
+          gen = bgGenRef.current;
+          seen = -2;
+          continue;
+        }
         if (sendingRef.current) continue;
         const st = await fetch(`/api/ao/auto/session?thread_id=${encodeURIComponent(activeThreadId)}`).then((x) => x.json()).catch(() => null);
-        if (!alive || bgGenRef.current !== gen) return;
+        if (!alive) return;
+        if (bgGenRef.current !== gen) continue;
         if (sendingRef.current || !st?.ok) continue;
         const msgs = Array.isArray(st.messages) ? st.messages : [];
         if (i > 0 && msgs.length !== seen) {
