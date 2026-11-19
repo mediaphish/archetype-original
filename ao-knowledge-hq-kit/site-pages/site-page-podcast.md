@@ -10,7 +10,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-10-22'
+updated_at: '2026-11-19T20:11:50.599Z'
 source:
   kind: site
   note: >-
@@ -25,37 +25,49 @@ Two kinds of episodes: solo conversations drawn from 34 years of building compan
 
 Spotify Apple Podcasts YouTube
 
-All (4)
+All (5)
 
 Solo (3)
 
-Guest (1)
+Guest (2)
 
-Servant Leadership (4)
+Servant Leadership (5)
 
-Leadership (4)
+Leadership (5)
+
+Personal Transformation (2)
 
 Accountability (1)
 
-Personal Transformation (1)
-
 Transformational Leadership (1)
 
-[Image: The Archetype Original Podcast Season 1 Episode 3]
+[Image: The Archetype Original Podcast Season 1 Episode 4]
 
 Latest Episode
 
-August 13, 2026 · Guest
+November 19, 2026 · Guest
 
-## The Archetype Original Podcast Season 1 Episode 3
+## The Archetype Original Podcast Season 1 Episode 4
 
-Servant leadership is not a concept. It is a posture. And the clearest proof of it is not what a leader claims about themselves. It is what the people who were under their care become. This is a conversation with Erik and Adam Theis, a father and a son, both builders, both carrying something worth hearing.
+This is the first mentor session on the show. Matthew Burgess had an idea nobody asked for, built it anyway, and then had to learn the harder part: letting other people carry it further than he could.
 
-Servant Leadership Leadership Accountability
+Servant Leadership Leadership Personal Transformation
 
 Listen now →
 
 ### All episodes
+
+[Image: The Archetype Original Podcast Season 1 Episode 3]
+
+August 13, 2026 · Guest
+
+#### The Archetype Original Podcast Season 1 Episode 3
+
+Servant leadership is not a concept. It is a posture. And the clearest proof of it is not what a leader claims about themselves. It is what the people who were under their care become. This is a conversation with Erik and Adam Theis, a father and a son, both builders, both carrying something worth hearing.
+
+Servant Leadership
+
+Listen now →
 
 [Image: The Archetype Original Podcast Season 1 Episode 2]
 
