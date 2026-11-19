@@ -670,7 +670,15 @@ export function MessageBubble({ message, onNavigate }) {
       ? message.meta.reshare_image_url
       : null;
 
-  if (!text && !message.meta?.image_url && !reshareImageUrl) return null;
+  const messageImages = (
+    Array.isArray(message.meta?.image_urls) && message.meta.image_urls.length
+      ? message.meta.image_urls
+      : message.meta?.image_url
+        ? [message.meta.image_url]
+        : []
+  ).filter((u) => typeof u === 'string' && u);
+
+  if (!text && !messageImages.length && !reshareImageUrl) return null;
 
   // One bubble per teammate, like a real group chat (2026-10-26).
   const parts = isUser ? [{ agent: null, text }] : splitBySpeaker(text, agentKey || 'auto');
@@ -713,12 +721,18 @@ export function MessageBubble({ message, onNavigate }) {
               }
             `}
           >
-            {i === 0 && message.meta?.image_url && (
-              <img
-                src={message.meta.image_url}
-                alt=""
-                className="rounded-lg mb-2 max-w-full max-h-48 object-contain"
-              />
+            {i === 0 && messageImages.length > 0 && (
+              // Every attached image, not just the first (2026-11-19).
+              <div className="mb-2 flex flex-wrap gap-2">
+                {messageImages.map((src, n) => (
+                  <img
+                    key={`${n}-${src.slice(-24)}`}
+                    src={src}
+                    alt=""
+                    className="rounded-lg max-w-full max-h-48 object-contain"
+                  />
+                ))}
+              </div>
             )}
             {(() => {
               // An uploaded video clip shows as a player (2026-10-28).
@@ -3881,7 +3895,12 @@ export default function AutoV2Panel({ onNavigate, className,
         role: 'user',
         content: displayText,
         id: `opt-${Date.now()}`,
-        meta: fileSnaps[0]?.type?.startsWith('image/') ? { image_url: fileSnaps[0].dataUrl } : null,
+        meta: (() => {
+          const imgs = fileSnaps
+            .filter((f) => String(f?.type || '').startsWith('image/') && f?.dataUrl)
+            .map((f) => f.dataUrl);
+          return imgs.length ? { image_url: imgs[0], image_urls: imgs } : null;
+        })(),
       };
 
       setPendingFiles([]);

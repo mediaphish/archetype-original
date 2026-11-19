@@ -13,7 +13,7 @@ import { normalizeAgent, AGENTS, trimLeadInBeforeName, mentionedAgents, isImageA
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { shouldSavePastedPost } from '../../../lib/ao/pastedPostGate.js';
 import { signalsImageDiscussion } from '../../../lib/ao/imageDiscussionSignal.js';
-import { ensureAutoThread, getAutoThreadState, addAutoMessage } from '../../../lib/ao/autoHub.js';
+import { ensureAutoThread, getAutoThreadState, addAutoMessage, mergeAutoMessageMeta } from '../../../lib/ao/autoHub.js';
 import {
   runAutoChat,
   runAutoChatStream,
@@ -1405,6 +1405,17 @@ export async function runChatTurn({ email, body = {}, sendEvent, end = () => {},
         }
         if (persisted.urls?.length) {
           chatAttachedImageUrlsThisTurn.push(...persisted.urls);
+          // Show every attached image on Bart's own message, not just the first.
+          if (persistedUserMessage?.id) {
+            try {
+              await mergeAutoMessageMeta(persistedUserMessage.id, {
+                image_url: persisted.urls[0],
+                image_urls: persisted.urls,
+              });
+            } catch (metaErr) {
+              console.error('[chat.js] saving image list on user message failed:', metaErr?.message);
+            }
+          }
         }
       } catch (chatAttErr) {
         console.error('[chat.js] chat attached image persist failed:', chatAttErr?.message);
