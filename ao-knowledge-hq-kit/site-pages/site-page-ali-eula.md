@@ -11,7 +11,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-11-18T00:49:22.548Z'
+updated_at: '2026-11-19T10:50:34.499Z'
 source:
   kind: site
   note: >-
@@ -98,6 +98,12 @@ From the journal
 
 All entries →
 
+November 18, 2026
+
+### The Pause Nobody Built In
+
+The report goes to the client on a Thursday afternoon. It is good work, or at least it reads like good work. The firm is a consulting practice of about sixty people, and the client is a regional health system that hired it to review how it handles patient billing disputes.
+
 November 16, 2026
 
 ### The Abigail Archetype
@@ -109,12 +115,6 @@ November 11, 2026
 ### The Dashboard Is Green
 
 It is Monday morning at a mid-sized distributor, and the operations review is going well. The screen at the front of the room is green from corner to corner. A year ago, leadership put an AI system in place to draft replies to customer emails.
-
-November 9, 2026
-
-### The Eli Archetype
-
-The Archetype Series, Entry Fourteen Samuel thought the old man was calling him. The boy slept in the temple at Shiloh, a few steps from the ark of God.
 
 The books
 
