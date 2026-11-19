@@ -11,7 +11,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-11-18T10:49:33.645Z'
+updated_at: '2026-11-19T10:50:34.499Z'
 source:
   kind: site
   note: >-
@@ -34,53 +34,63 @@ Read: The Golden Rule Has Always Been a Leadership Strategy →
 
 Today's Devotional
 
-November 18, 2026
+November 19, 2026
 
 Share
 
-November 18, 2026
+November 19, 2026
 
-# And Not Be Silent
+# Kept in Heaven for You
 
-Psalm 30:11–12 (ESV)
+1 Peter 1:3–7 (ESV)
 
 Unable to load scripture text: Unexpected token '<', "<!doctype "... is not valid JSON
 
-Read Psalm 30:11–12 (ESV) on ESV.org
+Read 1 Peter 1:3–7 (ESV) on ESV.org
 
 ## Reflection
 
-When a hard season ends, most leaders want to move on as fast as possible. The layoffs are behind them, the illness is in remission, the client came back. Nobody wants to keep talking about the worst year of their career, so they stop talking about it entirely.
+A hard season has a way of auditing a leader. The title can go, the income can drop, the reputation can take a hit that no amount of explaining fixes. What is left afterward tends to show what the leader was actually leaning on the whole time.
 
-The psalm describes a turn so complete it changes what he is wearing. You have turned for me my mourning into dancing; you have loosed my sackcloth and clothed me with gladness. Sackcloth was what a person wore to grieve. God took it off and dressed him in something else.
+Peter begins with blessing before he says a word about trials. Blessed be the God and Father of our Lord Jesus Christ. Then he describes what has been given. A living hope. An inheritance that is imperishable, undefiled and unfading, kept in heaven for you.
 
-Then the purpose of the change. That my glory may sing your praise and not be silent. The rescue was not only for his relief. It was so that he would say something about it. Silence after deliverance is treated as the wrong response.
+Those three words describe exactly what trouble cannot do. It cannot spoil it, stain it or let it fade. Most of what leaders build can be lost in a single bad year. This cannot, and that is the ground the rejoicing stands on.
 
-O LORD my God, I will give thanks to you forever. Forever is a long time to keep talking about one recovery. It means the story keeps getting told long after it would be easier to let it fade, and long after the people around him have heard it before.
+Only then come the trials. In this you rejoice, though now for a little while, if necessary, you have been grieved by various trials. The grief is real, and it is for a little while. The rejoicing is in this, in the hope and the inheritance, not in the trials themselves.
 
-Staying silent about what God brought you through leaves your people without a map. The next person facing the same kind of trouble needs to hear that someone made it through and who to thank. Thankfulness spoken out loud, years later, is one of the most useful things a leader can hand to someone just starting a hard stretch.
+Thankfulness that rests on what can be taken will be lost when it is taken. Thankfulness that rests on what is kept can grieve real losses and still give thanks, because the most important thing a leader holds was never on the table. That steadiness is visible to everyone watching how a leader handles the hard year.
 
 ## Practical Application
 
-- Tell someone on your team about a hard season you came through and who you are thankful to.
+- List what you have that no bad year could take from you, and give thanks for it.
 
-- Write down what God turned in your life, so you do not lose the details.
+- Pay attention to what you lean on most when things go wrong.
 
-- Look for someone just entering a hard stretch who needs to hear your story.
+- Grieve real losses honestly, without letting them become the whole story.
 
 ## Takeaways
 
-- The psalm says the rescue came so that praise would not be silent.
+- Peter blesses God for what is kept before he mentions the trials.
 
-- Thankfulness spoken years later gives the next person a map.
+- Thankfulness that rests on what cannot be taken survives the year that takes everything else.
 
 Closing Thought
 
-The sackcloth came off, and the singing was not supposed to stop.
+The trials were for a little while, and the inheritance was kept.
 
 Previous Devotionals
 
 ## Browse the archive
+
+November 18, 2026
+
+And Not Be Silent
+
+Psalm 30:11–12 (ESV)
+
+God turned mourning into dancing so that praise would not be silent. Thankfulness after a hard season keeps telling the story.
+
+Read →
 
 November 17, 2026
 
@@ -172,17 +182,7 @@ Paul thanks God for people he is about to correct at length. Thankfulness for wh
 
 Read →
 
-November 8, 2026
-
-Proclaimed in All the World
-
-Romans 1:8 (ESV)
-
-Paul thanks God for faith he heard reported from a distance. Being thankful for good you did not build is thankfulness with no credit attached.
-
-Read →
-
-Showing 1-10 of 321
+Showing 1-10 of 322
 
 ← Prev
 

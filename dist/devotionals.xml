@@ -5,8 +5,15 @@
     <link>https://www.archetypeoriginal.com/journal</link>
     <description>A daily devotional on servant leadership by Bart Paden.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 18 Nov 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 19 Nov 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="https://www.archetypeoriginal.com/devotionals.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kept in Heaven for You</title>
+      <link>https://www.archetypeoriginal.com/journal/kept-in-heaven-for-you</link>
+      <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/kept-in-heaven-for-you</guid>
+      <pubDate>Thu, 19 Nov 2026 00:00:00 GMT</pubDate>
+      <description>Peter blesses God for an inheritance that cannot perish before he mentions trials. Thankfulness rests on what a hard season cannot take.</description>
+    </item>
     <item>
       <title>And Not Be Silent</title>
       <link>https://www.archetypeoriginal.com/journal/and-not-be-silent</link>
@@ -349,13 +356,6 @@
       <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/work-it-and-keep-it</guid>
       <pubDate>Thu, 01 Oct 2026 00:00:00 GMT</pubDate>
       <description>Stewardship holds two responsibilities at once, developing what was entrusted and protecting it, and most leaders quietly neglect one of them.</description>
-    </item>
-    <item>
-      <title>Mercy Triumphs Over Judgment</title>
-      <link>https://www.archetypeoriginal.com/journal/mercy-triumphs-over-judgment</link>
-      <guid isPermaLink="true">https://www.archetypeoriginal.com/journal/mercy-triumphs-over-judgment</guid>
-      <pubDate>Wed, 30 Sep 2026 00:00:00 GMT</pubDate>
-      <description>The judgment a leader can expect is tied directly to the mercy they were willing to extend, not abstractly related to it.</description>
     </item>
   </channel>
 </rss>

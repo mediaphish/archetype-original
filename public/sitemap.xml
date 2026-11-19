@@ -146,6 +146,18 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://www.archetypeoriginal.com/journal/kept-in-heaven-for-you</loc>
+    <lastmod>2026-11-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/the-pause-nobody-built-in</loc>
+    <lastmod>2026-11-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.archetypeoriginal.com/journal/and-not-be-silent</loc>
     <lastmod>2026-11-18</lastmod>
     <changefreq>monthly</changefreq>

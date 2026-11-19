@@ -10,7 +10,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-11-18T00:49:22.548Z'
+updated_at: '2026-11-19T10:50:34.499Z'
 source:
   kind: site
   note: >-
@@ -21,9 +21,9 @@ source:
 
 Thoughts, insights, and lessons learned from 34 years of building companies and growing people.
 
-All (112)
+All (113)
 
-Leadership (87)
+Leadership (88)
 
 Servant Leadership (73)
 
@@ -31,7 +31,7 @@ Culture (34)
 
 Psychology (28)
 
-Servant Leadership (25)
+Servant Leadership (26)
 
 Accountability (23)
 
@@ -53,13 +53,25 @@ Leadership Psychology (1)
 
 Organizational Culture (1)
 
-[Image: The Abigail Archetype]
+[Image: The Pause Nobody Built In]
 
 Featured
 
-November 16, 2026
+November 18, 2026
 
 ##
+
+The Pause Nobody Built In
+
+The report goes to the client on a Thursday afternoon. It is good work, or at least it reads like good work. The firm is a consulting practice of about sixty people, and the client is a regional health system that hired it to review how it handles patient billing disputes.
+
+Read Article →
+
+[Image: The Abigail Archetype]
+
+November 16, 2026
+
+###
 
 The Abigail Archetype
 
@@ -184,18 +196,6 @@ September 16, 2026
 Your Tuesday
 
 Part 4 ended with a question aimed at whoever was still reading after three days at Ia Drang and four days inside Charlie Company.
-
-Read Article →
-
-[Image: The Cain Archetype]
-
-September 14, 2026
-
-###
-
-The Cain Archetype
-
-Cain did not fail because no one told him. He failed after being told, in words that named the exact danger and the exact way out of it.
 
 Read Article →
 
