@@ -218,10 +218,12 @@ export default function PodcastEpisodeAdmin() {
   }, [threadId]);
 
   useEffect(() => {
+    // One guest: the Show tab opens straight to that guest's show view
+    // (intro, run sheet, brief, questions), never the empty combined notes box.
     if (mainTab === 'hosting') {
-      setHostingTab('combined');
+      setHostingTab(guests.length === 1 && guests[0]?.id ? guests[0].id : 'combined');
     }
-  }, [mainTab]);
+  }, [mainTab, guests]);
 
   const updateGuest = (updated) => {
     setGuests((prev) => prev.map((g) => (g.id === updated.id ? { ...g, ...updated } : g)));
