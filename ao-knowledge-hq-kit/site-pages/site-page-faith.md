@@ -11,7 +11,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-11-19T10:50:34.499Z'
+updated_at: '2026-11-20T10:40:11.371Z'
 source:
   kind: site
   note: >-
@@ -34,53 +34,63 @@ Read: The Golden Rule Has Always Been a Leadership Strategy →
 
 Today's Devotional
 
-November 19, 2026
+November 20, 2026
 
 Share
 
-November 19, 2026
+November 20, 2026
 
-# Kept in Heaven for You
+# The Stone the Builders Rejected
 
-1 Peter 1:3–7 (ESV)
+Psalm 118:21–24 (ESV)
 
 Unable to load scripture text: Unexpected token '<', "<!doctype "... is not valid JSON
 
-Read 1 Peter 1:3–7 (ESV) on ESV.org
+Read Psalm 118:21–24 (ESV) on ESV.org
 
 ## Reflection
 
-A hard season has a way of auditing a leader. The title can go, the income can drop, the reputation can take a hit that no amount of explaining fixes. What is left afterward tends to show what the leader was actually leaning on the whole time.
+Almost every leader has been passed over at some point. The promotion that went to someone else, the board that chose another direction, the pitch dismissed in the first five minutes. When the story turns around later, the temptation is to treat the comeback as vindication and make sure everyone involved hears about it.
 
-Peter begins with blessing before he says a word about trials. Blessed be the God and Father of our Lord Jesus Christ. Then he describes what has been given. A living hope. An inheritance that is imperishable, undefiled and unfading, kept in heaven for you.
+The psalm starts with thanks. I thank you that you have answered me and have become my salvation. Then the picture. The stone that the builders rejected has become the cornerstone. The people who knew building looked at it, decided it was not good enough and set it aside. It ended up holding the whole structure together.
 
-Those three words describe exactly what trouble cannot do. It cannot spoil it, stain it or let it fade. Most of what leaders build can be lost in a single bad year. This cannot, and that is the ground the rejoicing stands on.
+The credit goes in one direction. This is the LORD's doing; it is marvelous in our eyes. Not the stone's doing, and not a lesson for the builders. The response to being proven right is wonder at what God did, not a victory lap.
 
-Only then come the trials. In this you rejoice, though now for a little while, if necessary, you have been grieved by various trials. The grief is real, and it is for a little while. The rejoicing is in this, in the hope and the inheritance, not in the trials themselves.
+That is what keeps thankfulness from turning into gloating. Gloating needs an audience of people who were wrong. Thankfulness only needs God, and it can sit comfortably next to the very people who once set the stone aside.
 
-Thankfulness that rests on what can be taken will be lost when it is taken. Thankfulness that rests on what is kept can grieve real losses and still give thanks, because the most important thing a leader holds was never on the table. That steadiness is visible to everyone watching how a leader handles the hard year.
+This is the day that the LORD has made; let us rejoice and be glad in it. It gets quoted as a cheerful line for any morning. Here it is about a specific day, the one when the rejected thing turned out to matter most. A leader who has lived that day knows the right response is rejoicing together, with the credit kept where it belongs.
 
 ## Practical Application
 
-- List what you have that no bad year could take from you, and give thanks for it.
+- Recall a time you were passed over that later turned around, and give God the credit for it.
 
-- Pay attention to what you lean on most when things go wrong.
+- Check whether you still carry an I told you so toward the people who set you aside.
 
-- Grieve real losses honestly, without letting them become the whole story.
+- Look for someone on your team being overlooked who may turn out to matter most.
 
 ## Takeaways
 
-- Peter blesses God for what is kept before he mentions the trials.
+- The rejected stone became the cornerstone, and the psalm calls it the LORD's doing.
 
-- Thankfulness that rests on what cannot be taken survives the year that takes everything else.
+- Gloating needs an audience of people who were wrong, and thankfulness does not.
 
 Closing Thought
 
-The trials were for a little while, and the inheritance was kept.
+The builders were wrong, and the psalm spends no time saying so.
 
 Previous Devotionals
 
 ## Browse the archive
+
+November 19, 2026
+
+Kept in Heaven for You
+
+1 Peter 1:3–7 (ESV)
+
+Peter blesses God for an inheritance that cannot perish before he mentions trials. Thankfulness rests on what a hard season cannot take.
+
+Read →
 
 November 18, 2026
 
@@ -172,17 +182,7 @@ Paul gives thanks for work, labor and steadfastness, not results. Thankfulness f
 
 Read →
 
-November 9, 2026
-
-Sustained to the End
-
-1 Corinthians 1:4–9 (ESV)
-
-Paul thanks God for people he is about to correct at length. Thankfulness for what people were given earns a hearing for the hard conversation.
-
-Read →
-
-Showing 1-10 of 322
+Showing 1-10 of 323
 
 ← Prev
 
