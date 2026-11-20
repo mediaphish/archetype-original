@@ -331,6 +331,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-11-19 | Kept in Heaven for You | 1 Peter 1:3–7 (ESV) | `kept-in-heaven-for-you` | `2026-11-19-kept-in-heaven-for-you.md` |
 | 2026-11-20 | The Stone the Builders Rejected | Psalm 118:21–24 (ESV) | `the-stone-the-builders-rejected` | `2026-11-20-the-stone-the-builders-rejected.md` |
 | 2026-11-21 | Wisdom and Thanksgiving and Honor | Revelation 7:11–12 (ESV) | `wisdom-and-thanksgiving-and-honor` | `2026-11-21-wisdom-and-thanksgiving-and-honor.md` |
+| 2026-11-22 | With My Whole Heart | Psalm 9:1–2 (ESV) | `with-my-whole-heart` | `2026-11-22-with-my-whole-heart.md` |
+| 2026-11-23 | Received with Thanksgiving | 1 Timothy 4:4–5 (ESV) | `received-with-thanksgiving` | `2026-11-23-received-with-thanksgiving.md` |
+| 2026-11-24 | Oh Come, Let Us Sing | Psalm 95:1–2 (ESV) | `oh-come-let-us-sing` | `2026-11-24-oh-come-let-us-sing.md` |
+| 2026-11-25 | In Him My Heart Trusts | Psalm 28:7 (ESV) | `in-him-my-heart-trusts` | `2026-11-25-in-him-my-heart-trusts.md` |
+| 2026-11-26 | Of Your Own Have We Given You | 1 Chronicles 29:13–14 (ESV) | `of-your-own-have-we-given-you` | `2026-11-26-of-your-own-have-we-given-you.md` |
+| 2026-11-27 | Thanks Be to God | 1 Corinthians 15:55–58 (ESV) | `thanks-be-to-god` | `2026-11-27-thanks-be-to-god.md` |
+| 2026-11-28 | Thanksgiving as His Sacrifice | Psalm 50:23 (ESV) | `thanksgiving-as-his-sacrifice` | `2026-11-28-thanksgiving-as-his-sacrifice.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
