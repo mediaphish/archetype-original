@@ -37,9 +37,9 @@ export default async function handler(req, res) {
       });
     }
 
-    if (regenerate) {
-      await updateGuestProducerBrief(guestId, { clear: true });
-    }
+    // 2026-11-20: regenerating used to wipe the saved brief first, so a failed
+    // run left nothing (Jaron's brief, edited by Cam, was lost the morning of
+    // the recording). The old brief now stays until a new one is saved.
 
     const result = await generateGuestProducerBrief(guest);
     if (!result.ok) {

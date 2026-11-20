@@ -67,7 +67,11 @@ export default function PodcastEpisodeAdmin() {
   const [error, setError] = useState('');
 
   // Top-level: guests | setup | hosting
-  const [mainTab, setMainTab] = useState('guests');
+  // 2026-11-20: Bart looked for a "show" view during a recording and landed on the
+  // long prep page. #show opens the Show tab directly.
+  const [mainTab, setMainTab] = useState(() =>
+    typeof window !== 'undefined' && window.location.hash === '#show' ? 'hosting' : 'guests'
+  );
   const [guestTabId, setGuestTabId] = useState(null);
   const [setupSubTab, setSetupSubTab] = useState('riverside');
   const [hostingTab, setHostingTab] = useState('combined');
@@ -143,6 +147,7 @@ export default function PodcastEpisodeAdmin() {
         );
       }
       setGuests(list);
+      if (list.length === 1 && list[0]?.id) setHostingTab(list[0].id);
       setGuestTabId((prev) => {
         if (prev && list.some((g) => g.id === prev)) return prev;
         return list[0]?.id || null;
@@ -390,6 +395,17 @@ export default function PodcastEpisodeAdmin() {
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     type="button"
+                    onClick={() => {
+                      setMainTab('hosting');
+                      window.history.replaceState({}, '', `${window.location.pathname}#show`);
+                      window.scrollTo({ top: 0, behavior: 'instant' });
+                    }}
+                    className="rounded-full bg-[#DB0812] px-4 py-2 text-xs font-medium text-white hover:bg-[#b00610]"
+                  >
+                    Open show view
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => navigateTo(`/ao/analyst?thread=${threadId}`)}
                     className="rounded-full bg-[#2B2929] px-4 py-2 text-xs font-medium text-white hover:bg-black"
                   >
@@ -429,7 +445,7 @@ export default function PodcastEpisodeAdmin() {
                 onClick={() => setMainTab('hosting')}
                 className={tabBtn(mainTab === 'hosting')}
               >
-                Hosting
+                Show
               </button>
             </div>
 
@@ -482,15 +498,6 @@ export default function PodcastEpisodeAdmin() {
                     className={pillBtn(setupSubTab === 'riverside')}
                   >
                     Riverside invite
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={setupSubTab === 'showpage'}
-                    onClick={() => setSetupSubTab('showpage')}
-                    className={pillBtn(setupSubTab === 'showpage')}
-                  >
-                    Show page
                   </button>
                 </div>
 
@@ -632,15 +639,17 @@ export default function PodcastEpisodeAdmin() {
                   role="tablist"
                   aria-label="Hosting views"
                 >
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={hostingTab === 'combined'}
-                    onClick={() => setHostingTab('combined')}
-                    className={pillBtn(hostingTab === 'combined')}
-                  >
-                    Combined show page
-                  </button>
+                  {guests.length > 1 && (
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={hostingTab === 'combined'}
+                      onClick={() => setHostingTab('combined')}
+                      className={pillBtn(hostingTab === 'combined')}
+                    >
+                      Combined show page
+                    </button>
+                  )}
                   {guests.map((g) => (
                     <button
                       key={g.id}

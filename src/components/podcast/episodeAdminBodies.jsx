@@ -8,6 +8,7 @@ import { getTimezoneOptionGroups } from '../../../lib/ao/podcastTimezones.js';
 import { formatGuestSchedulePrefs } from '../../../lib/ao/podcastScheduleUtils.js';
 import { CONVERSATION_ARCHITECTURE_BEATS } from './conversationArchitecture.js';
 import PostRecordingCapture from './PostRecordingCapture';
+import JournalMarkdownBody from '../JournalMarkdownBody';
 
 export function formatTimestamp(value) {
   if (!value) return '';
@@ -451,8 +452,8 @@ export function GuestPrepBody({ guest, onGuestUpdated }) {
         </div>
         {producerStatus.error && <p className="mt-4 text-sm text-red-600">{producerStatus.error}</p>}
         {guest.producer_brief ? (
-          <div className="mt-4 whitespace-pre-wrap font-sans text-sm leading-relaxed text-gray-800">
-            {guest.producer_brief}
+          <div className="mt-4">
+            <JournalMarkdownBody post={{ title: '', body: guest.producer_brief, image: null }} />
           </div>
         ) : (
           <p className="mt-4 text-sm text-gray-500">
@@ -492,14 +493,21 @@ export function GuestHostingBody({ guest }) {
     <div className="space-y-6">
       {bioLine && <p className="text-sm text-gray-600">{bioLine}{bioSnippet.length >= 160 ? '…' : ''}</p>}
 
+      {guest.run_sheet_md && (
+        <section className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+            Run sheet
+          </p>
+          <JournalMarkdownBody post={{ title: '', body: guest.run_sheet_md, image: null }} />
+        </section>
+      )}
+
       <section className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
         <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
           Producer brief
         </p>
         {guest.producer_brief ? (
-          <div className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-gray-800">
-            {guest.producer_brief}
-          </div>
+          <JournalMarkdownBody post={{ title: '', body: guest.producer_brief, image: null }} />
         ) : (
           <p className="text-sm text-gray-500">No producer brief yet. Open the Guests tab to generate one.</p>
         )}
