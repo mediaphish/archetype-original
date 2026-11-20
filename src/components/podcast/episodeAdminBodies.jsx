@@ -10,6 +10,21 @@ import { CONVERSATION_ARCHITECTURE_BEATS } from './conversationArchitecture.js';
 import PostRecordingCapture from './PostRecordingCapture';
 import JournalMarkdownBody from '../JournalMarkdownBody';
 
+// Notes are written one item per line (questions, cues). Plain markdown joins
+// single lines into one paragraph, so give each line its own paragraph here.
+// List items, tables and quotes keep their own handling.
+export function keepLineBreaks(md) {
+  const lines = String(md || '').split('\n');
+  const special = (l) => /^\s*([-*+]\s|\d+[.)]\s|\||>)/.test(l);
+  const out = [];
+  lines.forEach((line, i) => {
+    out.push(line);
+    const next = lines[i + 1];
+    if (next !== undefined && line.trim() && next.trim() && !special(line) && !special(next)) out.push('');
+  });
+  return out.join('\n');
+}
+
 export function formatTimestamp(value) {
   if (!value) return '';
   try {
@@ -453,7 +468,7 @@ export function GuestPrepBody({ guest, onGuestUpdated }) {
         {producerStatus.error && <p className="mt-4 text-sm text-red-600">{producerStatus.error}</p>}
         {guest.producer_brief ? (
           <div className="mt-4">
-            <JournalMarkdownBody post={{ title: '', body: guest.producer_brief, image: null }} />
+            <JournalMarkdownBody post={{ title: '', body: keepLineBreaks(guest.producer_brief), image: null }} />
           </div>
         ) : (
           <p className="mt-4 text-sm text-gray-500">
@@ -498,7 +513,7 @@ export function GuestHostingBody({ guest }) {
           <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
             Run sheet
           </p>
-          <JournalMarkdownBody post={{ title: '', body: guest.run_sheet_md, image: null }} />
+          <JournalMarkdownBody post={{ title: '', body: keepLineBreaks(guest.run_sheet_md), image: null }} />
         </section>
       )}
 
@@ -507,7 +522,7 @@ export function GuestHostingBody({ guest }) {
           Producer brief
         </p>
         {guest.producer_brief ? (
-          <JournalMarkdownBody post={{ title: '', body: guest.producer_brief, image: null }} />
+          <JournalMarkdownBody post={{ title: '', body: keepLineBreaks(guest.producer_brief), image: null }} />
         ) : (
           <p className="text-sm text-gray-500">No producer brief yet. Open the Guests tab to generate one.</p>
         )}
