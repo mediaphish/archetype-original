@@ -11,7 +11,7 @@ summary: >-
 tags:
   - site-page
 created_at: '2026-10-22'
-updated_at: '2026-11-20T10:40:11.371Z'
+updated_at: '2026-11-21T10:22:14.753Z'
 source:
   kind: site
   note: >-
@@ -34,53 +34,63 @@ Read: The Golden Rule Has Always Been a Leadership Strategy →
 
 Today's Devotional
 
-November 20, 2026
+November 21, 2026
 
 Share
 
-November 20, 2026
+November 21, 2026
 
-# The Stone the Builders Rejected
+# Wisdom and Thanksgiving and Honor
 
-Psalm 118:21–24 (ESV)
+Revelation 7:11–12 (ESV)
 
 Unable to load scripture text: Unexpected token '<', "<!doctype "... is not valid JSON
 
-Read Psalm 118:21–24 (ESV) on ESV.org
+Read Revelation 7:11–12 (ESV) on ESV.org
 
 ## Reflection
 
-Almost every leader has been passed over at some point. The promotion that went to someone else, the board that chose another direction, the pitch dismissed in the first five minutes. When the story turns around later, the temptation is to treat the comeback as vindication and make sure everyone involved hears about it.
+Look at what most leaders spend their careers pursuing. Recognition, influence, a reputation for good judgment, the strength to get things done. Most of those are exactly what leadership development programs are built to produce.
 
-The psalm starts with thanks. I thank you that you have answered me and have become my salvation. Then the picture. The stone that the builders rejected has become the cornerstone. The people who knew building looked at it, decided it was not good enough and set it aside. It ended up holding the whole structure together.
+The angels around the throne fall on their faces and worship God. Blessing and glory and wisdom and thanksgiving and honor and power and might be to our God forever and ever. Almost every word is something leaders chase, and every one of them is handed to God.
 
-The credit goes in one direction. This is the LORD's doing; it is marvelous in our eyes. Not the stone's doing, and not a lesson for the builders. The response to being proven right is wonder at what God did, not a victory lap.
+Thanksgiving sits in the middle of that worship. It is not set apart as a lesser thing. It stands next to wisdom and honor as something that belongs to God, offered by beings who have stood in his presence and know what they are talking about.
 
-That is what keeps thankfulness from turning into gloating. Gloating needs an audience of people who were wrong. Thankfulness only needs God, and it can sit comfortably next to the very people who once set the stone aside.
+That changes how the hard stretches look. Thankfulness offered in loss, in pain, in rejection and in fear is not a coping technique. It joins something that has been going on around the throne all along and will go on forever and ever. A leader who gives thanks in a bad season is in good company.
 
-This is the day that the LORD has made; let us rejoice and be glad in it. It gets quoted as a cheerful line for any morning. Here it is about a specific day, the one when the rejected thing turned out to matter most. A leader who has lived that day knows the right response is rejoicing together, with the credit kept where it belongs.
+Leaders who treat wisdom, honor and authority as belonging to God can hold them loosely. They do not need to defend them or hoard them. Thankfulness is the habit that keeps those things pointed in the right direction, and around the throne it never stops.
 
 ## Practical Application
 
-- Recall a time you were passed over that later turned around, and give God the credit for it.
+- Look at what you are chasing in your career and offer it back to God by name.
 
-- Check whether you still carry an I told you so toward the people who set you aside.
+- Give thanks in a difficult stretch as an act of joining, not just coping.
 
-- Look for someone on your team being overlooked who may turn out to matter most.
+- Hold your authority and your reputation loosely enough to give them back.
 
 ## Takeaways
 
-- The rejected stone became the cornerstone, and the psalm calls it the LORD's doing.
+- Nearly everything leaders chase is named in that worship, and every word of it is given to God.
 
-- Gloating needs an audience of people who were wrong, and thankfulness does not.
+- Thanksgiving stands beside wisdom and honor, and it goes on forever and ever.
 
 Closing Thought
 
-The builders were wrong, and the psalm spends no time saying so.
+Thanksgiving was spoken around the throne, right between wisdom and honor.
 
 Previous Devotionals
 
 ## Browse the archive
+
+November 20, 2026
+
+The Stone the Builders Rejected
+
+Psalm 118:21–24 (ESV)
+
+The stone the builders rejected became the cornerstone, and the psalm calls it the LORD's doing. Thankfulness keeps a comeback from turning into gloating.
+
+Read →
 
 November 19, 2026
 
@@ -172,17 +182,7 @@ Paul saw the people who came out to meet him, thanked God and took courage. Than
 
 Read →
 
-November 10, 2026
-
-Work of Faith, Labor of Love
-
-1 Thessalonians 1:2–3 (ESV)
-
-Paul gives thanks for work, labor and steadfastness, not results. Thankfulness for effort tells people that what they put in is seen.
-
-Read →
-
-Showing 1-10 of 323
+Showing 1-10 of 324
 
 ← Prev
 
